@@ -1,2 +1,563 @@
-py/fieldz/TODO
+~/dev/py/fieldz/TODO
+
+-----------------------------------------------------------------
+* testFieldTypes.testLenFuncs() is incomplete
+* TFWriter putNext uses dispatch table, TFReader.getNext doesn't
+* a TFBuffer is just a Channel and a MsgSpec -- is this layer
+    of code useful for anything other than testing?
+* does a WireBuffer have any value at all?
+* no B32/B64 handling of float/double in tfbuffer.py
+* typed.py handling of float/double puts may be suboptimal (uses
+    struct.{,un}pack instead of ctypes)
+* parser has no way to set indent and step, so tests fail if these
+    are not canonical
+-----------------------------------------------------------------
+2012-12-24
+    * FIX testGenEnum, can change constant
+    * FIX testLittleBig, line 186 or so, list seen as property
+    * FIX testProtoSpec, attempt to parse protoSpec at line 135
+        causes 'too many tokens' error, line 223, parser.py
+
+2012-12-19
+    * alertz and all need a ProtoSpec function mapping msg name to ndx
+    * FieldImpl properties must not have names that are likely to 
+        contend with ordinary field names, so FieldImpl.value should 
+        perhaps be FieldImpl.__value; likewise for name, fieldNbr, 
+        quantifier, fType, default)
+    * likewise for MsgImpl
+    * MSG_NAME.FIELD_NAME now returns the field value, but the code
+        is quite messy
+    * THIS SHOULD BE A PROPERTY: 'MSG_NAME.FIELD_NAME=val' should work
+
+2012-12-18
+    * EITHER reduce number of tests (by combining) OR automate 
+        testing - there are too many tests needing to be run manually
+
+2012-12-15
+    * FIX: testProtoSpec, which fails with a 'too many tokens' error
+        at line 272 
+2012-12-14
+    * FIX: testTFWriter fails because no registry for fields; but 
+        do we really want fields in the registry??
+    * FIX: testTypedFields fails, no vBool
+
+2012-12-11
+    * raw.writeLenPlusField() makes sense for L_STRING but not for
+        L_MSG; and so XXX typed.lMsgPut() isn't useful
+
+2012-12-10
+    * FAILS: testGenEnum.py (can change supposed constant)
+    * FAILS: testTFWriter ("expected string or buffer")
+    * FAILS: testTypedFields (no such attribute: F.vBool)
+
+2012-12-10  (WAS 09-08)
+    * dynamically defining a msgSpec type must add a wireLen property
+        - this is used by typed.lMsgLen()
+        - because messages may be nested, wireLen() must be capable of
+            recursion
+    * this is lenFunc for a message
+    * also add pWireLen, which includes the length of the header 
+
+2012-12-09
+    * need to review whether Channel._limit should be assignable
+
+2012-11-21
+    * PROBLEM: serialization of a message differs depending upon
+        whether it is embedded in another message (where an embedded
+        msg uses its field number in the field header and derives 
+        the regID from that, a top-level msg uses the regID)
+    * PROBLEM: neither msgImpl.makeFieldClass nor makeMsgClass
+        registers the class created, so we can't get regIDs for
+        either type !
+
+    * implement msgImpl:my{Putter,Getter,LenFunc,PLenFunc}
+
+    * testZoggerySerialization uses ZOGGERY_PROTO_SPEC to check
+        the serialization and deserialization of ZOGGERY_PROTO_SPEC,
+        the logEntry message with a small number of required simple
+        fields
+
+    * then testNestedEnumSerialization using NESTED_ENUM_PROTO_SPEC
+    * then testNestedMsgsSerialization, which uses NESTED_MSGS_PROTO_SPEC
+        and so msgSpecs nested 3 deep as well as nested enumSpecs
+
+2012-11-20
+    * testRingDataProto needs lenFunc, getter, putter, pLenFunc for 
+        type 24, in fact for any defined type (as opposed to wired-in
+        basic field types and core spec types)
+    * For all defined types, we need to register getter, putter,
+        lenFunc, and pLenFunc; these need to be at the ProtoReg
+        level.  Simplest approach would seem to be to copy the
+        NodeReg-level lists into the ProtoReg and then extend 
+        them by appending the constructed methods when the regID
+        is assigned.
+
+
+2012-11-18
+    * testRingData should create a class at runtime from the spec
+        in ringDataProto.py and then create a quasi-random number
+        (3-8?) of quasi-random unique instances, each with a different
+        hostName, public and private key, IP address, and nodeID
+
+2012-11-17
+    * FIRST PRIORITY: testRingData is stubbed at line 125
+    * THEN testBigTest.testRoundTripBigTestInstancesToWireFormat, which
+        is stubbed
+    * XXX testCoreTypes.py all but one roundtrip commened out because 
+        fieldSpecs need 3 parameters, others supposedly need only 2
+
+2012-11-15
+    * IMPLEMENT testRingDataProto.py test(s) of serialization and
+        deserialization of simple nested message
+        - requires serialization and deserialization of a message 
+            consisting of 1 or more lMsg (lMsg+)
+            * empty message must raise a QuantificationError
+
+    * from 09-15: implement testBigTest.roundTripToWireFormat
+        - without enums (fields 0, 100, 200, 300) or named
+            lMsg fields (16, 116, 216, 316)
+        - then with one or more enums at protoSpec level
+        - then with one or more MsgSpecs at protoSpec level
+        - then with one or more additional enums embedded in
+            bigTestMsg
+        - then with one or more additional MsgSpecs embedded in
+            bigTestMsg
+        - at this point it will be appropriate to make use of
+            vEnum and lMsg by clients errors
+
+    * FIX testCoreTypes
+        - fieldSpecGetter needs a msgReg arg (testCoreTypes.py, line 71)
+            BUT enumSpecGetter doesn't!  -- invoked at same line
+
+2012-11-14
+    * FIX: msgSpec.Field.__init__ about line 240 has range check 
+        on fType disabled
+2012-11-13
+    * TILT: we have to know the name of a protocol before we can 
+        parse it!  testBigTest.py, line 52
+        - so ignore the name provided to __init__() ??
+2012-11-11
+    * parser.py is not doing anything with reg and nodeReg
+        - parsing a protoSpec MUST add entry to any node registry
+    * testSolo.py seems to be based on a misconception
+2012-09-24
+    * implement PACKED_VARINT_TYPE (automatically use for * and +)
+    * need testing of optional fields ASAP (others later)
+    * raise FieldNumberError if field numbers are incorrectly
+        sequenced; this is detected by getFromChan()
+    * raise SerializationError if cast fails ?
+    * we do not need a registry on each channel: we need a registry
+        on each node, and a registered protocol on each channel
+    * MISCONCEPTION: we should never see enum or nested message
+        declations on the wire: these are part of the spec
+        - however fieldClasses must allow both
+        - field instances only have value
+    * First thing on the wire should usually be a field header
+        with a primitive type of LEN_PLUS and a field number
+        representing the message number; this is followed by the
+        serialized message.  So the (normally one byte) field 
+        header (message ID) is followed by a varint message length.
+        - both ends must register protocols in the same order so 
+            that message IDs are identical at both ends
+        - core protocol must be registered first 
+    * __init__ should default to field default if at all possible; do
+        this in msgInitter
+    * modify parser.py around line 240 to accept defaults 
+        - expectField currently does NOT return; change this
+
+2012-09-22
+    * msgImpl code should be modified to have
+        - at CLASS level class lists for fields, enums, msgs plus
+            fieldsByName, enumsByName, nestedMsgsByName, where
+            the last three map names to integers (index values)
+        - at INSTANCE level instance lists for fields ONLY
+            * NO enums or msgs
+       
+2012-09-21
+    * implement README.api
+        - this requires that the generated class have an __init__
+            parameter list like
+                (self, field0=default0, field1=default1, ...)
+            where the default for LogEntryMsg's timestamp field is
+            an interesting int(time.time())
+        - look at stackoverflow 1419470/python-init-setattr-on-arguments
+            def __init__(self,*args,**attrs):
+                for idx,val in enumarate(args):
+                    attrs[self.__init_defargs[idx]]=val
+                for key,val in attrs.iteritems():
+                    setattr(self, key, val)
+
+2012-09-20
+    * TFWriter and TFReader seem quite appropriate for de/serializing
+        dynamically generated classes
+
+2012-09-19
+    * msgImp.py needs to be modified to add putter, getter, len, and
+        pLen functions first at the field level, than at the message
+        level
+        - then add roundTripChan that handles LogEntry instances with 
+            random content
+
+2012-09-16
+    * need default protocol with payload
+        - protocol is point-to-point
+        - keep-alives run at this level
+        - see RFC 5246 on TLS
+        - see RFC 5077 on session tickets
+        - see google tech note - tls next protocol - nextprotoneg.html
+        - print README*
+
+    * modify testLogEntry to use ProtoSpec for org.xlattice.upax
+        (so single unused enum and single msgSpec at the top level)
+        - add roundTripToWireFormat 
+
+2012-09-15
+    * need to CHECK CAREFULLY: I don't think that msgSpec {getter,
+        putter,len,pLen} handled nested types correctly
+    * modify testCoreTypes to add test of round-tripping
+        - protoSpec with constituent elements already tested
+        - protoSpec containing top-level enum(s) and top-level
+            msgSpec(s), with latter containing nested enum(s) and
+            msgSpec(s)
+
+2012-09-12
+    * XXX msgSpe.EnumReg{,Entry} must allow nested MsgSpec as well
+    * XXX and so we need at least two types of entries in the registry
+    * XXX and since nested MsgSpecs may contain their own enums and 
+    *   nested MsgSpecs, this apparatus must be recursive 
+    * XXX all of this code overlaps with but is inconsistent with 
+        fieldz/reg/{Registry,_RegEntry,_FieldTypeEntry,_CoreTypeEntry,
+        _DefinedTypeEntry}
+    * WE NEED a registry at the msgSpec level which handles (conceals)
+        locally declared enums and msgSpecs and refers to a higher level
+        registry to handle entries outside of its scope
+    * so given a channel, sending a msgSpec or protoSpec should produce 
+        at the far side a registry which is equal to the registry on the 
+        sending end
+
+2012-09-11
+    * CORRECT THIS: name of enumeration is lost by __repr__, __str__
+        - we put F.fType on the wire, so F._V_ENUM, but the 
+            index of the enum isn't passed
+        - what should appear on the wire is the regID of the enum,
+            which for enum 0 could be F.maxNdx + 1, enum 1 F.maxNdx + 2,
+            and so forth
+        - so enumSpecGetter returns XXX
+
+2012-09-09
+    * CHECK THAT n IS NOT USED FOR INTERNAL FIELD NUMBERS IN CORE TYPES
+        - eg enumSpec name is written as field 0, pairs as field 1
+
+    * testCoreTypes.doRoundTripEnumPairSpec assumes that cType is 
+        zero-based, but actually it needs to be based at F.maxNdx + 1
+
+2012-09-08
+    * dynamically defining a msgSpec type must add a wireLen property
+        - this is used by typed.lMsgLen()
+        - because messages may be nested, wireLen() must be capable of
+            recursion
+
+2012-09-07
+    * all types (field, core, dynamic) need len funcs which are 
+        added to the registry
+        - add field lenFuncs to registry                                # DONE
+        - add core lenFuncs
+
+2012-09-06
+    * need putters and getters for core types (FieldSpec, MsgSpec,
+        EnumSpec, EnumPair, ProtoSpec)
+    * implement and debug testSolo, which sends the msgSpec Solo down
+        a channel followed by a single instance of Solo
+    * FIX: FieldSpec constructor should take index of field type,
+        is being passed string instead.  Well, REVIEW anyway
+    * REVIEW decision to drop vInt32/64; should we distinguish int32/64
+        which may be negative from sInt32/64 which should be zigzagged?
+
+2012-09-04
+    * add support for what Protobuf calls packed types; we use this 
+        at the core level, with Enums (which are *), EnumPairs (+), 
+        and fields (+).  
+
+2012-09-03
+    * add required+default stanza to testBigTest.bigTest message type
+    * add optional+default stanza to bigTest 
+    * add nested message type as required field
+    * add nested message type as optional field
+    * add separately-declared message type as required field
+    * add separately-declared message type as optional field
+    * add nested EnumSpec
+    * add separately-declared EnumSpec
+
+    * rough this out in TEST_CORE.PY
+        - first step is coding up core.bootstrap(), which creates type
+            objects from declarations in org.xlattice.fieldz.core.*
+
+    * devise a protocol sufficient for exercising the types declared
+        in bigTest.xlgo
+        - the protocol declaration can and should live in that file
+        - call the protocol bigProto
+        - the file will eventually be moved to 
+            specs/org/xlattice/fieldz/test/bigProto
+
+    * verify that the entire protocol can be round-tripped to and 
+        from wire format
+
+    * after testing defaults in testBigTest, modify testTFWriter
+        to put on the wire and read back an instance of bigTestMsg
+        - first with only with required fields (exercising defaults)
+        - then with optional, exercising defaults, exercising defaults
+        - then with optional/repeated (*)
+        - then with required/repeated (+)
+
+    * having TFBuffer subclass WireBuffer causes considerable 
+        confusion 
+        - need to test behavior more carefully
+        - specifically  check for use of raw bytearrays where WireBuffer 
+            should be used instead and vice-versa
+
+2012-09-02
+    * devised new WireBuffer in raw.py, hacked this into typed.py
+        and testTFWriter.py; code needs some thought and cleaning
+        - but tests now succeed
+
+    * typed.putNext needs to be completely checked to make sure
+        that WireBuffer.reserver(count) is called before any actual
+        writes to the WireBuffer
+    * "Existing code must be modified to EITHER raise an exception OR
+        automatically extend a buffer being written to that isn't long
+        enough." (from 08-16)
+
+    * WireBuffer.copy() is probably never used, possibly should be
+
+    * Add in WireBuffer.limit back in, set this when finished 
+        writing, use it when reading to know where to stop
+
+    * rough out fieldzSpecc, a front end to the spec compiler           * DONE
+        - -s option identifies spec directory                           * DONE
+        - need a sensible default                                       * DONE
+        - output is file or files holding protocol in wire format
+            * these are stored in Udir
+        - map from timestamped qualified protocol name to Udir is 
+            in U/L
+
+    * parser should write into a buffer initially calloc'ed to say
+        4 KB and then doubled in size whenever it would reach its
+        end.  See 08-16 and 08-19 notest.  raw.py writes should be 
+        to the same kind of buffer.  Call this a WireBuffer?  Need
+        functions accurately predicting the size of items written
+        - implement testWireBuffer.py
+        - testTFWriter must be edited to use WireBuffers
+        - then anything else writing to such buffers
+        - raw.py should assume that all buffers are WireBuffers
+        - WireBuffer class can live in fieldz/__init__.py
+
+    * all write methods in raw.py must be altered to verify that there
+        is enough room in the buffer to perform the operation
+        - incomplete changes HAVE MADE CODE INCORRECT 
+            * fix testWireBuffer.py 
+            * fix testTFWriter.py 
+
+    * unittest{,_import}.xlgo are supposed to test all possible
+        variants of message and enum specs; this needs to be merged
+        into testTFWriter
+
+2012-09-01
+    * src/google/protobuf/descriptor.proto                              # DONE
+    * print out test_util.py                                            # DONE
+        - and emulate test_util.py        
+    * probably also need google/protobuf/{unittest_import_pb2,          # DONE
+        unittest_pb2}                              XXX ran out of paper # <<<<
+    * src/google/protobuf/unittest.proto (about 600 LOC)                # DONE 
+
+    * need a couple of tools to convert between Google protobuf syntax 
+        and my *.msgSpec (or is it *.xlgo?)
+
+2012-08-31
+    * look at code.activestate.com/recipes/435880-\
+            automatically-generate-__slots__attribute-for-cla           # DONE
+
+    * protoID = hash of a protocol in canonical wire format,
+        - protocol has an lString qualified name, one assumed
+            to be unique
+        - want a timestamp in the protocol spec as an vuInt64,
+            to be interpreted as unsigned seconds from the epoch
+        - also want enumIDs of constituent enumSpecs (hashes,
+            not names)
+        - also want msgIDs of constituent msgSpecs (hashes,
+            not names)
+
+    * enumID  = hash of the enumSpec in canonical wire format
+        - the wire format begins with an lString simple name
+        - this is followed by a possibly qualified protocol name
+        - the rest of the enumSpec consists of a count, a vuInt32,
+            followed by that many lStrings
+
+    * msgID   = hash of the msgSpec in canonical wire format
+        - this begins with a simple name, an lString
+        - this is followed by a possibly qualified protocol name
+        - this is followed by a field count, a vuInt32
+        - and this is followed by that many fieldSpecs in wire
+            form
+        - MUST HAVE A TOOL which confirms that the wire form 
+            is congruent with the string form
+
+    * differentiate what we can call channels from connections
+        - a channel running one protocol can be contained within
+            a channel running another
+            * typically a complex protocol will be contained within
+                a very simple one; for example the outer protocol
+                might be my RSA-negotiated AES session
+    * assume that protocols can succeed one another on the same
+        channel: for example, the first phase of any communication
+        is likely to be the negotiation of the protocol to be used
+
+    * minimal first phase outer protocol is simply nothing: the 
+        client assumes that the server uses some specific protocol
+        and just sends whatever the server expects
+
+    * minimal first phase inner protocol for my purposes: client sends 
+        protoID, server replies OK or sends the same protoID (meaning
+        'I accept the proposed protocol')
+
+    * need registry
+        - registry is  associated with channels, not connections
+            - a channel may of course be associated with a connection
+        - registry needs to be associated with one or more Us
+        - we need an ftLog that lists hash-->{proto,enum,msg}Spec in
+            canonical wire format
+        - it should cause no harm, just delay, if items are missing
+            from the log (we assume that anyone proposing to use a
+            protoID/enumID/msgID has a copy of the relevant spec in
+            wire format, or can generate such a copy (one with the
+            same hash)
+        - first phase inner protocol has the primitives necessary 
+            for agreeing on a protocol; these will include PUT and GET 
+
+    * we will need such a registry at both ends of every connection
+
+    * possibly use cuckoo hash for the registry
+        - justification would be speed, but that is irrelevant in 
+            the near term
+
+2012-08-31 (was -22)
+    * need to test vBool encode/decode
+    * need to test vEnum encode/decode
+    * also need to test fixed len 32/64 bit real values 
+            (fFloat/fDouble)
+
+2012-08-30
+    * print out
+        stackoverflow.com/questions/100003/\                            # DONE
+                            what-is-a-metaclass-in-python
+        and the base.py referenced therein                              # DONE
+        and locate protobuf google/protobuf/reflection.py               # DONE
+
+    * setattr(__builtins__, 'foo', 42) works, but see stackoverflow 1184016
+
+2012-08-28
+    * FIX QEnum defined in fieldz/enumSpec.py, where it is a subclass
+        of SimpleEnum, defined in fieldz/core.py; I am trying to pull
+        it in with import fieldz.enumSpec as Q; names are wrong but
+        should work - but doesn't.  Works if normal import used, with
+        instance explicitly created.
+
+    * allow more than one EnumSpec to be associated with a MspSpec -
+        a FieldSpec, for example, has two enums associated with it,
+        one for quantifiers and one for field types.  Also allow EnumSpecs
+        to be defined and referenced at the protocol level.
+    * consider implementing in org.xlattice.fieldz.core level QEnum and
+        FTypeEnum (or some such names) for use in MsgSpecs
+    * "EnumSpec implementation should be fixed to allow symbols to map
+        to arbitrary values (well, arbitrary integers)
+        - "fType{Name,Ndx} should be converted to use an enum
+        - "when we do this, it will make writing WireMsgSpec{Parser,Writer}
+            much easier"
+    * fiddle with an enumSpec.py package containing a SimpleEnum class
+        that QEnum can derive from
+    * the names and values now in FieldTypes become a specific enumeration
+        used in a number of places and so presumably should be represented
+        in specs/org/xlattice/fields/core, say as FieldTypeEnum.<something>
+
+
+2012-08-27
+    * - fix fTypeName() and fTypeNdx for lMsg fields, which
+        definitely need both the type (lMsg) and the name (eg logEntry)
+
+    * think about adding fieldNbr to FieldSpec.__init__
+
+    * using WireMsgSpec{Parser,Writer} must prove we can parse and round-trip
+            fieldz/specs/org/xlattice/fieldz/core/*
+        - __init__() for these two classes must specify a buffer
+        - it will be absolutely necessary to track the buffer size (and
+            write and read back exactly that many bytes to/from the wire
+    * msgID is either qualified name (ie, protocl + '.' + name) or hash
+        of canonical string form or a unique ID agreed when the connection
+        is opened
+
+    * files in specs/org/xlattice/fieldz/core need to be canonicalized
+        and then added to losaltos:~jdd/tarballs
+
+2012-08-25
+    * copy anything of value from testTypedFields into testTFWriter and
+        then just drop testTypedFields.py
+    * implement {String,Wire}MsgSpec{Parser,Writer} XXX
+        - writers are easier
+
+2012-08-24
+    * add disk I/O to testLogEntry (see 08-16)
+    * need code to serialize a MsgSpec and a utiltiy to create a MsgSpec
+        from that serialization
+        - see fieldz/example.msgSpec
+        - must allow dotted msgSpec names
+        - should permit optional field numbers (which in effect allows us
+            to treat some fields as obsolete; we ignore these when
+            deserializing)
+        - must support comments and ignore blank lines
+        - need to handle embedded messages sensibly
+    * THIS IS CONFUSED.  We need a way to put message and protocol specs
+        on the wire.  This is one sort of serialization.  And we need a
+        human-readable serialization, which is what is in example.msgSpec.
+        It makes every bit of sense to require that the wire serialization
+        for message and protocol specs conform to human-readable specs
+        in say fieldzMsg.msgSpec and fieldzProto.msgSpec.  Neither of
+        these identifies a protocol, an ordering upon the serializations.
+        Call the human-readable things *.msgSpec and their serializations
+        *.wireSpec.  Then the first order of business is to produce
+            MsgSpecParser:   *.msgSpec  --> msgSpecOM
+            MsgSpecWriter:   msgSpecOM  --> *.msgSpec
+            WireSpecParser:  *.wireSpec --> msgSpecOM
+            WireSpecWriter:  msgSpecOM  --> *.wireSpec
+        The names on the left are those of Python classes.  The utility
+        wrapping MsgSpecParser and WireSpecWriter is msgSpecCompiler.
+        msgSpecDecompiler wraps WireSpecParser and MsgSpecWriter.
+
+    * need utility to generate Python class(es) from MsgSpec; example will
+        be LogEntry; call it pyXLMsgGen :-)
+    * MsgSpec is part of a protocol spec
+        - need ProtoSpec serialization, class spec, utility/ies for
+            generation, and so forth
+
+2012-08-19
+    * Need to associate an end to each buffer.  We require
+            offset < end
+        When the buffer is being written, end is automatically
+        incremented.  Model is ByteBuffer in Java.
+
+2012-08-16
+    * Build a test machine (block of software) that will read and write
+        logEntries using fieldz.  The standard use case is
+        (1) the log is read and parsed, creating a list of logEntries
+        (2) a number of logEntries are then accepted and added to the
+            in-memory list
+        (3) the log is written back to disk, flushed, and closed
+
+    * A variant
+        (a) opens the log in append mode
+        (b) writes one or more log entries to an in-memory buffer
+        (c) flushes and closes it
+
+    * esync has on the order of 3*10^6 entries
+        - performance must be reasonable
+        - it must be possible to recover from file corruption
+
 

@@ -1,0 +1,11 @@
+# fieldz/logEntry.msgSpec
+
+protocol org.xlattice.upax
+
+logEntry:
+    timestamp  fInt32       # 0: seconds from epoch
+    key        fBytes20     # 1: content key
+    nodeID     fBytes20     # 2: whodunnit
+    src        lString      # 3: arbitrary contents; ASCII or unicode
+    path       lString      # 4: POSIX path
+

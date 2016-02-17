@@ -1,0 +1,8 @@
+# dev/py/fieldz/specs/org/xlattice/fieldz/core/EnumSpec
+
+protocol org.xlattice.fieldz.core
+
+message EnumSpec
+    name    lString
+    pairs   EnumPair+               # one or more
+

@@ -1,0 +1,7 @@
+# dev/py/fieldz/specs/org/xlattice/fieldz/core/EnumPair
+
+protocol org.xlattice.fieldz.core
+
+message EnumPair
+    sym     lString
+    value   vuInt32

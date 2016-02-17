@@ -1,0 +1,177 @@
+#!/usr/bin/python
+
+# ~/dev/py/upax/fieldzSpecc
+
+import os, re, sys, time
+from argparse   import ArgumentParser
+
+import u, upax
+from fieldz import __version__, __version_date__
+
+import fieldz.compiler
+
+# PATs AND REs ######################################################
+
+def doWhatever(args):
+    noChanges   = args.noChanges
+    uDir        = args.uDir
+    verbose     = args.verbose
+
+    logDir      = args.logDir       # XXX A DIFFERENT LOG 
+
+    s       = upax.BlockingServer(uDir)
+    upaxLog = s.log
+    if verbose:
+        print "there were %7u files in %s at the beginning of the run" % (
+                len(upaxLog), uDir)
+
+    src = args.pgmNameAndVersion
+
+    def parseSpecFile(pathToFile):
+        lines = []
+        with open(pathToFile,'r') as f:
+            line = f.readline()
+            while line:
+                print ":: " + line,         # DEBUG
+
+                lines.append(line)
+                line = f.readline()
+
+        pass
+
+    def walkSpecsTree(dir):
+        """ walk the specs tree, parsing whatever we find """
+        files = os.listdir(dir)
+        files.sort()                            # in place
+        for file in files:
+            if file.startswith('.'):            # eg .svn
+                print "skipping '%s'" % file
+                continue
+            pathToFile  = os.path.join(dir, file)
+            if os.path.isdir(pathToFile):
+                walkSpecsTree(pathToFile)
+            elif pathToFile.endswith('.xlgo'):
+                parseSpecFile(pathToFile)
+            else:
+                print "don't recognize    '%s'" % pathToFile
+
+#           hash        = u.fileSHA1(pathToFile) 
+#           if noChanges:
+#               if verbose:     print 'would add %s %s' % (hash, pathToFile)
+#           else:
+#               s.put (pathToFile, hash, src)   # GEEP
+
+    walkSpecsTree(args.inDir)
+
+    if verbose:
+        print "there are  %7u files in %s at the end of the run" % (
+                len(upaxLog), uDir)
+    s.close()
+
+def main():
+
+    pgmNameAndVersion   = "fieldzSpecc v%s %s" % (
+                                __version__, __version_date__)
+    timestamp           = "%04d%02d%02d-%02d%02d%02d" % time.gmtime()[:6]
+
+    # -- program defaults -------------------------------------------
+
+    # -- check for config file --------------------------------------
+
+    # -- parse the command line -------------------------------------
+    # see docs.python.org/library/argparse.html 
+    parser = ArgumentParser('post new files in a directory into Upax')
+    
+    parser.add_argument('-e', '--ec2Host',      action='store_true', 
+            help='set if machine is in EC2')
+
+    parser.add_argument('-i', '--inDir',       default='specs', 
+            help='path to input directory, default = specs/')
+
+    parser.add_argument('-j', '--justShow', action='store_true',
+            help='show args and exit')
+
+    parser.add_argument('-L', '--logDir',       default='logs', 
+            help='path to log directory, default = logs/')
+
+    parser.add_argument('-t', '--showTimestamp', action='store_true',
+            help='show run timestamp')
+
+    # just the base name (usually Upax or Upax0) we will fix this up below
+    parser.add_argument('-u', '--uDir',       default='Upax', 
+            help='base name of  U/ directory, default to Upax')
+
+    parser.add_argument('-T', '--testing', action='store_true',
+            help='test run - write to ./uDir')
+
+    parser.add_argument('-V', '--showVersion', action='store_true',
+            help='show version number and date')
+
+    parser.add_argument('-v', '--verbose', action='store_true',
+            help='talk a lot')
+
+    parser.add_argument('-z', '--noChanges', action='store_true',
+            help="don't actually write anything to disk")
+
+    args = parser.parse_args()      # a Namespace object
+
+    # -- fixups -----------------------------------------------------
+    args.pgmNameAndVersion = pgmNameAndVersion
+    if args.testing:    
+        # args.inDir = 'testIn'
+        pass
+    args.timestamp      = timestamp
+
+    # -- sanity checks ----------------------------------------------
+    if not os.path.exists(args.inDir):
+        print "input directory '%s' does not exist" % args.inDir
+        sys.exit(1)
+
+    # fixups --------------------------------------------------------
+    args.pgmNameAndVersion = pgmNameAndVersion
+    if args.uDir and args.uDir[-1] == '/':
+        args.uDir = args.uDir[:-1]          # drop any trailing slash
+    
+    if args.testing:
+        args.uDir = 'uDir'                 # a local directory
+    elif args.ec2Host:
+        args.uDir = os.path.join('/vol', args.uDir)
+    else:
+        args.uDir = os.path.join('/var', args.uDir)
+
+    if not os.path.exists(args.logDir):
+        # XXX can't handle .. in path
+        os.makedirs(args.logDir)
+
+    # -- do it ------------------------------------------------------
+    if args.verbose or args.showVersion or args.justShow:
+        print args.pgmNameAndVersion
+    if args.showTimestamp:
+        print 'run at %s GMT' % timestamp   # could be prettier
+    else:
+        print                               # there's a comma up there
+
+    if args.justShow or args.verbose:
+        print 'inDir            = ' + str(args.inDir)
+        print 'justShow         = ' + str(args.justShow)
+        print 'logDir           = ' + str(args.logDir)
+        print 'noChanges        = ' + str(args.noChanges)
+        print 'showTimestamp    = ' + str(args.showTimestamp)
+        print 'showVersion      = ' + str(args.showVersion)
+        print 'testing          = ' + str(args.testing)
+        print 'timestamp        = ' + str(args.timestamp)
+        print 'uDir             = ' + str(args.uDir)
+        print 'verbose          = ' + str(args.verbose)
+        
+    if not args.justShow:
+        lock = u.ULock(args.uDir)
+        try:
+            if lock.getLock():
+                doWhatever(args)
+            else:
+                print 'could not get lock on %s' % args.uDir
+        finally:
+            lock.releaseLock()
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,7 @@
+cd ~/dev/py/fieldz
+rm -rf build/*
+
+pySloc -v $@ \
+    bash:countem bash:installit     \
+
+

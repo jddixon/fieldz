@@ -1,2 +1,275 @@
-py/fieldz/CHANGES
+~/dev/py/fieldz/CHANGES
+
+v0.10.0
+    2016-02-16
+        * converted to Python3, made ready for github               SLOC 4801
+
+v0.9.2
+    2012-12-24
+        * added vuInt32 length field in logEntry in examples
+    2012-12-26
+        * dropped '0xff&' from writeRawB160 serialization           SLOC 4814
+v0.9.1
+    2012-12-19
+        * MSG_NAME.FIELD_NAME now returns value of field,           SLOC 4793
+            at least for single-valued Q_REQUIRED fields
+v0.9.0
+    2012-12-19
+        * MetaMessage renamed MetaMsg for consistency               SLOC 4799
+v0.8.0  
+    2012-12-18
+        * uncommented and debugged part of testLittleBig            SLOC 4754
+        * changed makeMsgClass to use msg name not msgSpec          SLOC 4773
+        * added MsgImpl.writeStandAlone(chan)                       SLOC 4793
+v0.7.0
+    2012-12-18
+        * testRingDataProto.py succeeds                             SLOC 4739
+    2012-12-15
+        * ProtoSpec and MsgSpec now subclass SuperSpec              SLOC 4671
+        * interface to makeMsgClass changed to allows recursion
+        * interface to makeFieldClass changed to allow recursion    SLOC 4674
+v0.6.1
+    2012-12-14
+        * MsgImpl.{read,write}() work                               SLOC 4660
+v0.6.0
+    2012-12-12
+        * changed raw.py interfaces: 'buf, offset' => 'chan'        SLOC 4661
+        * changed typed.py interfaces: 'buf, pos' => 'chan'   
+        * changed msgSpec.py interfaces: 'buf, pos' => 'chan'       SLOC 4656 
+    2012-12-11
+        * determined need fieldNbr/regID as parameter to 
+            MsgImpl.{put,get}ter, MsgSpec.c{Put,Get}Funcs           SLOC 4600
+    2012-12-10
+        * Channel sets limit = position = 0 at initialization
+        * dropped pVarint..pB256 properties from raw.py             SLOC 4557
+        * added wireLen() and pWireLen() to MsgImpl class           SLOC 4572
+            - testZoggerySerialization.py succeeds                  SLOC 4579
+v0.5.5
+    2012-12-09
+        * added Channel.clear(), which sets limit and postion to 0  SLOC 4573
+v0.5.4
+    2012-12-09
+        * added Channel.flip, meaning limit:=position; position:0   SLOC 4565
+v0.5.3
+    2012-11-29
+        * all 'import StringIO.StringIO' => 'from io import StringiO'
+        * this forces all protocols to be unicode                   SLOC 4554
+    2012-11-21
+        * scrapped elaboration of testReg, added skeletal
+            testZoggerySerialization.py                             SLOC 4542
+        * renamed {putTo,getFrom}Chan {ge,pu}tter
+    2012-11-20
+        * testRingDataProto.testCaching works for outerMsg          SLOC 4448
+        * stubbed elaboration of testReg.py                         SLCO 4488
+    2012-11-19
+        * testRingDataProto.testCaching works for innerMsg          SLOC 4439
+v0.5.2
+    2012-11-19
+        * problems in generating unique nodeIDs solved              SLOC 4380
+    2012-11-15
+        * added skeletal testProtoSpec.testNestedMsgs which tests
+            msgSpecs nested 3 deep as well as nested enums          SLOC 4304
+        * testRingData.testProtoSpec succeeds                       SLOC 4308
+            - rearranged protoSpec to embed message defs; tests OK  SLOC 4321
+v0.5.1
+    2012-11-15
+        * lookup of enum name succeeds at both msg and proto 
+            levels (test{LogEntry,BigTest,ProtoSpec}.py             SLOC 4235
+v0.5.0
+    2012-11-14
+        * fixed MsgSpec() parameter list in testLogEntry.py         SLOC 4139
+        * enum Baz at message level correctly assigned regID        SLOC 4171
+    2012-11-13
+        * resolved circular import fieldz.reg                       SLOC 4068
+        * testLogEntry.py succeeds using nodeReg and protoReg       SLOC 4092
+        * testBigTest.py ditto
+    2012-11-12
+        * changed parameter lists to ProtoSpec.__init__ and
+            MsgSpec.__init__ -- both now name and parent
+            - other elements added to these during parse
+        * testReg succeeds (but is running bootstrap on NodeReg)    SLOC 4035
+    2012-11-11
+        * stubbed testRingDataProto.py against renamed
+            ringDataProto.py
+        * minor fixes to test{MsgSpec,ProtoSpec,Reg}.py             SLOC 3882
+        * included fieldzSpeccc in pySloc count (!)                 SLOC 3999
+    2012-11-10
+        * added ringData.xlgo, did some minor cleanup               SLOC 3815
+    2012-09-24
+        * added testLittleBig.py; serialization of required
+            fields works (except lMsg)                              SLOC 3708
+v0.4.4
+    2012-09-24
+        * added PACKED_VARINT_TYPE but haven't coded it up          SLOC 3584
+    2012-09-23
+        * completed coding of tGetFuncs                             SLOC 3511
+        * testMsgImpl serializes LogEntryMsg to channel,
+            reads it back correctly (__eq__ works)                  SLOC 3557
+        * adding littelBigTest protocol to testMsgImpl              SLOC 3581
+v0.4.3
+    2012-09-22
+        * successfully created logEntryMsg dynamically              SLOC 3377
+        * can write to chan, but getFromChan is incomplete          SLOC 3466
+    2012-09-20
+        * added hooks for message and field class caching           SLOC 3314
+        * testMsgImpl.testCaching succeeds                          SLOC 3331
+            - msg class cache keyed by PROTOCOL.MESSAGE_NAME
+            - field class cache keyed by same .FIELD_NAME
+v0.4.2
+    2012-09-19
+        * msgImpl.py, testMsgImpl.py now test Field generation
+        * crude but working makeMsgClass, makeFieldClass            SLOC 3306
+    2012-09-18
+        * all tests but testReg.py now succeed
+        * testGenEnum.py tests primitive enum metaclass             SLOC 3057
+        * altered code to default fieldNbr to -1; msgSpec
+            now assigns fieldNbrs correctly; testBigTest 
+            verifies that fieldNbrs are increasing and unique
+        * stubbed fieldz/fieldz/msgImpl.py and testMsgImpl.py       SLOC 3168
+v0.4.1
+    2012-09-15
+        * bigTest.xlgo renamed to *.py so we can import as 
+            string
+        * StringProtoSpecParser now works with nested 
+            msgSpecs and enumSpecs; limited testing succeeds        SLOC 2994
+    2012-09-14
+        * added indentedStr() to all Spec classes, reworked
+            __str__ and __repr__ to use                             SLOC 2673 
+        * dropped protocol line from MsgSpec
+        * added simpleProtocol.py and testProtoSpec.py              SLOC 2824
+v0.4.0
+    2012-09-12
+        * moved what are now called MsgReg and EnumEntry
+            into fieldz/reg/__init__.py                             SLOC 2592
+        * wrote stub of testReg.py; requires support for 
+            empty messages (ok, keepalive, and such)                SLOC 2655
+        * began working on StringProtoSpecParser                    SLOC 2668
+
+v0.3.6
+    2012-09-12
+        * EnumReg works buf doesn't insert enum name in
+            field.__{repr,str}__                                    SLOC 2535
+    2012-09-11
+        * testCoreTypes round-trips MsgSpec without enum            SLOC 2390
+        * change MsgSpec to allow multiple nested enums             SLOC 2477
+        * moved StringMsgSpecParser into fieldz.parser              SLOC 2483
+        * can use name of nested enum in field definition           SLOC 2492
+        * EnumReg, EnumRegEntry coded up, not yet wired in          SLOC 2528
+    2012-09-10
+        * split length functions, so instead of returning a 
+            2-tuple, Len() now returns the byteCount, and
+            PrefixedLen() returns that plus length of header etc
+        * testCoreTypes round-trips FieldSpec                       SLOC 2323
+v0.3.5
+    2012-09-10
+        * coreType length functions now return 2-tuple
+            (byteCount, totalLen) - this is inconsistent 
+            with typed field length functions
+        * testCoreTypes round-trips EnumSpec                        SLOC 2267
+    2012-09-09
+        * testCoreTypes round-trips EnumPairSpec                    SLOC 2214
+v0.3.4
+    2012-09-08
+        * added lenFunc tests to testFieldTypes;                    SLOC 2072
+        * altered EnumSpec definition to add a name and replace the
+            list of symbols with a list of symbol-value pairs
+            - EnumSpec defined in terms of EnumPairSpec, symbol 
+                plus value
+        * added {put,get,len}Funcs dispatch tables to       
+            fieldz.msgSpec; most functions are stubbed;             SLOC 2123
+    2012-09-07
+        * added and implemented fieldz/types.lenFuncs;              SLOC 2016
+v0.3.3
+    2012-09-06
+        * RegEntry and three subclasses defined: _{Field,Core,Defined}TypeEntry
+        * testReg.py extended to test some of this functionality
+v0.3.2
+    2012-09-05
+        * stubbed testSolo.py, testReg.py
+        * dropped redundant vInt32/64 (already have v{u,s}Int{32,64})
+        * began work on dispatch tables in typed.py (putFuncs, getFuncs)
+            - varints now succeed through dispatch table; all tests OK
+            - getter dispatch tables not complete, reg package      SLOC 1906
+                a mere sketch
+v0.3.1
+    2012-09-04                                                      SLOC 1760
+        * merged fieldz/protoSpec.py into msgSpec.py
+        * added fieldz/reg and Registry stub
+        * changed FieldSpec quantifier arg to int (was string)
+v0.3.0
+    2012-09-03
+        * can handle field numbers in @N form, automatically assign
+            numbers where not explicitly assigned
+    2012-09-02
+        * added specs/org/xlattice/upax/logEntry.xlgo
+        * skeletal fieldzSpecc compiler (walks specs/)
+        * replaced simple bytearray in TFBuffer with WireBuffer
+        * 1605     SLOC at end of day (excluding *.xlgo and such)
+v0.2.4
+    2012-09-02
+        * added fieldz/compiler/ stub and specs/org/xlattice/fieldz/core/*
+        * sketched out near-term direction (mostly in TODO)
+v0.2.3
+    2012-08-30
+        * introduced SimpleEnumWithRepr, superclass to FieldTypes, in core.py
+    2012-08-29
+        * introduced core.py, SimpleEnum
+        * reorganized fieldTypes.py using SimpleEnum,     SLOC just under 1400
+v0.2.2
+    2012-08-29
+        * dropped dummy field 0 in MsgSpec; field numbers are now zero-based
+        * added fieldTypes.py, moving FieldTypes there from __init__.py
+            - reduced                                       SLOC to about 1420
+    2012-08-27
+        * can parse MsgSpec in string form to create object tree, use 
+            __repr__() to convert that back to canonical form, then 
+            StringMsgSpecParser.parse() that and confirm equals() the 
+            object tree.  Some bits skeletal, but it works.
+            - there are equals() methods on {Enum,Field,Msg}Spec
+            - about 1450     SLOC
+v0.2.1
+    2012-08-27
+        * distinguished fTypeName() and fTypeNdx()
+        * added stdFieldType{Name,Ndx}
+        * began dropping use of FieldTypes class
+    2012-08-25
+        * added org/xlattice/fieldz/core/*.msgSpec (not in sloccount)
+v0.2.0
+    2012-08-24                                                      SLOC 1230
+        * all tests now succeed
+        * testTF{Buffer,Reader,Writer} have been merged into testTFWriter.py
+        * skeletal {Msg,Wire}Spec{Parser,Writer}
+v0.1.7
+    2012-08-23
+        * added FieldSpec; testMsgSpec works with appropriate changes
+        * testTFWriter succeeds with most types implemented (so putNext()
+            and getNext() work)
+v0.1.6
+    2012-08-22
+        * all varint types other than _V_BOOL and _V_ENUM now tested
+            in testTFWriter.py and work; test appends to buffer and
+            immediately confirms validity
+        * fundamental error in approach: type written is primitive type
+            - higher level type won't fit in three-bit field
+            - so both ends need a message spect to understand how to 
+                interpret primitive type
+        * added MsgSpec; test succeeds
+            - but testTFWriter fails 
+    2012-08-21
+        * varints and zig-zag encoding tested and work
+v0.1.4
+    2012-08-20
+        * added TFBuffer, TFReader, TFWriter and associated tests;
+            tests are nowhere near complete
+v0.1.3
+    2012-08-17
+        * put raw constants and methods into fieldz/raw.py
+            - changed tests accordingly, all work
+        * added fieldz/typed.pw as a layer above raw fields
+v0.1.2
+    2012-08-16
+        * working varint, fixed len 32- and 64-bit, var len bytestring
+            and associated tests
+        * initial svn import
+
 

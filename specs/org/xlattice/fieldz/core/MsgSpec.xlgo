@@ -1,0 +1,8 @@
+# dev/py/fieldz/specs/org/xlattice/fieldz/core/MessageSpec
+
+protocol org.xlattice.fieldz.core
+
+message MsgSpec
+    protocol    lString         # may be dotted
+    enum        EnumSpec*       # zero or more enums
+    fields      FieldSpec+      # one or more fields

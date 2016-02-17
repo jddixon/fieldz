@@ -1,0 +1,24 @@
+# fieldz/testAll
+
+./testBigTest.py
+./testCoreTypes.py
+./testFieldTypes.py
+./testFixedLen.py
+./testGenEnum.py
+./testLenPlus.py
+./testLittleBig.py
+./testLogEntry.py
+./testMsgImpl.py
+./testMsgSpec.py
+./testProtoSpec.py
+./testReg.py
+./testRingDataProto.py
+./testSimpleEnum.py
+./testSolo.py
+./testTFWriter.py
+# OBSOLETE:
+# ./testTypedFields.py
+./testVarint.py
+./testWireBuffer.py
+./testZigZag.py
+./testZoggerySerialization.py

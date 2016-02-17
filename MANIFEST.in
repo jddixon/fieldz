@@ -1,0 +1,21 @@
+# see http://docs.python.org/distutils/sourcedist.html
+
+include netDistrib.conf
+include CHANGES README* TODO MANIFEST.in
+include test*.py 
+include *.xlgo
+exclude unittest*
+
+# this works 
+include specs/org/xlattice/fieldz/core/*
+include specs/org/xlattice/upax/*
+
+# this does not work
+# recursive-include specs/
+# this works
+recursive-include fieldz  *.py
+
+global-exclude junk* .*swp 
+prune   .svn
+
+

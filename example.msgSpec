@@ -1,0 +1,68 @@
+# fieldz/example.msgSpec
+
+# OLDER VERSION -----------------------------------------------------
+# MUST allow dotted message name
+some.type.of.msg:       # msg name, field 0, stored as an lString
+    # must provide for optional field numbers; require that these be
+    # unique and ascending positive numbers
+    a: fInt32           # 1: a required 4-byte field
+    b: vuInt64?         # 2: an optional unsigned 64-bit integer, a varint
+    c: lString+         # 3: a possibly repeating ASCII string field,
+    d: vInt32*          # 4: zero or more 32-bit ints, as varints
+    e: lBytes           # 5: varint-encoded len followed by that many bytes
+    f: vsInt32          # 6: zig-zag encoded 32-bit int,
+    g: lMsg 'embedded.msg.name'     # 7: a required field
+
+
+# 2012-08-24 VERSION ------------------------------------------------
+
+# If this is in zoggery/msgX.msgSpec, the package name could be assumed to 
+# be the base (?) directory name by default.  
+
+protocol org.xlattice.zoggery  # protocol name, same as Java package 
+
+import core             # all core message types imported
+from pickle import jar  # comma-separated list; this means import pickle.jar
+
+message msgX:           # qualified name will be 'org.xlattice.zoggery.msgX'
+    # By default field numbers are implicit.  The message name is in field 
+    # zero.
+    a fInt32            # field 1: required 
+    b vuInt64?          # 2: optional
+    c lString+          # 3: require one or more instances of
+    d vInt32*           # 4: permit zero or more instances of
+    # The 'at-N' construct increments the field number.  No fields with
+    # any skipped field numbers will be output and any such fields will
+    # be silently ignored on input
+    e lBytes@7          # 7: any instances of fields 5 and 6 skipped
+    f vsInt32           # 8:
+    x xyz               # 9: not qualified, so org.xlattice.zoggery.xyz
+    y core.x            # 10: message type x from protocol core
+
+FIELD TYPES
+    The second word in a message spec line is either the name of a field
+    type or the name of a message type.  In the latter case the field 
+    will be encoded as an lMsg of that type.
+
+DEFICIENCIES:
+    * There is no way to specify alternative field encodings.  I would 
+        like to be able to say, for example, that a given field might 
+        be an lString name or a vuInt32 registry index.  You could write this
+            x vuInt32 @ 15 | lString 
+        which I would interpret as meaning that the field 15, corresponding 
+        to variable x, is EITHER encoded as a vuInt32 or OR could be an 
+        lString marked as field 16; one or the other would be required but 
+        both would not be permitted to occur simultaneously.
+    * We don't say how a message type is identified on the wire; the 
+        simplest way to do is is to use an implicit message number 
+        (the 3rd message defined is identified as msg type 3).   Or
+        every serialization could begin with the qualified message name.
+    * We don't allow for protocol identifiers version numbers.
+        - previously I have assumed that the protocol ID is the content
+            key for the protocol spec
+
+It seems likely that it would be convenient to define basic message types
+('error', 'ok', for example) that might be common to most or all protocols.
+Python would probably prefer that these be in fieldz.core; Java would
+put them in org.xlattice.fieldz.core, I should think
+        
