@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # testTFWriter.py
 import time, unittest
@@ -64,46 +64,46 @@ class TestTFWriter (unittest.TestCase):
         BUFSIZE = 1024
         buffer  = [0]*BUFSIZE
         tfBuf   = TFBuffer(testMsgSpec, BUFSIZE, buffer)
-        self.assertEquals(0,        tfBuf.position)
-        self.assertEquals(BUFSIZE,  tfBuf.capacity)
+        self.assertEqual(0,        tfBuf.position)
+        self.assertEqual(BUFSIZE,  tfBuf.capacity)
 
     def testBufferCreator(self):
         BUFSIZE = 1024
         tfBuf   = TFBuffer.create(testMsgSpec, BUFSIZE)
         self.assertTrue( isinstance( tfBuf, TFBuffer ) )
-        self.assertEquals(0,        tfBuf.position)
-        self.assertEquals(BUFSIZE,  tfBuf.capacity)
+        self.assertEqual(0,        tfBuf.position)
+        self.assertEqual(BUFSIZE,  tfBuf.capacity)
 
     # and these two methods are all that's left of testTFReader.py
     def testReaderCtor(self):
         BUFSIZE = 1024
         buffer  = bytearray(BUFSIZE)
         tfReader   = TFReader(testMsgSpec, BUFSIZE, buffer)
-        self.assertEquals(0,       tfReader.position)
-        self.assertEquals(BUFSIZE, tfReader.capacity)
-        self.assertEquals(BUFSIZE, len(tfReader.buffer))
+        self.assertEqual(0,       tfReader.position)
+        self.assertEqual(BUFSIZE, tfReader.capacity)
+        self.assertEqual(BUFSIZE, len(tfReader.buffer))
 
     def testReaderCreator(self):
         BUFSIZE = 1024
         tfReader   = TFReader.create(testMsgSpec, BUFSIZE)
         self.assertTrue( isinstance( tfReader, TFReader ) )
-        self.assertEquals(0,        tfReader.position)
-        self.assertEquals(BUFSIZE,  tfReader.capacity)
+        self.assertEqual(0,        tfReader.position)
+        self.assertEqual(BUFSIZE,  tfReader.capacity)
 
     # next two are specific to TFWriter
     def testWriterCtor(self):
         BUFSIZE = 1024
         buffer  = bytearray(BUFSIZE)
         tfWriter   = TFWriter(testMsgSpec, BUFSIZE, buffer)
-        self.assertEquals(0,        tfWriter.position)
-        self.assertEquals(BUFSIZE,  tfWriter.capacity)
+        self.assertEqual(0,        tfWriter.position)
+        self.assertEqual(BUFSIZE,  tfWriter.capacity)
 
     def testWriterCreator(self):
         BUFSIZE = 1024
         tfWriter   = TFWriter.create(testMsgSpec, BUFSIZE)
         self.assertTrue( isinstance( tfWriter, TFWriter ) )
-        self.assertEquals(0,        tfWriter.position)
-        self.assertEquals(BUFSIZE,  tfWriter.capacity)
+        self.assertEqual(0,        tfWriter.position)
+        self.assertEqual(BUFSIZE,  tfWriter.capacity)
 
     def doRoundTripField(self, writer, reader, n, fType, value):
         writer.putNext(n, value)
@@ -113,10 +113,10 @@ class TestTFWriter (unittest.TestCase):
 #       self.dumpBuffer(tfBuf)
 #       # END
         reader.getNext()
-        self.assertEquals( n,     reader.fieldNbr )
+        self.assertEqual( n,     reader.fieldNbr )
         # XXX THIS SHOULD WORK:
-        # self.assertEquals( fType, reader.fType    )
-        self.assertEquals( value, reader.value    )
+        # self.assertEqual( fType, reader.fType    )
+        self.assertEqual( value, reader.value    )
         return n + 1
 
     def testWritingAndReading(self):
@@ -134,7 +134,7 @@ class TestTFWriter (unittest.TestCase):
 
         # fields 0: _V_UINT32
         n = self.doRoundTripField(tfWriter, tfReader, n, 'vuInt32', 0x1f)
-        self.assertEquals(1, n)         # DEBUG XXX 
+        self.assertEqual(1, n)         # DEBUG XXX 
 
         # fields 1: _V_UINT32
         n = self.doRoundTripField(tfWriter, tfReader, n, 'vuInt32', 0x172f3e4d)

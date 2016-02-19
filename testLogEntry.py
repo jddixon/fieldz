@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # testLogEntry.py
 import time, unittest
@@ -56,10 +56,10 @@ class TestLogEntry (unittest.TestCase):
 
     def testConstructors(self):
         pSpec = upaxProtoSpec
-        self.assertEquals(protocol,     pSpec.name)
-        self.assertEquals(enum,         pSpec.enums[0])
-        self.assertEquals(leMsgSpec,    pSpec.msgs[0])
-        self.assertEquals(0,            len(pSpec.seqs))
+        self.assertEqual(protocol,     pSpec.name)
+        self.assertEqual(enum,         pSpec.enums[0])
+        self.assertEqual(leMsgSpec,    pSpec.msgs[0])
+        self.assertEqual(0,            len(pSpec.seqs))
 
     def testWritingAndReading(self):
         BUFSIZE = 16*1024
@@ -88,40 +88,40 @@ class TestLogEntry (unittest.TestCase):
         writer.putNext(n, path)
 
         # now read the buffer to see what actually was written
-        self.assertEquals(0,            reader.position)
+        self.assertEqual(0,            reader.position)
 
         reader.getNext()
-        self.assertEquals(0,            reader.fieldNbr)
-        self.assertEquals('fuInt32',    F.asStr(reader.fType))
-        self.assertEquals(t,            reader.value) 
-        self.assertEquals(5,            reader.position)
+        self.assertEqual(0,            reader.fieldNbr)
+        self.assertEqual('fuInt32',    F.asStr(reader.fType))
+        self.assertEqual(t,            reader.value) 
+        self.assertEqual(5,            reader.position)
 
         reader.getNext()
-        self.assertEquals(1,            reader.fieldNbr)
-        self.assertEquals('fBytes20',   F.asStr(reader.fType))
-        self.assertEquals(nodeID,       reader.value)
-        self.assertEquals(26,           reader.position)
+        self.assertEqual(1,            reader.fieldNbr)
+        self.assertEqual('fBytes20',   F.asStr(reader.fType))
+        self.assertEqual(nodeID,       reader.value)
+        self.assertEqual(26,           reader.position)
 
         reader.getNext()
-        self.assertEquals(2,            reader.fieldNbr)
-        self.assertEquals('fBytes20',   F.asStr(reader.fType))
-        self.assertEquals(key,          reader.value)
-        self.assertEquals(47,           reader.position)
+        self.assertEqual(2,            reader.fieldNbr)
+        self.assertEqual('fBytes20',   F.asStr(reader.fType))
+        self.assertEqual(key,          reader.value)
+        self.assertEqual(47,           reader.position)
 
         reader.getNext()
-        self.assertEquals(3,            reader.fieldNbr)
-        self.assertEquals('vuInt32',    F.asStr(reader.fType))
-        self.assertEquals(length,       reader.value)
+        self.assertEqual(3,            reader.fieldNbr)
+        self.assertEqual('vuInt32',    F.asStr(reader.fType))
+        self.assertEqual(length,       reader.value)
 
         reader.getNext()
-        self.assertEquals(4,            reader.fieldNbr)
-        self.assertEquals('lString',    F.asStr(reader.fType))
-        self.assertEquals(by,           reader.value)
+        self.assertEqual(4,            reader.fieldNbr)
+        self.assertEqual('lString',    F.asStr(reader.fType))
+        self.assertEqual(by,           reader.value)
 
         reader.getNext()
-        self.assertEquals(5,            reader.fieldNbr)
-        self.assertEquals('lString',    F.asStr(reader.fType))
-        self.assertEquals(path,         reader.value)
+        self.assertEqual(5,            reader.fieldNbr)
+        self.assertEqual('lString',    F.asStr(reader.fType))
+        self.assertEqual(path,         reader.value)
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # testRingDataProto.py
 
@@ -147,30 +147,30 @@ class TestRingDataProto (unittest.TestCase):
         sOM  = self.makeSOM()
         self.assertIsNotNone(sOM)
         self.assertTrue(isinstance(sOM, M.ProtoSpec))
-        self.assertEquals( 'org.xlattice.pzog.ringData', sOM.name )
-        self.assertEquals(0, len(sOM.enums) )
-        self.assertEquals(1, len(sOM.msgs) )
-        self.assertEquals(0, len(sOM.seqs) )
+        self.assertEqual( 'org.xlattice.pzog.ringData', sOM.name )
+        self.assertEqual(0, len(sOM.enums) )
+        self.assertEqual(1, len(sOM.msgs) )
+        self.assertEqual(0, len(sOM.seqs) )
 
         # OUTER MESSAGE SPEC ----------------------------------------
         msgSpec = sOM.msgs[0]
         field = msgSpec[0]
-        self.assertEquals(field.name,           'hosts')
-        self.assertEquals(field.fTypeName,      'hostInfo')
-        self.assertEquals(field.quantifier,     M.Q_PLUS)
+        self.assertEqual(field.name,           'hosts')
+        self.assertEqual(field.fTypeName,      'hostInfo')
+        self.assertEqual(field.quantifier,     M.Q_PLUS)
 
         # INNER MESSAGE SPEC ----------------------------------------
         msgSpec = sOM.msgs[0].msgs[0]
-        self.assertEquals(msgSpec.fName(0),     'hostName')
-        self.assertEquals(msgSpec.fTypeName(0), 'lString')
-        self.assertEquals(msgSpec.fName(1),     'ipAddr')
-        self.assertEquals(msgSpec.fTypeName(1), 'lString')
-        self.assertEquals(msgSpec.fName(2),     'nodeID')
-        self.assertEquals(msgSpec.fTypeName(2), 'fBytes32')
-        self.assertEquals(msgSpec.fName(3),     'pubKey')
-        self.assertEquals(msgSpec.fTypeName(3), 'lString')
-        self.assertEquals(msgSpec.fName(4),     'privateKey')
-        self.assertEquals(msgSpec.fTypeName(4), 'lString')
+        self.assertEqual(msgSpec.fName(0),     'hostName')
+        self.assertEqual(msgSpec.fTypeName(0), 'lString')
+        self.assertEqual(msgSpec.fName(1),     'ipAddr')
+        self.assertEqual(msgSpec.fTypeName(1), 'lString')
+        self.assertEqual(msgSpec.fName(2),     'nodeID')
+        self.assertEqual(msgSpec.fTypeName(2), 'fBytes32')
+        self.assertEqual(msgSpec.fName(3),     'pubKey')
+        self.assertEqual(msgSpec.fTypeName(3), 'lString')
+        self.assertEqual(msgSpec.fName(4),     'privateKey')
+        self.assertEqual(msgSpec.fTypeName(4), 'lString')
         try:
             msgSpec.fName(5)
             self.fail('did not catch reference to non-existent field')
@@ -194,7 +194,7 @@ class TestRingDataProto (unittest.TestCase):
         Clz0    = makeMsgClass(outerMsgSpec, innerMsgSpec.name)
         Clz1    = makeMsgClass(outerMsgSpec, innerMsgSpec.name)
         # we cache classes, so the two should be the same
-        self.assertEquals(id(Clz0), id(Clz1))
+        self.assertEqual(id(Clz0), id(Clz1))
 
         # test that msg instances created from the same value lists differ
         values      = hostInfoValues()
@@ -208,13 +208,13 @@ class TestRingDataProto (unittest.TestCase):
         dottedName = '%s.%s' % (protoName, innerMsgSpec.name)
         F0    = makeFieldClass(dottedName, fieldSpec)
         F1    = makeFieldClass(dottedName, fieldSpec)
-        self.assertEquals(id(F0), id(F1))           # GEEP
+        self.assertEqual(id(F0), id(F1))           # GEEP
 
         # TEST OUTER MESSAGE ########################################
         Clz2    = makeMsgClass(sOM, outerMsgSpec.name)
         Clz3    = makeMsgClass(sOM, outerMsgSpec.name)
         # we cache classe, so the two should be the same
-        self.assertEquals(id(Clz2), id(Clz3))
+        self.assertEqual(id(Clz2), id(Clz3))
 
         # test that msg instances created from the same value lists differ
         ring        = ringDataValues()  # a list of random hosts
@@ -232,7 +232,7 @@ class TestRingDataProto (unittest.TestCase):
         dottedName = '%s.%s' % (protoName, outerMsgSpec.name)
         F0    = makeFieldClass(dottedName, fieldSpec)
         F1    = makeFieldClass(dottedName, fieldSpec)
-        self.assertEquals(id(F0), id(F1))           # GEEP
+        self.assertEqual(id(F0), id(F1))           # GEEP
 
     # ---------------------------------------------------------------
     def testRingDataProtoSerialization(self):
@@ -249,7 +249,7 @@ class TestRingDataProto (unittest.TestCase):
         # data and, by deserializing it, for creating a second instance.
         chan = Channel(BUFSIZE)
         buf  = chan.buffer
-        self.assertEquals( BUFSIZE, len(buf) )
+        self.assertEqual( BUFSIZE, len(buf) )
 
         # create a message instance ---------------------------------
 
@@ -268,8 +268,8 @@ class TestRingDataProto (unittest.TestCase):
         
         oldPosition = chan.position
         chan.flip()
-        self.assertEquals(oldPosition, chan.limit)
-        self.assertEquals(0,           chan.position)
+        self.assertEqual(oldPosition, chan.limit)
+        self.assertEqual(0,           chan.position)
 
         # deserialize the channel, making a clone of the message ----
         (readBack,n2) = OuterMsg.read(chan, sOM)
@@ -277,7 +277,7 @@ class TestRingDataProto (unittest.TestCase):
 
         # verify that the messages are identical --------------------
         self.assertTrue(outerMsg.__eq__(readBack))
-        self.assertEquals(n, n2)
+        self.assertEqual(n, n2)
 
         # produce another message from the same values --------------
         outerMsg2  = OuterMsg( [ring] )

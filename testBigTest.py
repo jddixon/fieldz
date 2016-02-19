@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # testBigTest.py
 import time, unittest
@@ -33,7 +33,7 @@ class TestBigTest (unittest.TestCase):
         """
         canonicalSpec = m.__repr__()
         # DEBUG
-        print("CANONICAL SPEC:\n" + canonicalSpec)
+        #print("CANONICAL SPEC:\n" + canonicalSpec)
         # END
         p = StringProtoSpecParser( StringIO(canonicalSpec) )
         clonedSpec   = p.parse()

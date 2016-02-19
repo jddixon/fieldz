@@ -3,5 +3,14 @@ rm -rf build/*
 
 pySloc -v $@ \
     bash:countem bash:installit     \
+    not#:MANIFEST.in                \
+    not#:specs/org/xlattice/fieldz/core/EnumPair.xlgo               \
+    not#:specs/org/xlattice/fieldz/core/EnumSpec.xlgo               \
+    not#:specs/org/xlattice/fieldz/core/FieldSpec.xlgo              \
+    not#:specs/org/xlattice/fieldz/core/MsgSpec.xlgo                \
+    not#:specs/org/xlattice/upax/logEntry.xlgo                      \
+    not#:unittest_import.xlgo       not#:unittest.xlgo              \
+    not#:example.msgSpec            \
+    py:fieldzSpecc                  \
 
 

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # testLenPlus.py
 import time, unittest
@@ -45,16 +45,16 @@ class TestLenPlus (unittest.TestCase):
         # first the header (which is a varint) ------------
         (fieldType, fieldNbr2,) = readFieldHdr(chan)
         offset2  = chan.position
-        self.assertEquals(LEN_PLUS_TYPE, fieldType)
-        self.assertEquals(fieldNbr, fieldNbr2)
-        self.assertEquals(lengthAsVarint(fieldHdr(fieldNbr, LEN_PLUS_TYPE)),
+        self.assertEqual(LEN_PLUS_TYPE, fieldType)
+        self.assertEqual(fieldNbr, fieldNbr2)
+        self.assertEqual(lengthAsVarint(fieldHdr(fieldNbr, LEN_PLUS_TYPE)),
                           offset2)
 
         # then the actual value written -------------------
         t       = readRawLenPlus(chan)
         offset3  = chan.position
-        self.assertEquals(s, t)
-        self.assertEquals(offset2 + lengthAsVarint(len(s)) + len(s), offset3) 
+        self.assertEqual(s, t)
+        self.assertEqual(offset2 + lengthAsVarint(len(s)) + len(s), offset3) 
 
     def testEncodeDecode(self):
         self.roundTrip( '' )

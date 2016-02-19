@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # testFixedLen.py
 import time, unittest
@@ -21,7 +21,7 @@ class TestFixedLen (unittest.TestCase):
     # actual unit tests #############################################
     def dumpBuffer (self, buf):
         for i in range(16):
-            print("0x%02x " % buf[i], end=' ')
+            print("0x%02x " % buf[i])
         print()
 
     def roundTrip32(self, n):
@@ -41,16 +41,16 @@ class TestFixedLen (unittest.TestCase):
         # first the header (which is a varint) ------------
         (fieldType, fieldNbr2) = readFieldHdr(chan)
         offset2 = chan.position
-        self.assertEquals(B32_TYPE, fieldType)
-        self.assertEquals(fieldNbr, fieldNbr2)
-        self.assertEquals(lengthAsVarint(fieldHdr(fieldNbr, B32_TYPE)),
+        self.assertEqual(B32_TYPE, fieldType)
+        self.assertEqual(fieldNbr, fieldNbr2)
+        self.assertEqual(lengthAsVarint(fieldHdr(fieldNbr, B32_TYPE)),
                           offset2)
 
         # then the varint proper --------------------------
         v = readRawB32(chan)
         offset3 = chan.position
-        self.assertEquals(n, v)
-        self.assertEquals(offset2 + 4, offset3) 
+        self.assertEqual(n, v)
+        self.assertEqual(offset2 + 4, offset3) 
 
     def roundTrip64(self, n):
         """
@@ -74,16 +74,16 @@ class TestFixedLen (unittest.TestCase):
         # first the header (which is a varint) ------------
         (fieldType, fieldNbr2) = readFieldHdr(chan)
         offset2 = chan.position
-        self.assertEquals(B64_TYPE, fieldType)
-        self.assertEquals(fieldNbr, fieldNbr2)
-        self.assertEquals(lengthAsVarint(fieldHdr(fieldNbr, B64_TYPE)),
+        self.assertEqual(B64_TYPE, fieldType)
+        self.assertEqual(fieldNbr, fieldNbr2)
+        self.assertEqual(lengthAsVarint(fieldHdr(fieldNbr, B64_TYPE)),
                           offset2)
 
         # then the varint proper --------------------------
         v = readRawB64(chan)
         offset3 = chan.position
-        self.assertEquals(n, v)
-        self.assertEquals(offset2 + 8, offset3) 
+        self.assertEqual(n, v)
+        self.assertEqual(offset2 + 8, offset3) 
 
     def testEncodeDecode(self):
         self.roundTrip32(                  0 )

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # testTypedFields.py
 
@@ -51,8 +51,8 @@ class TestTypedFields (unittest.TestCase):
     def testEncodeDecode(self):
         # crude sanity check 
         # OBSOLETE
-#       self.assertEquals( F._V_BOOL,   F.vBool     )
-#       self.assertEquals( F._MAX_TYPE, F.fBytes32  )
+#       self.assertEqual( F._V_BOOL,   F.vBool     )
+#       self.assertEqual( F._MAX_TYPE, F.fBytes32  )
 
         rng = self.rng
         buffer      = [0] * (16 * LEN_NULLS)

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # testSimpleEnum.py
 import time, unittest
@@ -23,7 +23,7 @@ class TestSimpleEnum (unittest.TestCase):
 
     # actual unit tests #############################################
     def testSimpleEnum(self):
-        self.assertEquals(0, Q.REQUIRED)
+        self.assertEqual(0, Q.REQUIRED)
 
 if __name__ == '__main__':
     unittest.main()
