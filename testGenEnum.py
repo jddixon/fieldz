@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # testGenEnum.py
 
@@ -36,7 +36,7 @@ class MetaEnum(type):
         print("CALL")
         return type.__call__(cls, *args, **kwargs)
 
-class GeneratedEnum(object, metaclass=MetaEnum):
+class GeneratedEnum(metaclass=MetaEnum):
     def __init__(self, a, b):
         print("GeneratedEnum object: a = %s, b = %s" % (a,b))
 
@@ -66,10 +66,10 @@ class TestGenEnum (unittest.TestCase):
                 {'A':3, 'B':7, 'C':11, 
                     'echo' : echo,
                     '__setattr__': cantSetAttr })
-        self.assertEquals('ClzF', F.__name__)
-        self.assertEquals(3, F.A)
-        self.assertEquals(7, F.B)
-        self.assertEquals(11, F.C)
+        self.assertEqual('ClzF', F.__name__)
+        self.assertEqual(3, F.A)
+        self.assertEqual(7, F.B)
+        self.assertEqual(11, F.C)
 #       setattr(F, 'echo', echo)
 #       setattr(F, '__setattr__', cantSetAttr)
 
@@ -91,7 +91,7 @@ class TestGenEnum (unittest.TestCase):
         # behave just like echo?  And so work only at the instance level?
         try:
             setattr(F, 'C', 13)
-            self.assertEquals(13, F.C)
+            self.assertEqual(13, F.C)
             self.fail('ERROR: successfully changed value of C')
         except EnumError:
             print('success: caught attempt to set new symbol')

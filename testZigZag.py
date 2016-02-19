@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # testTFReader.py
 import time, unittest
@@ -27,24 +27,24 @@ class TestTFReader (unittest.TestCase):
     def testInt32s(self):
         v   = 0xffffffff
         s32 = ctypes.c_int32(v).value
-        self.assertEquals( -1, s32 )
+        self.assertEqual( -1, s32 )
         u32 = ctypes.c_uint32(v).value
-        self.assertEquals( 256*256*256*256 - 1, u32)
+        self.assertEqual( 256*256*256*256 - 1, u32)
         
         x   = 0xffffff00
         v   = ~x
         s32 = ctypes.c_int32(v).value
-        self.assertEquals( 0xff, s32 )
+        self.assertEqual( 0xff, s32 )
         u32 = ctypes.c_uint32(v).value
-        self.assertEquals( 0xff, u32)
+        self.assertEqual( 0xff, u32)
 
 
     def testInt64s(self):
         v   = 0xffffffffffffffff
         s64 = ctypes.c_int64(v).value   # 'value' converts back to Python type
-        self.assertEquals( -1, s64 )
+        self.assertEqual( -1, s64 )
         u64 = ctypes.c_uint64(v).value
-        self.assertEquals( 256*256*256*256*256*256*256*256 - 1, u64)
+        self.assertEqual( 256*256*256*256*256*256*256*256 - 1, u64)
 
     def testVarintWithNegativeValues(self):
         # negative numbers, that is
@@ -53,12 +53,12 @@ class TestTFReader (unittest.TestCase):
     def doRoundTrip32(self, s):
         z   = encodeSint32(s)
         s2  = decodeSint32(z)
-        self.assertEquals(s, s2)
+        self.assertEqual(s, s2)
 
     def doRoundTrip64(self, s):
         z   = encodeSint64(s)
         s2  = decodeSint64(z)
-        self.assertEquals(s, s2)
+        self.assertEqual(s, s2)
 
     def testZZ32(self):
         self.doRoundTrip32(0)

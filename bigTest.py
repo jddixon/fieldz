@@ -1,6 +1,6 @@
 # ~/dev/py/fieldz/bigTest.py
 
-BIG_TEST = """
+BIG_TEST = u"""
 protocol org.xlattice.fieldz.test.bigProto
 
 # This should exercise all combinations of the 20 field types, with 

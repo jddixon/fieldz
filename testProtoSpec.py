@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # ~/dev/py/fieldz/testProtoSpec.py
 
@@ -40,7 +40,7 @@ class TestProtoSpec (unittest.TestCase):
     def testMaps(self):
         maxNdx  = F.maxNdx
         maxName = F.asStr(maxNdx)
-        self.assertEquals('fBytes32', maxName)
+        self.assertEqual('fBytes32', maxName)
 
     def testEnum(self):
         """
@@ -52,34 +52,34 @@ class TestProtoSpec (unittest.TestCase):
         name  = 'george'
         pairs = [('abc', 3), ('def', 5), ('ghi', 7)]
         enum  = M.EnumSpec.create(name, pairs)
-        # self.assertEquals( ','.join(pairs), enum.__repr__())
-        self.assertEquals( 3, enum.value('abc'))
-        self.assertEquals( 5, enum.value('def'))
-        self.assertEquals( 7, enum.value('ghi'))
+        # self.assertEqual( ','.join(pairs), enum.__repr__())
+        self.assertEqual( 3, enum.value('abc'))
+        self.assertEqual( 5, enum.value('def'))
+        self.assertEqual( 7, enum.value('ghi'))
 
     def doFieldTest(self, msgReg, name, fType, quantifier=M.Q_REQUIRED,
                                                 fieldNbr=0, default=None):
         # XXX Defaults are ignore for now.
         f = M.FieldSpec(msgReg, name, fType, quantifier, fieldNbr, default)
 
-        self.assertEquals(name,         f.name)
-        self.assertEquals(fType,        f.fTypeNdx)
-        self.assertEquals(quantifier,   f.quantifier)
-        self.assertEquals(fieldNbr,     f.fieldNbr)
+        self.assertEqual(name,         f.name)
+        self.assertEqual(fType,        f.fTypeNdx)
+        self.assertEqual(quantifier,   f.quantifier)
+        self.assertEqual(fieldNbr,     f.fieldNbr)
         if default is not None:
-            self.assertEquals(default,  f.default)
+            self.assertEqual(default,  f.default)
 
         expectedRepr = "%s %s%s @%d \n" % (
                             name, f.fTypeName, M.qName(quantifier), fieldNbr)
         # DEFAULTS NOT SUPPORTED
-        self.assertEquals(expectedRepr, f.__repr__())
+        self.assertEqual(expectedRepr, f.__repr__())
 
     def testsQuantifiers(self):
         qName = M.qName
-        self.assertEquals('',  qName(M.Q_REQUIRED))
-        self.assertEquals('?', qName(M.Q_OPTIONAL))
-        self.assertEquals('*', qName(M.Q_STAR))
-        self.assertEquals('+', qName(M.Q_PLUS))
+        self.assertEqual('',  qName(M.Q_REQUIRED))
+        self.assertEqual('?', qName(M.Q_OPTIONAL))
+        self.assertEqual('*', qName(M.Q_STAR))
+        self.assertEqual('+', qName(M.Q_PLUS))
 
     def testFieldSpec(self):
         protoName = 'org.xlattice.upax'
@@ -100,7 +100,7 @@ class TestProtoSpec (unittest.TestCase):
         protoReg  = R.ProtoReg(protoName, nodeReg)
         msgReg    = R.MsgReg(protoReg)
         protoSpec = M.ProtoSpec(protoName, protoReg)
-        self.assertEquals(protoName, protoSpec.name)
+        self.assertEqual(protoName, protoSpec.name)
 
         msgName    = 'logEntry'
         # the enum is not used
@@ -115,7 +115,7 @@ class TestProtoSpec (unittest.TestCase):
                 M.FieldSpec(msgReg,'path',      F._L_STRING,  M.Q_REQUIRED, 5),
         ]
         msgSpec = M.MsgSpec(msgName, protoSpec, msgReg)
-        self.assertEquals(msgName, msgSpec.name)
+        self.assertEqual(msgName, msgSpec.name)
         for f in fields:
             msgSpec.addField(f)
 
@@ -163,25 +163,25 @@ class TestProtoSpec (unittest.TestCase):
         sOM  = p.parse()             # object model from string serialization
         self.assertIsNotNone(sOM)
         self.assertTrue(isinstance(sOM, M.ProtoSpec))
-        self.assertEquals( 'org.xlattice.zoggery', sOM.name )
-        self.assertEquals(0, len(sOM.enums) )
-        self.assertEquals(1, len(sOM.msgs) )
-        self.assertEquals(0, len(sOM.seqs) )
+        self.assertEqual( 'org.xlattice.zoggery', sOM.name )
+        self.assertEqual(0, len(sOM.enums) )
+        self.assertEqual(1, len(sOM.msgs) )
+        self.assertEqual(0, len(sOM.seqs) )
 
         msgSpec = sOM.msgs[0]
         # XXX THIS SHOULD BE A LOOP, with no magic numbers
-        self.assertEquals(msgSpec.fName(0),     'timestamp')
-        self.assertEquals(msgSpec.fTypeName(0), 'fuInt32')
-        self.assertEquals(msgSpec.fName(1),     'nodeID')
-        self.assertEquals(msgSpec.fTypeName(1), 'fBytes20')
-        self.assertEquals(msgSpec.fName(2),     'key')
-        self.assertEquals(msgSpec.fTypeName(2), 'fBytes20')
-        self.assertEquals(msgSpec.fName(3),     'length')
-        self.assertEquals(msgSpec.fTypeName(3), 'vuInt32')
-        self.assertEquals(msgSpec.fName(4),     'by')
-        self.assertEquals(msgSpec.fTypeName(4), 'lString')
-        self.assertEquals(msgSpec.fName(5),     'path')
-        self.assertEquals(msgSpec.fTypeName(5), 'lString')      # GEEP
+        self.assertEqual(msgSpec.fName(0),     'timestamp')
+        self.assertEqual(msgSpec.fTypeName(0), 'fuInt32')
+        self.assertEqual(msgSpec.fName(1),     'nodeID')
+        self.assertEqual(msgSpec.fTypeName(1), 'fBytes20')
+        self.assertEqual(msgSpec.fName(2),     'key')
+        self.assertEqual(msgSpec.fTypeName(2), 'fBytes20')
+        self.assertEqual(msgSpec.fName(3),     'length')
+        self.assertEqual(msgSpec.fTypeName(3), 'vuInt32')
+        self.assertEqual(msgSpec.fName(4),     'by')
+        self.assertEqual(msgSpec.fTypeName(4), 'lString')
+        self.assertEqual(msgSpec.fName(5),     'path')
+        self.assertEqual(msgSpec.fTypeName(5), 'lString')      # GEEP
 
     def testNestedEnum(self):
         data = StringIO(NESTED_ENUM_PROTO_SPEC)
@@ -190,42 +190,42 @@ class TestProtoSpec (unittest.TestCase):
         self.assertIsNotNone(sOM)
         self.assertTrue(isinstance(sOM, M.ProtoSpec))
 
-        self.assertEquals( 'org.xlattice.zoggery.ne', sOM.name )
-        self.assertEquals(1, len(sOM.msgs))
+        self.assertEqual( 'org.xlattice.zoggery.ne', sOM.name )
+        self.assertEqual(1, len(sOM.msgs))
         msg = sOM.msgs[0]
 
-        self.assertEquals( 'nestedEnums', msg.name )
+        self.assertEqual( 'nestedEnums', msg.name )
         enums = msg.enums
         self.assertIsNotNone(enums)
-        self.assertEquals(2, len(enums))
+        self.assertEqual(2, len(enums))
 
         fooEnum = enums[0]
         barEnum = enums[1]
-        self.assertEquals( 'Foo', fooEnum.name)
-        self.assertEquals( 'Bar', barEnum.name )
+        self.assertEqual( 'Foo', fooEnum.name)
+        self.assertEqual( 'Bar', barEnum.name )
 
-        self.assertEquals(2, len(fooEnum) )
-        self.assertEquals(3, len(barEnum) )
+        self.assertEqual(2, len(fooEnum) )
+        self.assertEqual(3, len(barEnum) )
 
         aPair = fooEnum[0]
-        self.assertEquals('a',  aPair.symbol)
-        self.assertEquals(1,    aPair.value)
+        self.assertEqual('a',  aPair.symbol)
+        self.assertEqual(1,    aPair.value)
 
         bPair = fooEnum[1]
-        self.assertEquals('b',  bPair.symbol)
-        self.assertEquals(2,    bPair.value)
+        self.assertEqual('b',  bPair.symbol)
+        self.assertEqual(2,    bPair.value)
 
         cPair = barEnum[0]
-        self.assertEquals('c',  cPair.symbol)
-        self.assertEquals(3,    cPair.value)
+        self.assertEqual('c',  cPair.symbol)
+        self.assertEqual(3,    cPair.value)
 
         dPair = barEnum[1]
-        self.assertEquals('d',  dPair.symbol)
-        self.assertEquals(4,    dPair.value)
+        self.assertEqual('d',  dPair.symbol)
+        self.assertEqual(4,    dPair.value)
 
         ePair = barEnum[2]
-        self.assertEquals('e',  ePair.symbol)
-        self.assertEquals(5,    ePair.value)
+        self.assertEqual('e',  ePair.symbol)
+        self.assertEqual(5,    ePair.value)
 
 #       self.roundTripProtoSpecViaString(sOM)       # GEEP
 
@@ -237,42 +237,42 @@ class TestProtoSpec (unittest.TestCase):
         self.assertIsNotNone(sOM)
         self.assertTrue(isinstance(sOM, M.ProtoSpec))
 
-        self.assertEquals( 'org.xlattice.zoggery.nm', sOM.name )
-        self.assertEquals(1, len(sOM.msgs))
+        self.assertEqual( 'org.xlattice.zoggery.nm', sOM.name )
+        self.assertEqual(1, len(sOM.msgs))
         msg = sOM.msgs[0]
 
-        self.assertEquals( 'nestedMsgs', msg.name )
+        self.assertEqual( 'nestedMsgs', msg.name )
         enums = msg.enums
         self.assertIsNotNone(enums)
-        self.assertEquals(2, len(enums))
+        self.assertEqual(2, len(enums))
 
         fooEnum = enums[0]
         barEnum = enums[1]
-        self.assertEquals( 'Foo', fooEnum.name)
-        self.assertEquals( 'Bar', barEnum.name )
+        self.assertEqual( 'Foo', fooEnum.name)
+        self.assertEqual( 'Bar', barEnum.name )
 
-        self.assertEquals(2, len(fooEnum) )
-        self.assertEquals(3, len(barEnum) )
+        self.assertEqual(2, len(fooEnum) )
+        self.assertEqual(3, len(barEnum) )
 
         aPair = fooEnum[0]
-        self.assertEquals('a',  aPair.symbol)
-        self.assertEquals(1,    aPair.value)
+        self.assertEqual('a',  aPair.symbol)
+        self.assertEqual(1,    aPair.value)
 
         bPair = fooEnum[1]
-        self.assertEquals('b',  bPair.symbol)
-        self.assertEquals(2,    bPair.value)
+        self.assertEqual('b',  bPair.symbol)
+        self.assertEqual(2,    bPair.value)
 
         cPair = barEnum[0]
-        self.assertEquals('c',  cPair.symbol)
-        self.assertEquals(3,    cPair.value)
+        self.assertEqual('c',  cPair.symbol)
+        self.assertEqual(3,    cPair.value)
 
         dPair = barEnum[1]
-        self.assertEquals('d',  dPair.symbol)
-        self.assertEquals(4,    dPair.value)
+        self.assertEqual('d',  dPair.symbol)
+        self.assertEqual(4,    dPair.value)
 
         ePair = barEnum[2]
-        self.assertEquals('e',  ePair.symbol)
-        self.assertEquals(5,    ePair.value)
+        self.assertEqual('e',  ePair.symbol)
+        self.assertEqual(5,    ePair.value)
 
         self.roundTripProtoSpecViaString(sOM) 
 

@@ -97,9 +97,9 @@ class FieldImpl(object):
 
 class MetaField(type):
 
-    def __new__(meta, name, bases, dct):
+    def __new__(meta, nameX, bases, dct):
 #       print "MetaField METACLASS NEW gets called once"
-        return super(MetaField, meta).__new__(meta, name, bases, dct)
+        return super(MetaField, meta).__new__(meta, nameX, bases, dct)
 
     def __init__(cls, name, bases, dct):
         super(MetaField, cls).__init__(name, bases, dct)

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # testCoreTypes.py
 import time, unittest
@@ -14,7 +14,7 @@ import fieldz.fieldTypes    as F
 import fieldz.reg           as R
 from fieldz.parser import StringMsgSpecParser
 
-LOG_ENTRY_MSG_SPEC = """
+LOG_ENTRY_MSG_SPEC = u"""
 # protocol org.xlattice.zoggery
 message logEntry:
  timestamp   fuInt32
@@ -41,9 +41,9 @@ class TestCoreTypes (unittest.TestCase):
     
     # actual unit tests #############################################
     def testTheEnum(self):
-        self.assertEquals(5, C.maxNdx)
-        self.assertEquals(0, C._ENUM_PAIR_SPEC)
-        self.assertEquals(5, C._PROTO_SPEC)
+        self.assertEqual(5, C.maxNdx)
+        self.assertEqual(0, C._ENUM_PAIR_SPEC)
+        self.assertEqual(5, C._PROTO_SPEC)
 
     def roundTripToWireFormat(self, chan, n, cType, val):
         nodeReg, protoReg, msgReg = self.makeRegistries(
@@ -65,13 +65,13 @@ class TestCoreTypes (unittest.TestCase):
         chan.flip()
         wPos        = chan.limit
 
-        self.assertEquals(expectedPos, wPos)
+        self.assertEqual(expectedPos, wPos)
 
         (pType, n)  = readFieldHdr(chan)
         actualHdrLen     = chan.position
-        self.assertEquals( LEN_PLUS_TYPE,   pType )
-        self.assertEquals( 0,               n     )    # field number
-        self.assertEquals( h,               actualHdrLen)
+        self.assertEqual( LEN_PLUS_TYPE,   pType )
+        self.assertEqual( 0,               n     )    # field number
+        self.assertEqual( h,               actualHdrLen)
 
         retVal  = getter(msgReg, chan)
         rPos    = chan.position
@@ -79,7 +79,7 @@ class TestCoreTypes (unittest.TestCase):
         print("ROUND TRIP: val    = %s" % val)
         print("            retVal = %s" % retVal)
         # END
-        self.assertEquals( val, retVal)
+        self.assertEqual( val, retVal)
 
     def testRoundTrippingCoreTypes(self):
         BUFSIZE = 16*1024
@@ -101,7 +101,7 @@ class TestCoreTypes (unittest.TestCase):
                   ('frogHeaven',919), 
                 ]
         s = M.EnumSpec.create('thisEnum', pairs)
-        self.assertEquals(3, len(s))
+        self.assertEqual(3, len(s))
         # XXX FAILS if msgReg arg added: WRONG NUMBER OF ARGS
 #       self.roundTripToWireFormat( chan, n, C._ENUM_SPEC, s)
 

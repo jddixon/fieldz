@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # testLittleBig.py
 import time, unittest
@@ -98,14 +98,14 @@ class TestLittleBig (unittest.TestCase):
         self.assertIsNotNone(f)
 
         # class attributes --------------------------------
-        self.assertEquals( fieldSpec.name,      f.name        )
-        self.assertEquals( fieldSpec.fTypeNdx,  f.fType       )
-        self.assertEquals( fieldSpec.quantifier,f.quantifier  )
-        self.assertEquals( fieldSpec.fieldNbr,  f.fieldNbr    )
+        self.assertEqual( fieldSpec.name,      f.name        )
+        self.assertEqual( fieldSpec.fTypeNdx,  f.fType       )
+        self.assertEqual( fieldSpec.quantifier,f.quantifier  )
+        self.assertEqual( fieldSpec.fieldNbr,  f.fieldNbr    )
         self.assertIsNone( f.default )          # not an elegant test
 
         # instance attribute ------------------------------
-        self.assertEquals( value, f.value)
+        self.assertEqual( value, f.value)
 
         # with slots enabled, this is never seen ----------
         # because __dict__ is not in the list of valid
@@ -137,13 +137,13 @@ class TestLittleBig (unittest.TestCase):
         # DEBUG
         print("Constructed Clz0 name is '%s'" % Clz0.name)
         # END
-        self.assertEquals(name, Clz0.name)
+        self.assertEqual(name, Clz0.name)
         Clz1    = makeMsgClass(self.sOM, name)
-        self.assertEquals(name, Clz1.name)
+        self.assertEqual(name, Clz1.name)
 
         # END HACK ----------------------------------------
         # we cache classe, so the two should be the same
-        self.assertEquals(id(Clz0), id(Clz1))
+        self.assertEqual(id(Clz0), id(Clz1))
 
         # chan    = Channel(BUFSIZE)
         values  = self.lilBigMsgValues()
@@ -156,17 +156,17 @@ class TestLittleBig (unittest.TestCase):
         dottedName  = "%s.%s" % (self.protoName, msgSpec.name)
         F0    = makeFieldClass(dottedName, fieldSpec)
         F1    = makeFieldClass(dottedName, fieldSpec)
-        self.assertEquals(id(F0), id(F1)) 
+        self.assertEqual(id(F0), id(F1)) 
 
     def testLittleBig(self):
         self.assertIsNotNone(self.sOM)
         self.assertTrue(isinstance(self.sOM, M.ProtoSpec))
-        self.assertEquals( 'org.xlattice.fieldz.test.littleBigProto',
+        self.assertEqual( 'org.xlattice.fieldz.test.littleBigProto',
                            self.sOM.name )
 
-        self.assertEquals(0, len(self.sOM.enums) )
-        self.assertEquals(1, len(self.sOM.msgs) )
-        self.assertEquals(0, len(self.sOM.seqs) )
+        self.assertEqual(0, len(self.sOM.enums) )
+        self.assertEqual(1, len(self.sOM.msgs) )
+        self.assertEqual(0, len(self.sOM.seqs) )
 
         msgSpec = self.sOM.msgs[0]
 
@@ -175,7 +175,7 @@ class TestLittleBig (unittest.TestCase):
         # data and, by deserializing it, for creating a second instance.
         chan = Channel(BUFSIZE)
         buf  = chan.buffer
-        self.assertEquals( BUFSIZE, len(buf) )
+        self.assertEqual( BUFSIZE, len(buf) )
 
         # create the LittleBigMsg class ------------------------------
         LittleBigMsg     = makeMsgClass(self.sOM, msgSpec.name)
@@ -220,15 +220,15 @@ class TestLittleBig (unittest.TestCase):
         except AttributeError:
             pass
 
-        self.assertEquals(msgSpec.name, lilBigMsg.name)
+        self.assertEqual(msgSpec.name, lilBigMsg.name)
         # we don't have any nested enums or messages
-        self.assertEquals(0, len(lilBigMsg.enums))
-        self.assertEquals(0, len(lilBigMsg.msgs))
+        self.assertEqual(0, len(lilBigMsg.enums))
+        self.assertEqual(0, len(lilBigMsg.msgs))
 
-        self.assertEquals(17, len(lilBigMsg.fieldClasses))
-        self.assertEquals(17, len(lilBigMsg))    # number of fields in instance
+        self.assertEqual(17, len(lilBigMsg.fieldClasses))
+        self.assertEqual(17, len(lilBigMsg))    # number of fields in instance
         for i in range(len(lilBigMsg)):
-            self.assertEquals(values[i], lilBigMsg[i].value)
+            self.assertEqual(values[i], lilBigMsg[i].value)
 
         # serialize the object to the channel -----------------------
         print("\nDEBUG: PHASE A ######################################")
@@ -236,13 +236,13 @@ class TestLittleBig (unittest.TestCase):
 
         oldPosition = chan.position
         chan.flip()
-        self.assertEquals(oldPosition, chan.limit)
-        self.assertEquals(0,           chan.position)
+        self.assertEqual(oldPosition, chan.limit)
+        self.assertEqual(0,           chan.position)
 
         # deserialize the channel, making a clone of the message ----
         (readBack, n2) = LittleBigMsg.read(chan, self.sOM)  # sOM is protoSpec
         self.assertIsNotNone(readBack)
-        self.assertEquals(n, n2)
+        self.assertEqual(n, n2)
 
         # verify that the messages are identical --------------------
         self.assertTrue(lilBigMsg.__eq__(readBack))
@@ -255,7 +255,7 @@ class TestLittleBig (unittest.TestCase):
         chan2.flip()
         (copy2, n3) = LittleBigMsg.read(chan2, self.sOM)
         self.assertIsNotNone(copy2)
-        self.assertEquals(n, n3)
+        self.assertEqual(n, n3)
         self.assertTrue(lilBigMsg.__eq__(copy2))
         self.assertTrue(lilBigMsg2.__eq__(copy2))
 
@@ -263,8 +263,8 @@ class TestLittleBig (unittest.TestCase):
         chan2.position  = 97
         chan2.limit     = 107
         chan2.clear()
-        self.assertEquals(0, chan2.limit)
-        self.assertEquals(0, chan2.position)
+        self.assertEqual(0, chan2.limit)
+        self.assertEqual(0, chan2.position)
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,5 +1,15 @@
 ~/dev/py/fieldz/TODO
 
+2016-02-19
+    * testCoreTypes fails
+    * testGenEnums fails
+    * testLittleBig fails
+    * testMsgImpl fails
+    * MsgSpec canonical representation must be converted to 
+        Unicode for testMsgSpec to succeed (see MsgSpec.__repr__()
+    * testProtoSpec fails
+    * testZoggerySerialization fails
+
 -----------------------------------------------------------------
 * testFieldTypes.testLenFuncs() is incomplete
 * TFWriter putNext uses dispatch table, TFReader.getNext doesn't

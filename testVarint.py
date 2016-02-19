@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # testVarint.py
 import time, unittest
@@ -26,29 +26,29 @@ class TestVarint (unittest.TestCase):
     # actual unit tests #############################################
     def testLengthAsVarint(self):
         len = lengthAsVarint
-        self.assertEquals( 1, len(                 0))
-        self.assertEquals( 1, len(              0x7f))
-        self.assertEquals( 2, len(              0x80))
-        self.assertEquals( 2, len(            0x3fff))
-        self.assertEquals( 3, len(            0x4000))
-        self.assertEquals( 3, len(          0x1fffff))
-        self.assertEquals( 4, len(          0x200000))
-        self.assertEquals( 4, len(         0xfffffff))
-        self.assertEquals( 5, len(        0x10000000))
-        self.assertEquals( 5, len(       0x7ffffffff))
-        self.assertEquals( 6, len(       0x800000000))
-        self.assertEquals( 6, len(     0x3ffffffffff))
-        self.assertEquals( 7, len(     0x40000000000))
-        self.assertEquals( 7, len(   0x1ffffffffffff))
-        self.assertEquals( 8, len(   0x2000000000000))
-        self.assertEquals( 8, len(  0xffffffffffffff))
-        self.assertEquals( 9, len( 0x100000000000000))
-        self.assertEquals( 9, len(0x7fffffffffffffff))
-        self.assertEquals(10, len(0x8000000000000000))
+        self.assertEqual( 1, len(                 0))
+        self.assertEqual( 1, len(              0x7f))
+        self.assertEqual( 2, len(              0x80))
+        self.assertEqual( 2, len(            0x3fff))
+        self.assertEqual( 3, len(            0x4000))
+        self.assertEqual( 3, len(          0x1fffff))
+        self.assertEqual( 4, len(          0x200000))
+        self.assertEqual( 4, len(         0xfffffff))
+        self.assertEqual( 5, len(        0x10000000))
+        self.assertEqual( 5, len(       0x7ffffffff))
+        self.assertEqual( 6, len(       0x800000000))
+        self.assertEqual( 6, len(     0x3ffffffffff))
+        self.assertEqual( 7, len(     0x40000000000))
+        self.assertEqual( 7, len(   0x1ffffffffffff))
+        self.assertEqual( 8, len(   0x2000000000000))
+        self.assertEqual( 8, len(  0xffffffffffffff))
+        self.assertEqual( 9, len( 0x100000000000000))
+        self.assertEqual( 9, len(0x7fffffffffffffff))
+        self.assertEqual(10, len(0x8000000000000000))
         # the next test fails if I don't parenthesize the shift term or
         # convert >1 to /2
         bigNumber =               0x80000000000000000 + (self.rng.nextInt64()>1)
-        self.assertEquals(10, len(bigNumber))
+        self.assertEqual(10, len(bigNumber))
 
         # MAKE SURE THIS WORKS WITH SIGNED NUMBERS
 
@@ -68,16 +68,16 @@ class TestVarint (unittest.TestCase):
         # first the header (which is a varint) ------------
         (primType, fieldNbr2) = readFieldHdr(chan)
         offset2  = chan.position
-        self.assertEquals( VARINT_TYPE, primType )
-        self.assertEquals( fieldNbr,    fieldNbr2 )
-        self.assertEquals( lengthAsVarint(fieldNbr << 3),  offset2 )
+        self.assertEqual( VARINT_TYPE, primType )
+        self.assertEqual( fieldNbr,    fieldNbr2 )
+        self.assertEqual( lengthAsVarint(fieldNbr << 3),  offset2 )
 
         # then the varint proper --------------------------
         v = readRawVarint(chan)
         chan.flip()
         offset3 = chan.limit
-        self.assertEquals(n, v)
-        self.assertEquals(offset2 + lengthAsVarint(n), offset3)
+        self.assertEqual(n, v)
+        self.assertEqual(offset2 + lengthAsVarint(n), offset3)
 
 
     def testEncodeDecode(self):

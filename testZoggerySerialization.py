@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # testZoggerySerialization.py
 import time, unittest
@@ -63,22 +63,22 @@ class TestZoggerySerialization (unittest.TestCase):
         
         self.assertIsNotNone(self.sOM)
         self.assertTrue(isinstance(self.sOM, M.ProtoSpec))
-        self.assertEquals( 'org.xlattice.zoggery', self.sOM.name )
+        self.assertEqual( 'org.xlattice.zoggery', self.sOM.name )
 
-        self.assertEquals(0, len(self.sOM.enums) )
-        self.assertEquals(1, len(self.sOM.msgs) )
-        self.assertEquals(0, len(self.sOM.seqs) )
+        self.assertEqual(0, len(self.sOM.enums) )
+        self.assertEqual(1, len(self.sOM.msgs) )
+        self.assertEqual(0, len(self.sOM.seqs) )
 
         msgSpec = self.sOM.msgs[0]
         msgName = msgSpec.name
-        self.assertEquals('logEntry', msgName)
+        self.assertEqual('logEntry', msgName)
         
         # Create a channel ------------------------------------------
         # its buffer will be used for both serializing # the instance 
         # data and, by deserializing it, for creating a second instance.
         chan = Channel(BUFSIZE)
         buf  = chan.buffer
-        self.assertEquals( BUFSIZE, len(buf) )
+        self.assertEqual( BUFSIZE, len(buf) )
 
         # create the LogEntryMsg class ------------------------------
         LogEntryMsg     = makeMsgClass(self.sOM, msgName)
@@ -88,34 +88,34 @@ class TestZoggerySerialization (unittest.TestCase):
         leMsg   = LogEntryMsg( values )
         (timestamp, key, length, nodeID, by, path) = tuple(values)
         
-        self.assertEquals(msgSpec.name, leMsg.name)
+        self.assertEqual(msgSpec.name, leMsg.name)
         # we don't have any nested enums or messages
-        self.assertEquals(0, len(leMsg.enums))
-        self.assertEquals(0, len(leMsg.msgs))
+        self.assertEqual(0, len(leMsg.enums))
+        self.assertEqual(0, len(leMsg.msgs))
 
-        self.assertEquals(6, len(leMsg.fieldClasses))
-        self.assertEquals(6, len(leMsg))        # number of fields in instance
+        self.assertEqual(6, len(leMsg.fieldClasses))
+        self.assertEqual(6, len(leMsg))        # number of fields in instance
         for i in range(len(leMsg)):
-            self.assertEquals(values[i], leMsg[i].value)
+            self.assertEqual(values[i], leMsg[i].value)
 
         # verify fields are accessible in the object ----------------
         (timestamp, nodeID, key, length, by, path) = tuple(values)
-        self.assertEquals(timestamp,leMsg.timestamp)
-        self.assertEquals(nodeID,   leMsg.nodeID)
-        self.assertEquals(key,      leMsg.key)
-        self.assertEquals(length,   leMsg.length)
-        self.assertEquals(by,       leMsg.by)
-        self.assertEquals(path,     leMsg.path)
+        self.assertEqual(timestamp,leMsg.timestamp)
+        self.assertEqual(nodeID,   leMsg.nodeID)
+        self.assertEqual(key,      leMsg.key)
+        self.assertEqual(length,   leMsg.length)
+        self.assertEqual(by,       leMsg.by)
+        self.assertEqual(path,     leMsg.path)
 
         # serialize the object to the channel -----------------------
         buf             = chan.buffer
         chan.clear()           
         n = leMsg.writeStandAlone(chan)
-        self.assertEquals(0, n)
+        self.assertEqual(0, n)
         oldPosition = chan.position                     # TESTING flip()
         chan.flip()
-        self.assertEquals(oldPosition, chan.limit)      # TESTING flip()
-        self.assertEquals(0,           chan.position)   # TESTING flip() 
+        self.assertEqual(oldPosition, chan.limit)      # TESTING flip()
+        self.assertEqual(0,           chan.position)   # TESTING flip() 
         actual = chan.limit
 
         print("ACTUAL LENGTH OF SERIALIZED OBJECT: %u" % actual)
@@ -133,7 +133,7 @@ class TestZoggerySerialization (unittest.TestCase):
         (copy2,n3)  = LogEntryMsg.read(chan2, self.sOM)
         self.assertTrue(leMsg.__eq__(readBack))
         self.assertTrue(leMsg2.__eq__(copy2))      
-        self.assertEquals(n, n3)
+        self.assertEqual(n, n3)
 
 if __name__ == '__main__':
     unittest.main()

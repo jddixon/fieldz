@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # testMsgImpl.py
 import time, unittest
@@ -108,14 +108,14 @@ class TestMsgImpl (unittest.TestCase):
         self.assertIsNotNone(f)
 
         # instance attributes -----------------------------
-        self.assertEquals( fieldSpec.name,      f.name        )
-        self.assertEquals( fieldSpec.fTypeNdx,  f.fType       )
-        self.assertEquals( fieldSpec.quantifier,f.quantifier  )
-        self.assertEquals( fieldSpec.fieldNbr,  f.fieldNbr    )
+        self.assertEqual( fieldSpec.name,      f.name        )
+        self.assertEqual( fieldSpec.fTypeNdx,  f.fType       )
+        self.assertEqual( fieldSpec.quantifier,f.quantifier  )
+        self.assertEqual( fieldSpec.fieldNbr,  f.fieldNbr    )
         self.assertIsNone( f.default )          # not an elegant test
 
         # instance attribute ------------------------------
-        self.assertEquals( value, f.value)
+        self.assertEqual( value, f.value)
 
         # with slots enabled, this is never seen ----------
         # because __dict__ is not in the list of valid 
@@ -144,7 +144,7 @@ class TestMsgImpl (unittest.TestCase):
         Clz0    = makeMsgClass(self.sOM, name)
         Clz1    = makeMsgClass(self.sOM, name)
         # we cache classe, so the two should be the same
-        self.assertEquals(id(Clz0), id(Clz1))
+        self.assertEqual(id(Clz0), id(Clz1))
 
         # chan    = Channel(BUFSIZE)
         values  = self.leMsgValues()
@@ -157,16 +157,16 @@ class TestMsgImpl (unittest.TestCase):
         dottedName  = "%s.%s" % (self.protoName, msgSpec.name)
         F0    = makeFieldClass(dottedName, fieldSpec)
         F1    = makeFieldClass(dottedName, fieldSpec)
-        self.assertEquals(id(F0), id(F1))           # GEEP
+        self.assertEqual(id(F0), id(F1))           # GEEP
 
     def testMsgImpl(self):
         self.assertIsNotNone(self.sOM)
         self.assertTrue(isinstance(self.sOM, M.ProtoSpec))
-        self.assertEquals( 'org.xlattice.zoggery', self.sOM.name )
+        self.assertEqual( 'org.xlattice.zoggery', self.sOM.name )
 
-        self.assertEquals(0, len(self.sOM.enums) )
-        self.assertEquals(1, len(self.sOM.msgs) )
-        self.assertEquals(0, len(self.sOM.seqs) )
+        self.assertEqual(0, len(self.sOM.enums) )
+        self.assertEqual(1, len(self.sOM.msgs) )
+        self.assertEqual(0, len(self.sOM.seqs) )
 
         msgSpec = self.sOM.msgs[0]
         
@@ -175,7 +175,7 @@ class TestMsgImpl (unittest.TestCase):
         # data and, by deserializing it, for creating a second instance.
         chan = Channel(BUFSIZE)
         buf  = chan.buffer
-        self.assertEquals( BUFSIZE, len(buf) )
+        self.assertEqual( BUFSIZE, len(buf) )
 
         # create the LogEntryMsg class ------------------------------
 
@@ -219,15 +219,15 @@ class TestMsgImpl (unittest.TestCase):
         except AttributeError:
             pass
 
-        self.assertEquals(msgSpec.name, leMsg.name)
+        self.assertEqual(msgSpec.name, leMsg.name)
         # we don't have any nested enums or messages
-        self.assertEquals(0, len(leMsg.enums))
-        self.assertEquals(0, len(leMsg.msgs))
+        self.assertEqual(0, len(leMsg.enums))
+        self.assertEqual(0, len(leMsg.msgs))
 
-        self.assertEquals(6, len(leMsg.fieldClasses))
-        self.assertEquals(6, len(leMsg))        # number of fields in instance
+        self.assertEqual(6, len(leMsg.fieldClasses))
+        self.assertEqual(6, len(leMsg))        # number of fields in instance
         for i in range(len(leMsg)):
-            self.assertEquals(values[i], leMsg[i].value)
+            self.assertEqual(values[i], leMsg[i].value)
 
         # verify fields are accessible in the object ----------------
         # DEBUG
@@ -235,13 +235,13 @@ class TestMsgImpl (unittest.TestCase):
             print("FIELD: %s = %s " % (field.name, field.value))
         # END
         (timestamp, nodeID, key, length, by, path) = tuple(values)
-        self.assertEquals(timestamp, leMsg.timestamp)
+        self.assertEqual(timestamp, leMsg.timestamp)
 
-        self.assertEquals(nodeID,   leMsg.nodeID)
-        self.assertEquals(key,      leMsg.key)
-        self.assertEquals(length,   leMsg.length)
-        self.assertEquals(by,       leMsg.by)
-        self.assertEquals(path,     leMsg.path)
+        self.assertEqual(nodeID,   leMsg.nodeID)
+        self.assertEqual(key,      leMsg.key)
+        self.assertEqual(length,   leMsg.length)
+        self.assertEqual(by,       leMsg.by)
+        self.assertEqual(path,     leMsg.path)
 
         # serialize the object to the channel -----------------------
         # XXX not a public method
@@ -254,8 +254,8 @@ class TestMsgImpl (unittest.TestCase):
         n = leMsg.writeStandAlone(chan)                 # n is class index
         oldPosition = chan.position                     # TESTING flip()
         chan.flip()
-        self.assertEquals(oldPosition, chan.limit)      # TESTING flip()
-        self.assertEquals(0,           chan.position)   # TESTING flip() 
+        self.assertEqual(oldPosition, chan.limit)      # TESTING flip()
+        self.assertEqual(0,           chan.position)   # TESTING flip() 
         actual = chan.limit
 
         # deserialize the channel, making a clone of the message ----
@@ -264,7 +264,7 @@ class TestMsgImpl (unittest.TestCase):
         (readBack,n2) = MsgImpl.read(chan, self.sOM) 
         self.assertIsNotNone(readBack)
         self.assertTrue(leMsg.__eq__(readBack))
-        self.assertEquals(n, n2)
+        self.assertEqual(n, n2)
 
         # produce another message from the same values --------------
         leMsg2      = LogEntryMsg( values )
