@@ -1,5 +1,8 @@
 # ~/dev/py/fieldz/msgImpl.py
 
+# DEBUG
+import sys
+# END
 import fieldz.fieldTypes as F
 from fieldz.raw         import lengthAsVarint, fieldHdrLen, readFieldHdr, \
                             writeRawVarint, readRawVarint, \
@@ -97,16 +100,29 @@ class FieldImpl(object):
 
 class MetaField(type):
 
-    def __new__(meta, nameX, bases, dct):
-#       print "MetaField METACLASS NEW gets called once"
-        return super(MetaField, meta).__new__(meta, nameX, bases, dct)
+    # gets: valueError: "'_name' in __slots__ confliects with class variable"
+
+    def __new__(meta, name, bases, dct):
+        # DEBUG
+        print("MetaField NEW, meta='%s', name='%s', bases='%s', dct='%s'" % (
+                meta, name, bases, dct))
+        sys.stdout.flush()
+        # END
+        return super(MetaField, meta).__new__(meta, name, bases, dct)
 
     def __init__(cls, name, bases, dct):
+        # DEBUG
         super(MetaField, cls).__init__(name, bases, dct)
-#       print "MetaField METACLASS INIT gets called once"
+        print("MetaField INIT, meta='%s', name='%s', bases='%s', dct='%s'" % (
+                meta, name, bases, d))
+        sys.stdout.flush()
+        # END
 
     def __call__(cls, *args, **kwargs):
-#       print "MetaField CALL with args = %s" % str(args)
+        # DEBUG
+        print("MetaField CALL with args = '%s'" % str(args))
+        sys.stdout.flush()
+        # END
         return type.__call__(cls, *args, **kwargs)
 
 # -------------------------------------------------------------------
@@ -570,7 +586,9 @@ def makeFieldClass(dottedMsgName, fieldSpec):
     if dottedMsgName is None:   raise ValueError('null message name')
     if fieldSpec is None:       raise ValueError('null field spec')
     qualName = '%s.%s' % (dottedMsgName, fieldSpec.name)
-    print('MAKE_FIELD_CLASS for %s' % qualName)      # DEBUG
+    # DEBUG
+    print('MAKE_FIELD_CLASS for %s' % qualName)
+    # END
     if qualName in fieldClsByQName:   return fieldClsByQName[qualName]
 
     # DEBUG
@@ -605,16 +623,19 @@ def makeFieldClass(dottedMsgName, fieldSpec):
     d['fieldNbr']   = property(myFieldNbr)
     d['_default']   = fieldSpec.default
     d['default']    = property(myDefault)
-    d['_default']   = fieldSpec.default
-    d['default']    = property(myDefault)
 
     # this needs to be elaborated as appropriate to deal with the
     # 18 or so field types
     d['value']      = property(myValueGetter, myValueSetter)
 
-    M = MetaField( str(fieldSpec.name),  # name
-                     (FieldImpl,),  # bases
-                     d)             # dictionry
+    # 2016-02-19 adding '_' prefix caused small explosion of 
+    #   '_name ... conflicts' errors
+    # 2016-02-20 changing the prefix from '_' to '_QQQ_' had no effect
+    #   on ValueErrors:
+    #     "'_name' in __slots__ conficts with class variable"
+    M = MetaField( '_QQQ_' + str(fieldSpec.name),   # name
+                     (FieldImpl,),              # bases
+                     d)                         # dictionry
 
     #----------------------------
     # possibly some more fiddling ...
