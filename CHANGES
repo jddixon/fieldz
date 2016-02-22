@@ -1,5 +1,8 @@
 ~/dev/py/fieldz/CHANGES
 
+v0.10.3
+    2016-02-22
+        * minor edits to code; bring in implementation notes        SLOC 5562
 v0.10.2
     2016-02-20
         * added module names; edits to msgImply.py                  SLOC 5562
@@ -278,6 +281,7 @@ v0.1.2
         * working varint, fixed len 32- and 64-bit, var len bytestring
             and associated tests
         * initial svn import
+
 
 
 
