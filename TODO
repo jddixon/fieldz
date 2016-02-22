@@ -1,14 +1,42 @@
 ~/dev/py/fieldz/TODO
 
-2016-02-19
-    * testCoreTypes fails
-    * testGenEnums fails
-    * testLittleBig fails
-    * testMsgImpl fails
+2016-02-22
+    * add implementation notes
+        - api                                                           * DONE
+        - channels                                                      * DONE
+        - goals                                                         * DONE
+    * link to these from README                                         * DONE
+
+    * flesh out README.md
+
+2016-02-22, edited from -20
+
+    * note that a class with __slots__ will create instances which
+        don't have a dictionary, but the code here creates classes 
+        with both.
+        - is the last point corrects?
+
+    * The problem is confusion between a class and its instances.  The  
+        error is that in this implementation both class and instances 
+        have a name field and dulicate names.  The solution is to drop 
+        instance variables like name from the class definition.
+
+2016-02-20
+    * pushes to github yesterday, including merge v0.10.1, appear       * NOW OK
+        to be lost                                                      * NOW OK
+        - after committing and pushing today's work, -02-19 commits
+            appear on github, but today's are nowhere to be found
+
+2016-02-20, edited from -19
+    * testCoreTypes             fails
+    * testGenEnums              fails
+    * testLittleBig             fails
+    * testLogEntry              fails
+    * testMsgImpl               fails
     * MsgSpec canonical representation must be converted to 
         Unicode for testMsgSpec to succeed (see MsgSpec.__repr__()
-    * testProtoSpec fails
-    * testZoggerySerialization fails
+    * testProtoSpec             fails
+    * testZoggerySerialization  fails
 
 -----------------------------------------------------------------
 * testFieldTypes.testLenFuncs() is incomplete
