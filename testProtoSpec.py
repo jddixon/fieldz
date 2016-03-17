@@ -130,7 +130,7 @@ class TestProtoSpec (unittest.TestCase):
         """
         canonicalSpec = str(m.__repr__())
         # DEBUG
-        print("### roundTrip: SPEC IN CANONICAL FORM:\n" + canonicalSpec)
+        print("\n### roundTrip: SPEC IN CANONICAL FORM:\n" + canonicalSpec)
         print("### END SPEC IN CANONICAL FORM #######")
         # END
         p = StringProtoSpecParser( StringIO(canonicalSpec) )

@@ -1,5 +1,33 @@
 ~/dev/py/fieldz/TODO
 
+-----------------------------------------------------------------
+* testFieldTypes.testLenFuncs() is incomplete
+* TFWriter putNext uses dispatch table, TFReader.getNext doesn't
+* a TFBuffer is just a Channel and a MsgSpec -- is this layer
+    of code useful for anything other than testing?
+* does a WireBuffer have any value at all?
+* no B32/B64 handling of float/double in tfbuffer.py
+* typed.py handling of float/double puts may be suboptimal (uses
+    struct.{,un}pack instead of ctypes)
+* parser has no way to set indent and step, so tests fail if these
+    are not canonical
+
+-----------------------------------------------------------------
+
+2016-03-17, consolidates 12-12-24 and 16-02-20 (edited from -02-19)
+    * testCoreTypes             fails                                   * FIXED
+    * testGenEnums              fails, can change constant
+    * testLittleBig             fails
+        '_name' in __slots__ conflicts with class variable
+    * testLogEntry              fails                                   * FIXED
+    * testMsgImpl               fails, _name in __slots__
+    * MsgSpec canonical representation must be converted to 
+        Unicode for testMsgSpec to succeed (see MsgSpec.__repr__()
+    * testProtoSpec             fails
+        - attempt to parse protoSpec at line 135 causes 
+            'too many tokens' error, line 223, parser.py
+    * testZoggerySerialization  fails
+
 2016-02-22
     * add implementation notes
         - api                                                           * DONE
@@ -26,35 +54,6 @@
         to be lost                                                      * NOW OK
         - after committing and pushing today's work, -02-19 commits
             appear on github, but today's are nowhere to be found
-
-2016-02-20, edited from -19
-    * testCoreTypes             fails
-    * testGenEnums              fails
-    * testLittleBig             fails
-    * testLogEntry              fails
-    * testMsgImpl               fails
-    * MsgSpec canonical representation must be converted to 
-        Unicode for testMsgSpec to succeed (see MsgSpec.__repr__()
-    * testProtoSpec             fails
-    * testZoggerySerialization  fails
-
------------------------------------------------------------------
-* testFieldTypes.testLenFuncs() is incomplete
-* TFWriter putNext uses dispatch table, TFReader.getNext doesn't
-* a TFBuffer is just a Channel and a MsgSpec -- is this layer
-    of code useful for anything other than testing?
-* does a WireBuffer have any value at all?
-* no B32/B64 handling of float/double in tfbuffer.py
-* typed.py handling of float/double puts may be suboptimal (uses
-    struct.{,un}pack instead of ctypes)
-* parser has no way to set indent and step, so tests fail if these
-    are not canonical
------------------------------------------------------------------
-2012-12-24
-    * FIX testGenEnum, can change constant
-    * FIX testLittleBig, line 186 or so, list seen as property
-    * FIX testProtoSpec, attempt to parse protoSpec at line 135
-        causes 'too many tokens' error, line 223, parser.py
 
 2012-12-19
     * alertz and all need a ProtoSpec function mapping msg name to ndx

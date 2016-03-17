@@ -1,5 +1,8 @@
 ~/dev/py/fieldz/CHANGES
 
+v0.10.5
+    2016-03-17
+        * testCoreType, testLogEntry fixed                          SLOC 5569
 v0.10.4
     2016-02-23
         * fixed dead links, added Project Status                    SLOC 5562
@@ -284,6 +287,7 @@ v0.1.2
         * working varint, fixed len 32- and 64-bit, var len bytestring
             and associated tests
         * initial svn import
+
 
 
 
