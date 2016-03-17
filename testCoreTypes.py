@@ -110,6 +110,7 @@ class TestCoreTypes (unittest.TestCase):
         nodeReg, protoReg, msgReg = self.makeRegistries(protocol)
         n = 0                          # 0-based field number
         s = M.FieldSpec(msgReg, 'jollyGood', F._V_SINT32, M.Q_OPTIONAL, 37)
+        # XXX FAILS: invalid (optionlly dotted) name 'bytearray(b'jollyGood')
         self.roundTripToWireFormat(chan, n, C._FIELD_SPEC, s)
 
         # -----------------------------------------------------------

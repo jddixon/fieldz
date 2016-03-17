@@ -217,6 +217,10 @@ class StringSpecParser(object):
         words = line.split()
         wordCount = len(words)
 
+        # DEBUG
+        print("expectField: found %d tokens: %s" % (wordCount, words))
+        # END
+
         if wordCount < 2:
             raise ParserError("too few tokens in field def '%s'" % line)
         if wordCount > 5:

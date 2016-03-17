@@ -123,7 +123,7 @@ def fDoublePut(chan, val, n):
 tPutFuncs[F._F_DOUBLE] = fDoublePut                        # END B64
 
 def lStringPut (chan, val, n):
-    return  writeLenPlusField(chan, val, n)
+    return  writeLenPlusField(chan, val.encode('utf-8'), n)
 tPutFuncs[F._L_STRING] = lStringPut
 
 def lBytesPut (chan, val, n):
@@ -211,7 +211,11 @@ tGetFuncs[F._F_DOUBLE] = fDoubleGet
 # LEN_PLUS fields -----------------------------------------
 def lStringGet(chan):
     bArray = readRawLenPlus(chan)
-    return str(bArray)
+    s = bArray.decode('utf-8')
+    # DEBUG
+    print("lStringGet '%s' => '%s'" % (bArray, s))
+    # END
+    return s
 tGetFuncs[F._L_STRING] = lStringGet
 
 def lBytesGet(chan):

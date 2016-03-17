@@ -224,8 +224,13 @@ def writeRawBytes(chan, bytes):
     buf     = chan.buffer
     offset  = chan.position
     # XXX CHECK LEN OFFSET
+
+    # DEBUG
+    print("writeRawBytes: type(bytes) is ", type(bytes))
+    # END
+
     for b in bytes:
-        buf[offset] = b;
+        buf[offset] = int(b);
         offset += 1
 #   # DEBUG
 #   print "wrote '%s' as %u raw bytes" % (str(bytes), len(bytes))

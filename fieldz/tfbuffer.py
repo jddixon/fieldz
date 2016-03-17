@@ -121,7 +121,7 @@ class TFReader(TFBuffer):
             self._pType = LEN_PLUS_TYPE         # DEBUG
             v = readRawLenPlus(self)
             if self._fType == F._L_STRING:
-                self._value = str(v)
+                self._value = v.decode('utf-8')
             elif self._fType == F._L_BYTES:
                 self._value = v
             else:

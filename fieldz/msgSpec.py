@@ -67,7 +67,7 @@ _VALID_DOTTED_NAME_RE  = re.compile(_VALID_DOTTED_NAME_PAT)
 def validateDottedName(s):
     m = _VALID_DOTTED_NAME_RE.match(s)
     if m is None:
-        raise RuntimeError("invalid (optionally dotted) name '%s'" % s)
+        raise RuntimeError("invalid (optionally dotted) name %s'" % s)
 
 
 # -- CLASSES --------------------------------------------------------
@@ -184,6 +184,9 @@ class EnumSpec(object):
         return True
 
     def indentedStr(self, indent='', step=''):
+        # DEBUG
+        print("EnumSpec.indentedStr <-------------------")
+        # END
         s = []
         s.append('%senum %s\n' %  (indent, self.name))
         for pair in self._pairs:
@@ -244,6 +247,11 @@ class FieldSpec(object):
         # -- name ---------------------------------------------------
         if name is None or len(name) == 0:
             raise ValueError('no field name specified')
+
+        # DEBUG
+        print("FieldSpec.__init__: name '%s' is of type %s" % (
+            name, type(name)))
+        # END
         validateDottedName(name)
         self._name = name
 
@@ -731,7 +739,7 @@ def enumPairSpecGetter(chan):
     hdr = readRawVarint(chan)
     # SHOULD COMPLAIN IF WRONG HEADER
     s = readRawLenPlus(chan)
-    sym = str(s)                        # convert bytearray to str
+    sym = s.decode('utf-8')                   # convert bytes to str
 
     # read field 1
     hdr = readRawVarint(chan)
@@ -793,7 +801,7 @@ def enumSpecGetter(chan):
     hdr = readRawVarint(chan)
     # SHOULD COMPLAIN IF WRONG HEADER
     s = readRawLenPlus(chan)
-    name = str(s)                        # convert bytearray to str
+    name = s.decode('utf-8')                  # convert bytes to str
 
     # read instances of field 1: should enforce the + quantifier here
     pairs = []
@@ -875,7 +883,7 @@ def fieldSpecGetter(msgReg, chan):
     hdr = readRawVarint(chan)
     # SHOULD COMPLAIN IF WRONG HEADER
     s    = readRawLenPlus(chan)
-    name = str(s)                        # convert bytearray to str
+    name = s.decode('utf-8')                      # convert bytes to str
 
     # read field 1
     hdr  = readRawVarint(chan)
@@ -954,17 +962,11 @@ def msgSpecGetter(chan):
     byteCount = readRawVarint(chan)
     end = chan.position + byteCount
 
-#   # read field 0
-#   hdr = readRawVarint(chan)
-#   # SHOULD COMPLAIN IF WRONG HEADER
-#   s = readRawLenPlus(chan)
-#   protocol = str(s)                       # convert bytearray to str
-
     # read field 0
     hdr = readRawVarint(chan)
     # SHOULD COMPLAIN IF WRONG HEADER
     s = readRawLenPlus(chan)
-    name = str(s)                           # convert bytearray to str
+    name = s.decode('utf8')                 # convert byte to str
 
     # read instances of field 1: should enforce the + quantifier here
     fields = []
