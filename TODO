@@ -14,6 +14,10 @@
 
 -----------------------------------------------------------------
 
+2016-03-18
+    * auto8it pending
+    NOT COMMITTED: fix to testProtoSPec
+
 2016-03-17, consolidates 12-12-24 and 16-02-20 (edited from -02-19)
     * testCoreTypes             fails                                   * FIXED
     * testGenEnums              fails, can change constant
@@ -24,8 +28,11 @@
     * MsgSpec canonical representation must be converted to 
         Unicode for testMsgSpec to succeed (see MsgSpec.__repr__()
     * testProtoSpec             fails
-        - attempt to parse protoSpec at line 135 causes 
-            'too many tokens' error, line 223, parser.py
+        - attempt to parse protoSpec at line 135 causes 			    * FIXED
+            'too many tokens' error, line 223, parser.py			    * FIXED
+             * this appears as stringified EnumEntry object where		* FIXED
+                its serialization should appear; only fieldz/reg 		* FIXED
+                EnumEntry objects are affected			                * FIXED
     * testZoggerySerialization  fails
 
 2016-02-22

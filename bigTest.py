@@ -3,8 +3,8 @@
 BIG_TEST = u"""
 protocol org.xlattice.fieldz.test.bigProto
 
-# This should exercise all combinations of the 20 field types, with 
-# the four quantifiers.  The first category (required fields) have no 
+# This should exercise all combinations of the 20 field types, with
+# the four quantifiers.  The first category (required fields) have no
 # explicit field numbers.  In the other categories field numbers are
 # specified.
 
@@ -33,8 +33,8 @@ message bigTestMsg:
 
  # optional fields, numbered
  # XXX FAILS (can't handle space(s) before quantifier
- #vBoolOptField       vBool ?   @ 100  
- vBoolOptField      vBool?    @100 
+ #vBoolOptField       vBool ?   @ 100
+ vBoolOptField      vBool?    @100
  vEnumOptField      vEnum?    @101
  vuInt32OptField    vuInt32?  @102
  vuInt64OptField    vuInt64?  @103
@@ -56,7 +56,7 @@ message bigTestMsg:
  fBytes32OptField   fBytes32? @119
 
  # optional/repeated (*) fields, numbered
- vBoolStarField     vBool*    @200 
+ vBoolStarField     vBool*    @200
  vEnumStarField     vEnum*    @201
  vuInt32StarField   vuInt32*  @202
  vuInt64StarField   vuInt64*  @203
@@ -78,7 +78,7 @@ message bigTestMsg:
  fBytes32StarField  fBytes32* @219
 
  # required/repeated (+) fields, numbered
- vBoolPlusField     vBool+    @300 
+ vBoolPlusField     vBool+    @300
  vEnumPlusField     vEnum+    @301
  vuInt32PlusField   vuInt32+  @302
  vuInt64PlusField   vuInt64+  @303

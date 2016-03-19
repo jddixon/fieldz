@@ -1,43 +1,46 @@
 #!/usr/bin/python3
 
 # testMsgImpl.py
-import time, unittest
-from io     import StringIO
+import time
+import unittest
+from io import StringIO
 
 from rnglib import SimpleRNG
 
 from fieldz.parser import StringProtoSpecParser
-import fieldz.fieldTypes    as F
-import fieldz.msgSpec       as M
-import fieldz.typed         as T
-from fieldz.chan    import Channel
+import fieldz.fieldTypes as F
+import fieldz.msgSpec as M
+import fieldz.typed as T
+from fieldz.chan import Channel
 from fieldz.msgImpl import makeMsgClass, makeFieldClass, MsgImpl
 # XXX NEEDS FIXING: we shouldn't be using this low-level code
-from fieldz.raw     import writeFieldHdr, writeRawVarint, LEN_PLUS_TYPE
+from fieldz.raw import writeFieldHdr, writeRawVarint, LEN_PLUS_TYPE
 
 #################################################################
 # THIS WAS HACKED FROM testProtoSpec.py; CAN HACK MORE FROM THERE
 #################################################################
 
 # PROTOCOLS ---------------------------------------------------------
-from littleBigTest          import LITTLE_BIG_PROTO_SPEC
+from littleBigTest import LITTLE_BIG_PROTO_SPEC
 
-from simpleProtocol         import SIMPLE_PROTOCOL
-from zoggeryProtoSpec       import ZOGGERY_PROTO_SPEC
-from nestedEnumProtoSpec    import NESTED_ENUM_PROTO_SPEC
-from nestedMsgsProtoSpec    import NESTED_MSGS_PROTO_SPEC
+from simpleProtocol import SIMPLE_PROTOCOL
+from zoggeryProtoSpec import ZOGGERY_PROTO_SPEC
+from nestedEnumProtoSpec import NESTED_ENUM_PROTO_SPEC
+from nestedMsgsProtoSpec import NESTED_MSGS_PROTO_SPEC
 
-BUFSIZE = 16*1024
-rng     = SimpleRNG( time.time() )
+BUFSIZE = 16 * 1024
+rng = SimpleRNG(time.time())
 
 # TESTS -------------------------------------------------------------
+
+
 class TestMsgImpl (unittest.TestCase):
 
     def setUp(self):
         data = StringIO(ZOGGERY_PROTO_SPEC)
-        p    = StringProtoSpecParser(data)   # data should be file-like
-        self.sOM        = p.parse()     # object model from string serialization
-        self.protoName  = self.sOM.name # the dotted name of the protocol
+        p = StringProtoSpecParser(data)   # data should be file-like
+        self.sOM = p.parse()     # object model from string serialization
+        self.protoName = self.sOM.name  # the dotted name of the protocol
 
     def tearDown(self):
         pass
@@ -45,15 +48,15 @@ class TestMsgImpl (unittest.TestCase):
     # utility functions #############################################
     def leMsgValues(self):
         """ returns a list """
-        timestamp   = int(time.time())
-        nodeID      = [0]*20
-        key         = [0]*20
-        length      = rng.nextInt32(256*256)
+        timestamp = int(time.time())
+        nodeID = [0] * 20
+        key = [0] * 20
+        length = rng.nextInt32(256 * 256)
         # let's have some random bytes
         rng.nextBytes(nodeID)
         rng.nextBytes(key)
-        by          = 'who is responsible'
-        path        = '/home/jdd/tarballs/something.tar.gz'
+        by = 'who is responsible'
+        path = '/home/jdd/tarballs/something.tar.gz'
         return [timestamp, nodeID, key, length, by, path]
 
 #   def littleBigValues(self):
@@ -61,7 +64,7 @@ class TestMsgImpl (unittest.TestCase):
 #       # XXX these MUST be kept in sync with littleBigTest.py
 #       values.append(rng.nextBoolean())       # vBoolReqField
 #       values.append(rng.nextInt16())         # vEnumReqField
-#      
+#
 #       values.append(rng.nextInt32())         # vuInt32ReqField
 #       values.append(rng.nextInt32())         # vuInt64ReqField
 #       values.append(rng.nextInt64())         # vsInt32ReqField
@@ -69,15 +72,15 @@ class TestMsgImpl (unittest.TestCase):
 
 #           # #vuInt32ReqField
 #           # #vuInt64ReqField
-#       
+#
 #       values.append(rng.nextInt32())         # fsInt32ReqField
 #       values.append(rng.nextInt32())         # fuInt32ReqField
-#       values.append(rng.nextReal())          # fFloatReqField     
-#       
+#       values.append(rng.nextReal())          # fFloatReqField
+#
 #       values.append(rng.nextInt64())         # fsInt64ReqField
 #       values.append(rng.nextInt64())         # fuInt64ReqField
-#       values.append(rng.nextReal())          # fDoubleReqField     
-#      
+#       values.append(rng.nextReal())          # fDoubleReqField
+#
 #       values.append(rng.nextFileName(16))    # lStringReqField
 
 #       rndLen = 16 + rng.nextInt16(49)
@@ -96,29 +99,29 @@ class TestMsgImpl (unittest.TestCase):
     # actual unit tests #############################################
     def checkFieldImplAgainstSpec(self, protoName, msgName, fieldSpec, value):
         self.assertIsNotNone(fieldSpec)
-        dottedName  = "%s.%s" % (protoName, msgName)
-        Clz         = makeFieldClass(dottedName, fieldSpec)
+        dottedName = "%s.%s" % (protoName, msgName)
+        Clz = makeFieldClass(dottedName, fieldSpec)
         if '__dict__' in dir(Clz):
             print('\nGENERATED FieldImpl CLASS DICTIONARY')
             for e in list(Clz.__dict__.keys()):
                 print("%-20s %s" % (e, Clz.__dict__[e]))
 
         self.assertIsNotNone(Clz)
-        f           = Clz(value)
+        f = Clz(value)
         self.assertIsNotNone(f)
 
         # instance attributes -----------------------------
-        self.assertEqual( fieldSpec.name,      f.name        )
-        self.assertEqual( fieldSpec.fTypeNdx,  f.fType       )
-        self.assertEqual( fieldSpec.quantifier,f.quantifier  )
-        self.assertEqual( fieldSpec.fieldNbr,  f.fieldNbr    )
-        self.assertIsNone( f.default )          # not an elegant test
+        self.assertEqual(fieldSpec.name, f.name)
+        self.assertEqual(fieldSpec.fTypeNdx, f.fType)
+        self.assertEqual(fieldSpec.quantifier, f.quantifier)
+        self.assertEqual(fieldSpec.fieldNbr, f.fieldNbr)
+        self.assertIsNone(f.default)          # not an elegant test
 
         # instance attribute ------------------------------
-        self.assertEqual( value, f.value)
+        self.assertEqual(value, f.value)
 
         # with slots enabled, this is never seen ----------
-        # because __dict__ is not in the list of valid 
+        # because __dict__ is not in the list of valid
         # attributes for f
         if '__dict__' in dir(f):
             print('\nGENERATED FieldImpl INSTANCE DICTIONARY')
@@ -126,60 +129,62 @@ class TestMsgImpl (unittest.TestCase):
                 print("%-20s %s" % (item, f.__dict__[item]))     # GEEP
 
     def testFieldImpl(self):
-        msgSpec     = self.sOM.msgs[0]
+        msgSpec = self.sOM.msgs[0]
 
         # the fields in this imaginary logEntry
         values = self.leMsgValues()
 
-        for i in range(len(msgSpec)): 
-            print("\nDEBUG: field %u ------------------------------------------------------" % i)
+        for i in range(len(msgSpec)):
+            print(
+                "\nDEBUG: field %u ------------------------------------------------------" %
+                i)
             fieldSpec = msgSpec[i]
             self.checkFieldImplAgainstSpec(
-                        self.protoName, msgSpec.name, fieldSpec, values[i])
+                self.protoName, msgSpec.name, fieldSpec, values[i])
 
     def testCaching(self):
         self.assertTrue(isinstance(self.sOM, M.ProtoSpec))
         msgSpec = self.sOM.msgs[0]
-        name    = msgSpec.name
-        Clz0    = makeMsgClass(self.sOM, name)
-        Clz1    = makeMsgClass(self.sOM, name)
+        name = msgSpec.name
+        Clz0 = makeMsgClass(self.sOM, name)
+        Clz1 = makeMsgClass(self.sOM, name)
         # we cache classe, so the two should be the same
         self.assertEqual(id(Clz0), id(Clz1))
 
         # chan    = Channel(BUFSIZE)
-        values  = self.leMsgValues()
-        leMsg0  = Clz0(values) 
-        leMsg1  = Clz0(values) 
+        values = self.leMsgValues()
+        leMsg0 = Clz0(values)
+        leMsg1 = Clz0(values)
         # we don't cache instances, so these will differ
         self.assertNotEquals(id(leMsg0), id(leMsg1))
 
         fieldSpec = msgSpec[0]
-        dottedName  = "%s.%s" % (self.protoName, msgSpec.name)
-        F0    = makeFieldClass(dottedName, fieldSpec)
-        F1    = makeFieldClass(dottedName, fieldSpec)
+        dottedName = "%s.%s" % (self.protoName, msgSpec.name)
+        F0 = makeFieldClass(dottedName, fieldSpec)
+        F1 = makeFieldClass(dottedName, fieldSpec)
         self.assertEqual(id(F0), id(F1))           # GEEP
 
     def testMsgImpl(self):
         self.assertIsNotNone(self.sOM)
         self.assertTrue(isinstance(self.sOM, M.ProtoSpec))
-        self.assertEqual( 'org.xlattice.zoggery', self.sOM.name )
+        self.assertEqual('org.xlattice.zoggery', self.sOM.name)
 
-        self.assertEqual(0, len(self.sOM.enums) )
-        self.assertEqual(1, len(self.sOM.msgs) )
-        self.assertEqual(0, len(self.sOM.seqs) )
+        self.assertEqual(0, len(self.sOM.enums))
+        self.assertEqual(1, len(self.sOM.msgs))
+        self.assertEqual(0, len(self.sOM.seqs))
 
         msgSpec = self.sOM.msgs[0]
-        
+
         # Create a channel ------------------------------------------
-        # its buffer will be used for both serializing # the instance 
+        # its buffer will be used for both serializing # the instance
         # data and, by deserializing it, for creating a second instance.
         chan = Channel(BUFSIZE)
-        buf  = chan.buffer
-        self.assertEqual( BUFSIZE, len(buf) )
+        buf = chan.buffer
+        self.assertEqual(BUFSIZE, len(buf))
 
         # create the LogEntryMsg class ------------------------------
 
-        LogEntryMsg     = makeMsgClass(self.sOM, msgSpec.name)
+        LogEntryMsg = makeMsgClass(self.sOM, msgSpec.name)
 
         # __setattr__ in MetaMsg raises exception on any attempt
         # to add new attributes
@@ -188,16 +193,18 @@ class TestMsgImpl (unittest.TestCase):
             self.fail(
                 "ERROR: attempt to assign new class attribute succeeded")
         except AttributeError as ae:
-            
+
             # DEBUG
-            print("success: attr error attempting to set LogEntryMsg.foo: " + str(ae))
+            print(
+                "success: attr error attempting to set LogEntryMsg.foo: " +
+                str(ae))
             # END
             pass
 
         # create a message instance ---------------------------------
-        values  = self.leMsgValues()            # quasi-random values
-        leMsg   = LogEntryMsg( values )
-        
+        values = self.leMsgValues()            # quasi-random values
+        leMsg = LogEntryMsg(values)
+
         # __setattr__ in MetaMsg raises exception on any attempt
         # to add new attributes.  This works at the class level but
         # NOT at the instance level
@@ -237,17 +244,17 @@ class TestMsgImpl (unittest.TestCase):
         (timestamp, nodeID, key, length, by, path) = tuple(values)
         self.assertEqual(timestamp, leMsg.timestamp)
 
-        self.assertEqual(nodeID,   leMsg.nodeID)
-        self.assertEqual(key,      leMsg.key)
-        self.assertEqual(length,   leMsg.length)
-        self.assertEqual(by,       leMsg.by)
-        self.assertEqual(path,     leMsg.path)
+        self.assertEqual(nodeID, leMsg.nodeID)
+        self.assertEqual(key, leMsg.key)
+        self.assertEqual(length, leMsg.length)
+        self.assertEqual(by, leMsg.by)
+        self.assertEqual(path, leMsg.path)
 
         # serialize the object to the channel -----------------------
         # XXX not a public method
-        expectedMsgLen  = leMsg._wireLen()
+        expectedMsgLen = leMsg._wireLen()
         print("EXPECTED LENGTH OF SERIALIZED OBJECT: %u" % expectedMsgLen)
-        buf             = chan.buffer
+        buf = chan.buffer
 
         chan.clear()
 
@@ -255,33 +262,33 @@ class TestMsgImpl (unittest.TestCase):
         oldPosition = chan.position                     # TESTING flip()
         chan.flip()
         self.assertEqual(oldPosition, chan.limit)      # TESTING flip()
-        self.assertEqual(0,           chan.position)   # TESTING flip() 
+        self.assertEqual(0, chan.position)   # TESTING flip()
         actual = chan.limit
 
         # deserialize the channel, making a clone of the message ----
         # XXX FAILS BECAUSE HEADER IS PRESENT:
-        #(readBack,n2) = LogEntryMsg.read(chan, self.sOM) 
-        (readBack,n2) = MsgImpl.read(chan, self.sOM) 
+        #(readBack,n2) = LogEntryMsg.read(chan, self.sOM)
+        (readBack, n2) = MsgImpl.read(chan, self.sOM)
         self.assertIsNotNone(readBack)
         self.assertTrue(leMsg.__eq__(readBack))
         self.assertEqual(n, n2)
 
         # produce another message from the same values --------------
-        leMsg2      = LogEntryMsg( values )
-        chan2       = Channel(BUFSIZE)
+        leMsg2 = LogEntryMsg(values)
+        chan2 = Channel(BUFSIZE)
         n = leMsg2.writeStandAlone(chan2)
         chan2.flip()
-        (copy2,n3)  = LogEntryMsg.read(chan2, self.sOM)
+        (copy2, n3) = LogEntryMsg.read(chan2, self.sOM)
         self.assertTrue(leMsg.__eq__(copy2))
         self.assertTrue(leMsg2.__eq__(copy2))
-        
+
 #   def testMsg(self):
 #       # Testing MsgSpec with simple fields.  Verify that read,
 #       # putter, lenFunc, and pLenFunc work for the basic types
 #       # (ie, that they are correctly imported into this reg) and
 #       # they are work for the newly defined single-msg protoSpec.
 
-#       # Use ZOGGERY_PROTO_SPEC 
+#       # Use ZOGGERY_PROTO_SPEC
 
 #       # parse the protoSpec
 #       # verify that this adds 1 (msg) + 5 (field count) to the number
@@ -300,7 +307,7 @@ class TestMsgImpl (unittest.TestCase):
 
 #   def testNestedMsgs(self):
 #       # Test MsgSpec with embedded msg and enum fields, to a depth of
-#       # at least 3.  Need to verify that getter, putter, lenFunc, and 
+#       # at least 3.  Need to verify that getter, putter, lenFunc, and
 #       # pLenFunc work.
 
 #       # Use NESTED_MSGS_PROTO_SPEC

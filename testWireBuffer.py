@@ -1,20 +1,23 @@
 #!/usr/bin/python3
 
 # testWireBuffer.py
-import time, unittest
+import time
+import unittest
 
 from rnglib import SimpleRNG
 from fieldz.raw import *
 
+
 class TestWireBuffer (unittest.TestCase):
 
     def setUp(self):
-        self.rng = SimpleRNG( time.time() )
+        self.rng = SimpleRNG(time.time())
+
     def tearDown(self):
         pass
 
     # actual unit tests #############################################
-   
+
     def testPowersOfTwo(self):
         self.assertRaises(ValueError, nextPowerOfTwo, -1)
         self.assertRaises(ValueError, nextPowerOfTwo, 0)
@@ -23,11 +26,11 @@ class TestWireBuffer (unittest.TestCase):
 
     def testWireBuffer(self):
 
-        wb = WireBuffer(1023)  
-        self.assertEqual(1024,         wb.capacity)
-        self.assertEqual(0,            wb.position)
-        self.assertEqual(0,            wb.buffer[0])
-        self.assertEqual(wb.capacity,  len(wb.buffer))
+        wb = WireBuffer(1023)
+        self.assertEqual(1024, wb.capacity)
+        self.assertEqual(0, wb.position)
+        self.assertEqual(0, wb.buffer[0])
+        self.assertEqual(wb.capacity, len(wb.buffer))
 
         try:
             wb.position = wb.capacity
@@ -40,14 +43,14 @@ class TestWireBuffer (unittest.TestCase):
         self.assertEqual(2 * 1024, wb.capacity)
 
     def testCopy(self):
-        wb  = WireBuffer(4095)
+        wb = WireBuffer(4095)
         self.assertEqual(4096, wb.capacity)
         wb.position = 27
-        self.assertEqual(27,   wb.position)
+        self.assertEqual(27, wb.position)
 
         wb2 = wb.copy()
         self.assertEqual(4096, wb2.capacity)
-        self.assertEqual(0,    wb2.position)
+        self.assertEqual(0, wb2.position)
 
         self.assertEqual(wb.buffer, wb2.buffer)
 

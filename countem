@@ -1,8 +1,8 @@
 cd ~/dev/py/fieldz
 rm -rf build/*
 
-pySloc -v $@ \
-    bash:countem bash:installit     \
+pySloc -v -L py $@ \
+    bash:auto8it bash:countem bash:installit     \
     not#:MANIFEST.in                \
     not#:specs/org/xlattice/fieldz/core/EnumPair.xlgo               \
     not#:specs/org/xlattice/fieldz/core/EnumSpec.xlgo               \

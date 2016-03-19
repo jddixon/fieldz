@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 
 # testSolo.py
-import time, unittest
+import time
+import unittest
 
 from rnglib import SimpleRNG
 import fieldz.enumSpec as Q
@@ -14,6 +15,7 @@ message SoloMsg
     val vuint32     # a single unsigned value, a required field
 """
 
+
 class TestSolo (unittest.TestCase):
     """
     Send the definition of the msgSpec Solo down a channel followed
@@ -21,17 +23,17 @@ class TestSolo (unittest.TestCase):
     """
 
     def setUp(self):
-        self.rng = SimpleRNG( time.time() )
+        self.rng = SimpleRNG(time.time())
+
     def tearDown(self):
         pass
 
     # utility functions #############################################
 
-    def dumpBuffer (self, buf):
+    def dumpBuffer(self, buf):
         for i in range(16):
             print("0x%02x " % buf[i], end=' ')
         print()
-
 
     # actual unit tests #############################################
     def testSolo(self):
@@ -39,20 +41,20 @@ class TestSolo (unittest.TestCase):
         # stage.)
         writeReg = NodeReg()        # 2012-11-11 was Registry()
 
-        # Create writer, a TFWriter, and so wb, the buffer we are going to 
-        # write to.   
+        # Create writer, a TFWriter, and so wb, the buffer we are going to
+        # write to.
 
         # Deserialize SOLO as soloSpec, confirming that it is an instance
         # of MsgSpec.
-        
+
         # Register the soloSpec object with writeReg.
-        
-        # Verify that this has automatically created a ProtoSpec instance 
+
+        # Verify that this has automatically created a ProtoSpec instance
         # for org.xlattice.fieldz.test
 
-        # Write soloSpec, the SoloMsg msgSpec, to the buffer (this is a 
+        # Write soloSpec, the SoloMsg msgSpec, to the buffer (this is a
         # class definition).
-        
+
         # Create an instance of SoloMsg, set its val field to 97,
         # and write that instance to the data buffer
 

@@ -1,39 +1,42 @@
 #!/usr/bin/python3
 
 # testLittleBig.py
-import time, unittest
-from io     import StringIO
+import time
+import unittest
+from io import StringIO
 
 from rnglib import SimpleRNG
 
 # XXX FAILS to import write if named 'putter':
 from fieldz.msgImpl import makeMsgClass,  \
-                           makeFieldClass
+    makeFieldClass
 
 from fieldz.parser import StringProtoSpecParser
-import fieldz.fieldTypes    as F
-import fieldz.msgSpec       as M
-import fieldz.typed         as T
-from fieldz.chan    import Channel
+import fieldz.fieldTypes as F
+import fieldz.msgSpec as M
+import fieldz.typed as T
+from fieldz.chan import Channel
 
 #################################################################
 # THIS WAS HACKED FROM testProtoSpec.py; CAN HACK MORE FROM THERE
 #################################################################
 
 # PROTOCOLS ---------------------------------------------------------
-from littleBigTest    import LITTLE_BIG_PROTO_SPEC
+from littleBigTest import LITTLE_BIG_PROTO_SPEC
 
-BUFSIZE = 16*1024
+BUFSIZE = 16 * 1024
 
 # TESTS -------------------------------------------------------------
+
+
 class TestLittleBig (unittest.TestCase):
 
     def setUp(self):
-        self.rng = SimpleRNG( time.time() )
+        self.rng = SimpleRNG(time.time())
         data = StringIO(LITTLE_BIG_PROTO_SPEC)
-        p    = StringProtoSpecParser(data)   # data should be file-like
-        self.sOM        = p.parse()     # object model from string serialization
-        self.protoName  = self.sOM.name # the dotted name of the protocol
+        p = StringProtoSpecParser(data)   # data should be file-like
+        self.sOM = p.parse()     # object model from string serialization
+        self.protoName = self.sOM.name  # the dotted name of the protocol
 
     def tearDown(self):
         pass
@@ -51,8 +54,8 @@ class TestLittleBig (unittest.TestCase):
         values.append(self.rng.nextInt64())         # vsInt32ReqField
         values.append(self.rng.nextInt64())         # vsInt64ReqField
 
-            # #vuInt32ReqField
-            # #vuInt64ReqField
+        # #vuInt32ReqField
+        # #vuInt64ReqField
 
         values.append(self.rng.nextInt32())         # fsInt32ReqField
         values.append(self.rng.nextInt32())         # fuInt32ReqField
@@ -86,26 +89,26 @@ class TestLittleBig (unittest.TestCase):
     # actual unit tests #############################################
     def checkFieldImplAgainstSpec(self, protoName, msgName, fieldSpec, value):
         self.assertIsNotNone(fieldSpec)
-        dottedName  = "%s.%s" % (protoName, msgName)
-        Clz         = makeFieldClass(dottedName, fieldSpec)
+        dottedName = "%s.%s" % (protoName, msgName)
+        Clz = makeFieldClass(dottedName, fieldSpec)
         if '__dict__' in dir(Clz):
             print('\nGENERATED FieldImpl CLASS DICTIONARY')
             for e in list(Clz.__dict__.keys()):
                 print("%-20s %s" % (e, Clz.__dict__[e]))
 
         self.assertIsNotNone(Clz)
-        f           = Clz(value)
+        f = Clz(value)
         self.assertIsNotNone(f)
 
         # class attributes --------------------------------
-        self.assertEqual( fieldSpec.name,      f.name        )
-        self.assertEqual( fieldSpec.fTypeNdx,  f.fType       )
-        self.assertEqual( fieldSpec.quantifier,f.quantifier  )
-        self.assertEqual( fieldSpec.fieldNbr,  f.fieldNbr    )
-        self.assertIsNone( f.default )          # not an elegant test
+        self.assertEqual(fieldSpec.name, f.name)
+        self.assertEqual(fieldSpec.fTypeNdx, f.fType)
+        self.assertEqual(fieldSpec.quantifier, f.quantifier)
+        self.assertEqual(fieldSpec.fieldNbr, f.fieldNbr)
+        self.assertIsNone(f.default)          # not an elegant test
 
         # instance attribute ------------------------------
-        self.assertEqual( value, f.value)
+        self.assertEqual(value, f.value)
 
         # with slots enabled, this is never seen ----------
         # because __dict__ is not in the list of valid
@@ -116,29 +119,31 @@ class TestLittleBig (unittest.TestCase):
                 print("%-20s %s" % (item, f.__dict__[item]))     # GEEP
 
     def testFieldImpl(self):
-        msgSpec     = self.sOM.msgs[0]
+        msgSpec = self.sOM.msgs[0]
 
         # the fields in this imaginary logEntry
         values = self.lilBigMsgValues()
 
         for i in range(len(msgSpec)):
-            print("\nDEBUG: field %u ------------------------------------------------------" % i)
+            print(
+                "\nDEBUG: field %u ------------------------------------------------------" %
+                i)
             fieldSpec = msgSpec[i]
             self.checkFieldImplAgainstSpec(
-                        self.protoName, msgSpec.name, fieldSpec, values[i])
+                self.protoName, msgSpec.name, fieldSpec, values[i])
 
     def testCaching(self):
         self.assertTrue(isinstance(self.sOM, M.ProtoSpec))
         # XXX A HACK WHILE WE CHANGE INTERFACE ------------
         msgSpec = self.sOM.msgs[0]
-        name    = msgSpec.name
+        name = msgSpec.name
 
-        Clz0    = makeMsgClass(self.sOM, name)
+        Clz0 = makeMsgClass(self.sOM, name)
         # DEBUG
         print("Constructed Clz0 name is '%s'" % Clz0.name)
         # END
         self.assertEqual(name, Clz0.name)
-        Clz1    = makeMsgClass(self.sOM, name)
+        Clz1 = makeMsgClass(self.sOM, name)
         self.assertEqual(name, Clz1.name)
 
         # END HACK ----------------------------------------
@@ -146,27 +151,27 @@ class TestLittleBig (unittest.TestCase):
         self.assertEqual(id(Clz0), id(Clz1))
 
         # chan    = Channel(BUFSIZE)
-        values  = self.lilBigMsgValues()
-        lilBigMsg0  = Clz0(values)
-        lilBigMsg1  = Clz0(values)
+        values = self.lilBigMsgValues()
+        lilBigMsg0 = Clz0(values)
+        lilBigMsg1 = Clz0(values)
         # we don't cache instances, so these will differ
         self.assertNotEquals(id(lilBigMsg0), id(lilBigMsg1))
 
         fieldSpec = msgSpec[0]
-        dottedName  = "%s.%s" % (self.protoName, msgSpec.name)
-        F0    = makeFieldClass(dottedName, fieldSpec)
-        F1    = makeFieldClass(dottedName, fieldSpec)
-        self.assertEqual(id(F0), id(F1)) 
+        dottedName = "%s.%s" % (self.protoName, msgSpec.name)
+        F0 = makeFieldClass(dottedName, fieldSpec)
+        F1 = makeFieldClass(dottedName, fieldSpec)
+        self.assertEqual(id(F0), id(F1))
 
     def testLittleBig(self):
         self.assertIsNotNone(self.sOM)
         self.assertTrue(isinstance(self.sOM, M.ProtoSpec))
-        self.assertEqual( 'org.xlattice.fieldz.test.littleBigProto',
-                           self.sOM.name )
+        self.assertEqual('org.xlattice.fieldz.test.littleBigProto',
+                         self.sOM.name)
 
-        self.assertEqual(0, len(self.sOM.enums) )
-        self.assertEqual(1, len(self.sOM.msgs) )
-        self.assertEqual(0, len(self.sOM.seqs) )
+        self.assertEqual(0, len(self.sOM.enums))
+        self.assertEqual(1, len(self.sOM.msgs))
+        self.assertEqual(0, len(self.sOM.seqs))
 
         msgSpec = self.sOM.msgs[0]
 
@@ -174,24 +179,24 @@ class TestLittleBig (unittest.TestCase):
         # its buffer will be used for both serializing # the instance
         # data and, by deserializing it, for creating a second instance.
         chan = Channel(BUFSIZE)
-        buf  = chan.buffer
-        self.assertEqual( BUFSIZE, len(buf) )
+        buf = chan.buffer
+        self.assertEqual(BUFSIZE, len(buf))
 
         # create the LittleBigMsg class ------------------------------
-        LittleBigMsg     = makeMsgClass(self.sOM, msgSpec.name)
+        LittleBigMsg = makeMsgClass(self.sOM, msgSpec.name)
 
         # -------------------------------------------------------------
-        # XXX the following fails because field 2 is seen as a property 
+        # XXX the following fails because field 2 is seen as a property
         # instead of a list
         if False:        # DEBUGGING
             print('\nLittleBigMsg CLASS DICTIONARY')
-            for (ndx,key) in enumerate(LittleBigMsg.__dict__.keys()):
+            for (ndx, key) in enumerate(LittleBigMsg.__dict__.keys()):
                 print("%3u: %-20s %s" % (ndx, key, LittleBigMsg.__dict__[key]))
         # -------------------------------------------------------------
 
         # create a message instance ---------------------------------
-        values      = self.lilBigMsgValues()            # quasi-random values
-        lilBigMsg   = LittleBigMsg( values )
+        values = self.lilBigMsgValues()            # quasi-random values
+        lilBigMsg = LittleBigMsg(values)
 
         # __setattr__ in MetaMsg raises exception on any attempt
         # to add new attributes.  This works at the class level but
@@ -237,7 +242,7 @@ class TestLittleBig (unittest.TestCase):
         oldPosition = chan.position
         chan.flip()
         self.assertEqual(oldPosition, chan.limit)
-        self.assertEqual(0,           chan.position)
+        self.assertEqual(0, chan.position)
 
         # deserialize the channel, making a clone of the message ----
         (readBack, n2) = LittleBigMsg.read(chan, self.sOM)  # sOM is protoSpec
@@ -249,8 +254,8 @@ class TestLittleBig (unittest.TestCase):
 
         print("\nDEBUG: PHASE B ######################################")
         # produce another message from the same values --------------
-        lilBigMsg2  = LittleBigMsg( values )
-        chan2       = Channel(BUFSIZE)
+        lilBigMsg2 = LittleBigMsg(values)
+        chan2 = Channel(BUFSIZE)
         n = lilBigMsg2.writeStandAlone(chan2)
         chan2.flip()
         (copy2, n3) = LittleBigMsg.read(chan2, self.sOM)
@@ -260,8 +265,8 @@ class TestLittleBig (unittest.TestCase):
         self.assertTrue(lilBigMsg2.__eq__(copy2))
 
         # test clear()
-        chan2.position  = 97
-        chan2.limit     = 107
+        chan2.position = 97
+        chan2.limit = 107
         chan2.clear()
         self.assertEqual(0, chan2.limit)
         self.assertEqual(0, chan2.position)

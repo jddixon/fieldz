@@ -2,22 +2,28 @@
 
 import inspect
 
-import fieldz.fieldTypes    as F
-import fieldz.reg           as R
-import fieldz.msgSpec       as M
+import fieldz.fieldTypes as F
+import fieldz.reg as R
+import fieldz.msgSpec as M
 
 from fieldz.msgSpec import *
 
-__all__ = [ \
-        'StringSpecParser',
-        'StringMsgSpecParser',
-        'ParserError',
-        ]
+__all__ = [
+    'StringSpecParser',
+    'StringMsgSpecParser',
+    'ParserError',
+]
 
 MAX_INDENT = 16
 
-class ParserError(RuntimeError):            pass
-class QuantificationError(ParserError):     pass
+
+class ParserError(RuntimeError):
+    pass
+
+
+class QuantificationError(ParserError):
+    pass
+
 
 class StringSpecParser(object):
 
@@ -25,16 +31,17 @@ class StringSpecParser(object):
 
     def __init__(self, fd, nodeReg=None):
         # XXX should die if fd not open
-        self._fd        = fd
+        self._fd = fd
         if nodeReg is None:
-            nodeReg     = R.NodeReg()
-        self._nodeReg   = nodeReg
-        self._reg       = R.ProtoReg(nodeReg)
+            nodeReg = R.NodeReg()
+        self._nodeReg = nodeReg
+        self._reg = R.ProtoReg(nodeReg)
 
     @property
-    def nodeReg(self):      return self._nodeReg
+    def nodeReg(self): return self._nodeReg
+
     @property
-    def reg(self):          return self._reg
+    def reg(self): return self._reg
 
     def getLine(self):
         while True:
@@ -46,7 +53,7 @@ class StringSpecParser(object):
                 return None
 
             # strip off any comments
-            s   = line.partition('#')[0]
+            s = line.partition('#')[0]
 
             # get rid of any trailing blanks
             line = s.rstrip()
@@ -55,7 +62,9 @@ class StringSpecParser(object):
 
     def expectTokenCount(self, tokens, whatever, n):
         if len(tokens) != n:
-            raise ParserError("too many tokens in %s '%s'" % (whatever,tokens))
+            raise ParserError(
+                "too many tokens in %s '%s'" %
+                (whatever, tokens))
 
     # -- MsgSpec ----------------------------------------------------
     def expectMsgSpecName(self, line, indent='', step=' '):
@@ -63,8 +72,8 @@ class StringSpecParser(object):
         starter = indent + 'message '
         if not line.startswith(starter):
             raise ParserError("badly formatted message name line '%s'" % line)
-        line    = line[ len(starter): ]
-        words   = line.split()
+        line = line[len(starter):]
+        words = line.split()
         self.expectTokenCount(words, 'message name', 1)
         name = words[0]
         if name[-1] == ':':
@@ -74,22 +83,22 @@ class StringSpecParser(object):
         return name
 
     def expectMsgSpec(self, parent, line, indent='', step=' '):
-        name    = self.expectMsgSpecName(line, indent, step)
-        msgReg  = R.MsgReg(parent.reg)
+        name = self.expectMsgSpecName(line, indent, step)
+        msgReg = R.MsgReg(parent.reg)
         print("EXPECT_MSG_SPEC: FOUND %s" % name)            # DEBUG
         thisMsg = MsgSpec(name, parent, msgReg)
 
-        line    = self.getLine()
+        line = self.getLine()
 
         print("expectMsgSpec: COLLECTING ENUMS; line is '%s'" % line)
-        line = self.acceptEnumSpecs(thisMsg, line, indent+step, step)
+        line = self.acceptEnumSpecs(thisMsg, line, indent + step, step)
 
         # accept any MsgSpecs at the next indent level
         print("expectMsgSpec: COLLECTING NESTED MSGS; line is '%s'" % line)
-        line = self.acceptMsgSpecs(thisMsg, line, indent+step, step)
+        line = self.acceptMsgSpecs(thisMsg, line, indent + step, step)
 
         print("expectMsgSpec: COLLECTING FIELDS; line is '%s'" % line)
-        line = self.expectFields(thisMsg, line, indent+step, indent)
+        line = self.expectFields(thisMsg, line, indent + step, indent)
 
         parent.reg.addMsg(thisMsg)  # NOT done in MsgSpec.__init__
         return line
@@ -101,7 +110,7 @@ class StringSpecParser(object):
         Must return the first line found which does not begin a
         msgSpec
         """
-        line = self.expectMsgSpec(parent, line, indent, step )
+        line = self.expectMsgSpec(parent, line, indent, step)
         print("BACK FROM expectMsgSpec: line is '%s'" % line)
 
         # collect any other MsgSpec declarations present
@@ -120,7 +129,7 @@ class StringSpecParser(object):
         print("ENTERING acceptMsgSpecs: line is '%s'" % line)
         msgStarter = indent + 'message'
         while line.startswith(msgStarter):
-            line = self.expectMsgSpec(parent, line, indent, step )
+            line = self.expectMsgSpec(parent, line, indent, step)
             if line is None or len(line.strip()) == 0:
                 break
         print("LEAVING acceptMsgSpecs: line is '%s'" % line)
@@ -133,7 +142,7 @@ class StringSpecParser(object):
             # print "acceptEnumPair: line not correctly indented: %s" % line
             # END
             return None
-        line = line[ len(indent): ]
+        line = line[len(indent):]
 
         # XXX we are not strict about the indent
         line = line.strip()
@@ -150,35 +159,35 @@ class StringSpecParser(object):
         # should be followed by the enum's name, and then a sequence
         # of pairs at a deeper indent
         from_ = len(indent) + len('enum')
-        s    = line[from_:]
+        s = line[from_:]
         # s should begin with one or more spaces, followed by one
         # simple name
         if s[0] != ' ':
             raise ParserError("can't find enum name in '%s'" % line)
         name = s.strip()
         validateSimpleName(name)
-        pairs       = []
-        line        = self.getLine()          # we require at least one pair
-        pair        = self.acceptEnumPair(line, indent+step, step)
+        pairs = []
+        line = self.getLine()          # we require at least one pair
+        pair = self.acceptEnumPair(line, indent + step, step)
         if pair is None:
             raise ParserError("expected enum pair, found '%s'" % line)
         pairs.append(pair)
 
         # we have one pair, let's see if there are any more
-        line        = self.getLine()
-        pair        = self.acceptEnumPair(line, indent+step, step)
+        line = self.getLine()
+        pair = self.acceptEnumPair(line, indent + step, step)
         while pair is not None:
             pairs.append(pair)
-            line        = self.getLine()
-            pair        = self.acceptEnumPair(line, indent+step, step)
+            line = self.getLine()
+            pair = self.acceptEnumPair(line, indent + step, step)
         eSpec = EnumSpec(name, pairs)
 
-        # XXX we need to verify that the enum's name is not already 
+        # XXX we need to verify that the enum's name is not already
         # in us; simplest thing to do is to have addEnum() verify
-        # this, 
+        # this,
         parent.addEnum(eSpec)           # parent is ProtoSpec or MsgSpec
         print("DEBUG expectEnum: adding %s to parent registry" % eSpec.name)
-        parent.reg.addEnum(eSpec) 
+        parent.reg.addEnum(eSpec)
         return line
 
     def acceptEnumSpecs(self, parent, line, indent='', step=' '):
@@ -187,7 +196,7 @@ class StringSpecParser(object):
         the first line at the wrong indent or not matching the enum
         syntax.
         """
-        enumStart   = indent + 'enum'
+        enumStart = indent + 'enum'
 
         while line.startswith(enumStart):
             line = self.expectEnum(parent, line, indent, step)
@@ -208,7 +217,7 @@ class StringSpecParser(object):
         print("FIELD DECL: '%s'" % line)
         # END
 
-        line = line[len(indent): ]
+        line = line[len(indent):]
 
         # from here we are very sloppy about the indent
 
@@ -227,18 +236,21 @@ class StringSpecParser(object):
             raise ParserError("too many tokens in field def '%s'" % line)
 
         # -- field name -------------------------
-        fName   = words[0]
+        fName = words[0]
         validateSimpleName(fName)
 
         # -- quantifier -------------------------
         q = words[1][-1]
         if q == '?' or q == '*' or q == '+':
-            words[1]    = words[1][:-1]
-            if   q == '?':  quantifier = Q_OPTIONAL
-            elif q == '*':  quantifier = Q_STAR
-            else         :  quantifier = Q_PLUS
+            words[1] = words[1][:-1]
+            if q == '?':
+                quantifier = Q_OPTIONAL
+            elif q == '*':
+                quantifier = Q_STAR
+            else:
+                quantifier = Q_PLUS
         else:
-            quantifier  = Q_REQUIRED
+            quantifier = Q_REQUIRED
 
         # -- field type --------------------------
         typeName = words[1]
@@ -247,20 +259,20 @@ class StringSpecParser(object):
 
         # DEBUG ###
         print("DEBUG: field '%s' type '%s' quant %d" % (
-                                                fName, typeName, quantifier))
+            fName, typeName, quantifier))
         # END #####
 
         # first check against list of names of basic field types
         if F.ndx(typeName) is not None:
             fType = F.ndx(typeName)
-       
+
         if fType is None:
             # check at the message level
             fType = msgSpec.reg.name2RegID(typeName)
-        
+
         if fType is None:
             print("DEBUG fType for '%s' not found at message level" % typeName)
-            # ask the parent to resolve 
+            # ask the parent to resolve
             fType = msgSpec.parent.reg.name2RegID(typeName)
 
         if fType is None:
@@ -269,7 +281,7 @@ class StringSpecParser(object):
 
         # -- field number -----------------------
         fieldNbr = -1
-        if wordCount >2:
+        if wordCount > 2:
             if words[2].startswith('@'):
                 fieldNbr = int(words[2][1:])    # could use some validation
 #               if fieldNbr < nextFieldNbr:
@@ -279,7 +291,7 @@ class StringSpecParser(object):
         # XXX STUB - NOT IMPLEMENTED YET
 
         msgSpec.addField(
-                FieldSpec(msgSpec.reg, fName, fType, quantifier, fieldNbr))
+            FieldSpec(msgSpec.reg, fName, fType, quantifier, fieldNbr))
 
     def expectFields(self, msgSpec, line, indent='', step=' '):
         # they get appended to fields; there must be at least one
@@ -307,7 +319,8 @@ class StringSpecParser(object):
             print("BRANCH TO expectField(%u)" % k)
             #fields.append( self.expectField(nextFieldNbr, line, indent, step) )
             self.expectField(msgSpec, line, indent, step)
-            print("BACK FROM expectField(%u)" % k); k = k + 1
+            print("BACK FROM expectField(%u)" % k)
+            k = k + 1
             # nextFieldNbr = fields[0].fieldNbr + 1
             line = self.getLine()
         return line
@@ -315,6 +328,7 @@ class StringSpecParser(object):
     # OVERRIDE THIS to change fuctionality --------------------------
     def parse(self):
         raise NotImplementedError('StringSpecParser.parse()')
+
 
 class StringMsgSpecParser(StringSpecParser):
     """
@@ -325,25 +339,26 @@ class StringMsgSpecParser(StringSpecParser):
 
     def __init__(self, fd, nodeReg=None):
         super(StringMsgSpecParser, self).__init__(fd, nodeReg)
-        protocol        = 'org.xlattice.fieldz.test'
+        protocol = 'org.xlattice.fieldz.test'
         # these are dummies
-        self.parentReg  = R.ProtoReg(protocol, self._nodeReg)
-        self.parent     = M.ProtoSpec(protocol, self.parentReg)
+        self.parentReg = R.ProtoReg(protocol, self._nodeReg)
+        self.parent = M.ProtoSpec(protocol, self.parentReg)
 
     def parse(self):
-        line    = self.getLine()
-        msgReg  = R.MsgReg(self.parentReg)
-        line    = self.expectMsgSpec(self.parent, line)
+        line = self.getLine()
+        msgReg = R.MsgReg(self.parentReg)
+        line = self.expectMsgSpec(self.parent, line)
 
         # DEBUG
-        for regID in  self.parentReg._entries:  # .keys():
-            print("ENTRY: regID %u, name %s" % (regID, 
-                                            self.parentReg._entries[regID]))
+        for regID in self.parentReg._entries:  # .keys():
+            print("ENTRY: regID %u, name %s" % (regID,
+                                                self.parentReg._entries[regID]))
         # END
 
         # the parent is a dummy ProtoSpec
         p = self.parent
         return p._msgs[0]
+
 
 class StringProtoSpecParser(StringSpecParser):
     """
@@ -355,11 +370,11 @@ class StringProtoSpecParser(StringSpecParser):
     def __init__(self, fd, nodeReg=None):
         super(StringProtoSpecParser, self).__init__(fd, nodeReg)
         self._protoName = None
-        self._seqs      = []
+        self._seqs = []
 
     # -- protocol line ----------------------------------------------
     def expectProtoName(self, indent='', step=' '):
-        line  = self.getLine()
+        line = self.getLine()
         if indent != '' and not line.startswith(indent):
             raise ParseException("missing indent on protocol line '%s'" % line)
 
@@ -402,7 +417,7 @@ class StringProtoSpecParser(StringSpecParser):
         # nested EnumSpecs and MsgSpecs at progressively greater indentations,
         # possibly limited to a maximum indentation of MAX_INDENT
         # WORKING HERE NEXT
-        line = self.expectMsgSpecs(protoSpec, line) # default indent and step
+        line = self.expectMsgSpecs(protoSpec, line)  # default indent and step
 
         # expect zero or more SeqSpecs
         # XXX NO SUCH METHOD and seqs is not defined
@@ -419,10 +434,13 @@ class WireMsgSpecParser(object):
     fieldz) produce a MsgSpec object model, which is a MsgSpec with
     FieldSpecs and EnumSpecs dangling off of it.
     """
+
     def __init__(self, w):
         pass
 
 # POSSIBLY SUPERCLASS IS TFBuffer OR TFWriter
+
+
 class WireMsgSpecWriter(object):
     """
     Given a MsgSpec (including attached FieldSpecs and optional EnumSpecs)
