@@ -1,7 +1,7 @@
-SIMPLE_PROTOCOL="""
+SIMPLE_PROTOCOL = """
 protocol org.xlattice.fieldz.test.A
 
-# We require (at least for the moment) that enums come first or 
+# We require (at least for the moment) that enums come first or
 # not at all, except that nested enumSpecs and msgSpecs will need
 # to be supported.
 
@@ -10,7 +10,7 @@ enum OK
  ok          1
 
 enum ErrorCode
- # we can see that this could easily be a list of pairs, 
+ # we can see that this could easily be a list of pairs,
  # with each code matched with a predefined string text
  NotFound    2       # ENOENT
  IOError     5       # EIO
@@ -31,7 +31,7 @@ message logEntry
  length      vuInt32
  nodeID      fBytes20
  src         lString         # arbitrary text, whodunnit
- path        lString         # UNIX-style 
+ path        lString         # UNIX-style
 
 message errorMsg
  code        ErrorCode

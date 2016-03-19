@@ -1,6 +1,6 @@
 # ~/dev/py/pzog/ringDataProto.py
 
-RING_DATA_PROTO_SPEC="""
+RING_DATA_PROTO_SPEC = """
 protocol org.xlattice.pzog.ringData
 
 # This represents the contents of a file containing data on several

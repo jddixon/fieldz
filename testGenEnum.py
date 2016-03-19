@@ -2,11 +2,15 @@
 
 # testGenEnum.py
 
-import time, unittest
+import time
+import unittest
 
 from rnglib import SimpleRNG
 
-class EnumError(RuntimeError):    pass
+
+class EnumError(RuntimeError):
+    pass
+
 
 def cantSetAttr(cls, sym, value):
     """ instance variables may be set but never reset """
@@ -14,12 +18,15 @@ def cantSetAttr(cls, sym, value):
         cls.__dict__[sym] = value
     else:
         raise EnumError(
-             'attempt to change value of constant ' + sym)
+            'attempt to change value of constant ' + sym)
+
 
 def echo(cls, text):
     print(text)
 
+
 class MetaEnum(type):
+
     def __new__(meta, name, bases, dct):
         print("METACLASS NEW gets called once")
         return super(MetaEnum, meta).__new__(meta, name, bases, dct)
@@ -36,19 +43,23 @@ class MetaEnum(type):
         print("CALL")
         return type.__call__(cls, *args, **kwargs)
 
+
 class GeneratedEnum(metaclass=MetaEnum):
+
     def __init__(self, a, b):
-        print("GeneratedEnum object: a = %s, b = %s" % (a,b))
+        print("GeneratedEnum object: a = %s, b = %s" % (a, b))
 
     def foo(self, whatever):
         print("foo called with param %s" % str(whatever))
 
     barAttr = 47
 
+
 class TestGenEnum (unittest.TestCase):
 
     def setUp(self):
-        self.rng = SimpleRNG( time.time() )
+        self.rng = SimpleRNG(time.time())
+
     def tearDown(self):
         pass
 
@@ -57,15 +68,15 @@ class TestGenEnum (unittest.TestCase):
     # actual unit tests #############################################
     def testGenEnum(self):
         print("ABOUT TO CREATE INSTANCE")
-        g = GeneratedEnum(13,97)
+        g = GeneratedEnum(13, 97)
         print("ABOUT TO CREATE SECOND INSTANCE")
-        h = GeneratedEnum(13,97)
+        h = GeneratedEnum(13, 97)
 
     def testGeneratingClass(self):
-        F = MetaEnum('ClzF', (object,), 
-                {'A':3, 'B':7, 'C':11, 
-                    'echo' : echo,
-                    '__setattr__': cantSetAttr })
+        F = MetaEnum('ClzF', (object,),
+                     {'A': 3, 'B': 7, 'C': 11,
+                      'echo': echo,
+                      '__setattr__': cantSetAttr})
         self.assertEqual('ClzF', F.__name__)
         self.assertEqual(3, F.A)
         self.assertEqual(7, F.B)
@@ -87,7 +98,7 @@ class TestGenEnum (unittest.TestCase):
         for s in list(f.__dict__.keys()):
             print("%-20s %s" % (s, f.__dict__[s]))
 
-        # This is based on a misunderstanding: does __setattr__ 
+        # This is based on a misunderstanding: does __setattr__
         # behave just like echo?  And so work only at the instance level?
         try:
             setattr(F, 'C', 13)
