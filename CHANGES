@@ -1,5 +1,8 @@
 ~/dev/py/fieldz/CHANGES
 
+v0.10.7
+    2016-03-28
+        * down to two bugs (property, mutable constant)             SLOC 5720
 v0.10.6
     2016-03-19
         * fix testProtoSpec; add and execute auto8it                SLOC 5736
@@ -290,6 +293,7 @@ v0.1.2
         * working varint, fixed len 32- and 64-bit, var len bytestring
             and associated tests
         * initial svn import
+
 
 
 
