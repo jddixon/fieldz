@@ -3,6 +3,7 @@
 # DEBUG
 import sys
 # END
+
 import fieldz.fieldTypes as F
 from fieldz.raw         import lengthAsVarint, fieldHdrLen, readFieldHdr, \
     writeRawVarint, readRawVarint, \
@@ -108,6 +109,10 @@ class FieldImpl(object):
     of data being sent or received across the wire.
     """
 
+    #################################################################
+    # NOTE: if we inherit from type, we get a TypeError: nonempty
+    # __slots__ not supported for subtype of type
+    #################################################################
     __slots__ = ['_value', ]
 
     # should default precede value?  if a value is assigned, isn't that
@@ -136,7 +141,7 @@ class FieldImpl(object):
 
 class MetaField(type):
 
-    # gets: valueError: "'_name' in __slots__ confliects with class variable"
+    # gets: valueError: "'_name' in __slots__ conflicts with class variable"
 
     def __new__(meta, name, bases, dct):
         # DEBUG
@@ -149,8 +154,8 @@ class MetaField(type):
     def __init__(cls, name, bases, dct):
         # DEBUG
         super(MetaField, cls).__init__(name, bases, dct)
-        print("MetaField INIT, meta='%s', name='%s', bases='%s', dct='%s'" % (
-            meta, name, bases, d))
+        print("MetaField INIT, cls='%s', name='%s', bases='%s', dct='%s'" % (
+            cls, name, bases, dct))
         sys.stdout.flush()
         # END
 
@@ -166,18 +171,20 @@ class MetaField(type):
 # -------------------------------------------------------------------
 
 
-class MsgImpl(object):
+# class MsgImpl(object):
+class MsgImpl(type):
     """
     An abstract class intended to serve as parent to automatically
     generated classes whose purpose will be to ease user handling
     of data being sent or received across the wire.
     """
 
-    __slots__ = ['_fields',       # list of field instances
-                 #                 '_fieldsByName',  # that list indexed by Name
-                 '_enums',         # nested enums
-                 '_msgs',          # nested messages
-                 ]
+    # DISABLE __slots__ until better understood
+#   __slots__ = ['_fields',       # list of field instances
+#                #                 '_fieldsByName',  # that list indexed by Name
+#                '_enums',         # nested enums
+#                '_msgs',          # nested messages
+#                ]
 
     def __eq__(self, other):
         if other is None:
@@ -490,6 +497,10 @@ class MetaMsg(type):
         XXX At this time the only argument expected is a list of field
         values.  This is the INSTANCE.  kwargs is empty.
         """
+
+        ##############################################
+        # ERROR: cannot create attribute by assignment
+        ##############################################
         cls._fields = []
 #       cls._fieldsByName   = {}
         values = args[0]
@@ -506,15 +517,28 @@ class MetaMsg(type):
 #           # END
 
 #       print "  THERE ARE %u FIELDS SET" % len(cls._fields)    # DEBUG
-        return type.__call__(cls, *args, **kwargs)
 
+        #############################################################
+        # TypeError: type() takes 1 or 3 arguments)
+        #############################################################
+        # return type.__call__(cls, *args, **kwargs)
+
+        return cls
+
+    #########################################################################
+    # DISABLE FOR NOW; XXX SHOULD BE ADDED WHEN THE INSTANCE HAS BEEN CREATED
+    #########################################################################
     # don't permit any new attributes to be added
     # XXX why do we need to do this given __slots__ list?
-    def __setattr__(cls, attr, value):
-        """ make the class more or less immutable """
-        if attr not in dir(cls):
-            raise AttributeError('cannot create attribute by assignment')
-        return type.__setattr__(cls, attr, value)
+#   def __setattr__(cls, attr, value):
+#       """ make the class more or less immutable """
+
+#       #############################
+#       # WHERE THE ERROR COMES FROM:
+#       #############################
+#       if attr not in dir(cls):
+#           raise AttributeError('cannot create attribute by assignment!')
+#       return type.__setattr__(cls, attr, value)
 
 # ===================================================================
 # MAKERS
@@ -590,13 +614,17 @@ def _makeMsgClass(parent, msgSpec):
     # class is not in cache, so construct ---------------------------
     d = {}
     d['__init__'] = msgInitter
-    d['__slots__'] = ['_name', '_enums', '_msgs', '_fieldClasses',
-                      '_fieldsClassesByName', '_fieldsClassesByNbr',
-                      ]
+
+    # drop 2016-03-26
+    # d['__slots__'] = ['_name', '_enums', '_msgs', '_fieldClasses',
+    #                  '_fieldsClassesByName', '_fieldsClassesByNbr',
+    #
+    #]
+
     # WORKING HERE ==============================
     for f in fieldClasses:
-        # need uniquifier; cannot be just underscore
-        d['__slots__'].append(str(f._name))
+        # comment out 2016-03-26
+        # d['__slots__'].append(str(f._name))
         d[f._name] = None
     # END HERE ==================================
 
@@ -611,7 +639,7 @@ def _makeMsgClass(parent, msgSpec):
     d['_fieldClasses'] = fieldClasses
     d['fieldClasses'] = property(myFieldClasses)
 
-    # EXPERIMENT 12-12-15
+    # EXPERIMENT 2012-12-15
     d['parentSpec'] = parent
     d['msgSpec'] = msgSpec
     # END EXPERIMENT
@@ -624,7 +652,7 @@ def _makeMsgClass(parent, msgSpec):
 
     C = MetaMsg(str(msgSpec.name),  # name  MUST NOT BE UNICODE
                 (MsgImpl,),        # bases
-                d)                 # dictionry
+                d)                 # dictionary
 
     #----------------------------
     # possibly some more fiddling ...
@@ -665,9 +693,9 @@ def makeFieldClass(dottedMsgName, fieldSpec):
 
     d = {}
 
-    # XXX DISABLE __slots__ FOR DEBUGGING
-    d['__slots__'] = ['_name', '_fType', '_quantifier',
-                      '_fieldNbr', '_default', ]
+    # disable __slots__ until better understood
+    # d['__slots__'] = ['_name', '_fType', '_quantifier',
+    #                  '_fieldNbr', '_default', ]
 
     # we want an attribute and a property for each fieldSpec attr
     d['_name'] = fieldSpec.name
@@ -690,9 +718,10 @@ def makeFieldClass(dottedMsgName, fieldSpec):
     # 2016-02-20 changing the prefix from '_' to '_QQQ_' had no effect
     #   on ValueErrors:
     #     "'_name' in __slots__ conficts with class variable"
-    M = MetaField('_QQQ_' + str(fieldSpec.name),   # name
-                  (FieldImpl,),              # bases
-                  d)                         # dictionry
+    # 2016-03-19 dropped the '_' prefix to name; ERROR count remains the same
+    M = MetaField(str(fieldSpec.name),      # name
+                  (FieldImpl,),             # bases
+                  d)                        # dictionary
 
     #----------------------------
     # possibly some more fiddling ...
