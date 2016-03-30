@@ -4,7 +4,7 @@ import sys   # for debugging
 
 from fieldz.msgSpec import FieldSpec
 
-# XXX THIS IS UNSAFE XXX
+# XXX THIS IS UNSAFE!!! XXX
 fieldClsByQName = {}        # PROTO_NAME . MSG_NAME . FIELD_NAME => class
 
 # -------------------------------------------------------------------
@@ -32,10 +32,8 @@ def myDefault(cls): return cls._default
 
 def myValueGetter(self): return self._value
 
-# XXX TYPE-SPECIFIC VALIDATION, COERCION:
 
-
-def myValueSetter(self, value): self._value = value     # GEEP
+def myValueSetter(self, value): self._value = value
 
 # -------------------------------------------------------------------
 # FIELD CLASS
@@ -81,21 +79,23 @@ class FieldImpl(object):
 
 class MetaField(type):
 
-    # gets: valueError: "'_name' in __slots__ conflicts with class variable"
+    # These get called in this sequence: __new__, __init__, __call__
 
     def __new__(meta, name, bases, dct):
         # DEBUG
-        print("MetaField NEW, meta='%s', name='%s', bases='%s', dct='%s'" % (
-            meta, name, bases, dct))
+        # removed dct from print
+        print("\nMetaField NEW, meta='%s',\n\tname='%s', bases='%s'" % (
+            meta, name, bases))
         sys.stdout.flush()
         # END
         return super(MetaField, meta).__new__(meta, name, bases, dct)
 
     def __init__(cls, name, bases, dct):
-        # DEBUG
         super(MetaField, cls).__init__(name, bases, dct)
-        print("MetaField INIT, cls='%s', name='%s', bases='%s', dct='%s'" % (
-            cls, name, bases, dct))
+
+        # DEBUG without dct
+        print("MetaField INIT, cls='%s',\n\tname='%s', bases='%s'" % (
+            cls, name, bases))
         sys.stdout.flush()
         # END
 
@@ -116,25 +116,25 @@ def makeFieldClass(dottedMsgName, fieldSpec):
         raise ValueError('null field spec')
     qualName = '%s.%s' % (dottedMsgName, fieldSpec.name)
     # DEBUG
-    print('MAKE_FIELD_CLASS for %s' % qualName)
+    # print('MAKE_FIELD_CLASS for %s' % qualName)
     # END
     if qualName in fieldClsByQName:
         return fieldClsByQName[qualName]
 
-    # DEBUG
-    # won't work if FieldSpec has __slots__
-    if '__dict__' in dir(FieldSpec):
-        print("FieldSpec CLASS DICTIONARY excluding __doc__")
-        for key in list(FieldSpec.__dict__.keys()):
-            if key != '__doc__':
-                print("    %-20s %s" % (key, FieldSpec.__dict__[key]))
-        print("fieldSpec INSTANCE DICTIONARY excluding __doc__")
+#   # DEBUG
+#   # won't work if FieldSpec has __slots__
+#   if '__dict__' in dir(FieldSpec):
+#       print("FieldSpec CLASS DICTIONARY excluding __doc__")
+#       for key in list(FieldSpec.__dict__.keys()):
+#           if key != '__doc__':
+#               print("    %-20s %s" % (key, FieldSpec.__dict__[key]))
+#       print("fieldSpec INSTANCE DICTIONARY excluding __doc__")
 
-    if '__dict__' in dir(fieldSpec):
-        for key in list(fieldSpec.__dict__.keys()):
-            if key != '__doc__':
-                print("    %-20s %s" % (key, fieldSpec.__dict__[key]))
-    # END
+#   if '__dict__' in dir(fieldSpec):
+#       for key in list(fieldSpec.__dict__.keys()):
+#           if key != '__doc__':
+#               print("    %-20s %s" % (key, fieldSpec.__dict__[key]))
+#   # END
 
     d = {}
 

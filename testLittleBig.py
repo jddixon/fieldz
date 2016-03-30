@@ -70,19 +70,19 @@ class TestLittleBig (unittest.TestCase):
         rndLen = 16 + self.rng.nextInt16(49)
         byteBuf = bytearray(rndLen)
         self.rng.nextBytes(byteBuf)
-        values.append(byteBuf)                      # lBytesReqField
+        values.append(bytes(byteBuf))               # lBytesReqField
 
         b128Buf = bytearray(16)
         self.rng.nextBytes(b128Buf)
-        values.append(b128Buf)                      # fBytes16ReqField
+        values.append(bytes(b128Buf))               # fBytes16ReqField
 
         b160Buf = bytearray(20)
         self.rng.nextBytes(b160Buf)
-        values.append(b160Buf)                      # fBytes20ReqField
+        values.append(bytes(b160Buf))               # fBytes20ReqField
 
         b256Buf = bytearray(32)
         self.rng.nextBytes(b256Buf)
-        values.append(b256Buf)                      # fBytes32ReqField
+        values.append(bytes(b256Buf))               # fBytes32ReqField
 
         return values
 
@@ -176,7 +176,7 @@ class TestLittleBig (unittest.TestCase):
         msgSpec = self.sOM.msgs[0]
 
         # Create a channel ------------------------------------------
-        # its buffer will be used for both serializing # the instance
+        # its buffer will be used for both serializing the instance
         # data and, by deserializing it, for creating a second instance.
         chan = Channel(BUFSIZE)
         buf = chan.buffer

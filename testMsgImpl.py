@@ -59,42 +59,43 @@ class TestMsgImpl (unittest.TestCase):
         path = '/home/jdd/tarballs/something.tar.gz'
         return [timestamp, nodeID, key, length, by, path]
 
-#   def littleBigValues(self):
-#       values = []
-#       # XXX these MUST be kept in sync with littleBigTest.py
-#       values.append(rng.nextBoolean())       # vBoolReqField
-#       values.append(rng.nextInt16())         # vEnumReqField
-#
-#       values.append(rng.nextInt32())         # vuInt32ReqField
-#       values.append(rng.nextInt32())         # vuInt64ReqField
-#       values.append(rng.nextInt64())         # vsInt32ReqField
-#       values.append(rng.nextInt64())         # vsInt64ReqField
+    # NOT YET USED HERE
+    def littleBigValues(self):
+        values = []
+        # XXX these MUST be kept in sync with littleBigTest.py
+        values.append(rng.nextBoolean())       # vBoolReqField
+        values.append(rng.nextInt16())         # vEnumReqField
 
-#           # #vuInt32ReqField
-#           # #vuInt64ReqField
-#
-#       values.append(rng.nextInt32())         # fsInt32ReqField
-#       values.append(rng.nextInt32())         # fuInt32ReqField
-#       values.append(rng.nextReal())          # fFloatReqField
-#
-#       values.append(rng.nextInt64())         # fsInt64ReqField
-#       values.append(rng.nextInt64())         # fuInt64ReqField
-#       values.append(rng.nextReal())          # fDoubleReqField
-#
-#       values.append(rng.nextFileName(16))    # lStringReqField
+        values.append(rng.nextInt32())         # vuInt32ReqField
+        values.append(rng.nextInt32())         # vuInt64ReqField
+        values.append(rng.nextInt64())         # vsInt32ReqField
+        values.append(rng.nextInt64())         # vsInt64ReqField
 
-#       rndLen = 16 + rng.nextInt16(49)
-#       byteBuf = bytearray(rndLen)
-#       values.append(rng.nextBytes(byteBuf))  # lBytesReqField
+        # #vuInt32ReqField
+        # #vuInt64ReqField
 
-#       b128Buf = bytearray(16)
-#       values.append(rng.nextBytes(b128Buf))  # fBytes16ReqField
+        values.append(rng.nextInt32())         # fsInt32ReqField
+        values.append(rng.nextInt32())         # fuInt32ReqField
+        values.append(rng.nextReal())          # fFloatReqField
 
-#       b160Buf = bytearray(20)
-#       values.append(rng.nextBytes(b160Buf))  # fBytes20ReqField
+        values.append(rng.nextInt64())         # fsInt64ReqField
+        values.append(rng.nextInt64())         # fuInt64ReqField
+        values.append(rng.nextReal())          # fDoubleReqField
 
-#       b256Buf = bytearray(32)
-#       values.append(rng.nextBytes(b256Buf))  # fBytes32ReqField  GEEP
+        values.append(rng.nextFileName(16))    # lStringReqField
+
+        rndLen = 16 + rng.nextInt16(49)
+        byteBuf = bytearray(rndLen)
+        values.append(rng.nextBytes(byteBuf))  # lBytesReqField
+
+        b128Buf = bytearray(16)
+        values.append(rng.nextBytes(b128Buf))  # fBytes16ReqField
+
+        b160Buf = bytearray(20)
+        values.append(rng.nextBytes(b160Buf))  # fBytes20ReqField
+
+        b256Buf = bytearray(32)
+        values.append(rng.nextBytes(b256Buf))  # fBytes32ReqField  GEEP
 
     # actual unit tests #############################################
     def checkFieldImplAgainstSpec(self, protoName, msgName, fieldSpec, value):

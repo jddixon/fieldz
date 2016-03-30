@@ -83,10 +83,11 @@ class TestMsgSpec (unittest.TestCase):
         self.assertEqual(5, enum.value('def'))
         self.assertEqual(7, enum.value('ghi'))
 
+    # FOO
     def doFieldTest(self, name, fType, quantifier=M.Q_REQUIRED,
                     fieldNbr=0, default=None):
         nodeReg, protoReg, msgReg = self.makeRegistries(
-            'org.xlattice.fieldz.tes.fieldSpec')
+            'org.xlattice.fieldz.test.fieldSpec')
 
         # XXX Defaults are ignore for now.
         f = M.FieldSpec(msgReg, name, fType, quantifier, fieldNbr, default)
@@ -111,13 +112,13 @@ class TestMsgSpec (unittest.TestCase):
         self.assertEqual('+', qName(M.Q_PLUS))
 
     def testFieldSpec(self):
-        nodeReg, protoReg, msgReg = self.makeRegistries(
-            'org.xlattice.fieldz.tes.fieldSpec')
         # default is not implemented yet
         self.doFieldTest('foo', F._V_UINT32, M.Q_REQUIRED, 9)
         self.doFieldTest('bar', F._V_SINT32, M.Q_STAR, 17)
         self.doFieldTest('nodeID', F._F_BYTES20, M.Q_OPTIONAL, 92)
         self.doFieldTest('tix', F._V_BOOL, M.Q_PLUS, 147)
+
+    # GEEP
 
     def roundTripMsgSpecViaString(self, m, protocol):
         """

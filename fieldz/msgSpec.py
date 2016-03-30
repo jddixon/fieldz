@@ -257,8 +257,8 @@ class FieldSpec(object):
             raise ValueError('no field name specified')
 
         # DEBUG
-        print("FieldSpec.__init__: name '%s' is of type %s" % (
-            name, type(name)))
+        # print("FieldSpec.__init__: name '%s' is of type %s" % (
+        #    name, type(name)))
         # END
         validateDottedName(name)
         self._name = name

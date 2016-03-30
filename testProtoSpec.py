@@ -10,7 +10,7 @@ import time
 import unittest
 from io import StringIO
 
-# from rnglib import SimpleRNG
+from rnglib import SimpleRNG
 
 from fieldz.parser import StringProtoSpecParser
 import fieldz.fieldTypes as F
@@ -19,6 +19,7 @@ import fieldz.typed as T
 import fieldz.reg as R
 
 from fieldz import reg
+from fieldz.msgImpl import makeMsgClass
 
 # PROTOCOLS ---------------------------------------------------------
 from simpleProtocol import SIMPLE_PROTOCOL
@@ -26,7 +27,7 @@ from zoggeryProtoSpec import ZOGGERY_PROTO_SPEC
 from nestedEnumProtoSpec import NESTED_ENUM_PROTO_SPEC
 from nestedMsgsProtoSpec import NESTED_MSGS_PROTO_SPEC
 
-# rng = SimpleRNG( time.time() )
+rng = SimpleRNG(time.time())
 
 # TESTS -------------------------------------------------------------
 
@@ -38,6 +39,21 @@ class TestProtoSpec (unittest.TestCase):
 
     def tearDown(self):
         pass
+
+    # utilities #####################################################
+
+    def leMsgValues(self):
+        """ returns a list """
+        timestamp = int(time.time())
+        nodeID = [0] * 20
+        key = [0] * 20
+        length = rng.nextInt32(256 * 256)
+        # let's have some random bytes
+        rng.nextBytes(nodeID)
+        rng.nextBytes(key)
+        by = 'who is responsible'
+        path = '/home/jdd/tarballs/something.tar.gz'
+        return [timestamp, nodeID, key, length, by, path]       # GEEP
 
     # actual unit tests #############################################
 
@@ -61,41 +77,43 @@ class TestProtoSpec (unittest.TestCase):
         self.assertEqual(5, enum.value('def'))
         self.assertEqual(7, enum.value('ghi'))
 
-    def doFieldTest(self, msgReg, name, fType, quantifier=M.Q_REQUIRED,
-                    fieldNbr=0, default=None):
-        # XXX Defaults are ignore for now.
-        f = M.FieldSpec(msgReg, name, fType, quantifier, fieldNbr, default)
+#   # GEEP
+#   def doFieldTest(self, msgReg, name, fType, quantifier=M.Q_REQUIRED,
+#                   fieldNbr=0, default=None):
+#       # XXX Defaults are ignore for now.
+#       f = M.FieldSpec(msgReg, name, fType, quantifier, fieldNbr, default)
 
-        self.assertEqual(name, f.name)
-        self.assertEqual(fType, f.fTypeNdx)
-        self.assertEqual(quantifier, f.quantifier)
-        self.assertEqual(fieldNbr, f.fieldNbr)
-        if default is not None:
-            self.assertEqual(default, f.default)
+#       self.assertEqual(name, f.name)
+#       self.assertEqual(fType, f.fTypeNdx)
+#       self.assertEqual(quantifier, f.quantifier)
+#       self.assertEqual(fieldNbr, f.fieldNbr)
+#       if default is not None:
+#           self.assertEqual(default, f.default)
 
-        expectedRepr = "%s %s%s @%d \n" % (
-            name, f.fTypeName, M.qName(quantifier), fieldNbr)
-        # DEFAULTS NOT SUPPORTED
-        self.assertEqual(expectedRepr, f.__repr__())
+#       expectedRepr = "%s %s%s @%d \n" % (
+#           name, f.fTypeName, M.qName(quantifier), fieldNbr)
+#       # DEFAULTS NOT SUPPORTED
+#       self.assertEqual(expectedRepr, f.__repr__())
 
-    def testsQuantifiers(self):
-        qName = M.qName
-        self.assertEqual('', qName(M.Q_REQUIRED))
-        self.assertEqual('?', qName(M.Q_OPTIONAL))
-        self.assertEqual('*', qName(M.Q_STAR))
-        self.assertEqual('+', qName(M.Q_PLUS))
+#   def testsQuantifiers(self):
+#       qName = M.qName
+#       self.assertEqual('', qName(M.Q_REQUIRED))
+#       self.assertEqual('?', qName(M.Q_OPTIONAL))
+#       self.assertEqual('*', qName(M.Q_STAR))
+#       self.assertEqual('+', qName(M.Q_PLUS))
 
-    def testFieldSpec(self):
-        protoName = 'org.xlattice.upax'
-        nodeReg = R.NodeReg()
-        protoReg = R.ProtoReg(protoName, nodeReg)
-        msgReg = R.MsgReg(protoReg)
+#   def testFieldSpec(self):
+#       protoName = 'org.xlattice.upax'
+#       nodeReg = R.NodeReg()
+#       protoReg = R.ProtoReg(protoName, nodeReg)
+#       msgReg = R.MsgReg(protoReg)
 
-        # default is not implemented yet
-        self.doFieldTest(msgReg, 'foo', F._V_UINT32, M.Q_REQUIRED, 9)
-        self.doFieldTest(msgReg, 'bar', F._V_SINT32, M.Q_STAR, 17)
-        self.doFieldTest(msgReg, 'nodeID', F._F_BYTES20, M.Q_OPTIONAL, 92)
-        self.doFieldTest(msgReg, 'tix', F._V_BOOL, M.Q_PLUS, 147)
+#       # default is not implemented yet
+#       self.doFieldTest(msgReg, 'foo', F._V_UINT32, M.Q_REQUIRED, 9)
+#       self.doFieldTest(msgReg, 'bar', F._V_SINT32, M.Q_STAR, 17)
+#       self.doFieldTest(msgReg, 'nodeID', F._F_BYTES20, M.Q_OPTIONAL, 92)
+#       self.doFieldTest(msgReg, 'tix', F._V_BOOL, M.Q_PLUS, 147)
+#   # FOO
 
     def testProtoSpec(self):
         """ this is in fact the current spec for a log entry """
@@ -279,6 +297,38 @@ class TestProtoSpec (unittest.TestCase):
         self.assertEqual(5, ePair.value)
 
         self.roundTripProtoSpecViaString(sOM)
+
+    # TEST CACHING --------------------------------------------------
+
+    def testCaching(self):
+
+        # SETUP
+        data = StringIO(ZOGGERY_PROTO_SPEC)
+        p = StringProtoSpecParser(data)   # data should be file-like
+        self.sOM = p.parse()     # object model from string serialization
+        self.protoName = self.sOM.name  # the dotted name of the protocol
+        # END SETUp
+
+        self.assertTrue(isinstance(self.sOM, M.ProtoSpec))
+        msgSpec = self.sOM.msgs[0]
+        name = msgSpec.name
+        Clz0 = makeMsgClass(self.sOM, name)
+        Clz1 = makeMsgClass(self.sOM, name)
+        # we cache classe, so the two should be the same
+        self.assertEqual(id(Clz0), id(Clz1))
+
+        # chan = Channel(BUFSIZE)
+        values = self.leMsgValues()
+        leMsg0 = Clz0(values)
+        leMsg1 = Clz0(values)
+        # we don't cache instances, so these will differ
+        self.assertNotEquals(id(leMsg0), id(leMsg1))
+
+        fieldSpec = msgSpec[0]
+        dottedName = "%s.%s" % (self.protoName, msgSpec.name)
+        F0 = makeFieldClass(dottedName, fieldSpec)
+        F1 = makeFieldClass(dottedName, fieldSpec)
+        self.assertEqual(id(F0), id(F1))
 
 if __name__ == '__main__':
     unittest.main()

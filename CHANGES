@@ -1,5 +1,8 @@
 ~/dev/py/fieldz/CHANGES
 
+v0.10.9
+    2016-03-30
+        * testFieldImpl.py succeeds                                 SLOC 5864
 v0.10.8
     2016-03-29
         * add testFieldImpl.py, fieldImpl.py                        SLOC 5776
@@ -297,6 +300,7 @@ v0.1.2
         * working varint, fixed len 32- and 64-bit, var len bytestring
             and associated tests
         * initial svn import
+
 
 
 
