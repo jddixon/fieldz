@@ -1,13 +1,14 @@
 # ~/dev/py/fieldz/msgImpl.py
 
-# DEBUG
-import sys
-# END
+import sys      # for debugging
+
+from fieldz.fieldImpl import FieldImpl, MetaField, makeFieldClass
 
 import fieldz.fieldTypes as F
-from fieldz.raw         import lengthAsVarint, fieldHdrLen, readFieldHdr, \
-    writeRawVarint, readRawVarint, \
-    writeFieldHdr, LEN_PLUS_TYPE
+from fieldz.raw import (lengthAsVarint, fieldHdrLen, readFieldHdr,
+                        writeRawVarint, readRawVarint,
+                        writeFieldHdr, LEN_PLUS_TYPE)
+
 from fieldz.typed import *
 from fieldz.msgSpec import *
 
@@ -38,7 +39,7 @@ def _checkPosition(chan, end):
         raise RuntimeError(errMsg)
 
 # -------------------------------------------------------------------
-# METHODS USED AS COMPONENTS IN BUILDING CLASSES
+# CODE FRAGMENTS: METHODS USED AS COMPONENTS IN BUILDING CLASSES
 # -------------------------------------------------------------------
 
 
@@ -74,97 +75,28 @@ def myFieldClasses(self): return self._fieldClasses
 
 # specific to fields ------------------------------------------------
 # FOR A GIVEN FIELD, THESE ARE CONSTANTS ASSIGNED BY makeFieldClass
-
-
-def myFType(cls): return cls._fType
-
-
-def myQuantifier(cls): return cls._quantifier
-
-
-def myFieldNbr(cls): return cls._fieldNbr
-
-
-def myDefault(cls): return cls._default
-
+#
+#
+#def myFType(cls): return cls._fType
+#
+#
+#def myQuantifier(cls): return cls._quantifier
+#
+#
+#def myFieldNbr(cls): return cls._fieldNbr
+#
+#
+#def myDefault(cls): return cls._default
+#
 # these get and set the value attribute of the field instance; they
 # have nothing to do with de/serialization to and from the channel
-
-
-def myValueGetter(self): return self._value
+#
+#
+#def myValueGetter(self): return self._value
 # XXX TYPE-SPECIFIC VALIDATION, COERCION:
-
-
-def myValueSetter(self, value): self._value = value
-
-# -------------------------------------------------------------------
-# FIELD CLASS
-# -------------------------------------------------------------------
-
-
-class FieldImpl(object):
-    """
-    An abstract class intended to serve as parent to automatically
-    generated classes whose purpose will be to ease user handling
-    of data being sent or received across the wire.
-    """
-
-    #################################################################
-    # NOTE: if we inherit from type, we get a TypeError: nonempty
-    # __slots__ not supported for subtype of type
-    #################################################################
-    __slots__ = ['_value', ]
-
-    # should default precede value?  if a value is assigned, isn't that
-    # a default?  In fact shouldn't the parameter list end with
-    #   value=default?
-    def __init__(self, value=None):
-        # XXX NEED SOME VALIDATION
-        self._value = value
-
-    def __eq__(self, other):
-        if other is None:
-            return False
-        if self is other:
-            return True
-        if self._name != other._name:
-            return False
-        if self._fType != other._fType:
-            return False
-        if self._quantifier != other._quantifier:
-            return False
-        if self._fieldNbr != other._fieldNbr:
-            return False
-        # ignore defaults for now
-        return True
-
-
-class MetaField(type):
-
-    # gets: valueError: "'_name' in __slots__ conflicts with class variable"
-
-    def __new__(meta, name, bases, dct):
-        # DEBUG
-        print("MetaField NEW, meta='%s', name='%s', bases='%s', dct='%s'" % (
-            meta, name, bases, dct))
-        sys.stdout.flush()
-        # END
-        return super(MetaField, meta).__new__(meta, name, bases, dct)
-
-    def __init__(cls, name, bases, dct):
-        # DEBUG
-        super(MetaField, cls).__init__(name, bases, dct)
-        print("MetaField INIT, cls='%s', name='%s', bases='%s', dct='%s'" % (
-            cls, name, bases, dct))
-        sys.stdout.flush()
-        # END
-
-    def __call__(cls, *args, **kwargs):
-        # DEBUG
-        print("MetaField CALL with args = '%s'" % str(args))
-        sys.stdout.flush()
-        # END
-        return type.__call__(cls, *args, **kwargs)
+#
+#
+# def myValueSetter(self, value): self._value = value     # GEEP
 
 # -------------------------------------------------------------------
 # MESSAGE CLASS
@@ -498,9 +430,9 @@ class MetaMsg(type):
         values.  This is the INSTANCE.  kwargs is empty.
         """
 
-        ##############################################
-        # ERROR: cannot create attribute by assignment
-        ##############################################
+        #############################################################
+        # GROSS ERROR: using class cls where it should use instance !
+        #############################################################
         cls._fields = []
 #       cls._fieldsByName   = {}
         values = args[0]
@@ -518,12 +450,7 @@ class MetaMsg(type):
 
 #       print "  THERE ARE %u FIELDS SET" % len(cls._fields)    # DEBUG
 
-        #############################################################
-        # TypeError: type() takes 1 or 3 arguments)
-        #############################################################
-        # return type.__call__(cls, *args, **kwargs)
-
-        return cls
+        return super().__call__(*args, **kwargs)
 
     #########################################################################
     # DISABLE FOR NOW; XXX SHOULD BE ADDED WHEN THE INSTANCE HAS BEEN CREATED
@@ -570,8 +497,8 @@ def msgInitter(cls, *args, **attrs):
     #
     pass
 
+# XXX A Strange Litle Device:
 msgClsByQName = {}    # PROTO_NAME . MSG_NAME => class
-fieldClsByQName = {}    # PROTO_NAME . MSG_NAME . FIELD_NAME => class
 
 
 def makeMsgClass(parent, name):
@@ -634,8 +561,10 @@ def _makeMsgClass(parent, msgSpec):
 
     d['_enums'] = []      # enums visible at all levels; shd be immutable
     d['enums'] = property(myEnums)
+
     d['_msgs'] = []      # nested msgs, visible at all levels
     d['msgs'] = property(myMsgs)
+
     d['_fieldClasses'] = fieldClasses
     d['fieldClasses'] = property(myFieldClasses)
 
@@ -654,78 +583,13 @@ def _makeMsgClass(parent, msgSpec):
                 (MsgImpl,),        # bases
                 d)                 # dictionary
 
+    # DEBUG
+    print("\n_makeMsgClass returning something of type ", type(C))
+    # END
+
     #----------------------------
     # possibly some more fiddling ...
     #----------------------------
 
     msgClsByQName[qualName] = C
     return C                        # GEEPGEEP
-
-# -------------------------------------------------------------------
-
-
-def makeFieldClass(dottedMsgName, fieldSpec):
-    if dottedMsgName is None:
-        raise ValueError('null message name')
-    if fieldSpec is None:
-        raise ValueError('null field spec')
-    qualName = '%s.%s' % (dottedMsgName, fieldSpec.name)
-    # DEBUG
-    print('MAKE_FIELD_CLASS for %s' % qualName)
-    # END
-    if qualName in fieldClsByQName:
-        return fieldClsByQName[qualName]
-
-    # DEBUG
-    # won't work if FieldSpec has __slots__
-    if '__dict__' in dir(FieldSpec):
-        print("FieldSpec CLASS DICTIONARY excluding __doc__")
-        for key in list(FieldSpec.__dict__.keys()):
-            if key != '__doc__':
-                print("    %-20s %s" % (key, FieldSpec.__dict__[key]))
-        print("fieldSpec INSTANCE DICTIONARY excluding __doc__")
-
-    if '__dict__' in dir(fieldSpec):
-        for key in list(fieldSpec.__dict__.keys()):
-            if key != '__doc__':
-                print("    %-20s %s" % (key, fieldSpec.__dict__[key]))
-    # END
-
-    d = {}
-
-    # disable __slots__ until better understood
-    # d['__slots__'] = ['_name', '_fType', '_quantifier',
-    #                  '_fieldNbr', '_default', ]
-
-    # we want an attribute and a property for each fieldSpec attr
-    d['_name'] = fieldSpec.name
-    d['name'] = property(myName)
-    d['_fType'] = fieldSpec.fTypeNdx
-    d['fType'] = property(myFType)
-    d['_quantifier'] = fieldSpec.quantifier
-    d['quantifier'] = property(myQuantifier)
-    d['_fieldNbr'] = fieldSpec.fieldNbr
-    d['fieldNbr'] = property(myFieldNbr)
-    d['_default'] = fieldSpec.default
-    d['default'] = property(myDefault)
-
-    # this needs to be elaborated as appropriate to deal with the
-    # 18 or so field types
-    d['value'] = property(myValueGetter, myValueSetter)
-
-    # 2016-02-19 adding '_' prefix caused small explosion of
-    #   '_name ... conflicts' errors
-    # 2016-02-20 changing the prefix from '_' to '_QQQ_' had no effect
-    #   on ValueErrors:
-    #     "'_name' in __slots__ conficts with class variable"
-    # 2016-03-19 dropped the '_' prefix to name; ERROR count remains the same
-    M = MetaField(str(fieldSpec.name),      # name
-                  (FieldImpl,),             # bases
-                  d)                        # dictionary
-
-    #----------------------------
-    # possibly some more fiddling ...
-    #----------------------------
-
-    fieldClsByQName[qualName] = M
-    return M
