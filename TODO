@@ -42,12 +42,6 @@
     * testZoggerySerialization  fails, _name in __slots__               
 
 2016-02-22
-    * add implementation notes
-        - api                                                           * DONE
-        - channels                                                      * DONE
-        - goals                                                         * DONE
-    * link to these from README                                         * DONE
-
     * flesh out README.md
 
 2016-02-22, edited from -20
@@ -311,7 +305,7 @@
     * all types (field, core, dynamic) need len funcs which are 
         added to the registry
         - add field lenFuncs to registry                                # DONE
-        - add core lenFuncs
+        - add core lenFuncs to registry
 
 2012-09-06
     * need putters and getters for core types (FieldSpec, MsgSpec,
