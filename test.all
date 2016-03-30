@@ -2,6 +2,7 @@
 
 ./testBigTest.py
 ./testCoreTypes.py
+./testFieldImpl.py
 ./testFieldTypes.py
 ./testFixedLen.py
 ./testGenEnum.py

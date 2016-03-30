@@ -89,6 +89,14 @@ class TestZoggerySerialization (unittest.TestCase):
         # create a message instance ---------------------------------
         values = self.leMsgValues()        # a list of quasi-random values
         leMsg = LogEntryMsg(values)
+
+        # DEBUG
+        print("type of LogEntryMsg: ", type(LogEntryMsg))
+        print("type of leMsg:       ", type(leMsg))
+        # END
+
+        self.assertTrue(isinstance(leMsg, LogEntryMsg))
+
         (timestamp, key, length, nodeID, by, path) = tuple(values)
 
         self.assertEqual(msgSpec.name, leMsg.name)

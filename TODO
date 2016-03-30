@@ -13,6 +13,10 @@
     are not canonical
 -----------------------------------------------------------------
 
+2016-03-29
+    * registry should be a singleton -- one registry per running 
+        application, or possibly per set of cooperating applications
+
 2016-03-21
     * necessary fix: superclass field names must NOT appear in the
         __slots__ list of derived classes !
