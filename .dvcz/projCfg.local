@@ -1,0 +1,12 @@
+dir:tmp:uDir
+dir:local:specs
+
+code:std:.dvcz/projCfg
+code:std:.dvcz/projCfg.local
+
+code:local:example.msgSpec
+code:local:netDistrib.conf
+code:local:testForOK
+code:local:test_util.xxx_IS_ONE_LEVEL_UP
+code:local:unittest.xlgo
+code:local:unittest_import.xlgo
