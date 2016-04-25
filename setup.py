@@ -26,6 +26,6 @@ setup(name='fieldz',
       #
       # scripts should have a globally unique name; they might be in a
       #   scripts/ subdir; SQuote the script name
-      scripts=[],
+      scripts=['fieldzSpecc'],
       # MISSING url
       )
