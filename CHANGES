@@ -1,5 +1,8 @@
 ~/dev/py/fieldz/CHANGES
 
+v0.10.11
+    2016-05-19
+        * add bkp2U, updadte .dvcz                                  SLOC 5772
 v0.10.10
     2016-04-25
         * fix countem; add .dvcz and projCfg{.,local}               SLOC 5772
@@ -303,6 +306,7 @@ v0.1.2
         * working varint, fixed len 32- and 64-bit, var len bytestring
             and associated tests
         * initial svn import
+
 
 
 
