@@ -2,14 +2,15 @@
 project:fieldz
 package:fieldz
 mainlang:py
-version:0.10.9
-versionDate:2016-03-30
+version:0.10.10
+versionDate:2016-04-25
 :?dirs?:
 dir:std:.dvcz
 dir:std:dist
 dir:std:ghpDoc
 dir:pkg:fieldz
 dir:local:specs
+dir:local:logs
 dir:tmp:uDir
 :?files?:
 code:std:.dvcz/projCfg
@@ -25,6 +26,9 @@ code:local:unittest.xlgo
 code:local:unittest_import.xlgo
 txt:std:CHANGES
 txt:std:LICENSE.md
+txt:std:README
+txt:std:README.api
+txt:std:README.channels
 txt:std:README.jdd
 txt:std:README.md
 txt:std:TODO
@@ -64,3 +68,5 @@ py:test:testVarint.py
 py:test:testWireBuffer.py
 py:test:testZigZag.py
 py:test:testZoggerySerialization.py
+dunno:local:countem.new
+dunno:local:testAll
