@@ -5,6 +5,8 @@ then
   cd $DEV_BASE/py/fieldz
   
   autopep8 -ai -r fieldz fieldzSpecc *.py
+  echo "not styling specs/ subdir"
+  echo "not styling logs/ subdir"
   
 else
   echo "DEV_BASE is not defined"

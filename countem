@@ -6,7 +6,7 @@ then
   
   rm -rf build/* 
   
-  pySloc  -X dist -X uDir -v $@
+  pySloc -L py  -X dist -X uDir -v $@
 else
   echo "DEV_BASE is not defined"
 fi
