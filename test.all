@@ -1,25 +1,32 @@
-# fieldz/testAll
+#!/usr/bin/env bash
 
-./testBigTest.py
-./testCoreTypes.py
-./testFieldImpl.py
-./testFieldTypes.py
-./testFixedLen.py
-./testGenEnum.py
-./testLenPlus.py
-./testLittleBig.py
-./testLogEntry.py
-./testMsgImpl.py
-./testMsgSpec.py
-./testProtoSpec.py
-./testReg.py
-./testRingDataProto.py
-./testSimpleEnum.py
-./testSolo.py
-./testTFWriter.py
-# OBSOLETE:
-# ./testTypedFields.py
-./testVarint.py
-./testWireBuffer.py
-./testZigZag.py
-./testZoggerySerialization.py
+if [ ! -z "${DEV_BASE// }" ]
+then
+  cd $DEV_BASE/py/fieldz
+  
+  ./testBigTest.py
+  ./testCoreTypes.py
+  ./testFieldImpl.py
+  ./testFieldTypes.py
+  ./testFixedLen.py
+  ./testGenEnum.py
+  ./testLenPlus.py
+  ./testLittleBig.py
+  ./testLogEntry.py
+  ./testMsgImpl.py
+  ./testMsgSpec.py
+  ./testProtoSpec.py
+  ./testReg.py
+  ./testRingDataProto.py
+  ./testSimpleEnum.py
+  ./testSolo.py
+  ./testTFWriter.py
+  ./testTypedFields.py
+  ./testVarint.py
+  ./testWireBuffer.py
+  ./testZigZag.py
+  ./testZoggerySerialization.py
+  
+else
+  echo "DEV_BASE is not defined"
+fi
