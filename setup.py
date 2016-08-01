@@ -27,5 +27,9 @@ setup(name='fieldz',
       # scripts should have a globally unique name; they might be in a
       #   scripts/ subdir; SQuote the script name
       scripts=['fieldzSpecc'],
-      # MISSING url
+      # MISSING description
+      classifiers=[
+          'License :: OSI Approved :: MIT License',
+          'Programming Language :: Python :: 3',
+      ],
       )

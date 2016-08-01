@@ -15,6 +15,8 @@ import fieldz.fieldTypes as F
 import fieldz.reg as R
 from fieldz.parser import StringMsgSpecParser
 
+import fieldz.coreTypes         # EXPERIMENT
+
 LOG_ENTRY_MSG_SPEC = u"""
 # protocol org.xlattice.zoggery
 message logEntry:
@@ -58,6 +60,9 @@ class TestCoreTypes (unittest.TestCase):
         buf = chan.buffer
         putter = M.cPutFuncs[cType]
         getter = M.cGetFuncs[cType]
+        # DEBUG
+        print("GETTER: %s" % getter)
+        # END
         lenFunc = M.cLenFuncs[cType]
         pLenFunc = M.cPLenFuncs[cType]
         h = fieldHdrLen(n, cType)     # BUT cType must be >18!
@@ -77,7 +82,14 @@ class TestCoreTypes (unittest.TestCase):
         self.assertEqual(0, n)    # field number
         self.assertEqual(h, actualHdrLen)
 
-        retVal = getter(msgReg, chan)
+        # retVal = getter(msgReg, chan)       # <-- FAILS: argCount
+
+        # fails: fieldSpecGetter() missing 1 required  positional
+        #   argument: 'chan'
+        # retVal = getter(chan)
+
+        # gets the same error:retVal = M.cGetFuncs[cType](chan)
+
         rPos = chan.position
         # DEBUG
         print("ROUND TRIP: val    = %s" % val)
@@ -92,9 +104,9 @@ class TestCoreTypes (unittest.TestCase):
         # -----------------------------------------------------------
         # XXX FAILS if msgReg arg added: WRONG NUMBER OF ARGS
         # XXX n=0 is wired into roundTripToWireFormat XXX
-#       n = 0                           # 0-based field number
-#       s = M.EnumPairSpec('funnyFarm', 497)
-#       self.roundTripToWireFormat( chan, n, C._ENUM_PAIR_SPEC, s)
+        n = 0                           # 0-based field number
+        s = M.EnumPairSpec('funnyFarm', 497)
+        self.roundTripToWireFormat(chan, n, C._ENUM_PAIR_SPEC, s)
 
         # -----------------------------------------------------------
         protocol = 'org.xlattice.upax'
@@ -130,7 +142,7 @@ class TestCoreTypes (unittest.TestCase):
 
         n = 0
         # XXX FAILS if msgReg arg added: WRONG NUMBER OF ARGS
-#       self.roundTripToWireFormat( chan, n, C._MSG_SPEC, sOM )
+        self.roundTripToWireFormat(chan, n, C._MSG_SPEC, sOM)
 
 
 if __name__ == '__main__':

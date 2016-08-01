@@ -17,6 +17,7 @@ rng = SimpleRNG(time.time())
 protocol = 'org.xlattice.upax'
 nodeReg = R.NodeReg()
 protoReg = R.ProtoReg(protocol, nodeReg)
+parent = M.ProtoSpec(protocol, protoReg)
 msgReg = R.MsgReg(protoReg)
 name = 'logEntry'
 enum = M.EnumSpec.create('foo', [('not', 0), ('being', 1), ('used', 2), ])
@@ -28,7 +29,7 @@ fields = [
     M.FieldSpec(msgReg, 'by', F._L_STRING, M.Q_REQUIRED, 4),
     M.FieldSpec(msgReg, 'path', F._L_STRING, M.Q_REQUIRED, 5),
 ]
-leMsgSpec = M.MsgSpec(name, protoReg, msgReg)
+leMsgSpec = M.MsgSpec(name, protoReg, parent)
 for f in fields:
     leMsgSpec.addField(f)
 upaxProtoSpec = M.ProtoSpec(protocol, protoReg)

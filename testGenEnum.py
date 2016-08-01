@@ -98,11 +98,10 @@ class TestGenEnum (unittest.TestCase):
         for s in list(f.__dict__.keys()):
             print("%-20s %s" % (s, f.__dict__[s]))
 
-        # This is based on a misunderstanding: does __setattr__
-        # behave just like echo?  And so work only at the instance level?
+        # XXX BADLY CONCEIVED TEST?
         try:
-            setattr(F, 'C', 13)
-            self.assertEqual(13, F.C)
+            setattr(f, 'C', 137)
+            self.assertEqual(137, f.C)
             self.fail('ERROR: successfully changed value of C')
         except EnumError:
             print('success: caught attempt to set new symbol')

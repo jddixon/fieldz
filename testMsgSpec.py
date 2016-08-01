@@ -160,6 +160,8 @@ class TestMsgSpec (unittest.TestCase):
         """ this is in fact the current spec for a log entry """
         protocol = 'org.xlattice.upax'
         nodeReg, protoReg, msgReg = self.makeRegistries(protocol)
+        # dummy:
+        parent = M.ProtoSpec(protocol, protoReg)
 
         # the enum is not used
         enum = M.EnumSpec.create('Joe', [
@@ -172,7 +174,7 @@ class TestMsgSpec (unittest.TestCase):
             M.FieldSpec(msgReg, 'path', F._L_STRING, M.Q_REQUIRED, 4),
         ]
         name = 'logEntry'
-        msgSpec = M.MsgSpec(name, protoReg, msgReg)
+        msgSpec = M.MsgSpec(name, protocol, msgReg)
         for f in fields:
             msgSpec.addField(f)
         msgSpec.addEnum(enum)

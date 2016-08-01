@@ -433,7 +433,8 @@ class SuperSpec(object):
         if name in self._msgsByName or (self.parent is not None
                                         and name in self.parent._msgsByName):
             raise RuntimeError("name '%s' is already in use" % name)
-        print("ADDING MSG %s TO PROTO SPEC LIST" % name)         # DEBUG
+        print("ADDING MSG %d '%s' TO PROTO SPEC LIST" %
+              (self._nextMsg, name))         # DEBUG
         self._msgs.append(m)
         self._msgsByName[name] = m                             # FOO
         self._msgNameNdx[name] = self._nextMsg
@@ -587,7 +588,8 @@ class MsgSpec(SuperSpec):
                  '_fieldNdx',                    # zero-based field index
                  ]
 
-    def __init__(self, name, parent, reg):
+    # XXX 2016-06-24 inverted order of last two paramaters
+    def __init__(self, name, reg, parent):
         if parent is None:
             raise ValueError('parent must be specified')
         name = str(name)
@@ -1007,7 +1009,8 @@ def msgSpecPutter(chan, val, n):
             enumSpecPutter(chan, enum, 2)         # yup, field 2
 
 
-def msgSpecGetter(chan):
+# 'msgReg' param added 2016-06-24
+def msgSpecGetter(msgReg, chan):
     # read the byte count, the length of the spec
     byteCount = readRawVarint(chan)
     end = chan.position + byteCount
@@ -1027,7 +1030,8 @@ def msgSpecGetter(chan):
             # XXX This is a a peek: pos only gets advanced if OK
             print("EXPECTED FIELD 1, FOUND %s" % hdrFieldNbr(hdr))
             break
-        f = fieldSpecGetter(chan0)
+        # XXX params should be (msgReg, chan)
+        f = fieldSpecGetter(msgReg, chan)       # was chan0
         fields.append(f)
 
     # we may have multiple enums
@@ -1037,8 +1041,10 @@ def msgSpecGetter(chan):
         if hdrFieldNbr(hdr) != 2:
             print("EXPECTED FIELD 2, FOUND %s" % hdrFieldNbr(hdr))
             break
-        enum = enumSpecGetter(chan0)
+        enum = enumSpecGetter(chan)     # was chan0
         enums.append(enum)
+
+    # XXX WRONG PARAMETER LIST: should be name, reg, parent) XXX
 
     val = MsgSpec(name, fields, enums)
 
