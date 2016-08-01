@@ -1,11 +1,11 @@
 # ~/dev/py/fieldz/reg/__init__.py
 
-__all__ = ['RegEntry',                         # abstract type
-           'FieldTypeEntry',                   # msgSpec constituents
-           'CoreTypeEntry',                    # ill-conceived?
+__all__ = ['RegEntry',                      # abstract type
+           'FieldTypeEntry',                # msgSpec constituents
+           'CoreTypeEntry',                 # ill-conceived?
            'NodeReg', 'ProtoEntry',
-           'ProtoReg', 'MsgReg',       # either may contain ...
-           'MsgEntry', 'EnumEntry',  # either of these
+           'ProtoReg', 'MsgReg',            # either may contain ...
+           'MsgEntry', 'EnumEntry',         # either of these
            ]
 
 from fieldz.msgSpec import validateDottedName
@@ -377,9 +377,13 @@ class ProtoReg(UniqueNameRegistry):
 
     def addMsg(self, msgSpec):
         name = msgSpec.name
-        print("DEBUG ADDING MSG %s to ProtoReg" % name)
         self._checkName(name)
         regID = self.getRegID()   # reserve the next free regID and increment
+        # DEBUG
+        print(
+            "    fielzd.reg.__init__.ProtoReg.addMsg: adding %d, '%s', to ProtoReg" % (
+                regID, name))
+        # END
         entry = MsgEntry(name, regID, self, msgSpec)
 
         # register
@@ -507,6 +511,11 @@ class MsgReg(object):
         name = msgSpec.name
         self._checkName(name)
         regID = self.getRegID()   # reserve the next free regID and increment
+        # DEBUG
+        print(
+            "    fielzd.reg.__init__.MsgReg.addMsg: adding %d, '%s', to ProtoReg" % (
+                regID, name))
+        # END
         entry = MsgEntry(name, regID, self, msgSpec)   # third arg is reg
 
         # register

@@ -30,6 +30,11 @@ class StringSpecParser(object):
     __slots__ = ['_fd', '_nodeReg', '_reg', ]
 
     def __init__(self, fd, nodeReg=None):
+
+        # DEBUG
+        print('entering StringSpecParser')
+        # END
+
         # XXX should die if fd not open
         self._fd = fd
         if nodeReg is None:
@@ -85,8 +90,8 @@ class StringSpecParser(object):
     def expectMsgSpec(self, parent, line, indent='', step=' '):
         name = self.expectMsgSpecName(line, indent, step)
         msgReg = R.MsgReg(parent.reg)
-        print("EXPECT_MSG_SPEC: FOUND %s" % name)            # DEBUG
-        thisMsg = MsgSpec(name, parent, msgReg)
+        print("EXPECT_MSG_SPEC: NAME = %s" % name)            # DEBUG
+        thisMsg = MsgSpec(name, msgReg, parent)
 
         line = self.getLine()
 
@@ -214,7 +219,7 @@ class StringSpecParser(object):
             raise ParseError("wrong indent for field declaration: '%s'" % line)
 
         # DEBUG
-        print("FIELD DECL: '%s'" % line)
+        print("expectField: line = '%s'" % line)
         # END
 
         line = line[len(indent):]
@@ -227,7 +232,7 @@ class StringSpecParser(object):
         wordCount = len(words)
 
         # DEBUG
-        print("expectField: found %d tokens: %s" % (wordCount, words))
+        print("             found %d tokens: %s" % (wordCount, words))
         # END
 
         if wordCount < 2:
@@ -258,7 +263,7 @@ class StringSpecParser(object):
         fType = None
 
         # DEBUG ###
-        print("DEBUG: field '%s' type '%s' quant %d" % (
+        print("             field '%s' type '%s' quant %d" % (
             fName, typeName, quantifier))
         # END #####
 
@@ -340,11 +345,15 @@ class StringMsgSpecParser(StringSpecParser):
     def __init__(self, fd, nodeReg=None):
         super(StringMsgSpecParser, self).__init__(fd, nodeReg)
         protocol = 'org.xlattice.fieldz.test'
+
         # these are dummies
         self.parentReg = R.ProtoReg(protocol, self._nodeReg)
         self.parent = M.ProtoSpec(protocol, self.parentReg)
 
     def parse(self):
+        # DEBUG
+        print("entering StringMsgSpecParser.parse()")
+        # END
         line = self.getLine()
         msgReg = R.MsgReg(self.parentReg)
         line = self.expectMsgSpec(self.parent, line)
@@ -355,8 +364,19 @@ class StringMsgSpecParser(StringSpecParser):
                                                 self.parentReg._entries[regID]))
         # END
 
-        # the parent is a dummy ProtoSpec
         p = self.parent
+
+        # the parent is a dummy ProtoSpec
+        # DEBUG
+        print("parse(): parent is a ", type(self.parent))
+        if p is None:
+            print("    parent field is None")
+        elif p._msgs is None:
+            print("    parent._msgs is None")                   # SEEN`
+        else:
+            print("    parent has %d msgs" % len(p._msgs))
+        # END
+
         return p._msgs[0]
 
 
@@ -369,6 +389,9 @@ class StringProtoSpecParser(StringSpecParser):
 
     def __init__(self, fd, nodeReg=None):
         super(StringProtoSpecParser, self).__init__(fd, nodeReg)
+        # DEBUG
+        print("entering StringProtoSpecParser.__init__")
+        # END
         self._protoName = None
         self._seqs = []
 
@@ -384,7 +407,7 @@ class StringProtoSpecParser(StringSpecParser):
         if words[0] == 'protocol':
             validateDottedName(words[1])
             return words[1]
-            # print "DEBUG: protocol is '%s'" % str(self._protocol)
+            print("DEBUG: protocol is '%s'" % str(self._protocol))
         else:
             raise ParserError("expected protocol line, found '%s'" % line)
 
@@ -394,6 +417,10 @@ class StringProtoSpecParser(StringSpecParser):
         pass
 
     def parse(self):
+        # DEBUG
+        print("entering StringProtoSpecParser.parse()")
+        # END
+
         # EnumPairSpecs, EnumSpecs, and SeqSpecs contain no recursive
         # elements are so are used directly
         class MsgSpecObj(object):
@@ -408,7 +435,7 @@ class StringProtoSpecParser(StringSpecParser):
         line = self.acceptEnumSpecs(protoSpec, line)  # default indent and step
 
         # DEBUG
-#       print "line returned by acceptEnumSpecs: '%s'" % line
+        print("  line returned by acceptEnumSpecs: '%s'" % line)
         # END
 
         # expect one or more MsgSpec declaration at zero indentation; these
@@ -416,6 +443,7 @@ class StringProtoSpecParser(StringSpecParser):
         # nested MsgSpecs at 'step' indentation; the MsgSpecs may include
         # nested EnumSpecs and MsgSpecs at progressively greater indentations,
         # possibly limited to a maximum indentation of MAX_INDENT
+
         # WORKING HERE NEXT
         line = self.expectMsgSpecs(protoSpec, line)  # default indent and step
 

@@ -68,9 +68,9 @@ class TestZoggerySerialization (unittest.TestCase):
         self.assertTrue(isinstance(self.sOM, M.ProtoSpec))
         self.assertEqual('org.xlattice.zoggery', self.sOM.name)
 
-        self.assertEqual(0, len(self.sOM.enums))
-        self.assertEqual(1, len(self.sOM.msgs))
-        self.assertEqual(0, len(self.sOM.seqs))
+        self.assertEqual(len(self.sOM.enums), 0)
+        self.assertEqual(len(self.sOM.msgs), 1)     # FAILS: is zero
+        self.assertEqual(len(self.sOM.seqs), 0)
 
         msgSpec = self.sOM.msgs[0]
         msgName = msgSpec.name

@@ -79,32 +79,23 @@ class FieldImpl(object):
 
 class MetaField(type):
 
-    # These get called in this sequence: __new__, __init__, __call__
-
-    def __new__(meta, name, bases, dct):
+    def __new__(cls, name, bases, namespace, **kwargs):
         # DEBUG
-        # removed dct from print
-        print("\nMetaField NEW, meta='%s',\n\tname='%s', bases='%s'" % (
-            meta, name, bases))
+        # removed namespace from print
+        print("\nMetaField NEW, cls='%s',\n\tname='%s', bases='%s'" % (
+            cls, name, bases))
         sys.stdout.flush()
         # END
-        return super(MetaField, meta).__new__(meta, name, bases, dct)
+        return super().__new__(cls, name, bases, namespace)
 
-    def __init__(cls, name, bases, dct):
-        super(MetaField, cls).__init__(name, bases, dct)
+    def __init__(cls, name, bases, namespace):
+        super().__init__(name, bases, namespace)
 
-        # DEBUG without dct
+        # DEBUG without namespace
         print("MetaField INIT, cls='%s',\n\tname='%s', bases='%s'" % (
             cls, name, bases))
         sys.stdout.flush()
         # END
-
-    def __call__(cls, *args, **kwargs):
-        # DEBUG
-        print("MetaField CALL with args = '%s'" % str(args))
-        sys.stdout.flush()
-        # END
-        return super().__call__(*args, **kwargs)
 
 # -- MAKER ----------------------------------------------------------
 

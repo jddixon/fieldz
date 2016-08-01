@@ -39,8 +39,13 @@ class TestMsgImpl (unittest.TestCase):
     def setUp(self):
         data = StringIO(ZOGGERY_PROTO_SPEC)
         p = StringProtoSpecParser(data)   # data should be file-like
+        self.assertTrue(p is not None)
         self.sOM = p.parse()     # object model from string serialization
+        self.assertTrue(self.sOM is not None)
         self.protoName = self.sOM.name  # the dotted name of the protocol
+        # DEBUG
+        print("setUp: proto name is %s" % self.protoName)
+        # END
 
     def tearDown(self):
         pass

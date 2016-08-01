@@ -7,6 +7,9 @@ import unittest
 from rnglib import SimpleRNG
 
 import fieldz.fieldTypes as F
+import fieldz.msgSpec as M
+import fieldz.reg as R
+
 from fieldz.typed import *
 from fieldz.msgSpec import *
 from fieldz.tfbuffer import *
@@ -17,32 +20,37 @@ b160 = bytearray(20)
 b256 = bytearray(32)
 
 # msgSpec -----------------------------------------------------------
-#protocol= 'org.xlattice.upax'
+protocol = 'org.xlattice.upax'
 name = 'testMsgSpec'
+nodeReg = R.NodeReg()
+protoReg = R.ProtoReg(protocol, nodeReg)
+msgReg = R.MsgReg(protoReg)
+parent = M.ProtoSpec(protocol, protoReg)
+
 # no enum is used
 
 # XXX MISSING reg; BUT DO WE REALLY WANT FIELD NAMES IN THE REGISTRY?
 
 fields = [
 
-    FieldSpec('i32', F.ndx('vuInt32'), Q_REQUIRED, 0),
-    FieldSpec('i32bis', F.ndx('vuInt32'), Q_REQUIRED, 1),
-    FieldSpec('i64', F.ndx('vuInt64'), Q_REQUIRED, 2),
-    FieldSpec('si32', F.ndx('vsInt32'), Q_REQUIRED, 3),
-    FieldSpec('si32bis', F.ndx('vsInt32'), Q_REQUIRED, 4),
-    FieldSpec('si64', F.ndx('vsInt64'), Q_REQUIRED, 5),
-    FieldSpec('vuint32', F.ndx('vuInt32'), Q_REQUIRED, 6),
-    FieldSpec('vuint64', F.ndx('vuInt64'), Q_REQUIRED, 7),
+    FieldSpec(msgReg, 'i32', F.ndx('vuInt32'), Q_REQUIRED, 0),
+    FieldSpec(msgReg, 'i32bis', F.ndx('vuInt32'), Q_REQUIRED, 1),
+    FieldSpec(msgReg, 'i64', F.ndx('vuInt64'), Q_REQUIRED, 2),
+    FieldSpec(msgReg, 'si32', F.ndx('vsInt32'), Q_REQUIRED, 3),
+    FieldSpec(msgReg, 'si32bis', F.ndx('vsInt32'), Q_REQUIRED, 4),
+    FieldSpec(msgReg, 'si64', F.ndx('vsInt64'), Q_REQUIRED, 5),
+    FieldSpec(msgReg, 'vuint32', F.ndx('vuInt32'), Q_REQUIRED, 6),
+    FieldSpec(msgReg, 'vuint64', F.ndx('vuInt64'), Q_REQUIRED, 7),
     # take care with gaps from here
-    FieldSpec('fint32', F.ndx('vuInt32'), Q_REQUIRED, 8),
-    FieldSpec('fint64', F.ndx('vuInt64'), Q_REQUIRED, 9),
-    FieldSpec('lstr', F.ndx('lString'), Q_REQUIRED, 10),
-    FieldSpec('lbytes', F.ndx('lBytes'), Q_REQUIRED, 11),
-    FieldSpec('lbytes16', F.ndx('fBytes16'), Q_REQUIRED, 12),
-    FieldSpec('lbytes20', F.ndx('fBytes20'), Q_REQUIRED, 13),
-    FieldSpec('lbytes32', F.ndx('fBytes32'), Q_REQUIRED, 14),
+    FieldSpec(msgReg, 'fint32', F.ndx('vuInt32'), Q_REQUIRED, 8),
+    FieldSpec(msgReg, 'fint64', F.ndx('vuInt64'), Q_REQUIRED, 9),
+    FieldSpec(msgReg, 'lstr', F.ndx('lString'), Q_REQUIRED, 10),
+    FieldSpec(msgReg, 'lbytes', F.ndx('lBytes'), Q_REQUIRED, 11),
+    FieldSpec(msgReg, 'lbytes16', F.ndx('fBytes16'), Q_REQUIRED, 12),
+    FieldSpec(msgReg, 'lbytes20', F.ndx('fBytes20'), Q_REQUIRED, 13),
+    FieldSpec(msgReg, 'lbytes32', F.ndx('fBytes32'), Q_REQUIRED, 14),
 ]
-testMsgSpec = MsgSpec(name, fields)
+testMsgSpec = MsgSpec(name, protoReg, parent)
 
 # -------------------------------------------------------------------
 

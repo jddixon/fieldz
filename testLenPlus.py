@@ -60,9 +60,9 @@ class TestLenPlus (unittest.TestCase):
         self.assertEqual(offset2 + lengthAsVarint(len(s)) + len(s), offset3)
 
     def testEncodeDecode(self):
-        self.roundTrip('')
-        self.roundTrip('x')
-        self.roundTrip('should be a random string of bytes')
+        self.roundTrip(''.encode('utf8'))
+        self.roundTrip('x'.encode('utf8'))
+        self.roundTrip('should be a random string of bytes'.encode('utf8'))
 
 if __name__ == '__main__':
     unittest.main()

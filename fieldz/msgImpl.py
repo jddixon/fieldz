@@ -103,7 +103,6 @@ def myFieldClasses(self): return self._fieldClasses
 # -------------------------------------------------------------------
 
 
-# class MsgImpl(object):
 class MsgImpl(type):
     """
     An abstract class intended to serve as parent to automatically
@@ -411,27 +410,21 @@ class MsgImpl(type):
 
 class MetaMsg(type):
 
-    def __new__(meta, name, bases, dct):
+    def __new__(cls, name, bases, namespace, **kwargs):
         # DEBUG
-        #       print "METACLASS NEW gets called once"
+        print("MetaMsgNEW gets called once")
         # END
-        return super(MetaMsg, meta).__new__(meta, name, bases, dct)
+        return super().__new__(cls, name, bases, namespace)
 
-    def __init__(cls, name, bases, dct):
+    def __init__(cls, name, bases, namespace, **kwargs):
         # definitely works:
         # setattr(cls, 'baz', '__init__ added to dictionary before super call')
 
-        super(MetaMsg, cls).__init__(name, bases, dct)
-#       print "METACLASS INIT gets called once"
-
-    def __call__(cls, *args, **kwargs):
-        """
-        XXX At this time the only argument expected is a list of field
-        values.  This is the INSTANCE.  kwargs is empty.
-        """
+        super().__init__(name, bases, namespace)
+        print("MetaMsgINIT gets called once")
 
         #############################################################
-        # GROSS ERROR: using class cls where it should use instance !
+        # POSSIBLE GROSS ERROR - this stuff belongs in a maker class
         #############################################################
         cls._fields = []
 #       cls._fieldsByName   = {}

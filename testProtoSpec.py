@@ -123,6 +123,7 @@ class TestProtoSpec (unittest.TestCase):
         msgReg = R.MsgReg(protoReg)
         protoSpec = M.ProtoSpec(protoName, protoReg)
         self.assertEqual(protoName, protoSpec.name)
+        parent = M.ProtoSpec(protoName, protoReg)
 
         msgName = 'logEntry'
         # the enum is not used
