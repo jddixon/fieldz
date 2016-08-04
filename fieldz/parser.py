@@ -75,8 +75,9 @@ class StringSpecParser(object):
     def expectMsgSpecName(self, line, indent='', step=' '):
         """ on a line beginning 'message ' """
         starter = indent + 'message '
-        if not line.startswith(starter):
+        if not line or not line.startswith(starter):
             raise ParserError("badly formatted message name line '%s'" % line)
+
         line = line[len(starter):]
         words = line.split()
         self.expectTokenCount(words, 'message name', 1)
@@ -203,7 +204,7 @@ class StringSpecParser(object):
         """
         enumStart = indent + 'enum'
 
-        while line.startswith(enumStart):
+        while line and line.startswith(enumStart):
             line = self.expectEnum(parent, line, indent, step)
 
         # DEBUG

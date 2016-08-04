@@ -590,13 +590,15 @@ class MsgSpec(SuperSpec):
 
     # XXX 2016-06-24 inverted order of last two paramaters
     def __init__(self, name, reg, parent):
-        if parent is None:
-            raise ValueError('parent must be specified')
+        # if parent is None:
+        #    raise ValueError('parent must be specified')
         name = str(name)
         validateSimpleName(name)
         super(MsgSpec, self).__init__(name, reg, parent)
 
-        parent.addMsg(self)
+        # XXX QUESTIONABLE
+        if parent:
+            parent.addMsg(self)
 
         self._fields = []
         self._lastFieldNbr = -1
@@ -768,7 +770,7 @@ def enumPairSpecPutter(chan, val, n):
 #   print "AFTER WRITING VALUE %u pos = %u" % (val.value, pos)
 
 
-def enumPairSpecGetter(chan):
+def enumPairSpecGetter(dummyReg, chan):
     # we have already read the header containing the field number
     # read the byte count, the length of the spec
     byteCount = readRawVarint(chan)
@@ -1044,10 +1046,10 @@ def msgSpecGetter(msgReg, chan):
         enum = enumSpecGetter(chan)     # was chan0
         enums.append(enum)
 
-    # XXX WRONG PARAMETER LIST: should be name, reg, parent) XXX
-
-    val = MsgSpec(name, fields, enums)
-
+    # XXX WRONG PARAMETER LIST
+    # val = MsgSpec(name, fields, enums)
+    dummyParent = MsgSpec('dummy', msgReg, None)
+    val = MsgSpec(name, msgReg, dummyParent)
     return val
 
 cLenFuncs[C._MSG_SPEC] = msgSpecLen
@@ -1073,7 +1075,7 @@ def seqSpecPutter(chan, val, n):
     pass
 
 
-def seqSpecGetter(chan):
+def seqSpecGetter(dummyReg, chan):
     # STUB
     return val
 

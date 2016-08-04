@@ -69,7 +69,7 @@ class TestZoggerySerialization (unittest.TestCase):
         self.assertEqual('org.xlattice.zoggery', self.sOM.name)
 
         self.assertEqual(len(self.sOM.enums), 0)
-        self.assertEqual(len(self.sOM.msgs), 1)     # FAILS: is zero
+        self.assertEqual(len(self.sOM.msgs), 1)
         self.assertEqual(len(self.sOM.seqs), 0)
 
         msgSpec = self.sOM.msgs[0]
@@ -114,7 +114,13 @@ class TestZoggerySerialization (unittest.TestCase):
         self.assertEqual(6, len(leMsg.fieldClasses))
         self.assertEqual(6, len(leMsg))        # number of fields in instance
         for i in range(len(leMsg)):
-            self.assertEqual(values[i], leMsg[i].value)
+            # DEBUG
+            print("value %d is %s" % (i, values[i]))
+
+            # FAILS: is a PROPERTY OBJECT
+            print("leMsg %d is %s" % (i, leMsg[i].value))
+            # END
+            self.assertEqual(values[i], leMsg[i].value)         # FAILS
 
         # verify fields are accessible in the object ----------------
         (timestamp, nodeID, key, length, by, path) = tuple(values)

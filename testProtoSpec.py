@@ -12,6 +12,7 @@ from io import StringIO
 
 from rnglib import SimpleRNG
 
+from fieldz.fieldImpl import makeFieldClass         # added 2016-08-02
 from fieldz.parser import StringProtoSpecParser
 import fieldz.fieldTypes as F
 import fieldz.msgSpec as M
@@ -142,7 +143,7 @@ class TestProtoSpec (unittest.TestCase):
         for f in fields:
             msgSpec.addField(f)
 
-        # protoSpec.addMsg(msgSpec)     # ALREADY DONE in __init__
+        protoSpec.addMsg(msgSpec)  # this was incorrectly commented out
         self.roundTripProtoSpecViaString(protoSpec)             # GEEP
 
     def roundTripProtoSpecViaString(self, m):
@@ -172,7 +173,6 @@ class TestProtoSpec (unittest.TestCase):
         self.assertTrue(m == m)
 
         # one way of saying it ------------------
-        # XXX NEXT LINE FAILS
         self.assertTrue(m.__eq__(clonedSpec))
 
         self.assertTrue(clonedSpec.__eq__(m))
