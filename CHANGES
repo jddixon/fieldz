@@ -1,5 +1,11 @@
 ~/dev/py/fieldz/CHANGES
 
+v0.10.15
+    2016-08-05
+        * 18/22 tests succeed                                       SLOC 6546
+v0.10.14
+    2016-08-03
+        * error count halved?                                       SLOC 6538
 v0.10.13
     2016-08-01
         * fixed MsgSpec.__init__() bugs                             SLOC 6539
@@ -312,6 +318,8 @@ v0.1.2
         * working varint, fixed len 32- and 64-bit, var len bytestring
             and associated tests
         * initial svn import
+
+
 
 
 

@@ -79,14 +79,21 @@ class FieldImpl(object):
 
 class MetaField(type):
 
-    def __new__(cls, name, bases, namespace, **kwargs):
+    @classmethod
+    def __prepare__(meta, name, bases, **kwargs):
+        """
+        Allows us to pass arguments which become class attributes.
+        """
+        return dict(kwargs)
+
+    def __new__(meta, name, bases, namespace, **kwargs):
         # DEBUG
         # removed namespace from print
-        print("\nMetaField NEW, cls='%s',\n\tname='%s', bases='%s'" % (
-            cls, name, bases))
+        print("\nMetaField NEW, meta='%s',\n\tname='%s', bases='%s'" % (
+            meta, name, bases))
         sys.stdout.flush()
         # END
-        return super().__new__(cls, name, bases, namespace)
+        return super().__new__(meta, name, bases, namespace)
 
     def __init__(cls, name, bases, namespace):
         super().__init__(name, bases, namespace)
@@ -107,52 +114,46 @@ def makeFieldClass(dottedMsgName, fieldSpec):
         raise ValueError('null field spec')
     qualName = '%s.%s' % (dottedMsgName, fieldSpec.name)
     # DEBUG
-    # print('MAKE_FIELD_CLASS for %s' % qualName)
+    print('MAKE_FIELD_CLASS for %s' % qualName)
     # END
     if qualName in fieldClsByQName:
         return fieldClsByQName[qualName]
 
-#   # DEBUG
-#   # won't work if FieldSpec has __slots__
-#   if '__dict__' in dir(FieldSpec):
-#       print("FieldSpec CLASS DICTIONARY excluding __doc__")
-#       for key in list(FieldSpec.__dict__.keys()):
-#           if key != '__doc__':
-#               print("    %-20s %s" % (key, FieldSpec.__dict__[key]))
-#       print("fieldSpec INSTANCE DICTIONARY excluding __doc__")
+    # We want an attribute and a property for each fieldSpec attr.
+    # This needs to be elaborated as appropriate to deal with the
+    # 18 or so field types.
 
-#   if '__dict__' in dir(fieldSpec):
-#       for key in list(fieldSpec.__dict__.keys()):
-#           if key != '__doc__':
-#               print("    %-20s %s" % (key, fieldSpec.__dict__[key]))
-#   # END
+    __fieldNbr = property(myFieldNbr)
+    __quantifier = property(myQuantifier)
+    __value = property(myValueGetter, myValueSetter)
 
-    d = {}
+#   class M(metaclass=MetaField,
+#       _name=fieldSpec.name,
+#       # PROBLEM: THIS IS A SECOND USE OF THE ATTRIBUTE 'name'
+#       # name=property(myName),
+#       dummy2=0,
+#       _fType=fieldSpec.fTypeNdx,
+#       fType=property(myFType),
+#       _quantifier=fieldSpec.quantifier,
+#       quantifier=__quantifier,
+#       _fieldNbr=fieldSpec.fieldNbr,
+#       fieldNbr=__fieldNbr,
+#       _default=fieldSpec.default,
+#       default=property(myDefault),
+#       value=__value,
+#       dummy=0):
+#       pass
 
-    # disable __slots__ until better understood
-    # d['__slots__'] = ['_name', '_fType', '_quantifier',
-    #                  '_fieldNbr', '_default', ]
-
-    # we want an attribute and a property for each fieldSpec attr
-    d['_name'] = fieldSpec.name
-    d['name'] = property(myName)
-    d['_fType'] = fieldSpec.fTypeNdx
-    d['fType'] = property(myFType)
-    d['_quantifier'] = fieldSpec.quantifier
-    d['quantifier'] = property(myQuantifier)
-    d['_fieldNbr'] = fieldSpec.fieldNbr
-    d['fieldNbr'] = property(myFieldNbr)
-    d['_default'] = fieldSpec.default
-    d['default'] = property(myDefault)
-
-    # this needs to be elaborated as appropriate to deal with the
-    # 18 or so field types
-    d['value'] = property(myValueGetter, myValueSetter)
-
-    M = MetaField(str(fieldSpec.name),      # name
-                  (FieldImpl,),             # bases
-                  d)                        # dictionary
-
+    class M(metaclass=MetaField,
+            _name=fieldSpec.name,
+            # PROBLEM: THIS IS A SECOND USE OF THE ATTRIBUTE 'name'
+            # name=property(myName),
+            fType=myFType,
+            quantifier=fieldSpec.quantifier,
+            quantifier=__quantifier,
+            fieldNbr=fieldSpec.fieldNbr,
+            default=fieldSpec.default):
+        pass
     #----------------------------
     # possibly some more fiddling ...
     #----------------------------

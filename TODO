@@ -13,6 +13,13 @@
     are not canonical
 -----------------------------------------------------------------
 
+2016-08-03
+    * manipulation of __setattr__ at class and instance levels in
+        testMsgImpl.py is confused
+        - comment out tests
+        - think through the objective
+        - reimplement
+        - revise and uncomment tests
 2016-03-29
     * registry should be a singleton -- one registry per running 
         application, or possibly per set of cooperating applications

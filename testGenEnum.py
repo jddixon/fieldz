@@ -5,20 +5,21 @@
 import time
 import unittest
 
-from rnglib import SimpleRNG
-
 
 class EnumError(RuntimeError):
     pass
 
 
-def cantSetAttr(cls, sym, value):
-    """ instance variables may be set but never reset """
-    if sym not in cls.__dict__:
-        cls.__dict__[sym] = value
-    else:
+def saferSetter(obj, sym, value):
+    """ object attributes may be set but never reset """
+
+    try:
+        val = obj.__getattribute__(sym)
+        # we get here if sym is defined`
         raise EnumError(
             'attempt to change value of constant ' + sym)
+    except AttributeError:
+        obj.sym = value
 
 
 def echo(cls, text):
@@ -27,21 +28,19 @@ def echo(cls, text):
 
 class MetaEnum(type):
 
-    def __new__(meta, name, bases, dct):
+    @classmethod
+    def __prepare__(meta, name, bases, **kwargs):
+        """
+        Required: we are passing arguments which become class attributes.
+        """
+        return dict(kwargs)
+
+    def __new__(meta, name, bases, namespace, **kwargs):
         print("METACLASS NEW gets called once")
-        return super(MetaEnum, meta).__new__(meta, name, bases, dct)
+        return super().__new__(meta, name, bases, namespace)
 
-    def __init__(cls, name, bases, dct):
-        super(MetaEnum, cls).__init__(name, bases, dct)
-
-        # TypeError: Error when calling the metaclass bases
-        #   'dictproxy' object does not support item assignment
-        # cls.__dict__['__setattr__'] = cantSetAttr
-        print("METACLASS INIT gets called once")
-
-    def __call__(cls, *args, **kwargs):
-        print("CALL")
-        return type.__call__(cls, *args, **kwargs)
+    def __init__(cls, name, bases, namespace, **kwargs):
+        super(MetaEnum, cls).__init__(name, bases, namespace)
 
 
 class GeneratedEnum(metaclass=MetaEnum):
@@ -57,54 +56,52 @@ class GeneratedEnum(metaclass=MetaEnum):
 
 class TestGenEnum (unittest.TestCase):
 
-    def setUp(self):
-        self.rng = SimpleRNG(time.time())
+    def setUp(self): pass
 
-    def tearDown(self):
-        pass
+    def tearDown(self): pass
 
     # utility functions #############################################
 
     # actual unit tests #############################################
     def testGenEnum(self):
-        print("ABOUT TO CREATE INSTANCE")
         g = GeneratedEnum(13, 97)
         print("ABOUT TO CREATE SECOND INSTANCE")
         h = GeneratedEnum(13, 97)
 
     def testGeneratingClass(self):
-        F = MetaEnum('ClzF', (object,),
-                     {'A': 3, 'B': 7, 'C': 11,
-                      'echo': echo,
-                      '__setattr__': cantSetAttr})
-        self.assertEqual('ClzF', F.__name__)
-        self.assertEqual(3, F.A)
-        self.assertEqual(7, F.B)
-        self.assertEqual(11, F.C)
-#       setattr(F, 'echo', echo)
-#       setattr(F, '__setattr__', cantSetAttr)
+        class F(metaclass=MetaEnum,
+                A=3, B=7, C=11, echo=echo, __setattr__=saferSetter):
+            pass
+        f = F()
 
-        print("CLASS DICTIONARY:")
-        for s in list(F.__dict__.keys()):
-            print("%-20s %s" % (s, F.__dict__[s]))
+        # the keywords passed result in instance attributes
+        self.assertEqual(3, f.A)
+        self.assertEqual(7, f.B)
+        self.assertEqual(11, f.C)
 
-        # the echo method must be bound to a class instance
+        # ... not class attributes
+        try:
+            F.A
+        except AttributeError:
+            pass
+
+        # 'bound method' != function
+        # self.assertEqual(f.echo, echo)
+
+        # 'bound method' != function
+        # self.assertEqual(F.__setattr__, saferSetter)
+
         f = F()
         f.echo('I printed this using F.echo()')
 
-        # The next tree lines don't print anything from f.__dict__,
-        # because there isn't one at the instance level
-        print("INSTANCE DICTIONARY:")
-        for s in list(f.__dict__.keys()):
-            print("%-20s %s" % (s, f.__dict__[s]))
-
-        # XXX BADLY CONCEIVED TEST?
+        self.assertEqual(f.C, 11)
         try:
-            setattr(f, 'C', 137)
+            f.C = 137
             self.assertEqual(137, f.C)
-            self.fail('ERROR: successfully changed value of C')
+            self.fail('ERROR: successfully changed value of f.C')
         except EnumError:
-            print('success: caught attempt to set new symbol')
+            # success: caught attempt to set new symbol
+            pass
 
 if __name__ == '__main__':
     unittest.main()

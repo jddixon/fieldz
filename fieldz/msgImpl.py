@@ -103,7 +103,9 @@ def myFieldClasses(self): return self._fieldClasses
 # -------------------------------------------------------------------
 
 
-class MsgImpl(type):
+# WAS OF TYPE 'type' 2016-08-02
+
+class MsgImpl(object):
     """
     An abstract class intended to serve as parent to automatically
     generated classes whose purpose will be to ease user handling
@@ -116,6 +118,12 @@ class MsgImpl(type):
 #                '_enums',         # nested enums
 #                '_msgs',          # nested messages
 #                ]
+
+#    def __init__(self):
+#        """ added 16-08-02 """
+#        self._fields = []
+#        self._enums = []
+#        self._msgs = []
 
     def __eq__(self, other):
         if other is None:
@@ -162,9 +170,15 @@ class MsgImpl(type):
 
         return True
 
-    def __len__(self): return len(self._fields)
+    def __len__(self):
+        # 2016-08-02
+        # return len(self._fields)
+        return len(self._fieldClasses)
 
-    def __getitem__(self, n): return self._fields[n]
+    def __getitem__(self, n):
+        # 2016-08-02, same fix
+        # return self._fields[n]
+        return self._fieldClasses[n]
 
     # -- INSTANCE SERIALIZATION -------------------------------------
 
@@ -417,14 +431,17 @@ class MetaMsg(type):
         return super().__new__(cls, name, bases, namespace)
 
     def __init__(cls, name, bases, namespace, **kwargs):
+
         # definitely works:
         # setattr(cls, 'baz', '__init__ added to dictionary before super call')
 
         super().__init__(name, bases, namespace)
         print("MetaMsgINIT gets called once")
 
+        return
+
         #############################################################
-        # POSSIBLE GROSS ERROR - this stuff belongs in a maker class
+        # BEING IGNORED - belongs in a maker class
         #############################################################
         cls._fields = []
 #       cls._fieldsByName   = {}
@@ -443,22 +460,22 @@ class MetaMsg(type):
 
 #       print "  THERE ARE %u FIELDS SET" % len(cls._fields)    # DEBUG
 
-        return super().__call__(*args, **kwargs)
+        return super().__init__(name, bases, namespace)
 
     #########################################################################
     # DISABLE FOR NOW; XXX SHOULD BE ADDED WHEN THE INSTANCE HAS BEEN CREATED
     #########################################################################
     # don't permit any new attributes to be added
     # XXX why do we need to do this given __slots__ list?
-#   def __setattr__(cls, attr, value):
-#       """ make the class more or less immutable """
+    def __setattr__(cls, attr, value):
+        """ make the class more or less immutable """
 
-#       #############################
-#       # WHERE THE ERROR COMES FROM:
-#       #############################
-#       if attr not in dir(cls):
-#           raise AttributeError('cannot create attribute by assignment!')
-#       return type.__setattr__(cls, attr, value)
+        #############################
+        # WHERE THE ERROR COMES FROM:
+        #############################
+        if attr not in dir(cls):
+            raise AttributeError('cannot create attribute by assignment!')
+        return type.__setattr__(cls, attr, value)
 
 # ===================================================================
 # MAKERS

@@ -55,17 +55,22 @@ class TestCoreTypes (unittest.TestCase):
         nodeReg, protoReg, msgReg = self.makeRegistries(
             'org.xlattice.fieldz.test.roundTrip')
 
+        # DEBUG
+        print("roundTrioWireFormat: n = %d, cType = %d" % (n, cType))
+        # END
         chan.clear()                            # I guess :-)
 
         buf = chan.buffer
         putter = M.cPutFuncs[cType]
         getter = M.cGetFuncs[cType]
         # DEBUG
-        print("GETTER: %s" % getter)
+        print("  PUTTER: %s" % putter)
+        print("  GETTER: %s" % getter)
         # END
         lenFunc = M.cLenFuncs[cType]
         pLenFunc = M.cPLenFuncs[cType]
-        h = fieldHdrLen(n, cType)     # BUT cType must be >18!
+        # comment of unknown value/validity:  # BUT cType must be >18!
+        h = fieldHdrLen(n, cType)
 
         rPos = 0  # read
         expectedPos = pLenFunc(val, n)
@@ -82,18 +87,20 @@ class TestCoreTypes (unittest.TestCase):
         self.assertEqual(0, n)    # field number
         self.assertEqual(h, actualHdrLen)
 
-        # retVal = getter(msgReg, chan)       # <-- FAILS: argCount
-
-        # fails: fieldSpecGetter() missing 1 required  positional
-        #   argument: 'chan'
-        # retVal = getter(chan)
+        # FAILS:
+        #   if chan is present
+        #     enumPairSpecGetter() takes 1 positional argument but 2 were given
+        #retVal = getter(msgReg, chan)
+        #   else # chan is absent
+        #     fieldSpecGetter() missing 1 required  positional argument: 'chan'
+        retVal = getter(msgReg, chan)
 
         # gets the same error:retVal = M.cGetFuncs[cType](chan)
 
         rPos = chan.position
         # DEBUG
-        print("ROUND TRIP: val    = %s" % val)
-        print("            retVal = %s" % retVal)
+        print("  ROUND TRIP: val    = %s" % val)
+        print("              retVal = %s" % retVal)
         # END
         self.assertEqual(val, retVal)
 

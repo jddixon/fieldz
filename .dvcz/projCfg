@@ -2,8 +2,8 @@
 project:fieldz
 package:fieldz
 mainlang:py
-version:0.10.11
-versionDate:2016-05-19
+version:0.10.14
+versionDate:2016-08-03
 :?dirs?:
 dir:std:ghpDoc
 dir:std:dist
