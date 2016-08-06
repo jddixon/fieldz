@@ -467,15 +467,15 @@ class MetaMsg(type):
     #########################################################################
     # don't permit any new attributes to be added
     # XXX why do we need to do this given __slots__ list?
-#   def __setattr__(cls, attr, value):
-#       """ make the class more or less immutable """
+    def __setattr__(cls, attr, value):
+        """ make the class more or less immutable """
 
-#       #############################
-#       # WHERE THE ERROR COMES FROM:
-#       #############################
-#       if attr not in dir(cls):
-#           raise AttributeError('cannot create attribute by assignment!')
-#       return type.__setattr__(cls, attr, value)
+        #############################
+        # WHERE THE ERROR COMES FROM:
+        #############################
+        if attr not in dir(cls):
+            raise AttributeError('cannot create attribute by assignment!')
+        return type.__setattr__(cls, attr, value)
 
 # ===================================================================
 # MAKERS

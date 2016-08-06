@@ -264,13 +264,12 @@ class FieldSpec(object):
         self._name = name
 
         # -- fType --------------------------------------------------
-        # XXX RANGE CHECK TEMPORARILY DISABLED -
-#       if fType < 0 or fType > F.maxNdx:
-#           raise ValueError("invalid fType '%s'" % str(fType))
+        if fType < 0 or fType > F.maxNdx:
+            raise ValueError("invalid fType '%s'" % str(fType))
         self._type = fType
 
         # -- quantifier ---------------------------------------------
-        # XXX BAD RANGE CHECK
+        # XXX BAD RANGE CHECK ??
         if quantifier < 0 or quantifier > Q_PLUS:
             raise ValueError("invalid quantifier '%s'" % str(quantifier))
         self._quantifier = quantifier

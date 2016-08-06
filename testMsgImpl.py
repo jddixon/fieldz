@@ -256,7 +256,7 @@ class TestMsgImpl (unittest.TestCase):
             print("FIELD: %s = %s " % (field.name, field.value))
         # END
         (timestamp, nodeID, key, length, by, path) = tuple(values)
-        self.assertEqual(timestamp, leMsg.timestamp)
+        self.assertEqual(timestamp, leMsg.timestamp)    # FAILS: null timestamp
 
         self.assertEqual(nodeID, leMsg.nodeID)
         self.assertEqual(key, leMsg.key)
