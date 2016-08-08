@@ -6,8 +6,8 @@ import unittest
 
 from rnglib import SimpleRNG
 from fieldz.reg import NodeReg
-import fieldz.fieldTypes as F
 import fieldz.coreTypes as C
+from fieldz.fieldTypes import FieldTypes as F, FieldStr as FS
 
 # TESTS --------------------------------------------------------------
 
@@ -27,31 +27,38 @@ class TestReg (unittest.TestCase):
         testReg = NodeReg()
 
         # bootstrap() has loaded fieldTypes and coreTypes
-#       print "DEBUG: F.maxNdx is %d" % F.maxNdx        # is 17
+#       print "DEBUG: F.MAX_NDX is %d" % F.MAX_NDX        # is 17
 #       print "DEBUG: C.maxNdx is %d" % C.maxNdx        # is  5
 #       print "DEBUG: testReg.nextRegID is %d" % testReg.nextRegID
-        self.assertEqual(F.maxNdx + 1 + C.maxNdx + 1, testReg.nextRegID)
+        self.assertEqual(
+            F.MAX_NDX +
+            1 +
+            C.CoreTypes().maxNdx +
+            1,
+            testReg.nextRegID)
 
         # verify that all fieldTypes are defined in the registry, each
-        # with the proper index (vBool through fBytes32 at F.maxNdx)
-        for i in range(F.maxNdx + 1):
+        # with the proper index (vBool through fBytes32 at F.MAX_NDX)
+        fs = FS()
+        cTypes = C.CoreTypes()
+        for i in range(F.MAX_NDX + 1):
             name = testReg[i].qualName
             # DEBUG
 #           print '%2u %s' % (i, name)
             # END
-            self.assertEqual(F.asStr(i), name)
+            self.assertEqual(fs.asStr(i), name)
             self.assertEqual(i, testReg.name2RegID(name))
 
-        for i in range(F.maxNdx + 1, F.maxNdx + 1 + C.maxNdx + 1):
+        for i in range(F.MAX_NDX + 1, F.MAX_NDX + 1 + cTypes.maxNdx + 1):
             name = testReg[i].qualName
             # DEBUG
 #           print '%2u %s' % (i, name)
             # END
-            self.assertEqual(C.asStr(i - (F.maxNdx + 1)), name)
+            self.assertEqual(cTypes.asStr(i - (F.MAX_NDX + 1)), name)
             self.assertEqual(i, testReg.name2RegID(name))
 
         # F and C range from 0 to maxNdx
-        self.assertEqual(F.maxNdx + 1 + C.maxNdx + 1, len(testReg))
+        self.assertEqual(F.MAX_NDX + 1 + cTypes.maxNdx + 1, len(testReg))
 
 #       print "DEBUG: len(testReg) is %u" % len(testReg)
 #       print "DEBUG: nextRegID is %u"    % testReg.nextRegID

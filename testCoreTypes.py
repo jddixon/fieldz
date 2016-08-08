@@ -11,7 +11,7 @@ from fieldz.raw import *
 from fieldz.typed import *
 import fieldz.msgSpec as M
 import fieldz.coreTypes as C
-import fieldz.fieldTypes as F
+from fieldz.fieldTypes import FieldTypes as F, FieldStr as FS
 import fieldz.reg as R
 from fieldz.parser import StringMsgSpecParser
 
@@ -47,9 +47,10 @@ class TestCoreTypes (unittest.TestCase):
 
     # actual unit tests #############################################
     def testTheEnum(self):
-        self.assertEqual(5, C.maxNdx)
-        self.assertEqual(0, C._ENUM_PAIR_SPEC)
-        self.assertEqual(5, C._PROTO_SPEC)
+        cTypes = C.CoreTypes()
+        self.assertEqual(5, cTypes.maxNdx)
+        self.assertEqual(0, cTypes._ENUM_PAIR_SPEC)
+        self.assertEqual(5, cTypes._PROTO_SPEC)
 
     def roundTripToWireFormat(self, chan, n, cType, val):
         nodeReg, protoReg, msgReg = self.makeRegistries(
@@ -107,13 +108,14 @@ class TestCoreTypes (unittest.TestCase):
     def testRoundTrippingCoreTypes(self):
         BUFSIZE = 16 * 1024
         chan = Channel(BUFSIZE)
+        cTypes = C.CoreTypes()
 
         # -----------------------------------------------------------
         # XXX FAILS if msgReg arg added: WRONG NUMBER OF ARGS
         # XXX n=0 is wired into roundTripToWireFormat XXX
         n = 0                           # 0-based field number
         s = M.EnumPairSpec('funnyFarm', 497)
-        self.roundTripToWireFormat(chan, n, C._ENUM_PAIR_SPEC, s)
+        self.roundTripToWireFormat(chan, n, cTypes._ENUM_PAIR_SPEC, s)
 
         # -----------------------------------------------------------
         protocol = 'org.xlattice.upax'
@@ -126,7 +128,7 @@ class TestCoreTypes (unittest.TestCase):
         s = M.EnumSpec.create('thisEnum', pairs)
         self.assertEqual(3, len(s))
         # XXX FAILS if msgReg arg added: WRONG NUMBER OF ARGS
-#       self.roundTripToWireFormat( chan, n, C._ENUM_SPEC, s)
+#       self.roundTripToWireFormat( chan, n, cTypes._ENUM_SPEC, s)
 
         # -----------------------------------------------------------
         protocol = 'org.xlattice.upax'
@@ -134,7 +136,7 @@ class TestCoreTypes (unittest.TestCase):
         n = 0                          # 0-based field number
         s = M.FieldSpec(msgReg, 'jollyGood', F._V_SINT32, M.Q_OPTIONAL, 37)
         # XXX FAILS: invalid (optionlly dotted) name 'bytearray(b'jollyGood')
-        self.roundTripToWireFormat(chan, n, C._FIELD_SPEC, s)
+        self.roundTripToWireFormat(chan, n, cTypes._FIELD_SPEC, s)
 
         # -----------------------------------------------------------
 
@@ -149,7 +151,7 @@ class TestCoreTypes (unittest.TestCase):
 
         n = 0
         # XXX FAILS if msgReg arg added: WRONG NUMBER OF ARGS
-        self.roundTripToWireFormat(chan, n, C._MSG_SPEC, sOM)
+        self.roundTripToWireFormat(chan, n, cTypes._MSG_SPEC, sOM)
 
 
 if __name__ == '__main__':

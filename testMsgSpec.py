@@ -1,15 +1,18 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # testMsgSpec.py
+
 import time
 import unittest
 from io import StringIO
 
 from rnglib import SimpleRNG
 
-from fieldz.parser import StringMsgSpecParser
 
-import fieldz.fieldTypes as F
+from fieldz.fieldTypes import FieldTypes as F
+from fieldz.fieldTypes import FieldStr as FS
+
+from fieldz.parser import StringMsgSpecParser
 import fieldz.msgSpec as M
 import fieldz.typed as T
 import fieldz.reg as R
@@ -64,8 +67,8 @@ class TestMsgSpec (unittest.TestCase):
     # actual unit tests #############################################
 
     def testMaps(self):
-        maxNdx = F.maxNdx
-        maxName = F.asStr(maxNdx)
+        maxNdx = F.MAX_NDX
+        maxName = FS().asStr(maxNdx)
         self.assertEqual('fBytes32', maxName)
 
     def testEnum(self):
@@ -127,8 +130,8 @@ class TestMsgSpec (unittest.TestCase):
         equal.
         """
 
-        # but it should already be unicode ...
-        canonicalSpec = unicode(m.__repr__())
+        # should be unicode
+        canonicalSpec = m.__repr__()
         # DEBUG
         print("Type of m: ", type(m))
         print("CANONICAL SPEC:\n" + canonicalSpec)

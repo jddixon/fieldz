@@ -6,7 +6,7 @@ import unittest
 
 from rnglib import SimpleRNG
 
-import fieldz.fieldTypes as F
+from fieldz.fieldTypes import FieldTypes as F, FieldStr as FS
 import fieldz.msgSpec as M
 import fieldz.reg as R
 
@@ -31,24 +31,26 @@ parent = M.ProtoSpec(protocol, protoReg)
 
 # XXX MISSING reg; BUT DO WE REALLY WANT FIELD NAMES IN THE REGISTRY?
 
+ndx = FS().ndx
+
 fields = [
 
-    FieldSpec(msgReg, 'i32', F.ndx('vuInt32'), Q_REQUIRED, 0),
-    FieldSpec(msgReg, 'i32bis', F.ndx('vuInt32'), Q_REQUIRED, 1),
-    FieldSpec(msgReg, 'i64', F.ndx('vuInt64'), Q_REQUIRED, 2),
-    FieldSpec(msgReg, 'si32', F.ndx('vsInt32'), Q_REQUIRED, 3),
-    FieldSpec(msgReg, 'si32bis', F.ndx('vsInt32'), Q_REQUIRED, 4),
-    FieldSpec(msgReg, 'si64', F.ndx('vsInt64'), Q_REQUIRED, 5),
-    FieldSpec(msgReg, 'vuint32', F.ndx('vuInt32'), Q_REQUIRED, 6),
-    FieldSpec(msgReg, 'vuint64', F.ndx('vuInt64'), Q_REQUIRED, 7),
+    FieldSpec(msgReg, 'i32', ndx('vuInt32'), Q_REQUIRED, 0),
+    FieldSpec(msgReg, 'i32bis', ndx('vuInt32'), Q_REQUIRED, 1),
+    FieldSpec(msgReg, 'i64', ndx('vuInt64'), Q_REQUIRED, 2),
+    FieldSpec(msgReg, 'si32', ndx('vsInt32'), Q_REQUIRED, 3),
+    FieldSpec(msgReg, 'si32bis', ndx('vsInt32'), Q_REQUIRED, 4),
+    FieldSpec(msgReg, 'si64', ndx('vsInt64'), Q_REQUIRED, 5),
+    FieldSpec(msgReg, 'vuint32', ndx('vuInt32'), Q_REQUIRED, 6),
+    FieldSpec(msgReg, 'vuint64', ndx('vuInt64'), Q_REQUIRED, 7),
     # take care with gaps from here
-    FieldSpec(msgReg, 'fint32', F.ndx('vuInt32'), Q_REQUIRED, 8),
-    FieldSpec(msgReg, 'fint64', F.ndx('vuInt64'), Q_REQUIRED, 9),
-    FieldSpec(msgReg, 'lstr', F.ndx('lString'), Q_REQUIRED, 10),
-    FieldSpec(msgReg, 'lbytes', F.ndx('lBytes'), Q_REQUIRED, 11),
-    FieldSpec(msgReg, 'lbytes16', F.ndx('fBytes16'), Q_REQUIRED, 12),
-    FieldSpec(msgReg, 'lbytes20', F.ndx('fBytes20'), Q_REQUIRED, 13),
-    FieldSpec(msgReg, 'lbytes32', F.ndx('fBytes32'), Q_REQUIRED, 14),
+    FieldSpec(msgReg, 'fint32', ndx('vuInt32'), Q_REQUIRED, 8),
+    FieldSpec(msgReg, 'fint64', ndx('vuInt64'), Q_REQUIRED, 9),
+    FieldSpec(msgReg, 'lstr', ndx('lString'), Q_REQUIRED, 10),
+    FieldSpec(msgReg, 'lbytes', ndx('lBytes'), Q_REQUIRED, 11),
+    FieldSpec(msgReg, 'lbytes16', ndx('fBytes16'), Q_REQUIRED, 12),
+    FieldSpec(msgReg, 'lbytes20', ndx('fBytes20'), Q_REQUIRED, 13),
+    FieldSpec(msgReg, 'lbytes32', ndx('fBytes32'), Q_REQUIRED, 14),
 ]
 testMsgSpec = MsgSpec(name, protoReg, parent)
 

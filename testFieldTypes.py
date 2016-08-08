@@ -4,10 +4,11 @@
 import time
 import unittest
 
-from rnglib import SimpleRNG
-import fieldz.fieldTypes as F
+from fieldz.fieldTypes import FieldTypes as F, FieldStr as FS
+
 import fieldz.raw as R
 import fieldz.typed as T
+from rnglib import SimpleRNG
 
 
 class TestFieldTypes (unittest.TestCase):
@@ -32,11 +33,14 @@ class TestFieldTypes (unittest.TestCase):
     # actual unit tests #############################################
     def testConstants(self):
         self.assertEqual(0, F._V_BOOL)
-        self.assertEqual(17, F._F_BYTES32)
+        self.assertEqual(FS.asStr(F._V_BOOL), 'vBool')
+
+        self.assertEqual(19, F._F_BYTES32)
+        self.assertEqual(FS.asStr(F._F_BYTES32), 'fBytes32')
         try:
             F._V_BOOL = 47
-        except RuntimeError as e:
-            print('success: caught attempt to reassign constant')    # DEBUG
+        except AttributeError as e:
+            # 'success: caught attempt to reassign constant'
             pass
 
     def testLenFuncs(self):
