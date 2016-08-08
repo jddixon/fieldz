@@ -45,12 +45,14 @@ class SimpleEnum(object):
 
     @property
     def maxNdx(self):
+        """ return the highest index number currently in use """
         return self._MAX_NDX
 
 # -------------------------------------------------------------------
 
 
 class SimpleEnumWithRepr(object):
+    """ Should certainly be a singleton """
 
     def __setattr__(self, sym, value):
         """ instance variables may be set but never reset """

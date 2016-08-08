@@ -6,7 +6,7 @@ import sys
 from fieldz.raw import *
 from fieldz.typed import *
 
-import fieldz.fieldTypes as F
+from fieldz.fieldTypes import FieldTypes as F, FieldStr as FS
 import fieldz.coreTypes as C
 
 __all__ = [  \
@@ -264,7 +264,7 @@ class FieldSpec(object):
         self._name = name
 
         # -- fType --------------------------------------------------
-        if fType < 0 or fType > F.maxNdx:
+        if fType < 0 or fType > F.MAX_NDX:
             raise ValueError("invalid fType '%s'" % str(fType))
         self._type = fType
 
@@ -292,8 +292,8 @@ class FieldSpec(object):
     # XXX return a string value
     @property
     def fTypeName(self):
-        if 0 <= self._type and self._type <= F.maxNdx:
-            return F.asStr(self._type)
+        if 0 <= self._type and self._type <= F.MAX_NDX:
+            return FS.asStr(self._type)
         regID = self._reg.regID2Name(self._type)
         if regID is None:
             # XXX parent must search upwards if not found
@@ -707,10 +707,12 @@ class MsgSpec(SuperSpec):
 
 def notImpl(*arg): raise NotImplementedError
 
-cPutFuncs = [notImpl] * (C.maxNdx + 1)
-cGetFuncs = [notImpl] * (C.maxNdx + 1)
-cLenFuncs = [notImpl] * (C.maxNdx + 1)
-cPLenFuncs = [notImpl] * (C.maxNdx + 1)
+cTypes = C.CoreTypes()
+
+cPutFuncs = [notImpl] * (cTypes.maxNdx + 1)
+cGetFuncs = [notImpl] * (cTypes.maxNdx + 1)
+cLenFuncs = [notImpl] * (cTypes.maxNdx + 1)
+cPLenFuncs = [notImpl] * (cTypes.maxNdx + 1)
 
 # PUTTERS, GETTERS, LEN FUNCS ---------------------------------------
 
@@ -790,10 +792,10 @@ def enumPairSpecGetter(dummyReg, chan):
     obj = EnumPairSpec(sym, val)
     return obj
 
-cLenFuncs[C._ENUM_PAIR_SPEC] = enumPairSpecLen
-cPLenFuncs[C._ENUM_PAIR_SPEC] = enumPairSpecPrefixedLen
-cPutFuncs[C._ENUM_PAIR_SPEC] = enumPairSpecPutter
-cGetFuncs[C._ENUM_PAIR_SPEC] = enumPairSpecGetter
+cLenFuncs[cTypes._ENUM_PAIR_SPEC] = enumPairSpecLen
+cPLenFuncs[cTypes._ENUM_PAIR_SPEC] = enumPairSpecPrefixedLen
+cPutFuncs[cTypes._ENUM_PAIR_SPEC] = enumPairSpecPutter
+cGetFuncs[cTypes._ENUM_PAIR_SPEC] = enumPairSpecGetter
 
 # ---------------------------------------------------------
 
@@ -863,10 +865,10 @@ def enumSpecGetter(chan):
     val = EnumSpec(name, pairs)
     return val
 
-cLenFuncs[C._ENUM_SPEC] = enumSpecLen
-cPLenFuncs[C._ENUM_SPEC] = enumSpecPrefixedLen
-cPutFuncs[C._ENUM_SPEC] = enumSpecPutter
-cGetFuncs[C._ENUM_SPEC] = enumSpecGetter
+cLenFuncs[cTypes._ENUM_SPEC] = enumSpecLen
+cPLenFuncs[cTypes._ENUM_SPEC] = enumSpecPrefixedLen
+cPutFuncs[cTypes._ENUM_SPEC] = enumSpecPutter
+cGetFuncs[cTypes._ENUM_SPEC] = enumSpecGetter
 
 # ---------------------------------------------------------
 
@@ -955,10 +957,10 @@ def fieldSpecGetter(msgReg, chan):
 
     return val
 
-cLenFuncs[C._FIELD_SPEC] = fieldSpecLen
-cPLenFuncs[C._FIELD_SPEC] = fieldSpecPrefixedLen
-cPutFuncs[C._FIELD_SPEC] = fieldSpecPutter
-cGetFuncs[C._FIELD_SPEC] = fieldSpecGetter
+cLenFuncs[cTypes._FIELD_SPEC] = fieldSpecLen
+cPLenFuncs[cTypes._FIELD_SPEC] = fieldSpecPrefixedLen
+cPutFuncs[cTypes._FIELD_SPEC] = fieldSpecPutter
+cGetFuncs[cTypes._FIELD_SPEC] = fieldSpecGetter
 
 # ---------------------------------------------------------
 # XXX use of 'n' parameter ?
@@ -1051,10 +1053,10 @@ def msgSpecGetter(msgReg, chan):
     val = MsgSpec(name, msgReg, dummyParent)
     return val
 
-cLenFuncs[C._MSG_SPEC] = msgSpecLen
-cPLenFuncs[C._MSG_SPEC] = msgSpecPrefixedLen
-cPutFuncs[C._MSG_SPEC] = msgSpecPutter
-cGetFuncs[C._MSG_SPEC] = msgSpecGetter
+cLenFuncs[cTypes._MSG_SPEC] = msgSpecLen
+cPLenFuncs[cTypes._MSG_SPEC] = msgSpecPrefixedLen
+cPutFuncs[cTypes._MSG_SPEC] = msgSpecPutter
+cGetFuncs[cTypes._MSG_SPEC] = msgSpecGetter
 
 # ---------------------------------------------------------
 
@@ -1078,10 +1080,10 @@ def seqSpecGetter(dummyReg, chan):
     # STUB
     return val
 
-cLenFuncs[C._SEQ_SPEC] = seqSpecLen
-cPLenFuncs[C._SEQ_SPEC] = seqSpecPrefixedLen
-cPutFuncs[C._SEQ_SPEC] = seqSpecPutter
-cGetFuncs[C._SEQ_SPEC] = seqSpecGetter
+cLenFuncs[cTypes._SEQ_SPEC] = seqSpecLen
+cPLenFuncs[cTypes._SEQ_SPEC] = seqSpecPrefixedLen
+cPutFuncs[cTypes._SEQ_SPEC] = seqSpecPutter
+cGetFuncs[cTypes._SEQ_SPEC] = seqSpecGetter
 
 # ---------------------------------------------------------
 
@@ -1105,7 +1107,7 @@ def protoSpecGetter(chan):
     # STUB
     return val              # END DISPATCH TABLES
 
-cLenFuncs[C._PROTO_SPEC] = protoSpecLen
-cPLenFuncs[C._PROTO_SPEC] = protoSpecPrefixedLen
-cPutFuncs[C._PROTO_SPEC] = protoSpecPutter
-cGetFuncs[C._PROTO_SPEC] = protoSpecGetter
+cLenFuncs[cTypes._PROTO_SPEC] = protoSpecLen
+cPLenFuncs[cTypes._PROTO_SPEC] = protoSpecPrefixedLen
+cPutFuncs[cTypes._PROTO_SPEC] = protoSpecPutter
+cGetFuncs[cTypes._PROTO_SPEC] = protoSpecGetter

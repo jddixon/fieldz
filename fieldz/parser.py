@@ -1,8 +1,6 @@
 # fieldz/fieldz/parser.py
 
-import inspect
-
-import fieldz.fieldTypes as F
+from fieldz.fieldTypes import FieldTypes as F, FieldStr as FS
 import fieldz.reg as R
 import fieldz.msgSpec as M
 
@@ -269,8 +267,8 @@ class StringSpecParser(object):
         # END #####
 
         # first check against list of names of basic field types
-        if F.ndx(typeName) is not None:
-            fType = F.ndx(typeName)
+        if FS().ndx(typeName):
+            fType = FS().ndx(typeName)
 
         if fType is None:
             # check at the message level

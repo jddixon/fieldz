@@ -13,6 +13,15 @@
     are not canonical
 -----------------------------------------------------------------
 
+2016-08-08
+    * as currently [re]defined, FieldTypes is based upon a static 
+        list; it must allow dynamic defintion of new types
+
+2016-08-07
+    * field numbers should be 1-based <sigh>
+    * F.repr used only in testing? - used in testTypedFields.py
+    * testTFWriter.py should be current focus
+
 2016-08-03
     * manipulation of __setattr__ at class and instance levels in
         testMsgImpl.py is confused
@@ -27,9 +36,6 @@
 2016-03-21
     * necessary fix: superclass field names must NOT appear in the
         __slots__ list of derived classes !
-
-2016-03-18
-    * auto8it pending                                                   * DONE
 
 2016-03-17, consolidates 12-12-24 and 16-02-20 (edited from -02-19)
     * testCoreTypes             fails                                   * FIXED

@@ -4,7 +4,8 @@ import ctypes
 import struct
 import sys
 
-import fieldz.fieldTypes as F
+from fieldz.fieldTypes import FieldTypes as F
+
 from fieldz.chan import Channel
 from fieldz.raw import *
 
@@ -56,9 +57,9 @@ def decodeSint64(v):
 
 def notImpl(*arg): raise NotImplementedError
 
-tPutFuncs = [notImpl] * (F.maxNdx + 1)
-tGetFuncs = [notImpl] * (F.maxNdx + 1)
-tLenFuncs = [notImpl] * (F.maxNdx + 1)
+tPutFuncs = [notImpl] * (int(F.MAX_NDX) + 1)
+tGetFuncs = [notImpl] * (int(F.MAX_NDX) + 1)
+tLenFuncs = [notImpl] * (int(F.MAX_NDX) + 1)
 
 # puts implemented using varInts --------------------------
 

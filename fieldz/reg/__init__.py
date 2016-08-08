@@ -10,7 +10,7 @@ __all__ = ['RegEntry',                      # abstract type
 
 from fieldz.msgSpec import validateDottedName
 import fieldz.typed as T
-import fieldz.fieldTypes as F
+from fieldz.fieldTypes import FieldTypes as F, FieldStr as FS
 import fieldz.coreTypes as C
 import fieldz.msgSpec as M
 
@@ -145,18 +145,19 @@ class NodeReg(UniqueNameRegistry):
         # core classes
 
         # -- add fieldTypes -----------------------------------------
-        for i in range(F.maxNdx + 1):
+        for i in range(F.MAX_NDX + 1):
             entry = FieldTypeEntry(
                 self,               # reg
-                F.asStr(i),         # qualName,
+                FS.asStr(i),        # qualName,
                 T.tPutFuncs[i],     # putter,
                 T.tGetFuncs[i])     # getter,
             self._registerBasicType(entry)
 
-        for i in range(C.maxNdx + 1):
+        cTypes = C.CoreTypes()
+        for i in range(cTypes.maxNdx + 1):
             entry = CoreTypeEntry(
                 self,               # reg
-                C.asStr(i),         # qualName,
+                cTypes.asStr(i),         # qualName,
                 M.cPutFuncs[i],     # putter,
                 M.cGetFuncs[i],     # getter,
                 M.cLenFuncs[i],     # getter,

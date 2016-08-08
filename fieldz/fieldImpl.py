@@ -149,7 +149,7 @@ def makeFieldClass(dottedMsgName, fieldSpec):
             # PROBLEM: THIS IS A SECOND USE OF THE ATTRIBUTE 'name'
             # name=property(myName),
             fType=myFType,
-            quantifier=fieldSpec.quantifier,
+            _quantifier=fieldSpec.quantifier,
             quantifier=__quantifier,
             fieldNbr=fieldSpec.fieldNbr,
             default=fieldSpec.default):

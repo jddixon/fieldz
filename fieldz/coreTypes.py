@@ -18,4 +18,4 @@ class CoreTypes(SimpleEnumWithRepr):
             ('_PROTO_SPEC', 'ProtoSpec'),
         ])
 
-sys.modules[__name__] = CoreTypes()
+# sys.modules[__name__] = CoreTypes()
