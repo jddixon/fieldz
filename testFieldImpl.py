@@ -70,61 +70,62 @@ class TestFieldImpl (unittest.TestCase):
         # 2016-03-30 This is NOT in sync with littleBigTest.py,
         #   because I have added a None for lMsg at _L_MSG
 
-        values.append(self.rng.nextBoolean())       # vBoolReqField
-        values.append(self.rng.nextInt16())         # vEnumReqField
+        values.append(self.rng.nextBoolean())       # vBoolReqField         0
+        values.append(self.rng.nextInt16())         # vEnumReqField         1
 
-        values.append(self.rng.nextInt32())         # vuInt32ReqField
-        values.append(self.rng.nextInt32())         # vuInt64ReqField
-        values.append(self.rng.nextInt64())         # vsInt32ReqField
-        values.append(self.rng.nextInt64())         # vsInt64ReqField
+        values.append(self.rng.nextInt32())         # vInt32ReqField        2
+        values.append(self.rng.nextInt64())         # vInt64ReqField        3
 
-        # #vuInt32ReqField
-        # #vuInt64ReqField
+        values.append(self.rng.nextInt32())         # vuInt32ReqField       4
+        values.append(self.rng.nextInt32())         # vuInt64ReqField       5
+        values.append(self.rng.nextInt64())         # vsInt32ReqField       6
+        values.append(self.rng.nextInt64())         # vsInt64ReqField       7
 
-        values.append(self.rng.nextInt32())         # fsInt32ReqField
-        values.append(self.rng.nextInt32())         # fuInt32ReqField
-        values.append(self.rng.nextReal())          # fFloatReqField
+        values.append(self.rng.nextInt32())         # fsInt32ReqField       8
+        values.append(self.rng.nextInt32())         # fuInt32ReqField       9
+        values.append(self.rng.nextReal())          # fFloatReqField        10
 
-        values.append(self.rng.nextInt64())         # fsInt64ReqField
-        values.append(self.rng.nextInt64())         # fuInt64ReqField
-        values.append(self.rng.nextReal())          # fDoubleReqField
+        values.append(self.rng.nextInt64())         # fsInt64ReqField       11
+        values.append(self.rng.nextInt64())         # fuInt64ReqField       12
 
-        values.append(self.rng.nextFileName(16))    # lStringReqField
+        values.append(self.rng.nextReal())          # fDoubleReqField       13
+
+        values.append(self.rng.nextFileName(16))    # lStringReqField       14
 
         rndLen = 16 + self.rng.nextInt16(49)
         byteBuf = bytearray(rndLen)
         self.rng.nextBytes(byteBuf)
-        values.append(bytes(byteBuf))               # lBytesReqField
+        values.append(bytes(byteBuf))               # lBytesReqField        15
 
-        values.append(None)                         # <-------------- for lMsg
+        values.append(None)                         # <-------- for lMsg    16
 
         b128Buf = bytearray(16)
         self.rng.nextBytes(b128Buf)
-        values.append(bytes(b128Buf))               # fBytes16ReqField
+        values.append(bytes(b128Buf))               # fBytes16ReqField      17
 
         b160Buf = bytearray(20)
         self.rng.nextBytes(b160Buf)
-        values.append(bytes(b160Buf))               # fBytes20ReqField
+        values.append(bytes(b160Buf))               # fBytes20ReqField      18
 
         b256Buf = bytearray(32)
         self.rng.nextBytes(b256Buf)
-        values.append(bytes(b256Buf))               # fBytes32ReqField
+        values.append(bytes(b256Buf))               # fBytes32ReqField      19
 
         return values
 
     # actual unit tests #############################################
 
     def checkFieldImplAgainstSpec(self,
-                                  protoName, msgName,             # not actually tested
-                                  fieldSpec, value):              # significant for tests
+                                  protoName, msgName,   # not actually tested
+                                  fieldSpec, value):    # significant for tests
 
         self.assertIsNotNone(fieldSpec)
         dottedName = "%s.%s" % (protoName, msgName)
         Clz = makeFieldClass(dottedName, fieldSpec)         # a class
-#       if '__dict__' in dir(Clz):
-#           print('\nGENERATED FieldImpl CLASS DICTIONARY')
-#           for e in list(Clz.__dict__.keys()):
-#               print("%-20s %s" % (e, Clz.__dict__[e]))
+        if '__dict__' in dir(Clz):
+            print('\nGENERATED FieldImpl CLASS DICTIONARY')
+            for e in list(Clz.__dict__.keys()):
+                print("%-20s %s" % (e, Clz.__dict__[e]))
 
         self.assertIsNotNone(Clz)
         f = Clz(value)                                      # an instance
@@ -134,7 +135,7 @@ class TestFieldImpl (unittest.TestCase):
         # instance attributes -----------------------------
         # we verify that the properties work correctly
 
-        self.assertEqual(fieldSpec.name, f.name)
+        self.assertEqual(fieldSpec.name, f._name)
         self.assertEqual(fieldSpec.fTypeNdx, f.fType)
         self.assertEqual(fieldSpec.quantifier, f.quantifier)
         self.assertEqual(fieldSpec.fieldNbr, f.fieldNbr)
@@ -148,20 +149,27 @@ class TestFieldImpl (unittest.TestCase):
         # with slots enabled, this is never seen ----------
         # because __dict__ is not in the list of valid
         # attributes for f
-#       if '__dict__' in dir(f):
-#           print('\nGENERATED FieldImpl INSTANCE DICTIONARY')
-#           for item in list(f.__dict__.keys()):
-#               print("%-20s %s" % (item, f.__dict__[item]))
+        if '__dict__' in dir(f):
+            print('\nGENERATED FieldImpl INSTANCE DICTIONARY')
+            for item in list(f.__dict__.keys()):
+                print("%-20s %s" % (item, f.__dict__[item]))
 
     def testFieldImpl(self):
 
         nodeReg, protoReg, msgReg = self.makeRegistries(PROTOCOL_UNDER_TEST)
         values = self.lilBigMsgValues()
 
+        # DEBUG
+        print("testFieldImpl: there are %d values" % len(values))
+        # END
+
         # There are 18 values corresponding to the 18 field types;
         # _L_MSG should be skipped
 
         for t in range(F._F_BYTES32 + 1):
+            # DEBUG
+            print("testFieldImpl: t = %d" % t)
+            # END
             if t == F._L_MSG:
                 continue
 

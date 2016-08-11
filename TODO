@@ -62,7 +62,7 @@
     * note that a class with __slots__ will create instances which
         don't have a dictionary, but the code here creates classes 
         with both.
-        - is the last point corrects?
+        - is the last point correct?
 
     * The problem is confusion between a class and its instances.  The  
         error is that in this implementation both class and instances 

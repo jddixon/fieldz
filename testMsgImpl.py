@@ -117,7 +117,7 @@ class TestMsgImpl (unittest.TestCase):
         self.assertIsNotNone(f)
 
         # instance attributes -----------------------------
-        self.assertEqual(fieldSpec.name, f.name)
+        self.assertEqual(fieldSpec.name, f._name)
         self.assertEqual(fieldSpec.fTypeNdx, f.fType)
         self.assertEqual(fieldSpec.quantifier, f.quantifier)
         self.assertEqual(fieldSpec.fieldNbr, f.fieldNbr)
@@ -253,7 +253,7 @@ class TestMsgImpl (unittest.TestCase):
         # verify fields are accessible in the object ----------------
         # DEBUG
         for field in leMsg._fieldClasses:
-            print("FIELD: %s = %s " % (field.name, field.value))
+            print("FIELD: %s = %s " % (field._name, field.value))
         # END
         (timestamp, nodeID, key, length, by, path) = tuple(values)
         self.assertEqual(timestamp, leMsg.timestamp)    # FAILS: null timestamp
