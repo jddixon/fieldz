@@ -148,7 +148,7 @@ class NodeReg(UniqueNameRegistry):
         for i in range(F.MAX_NDX + 1):
             entry = FieldTypeEntry(
                 self,               # reg
-                FS.asStr(i),        # qualName,
+                FS().asStr(i),        # qualName,
                 T.tPutFuncs[i],     # putter,
                 T.tGetFuncs[i])     # getter,
             self._registerBasicType(entry)
@@ -157,7 +157,7 @@ class NodeReg(UniqueNameRegistry):
         for i in range(cTypes.maxNdx + 1):
             entry = CoreTypeEntry(
                 self,               # reg
-                cTypes.asStr(i),         # qualName,
+                cTypes.asStr(i),    # qualName,
                 M.cPutFuncs[i],     # putter,
                 M.cGetFuncs[i],     # getter,
                 M.cLenFuncs[i],     # getter,

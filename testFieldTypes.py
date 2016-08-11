@@ -32,11 +32,12 @@ class TestFieldTypes (unittest.TestCase):
 
     # actual unit tests #############################################
     def testConstants(self):
+        fs = FS()
         self.assertEqual(0, F._V_BOOL)
-        self.assertEqual(FS.asStr(F._V_BOOL), 'vBool')
+        self.assertEqual(fs.asStr(F._V_BOOL), 'vBool')
 
         self.assertEqual(19, F._F_BYTES32)
-        self.assertEqual(FS.asStr(F._F_BYTES32), 'fBytes32')
+        self.assertEqual(fs.asStr(F._F_BYTES32), 'fBytes32')
         try:
             F._V_BOOL = 47
         except AttributeError as e:

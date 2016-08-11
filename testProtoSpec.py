@@ -14,7 +14,7 @@ from rnglib import SimpleRNG
 
 from fieldz.fieldImpl import makeFieldClass         # added 2016-08-02
 from fieldz.parser import StringProtoSpecParser
-import fieldz.fieldTypes as F
+from fieldz.fieldTypes import FieldTypes as F, FieldStr as FS
 import fieldz.msgSpec as M
 import fieldz.typed as T
 import fieldz.reg as R
@@ -59,8 +59,8 @@ class TestProtoSpec (unittest.TestCase):
     # actual unit tests #############################################
 
     def testMaps(self):
-        maxNdx = F.maxNdx
-        maxName = F.asStr(maxNdx)
+        maxNdx = F.MAX_NDX
+        maxName = FS().asStr(maxNdx)
         self.assertEqual('fBytes32', maxName)
 
     def testEnum(self):

@@ -65,13 +65,16 @@ def myPWireLen(self, n):    # n is field number for nested msg, regID otherwise
 # specific to messages ----------------------------------------------
 
 
-def myEnums(self): return self._enums
+def myEnums(self):
+    return self._enums
 
 
-def myMsgs(self): return self._msgs
+def myMsgs(self):
+    return self._msgs
 
 
-def myFieldClasses(self): return self._fieldClasses
+def myFieldClasses(self):
+    return self._fieldClasses
 
 # specific to fields ------------------------------------------------
 # FOR A GIVEN FIELD, THESE ARE CONSTANTS ASSIGNED BY makeFieldClass
@@ -217,7 +220,7 @@ class MsgImpl(object):
             #                       '_fieldNbr', '_default',]
             # INSTANCE-LEVEL SLOT is '_value'
 
-            fName = field.name
+            fName = field._name
             fNbr = field.fieldNbr
             fQuant = field.quantifier          # NEXT HURDLE
             fType = field.fType
@@ -345,7 +348,7 @@ class MsgImpl(object):
         msgLen = 0
         n = 0  # DEBUG
         for field in self._fields:
-            fName = field.name
+            fName = field._name
             fNbr = field.fieldNbr
             fQuant = field.quantifier          # NEXT HURDLE
             fType = field.fType
@@ -483,6 +486,8 @@ class MetaMsg(type):
 
 # EXPERIMENT: IMPLEMENTATION OF MESSAGE CLASS __init__
 
+# DROPPING THIS FOR NOW
+
 
 def msgInitter(cls, *args, **attrs):
     # We want to create instances of the respective fields and
@@ -549,57 +554,38 @@ def _makeMsgClass(parent, msgSpec):
         fieldClassesByNbr[fieldSpec.fieldNbr] = clz
 
     # class is not in cache, so construct ---------------------------
-    d = {}
-    d['__init__'] = msgInitter
 
-    # drop 2016-03-26
-    # d['__slots__'] = ['_name', '_enums', '_msgs', '_fieldClasses',
-    #                  '_fieldsClassesByName', '_fieldsClassesByNbr',
-    #
-    #]
+    _enums = []
+    _msgs = []
 
-    # WORKING HERE ==============================
-    for f in fieldClasses:
-        # comment out 2016-03-26
-        # d['__slots__'].append(str(f._name))
-        d[f._name] = None
-    # END HERE ==================================
+    class Msg(MsgImpl, metaclass=MetaMsg,
+              # __init__ = msgInitter,
+              # 'name' already in use?
+              _name=msgSpec.name,
+              enums=property(myEnums),
+              msgs=property(myMsgs),
+              fieldClasses=property(myFieldClasses),
 
-    # we want a property for each item in the slots list
-    d['_name'] = msgSpec.name
-    d['name'] = msgSpec.name
-
-    d['_enums'] = []      # enums visible at all levels; shd be immutable
-    d['enums'] = property(myEnums)
-
-    d['_msgs'] = []      # nested msgs, visible at all levels
-    d['msgs'] = property(myMsgs)
-
-    d['_fieldClasses'] = fieldClasses
-    d['fieldClasses'] = property(myFieldClasses)
-
-    # EXPERIMENT 2012-12-15
-    d['parentSpec'] = parent
-    d['msgSpec'] = msgSpec
-    # END EXPERIMENT
+              # EXPERIMENT 2012-12-15
+              parentSpec=parent,
+              msgSpec=msgSpec
+              # END EXPERIMENT
+              ):
+        pass
 
     # DEBUG =====================================
     print("MSG_IMPL DICTIONARY:")
-    for key in d:
-        print("  %-16s => %s" % (key, d[key]))
+    for key in Msg.__dict__:
+        print("  %-16s => %s" % (key, Msg.__dict__[key]))
     # END =======================================
 
-    C = MetaMsg(str(msgSpec.name),  # name  MUST NOT BE UNICODE
-                (MsgImpl,),        # bases
-                d)                 # dictionary
-
     # DEBUG
-    print("\n_makeMsgClass returning something of type ", type(C))
+    print("\n_makeMsgClass returning something of type ", type(Msg))
     # END
 
     #----------------------------
     # possibly some more fiddling ...
     #----------------------------
 
-    msgClsByQName[qualName] = C
-    return C                        # GEEPGEEP
+    msgClsByQName[qualName] = Msg
+    return Msg                        # GEEPGEEP

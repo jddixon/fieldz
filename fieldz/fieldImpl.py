@@ -30,10 +30,18 @@ def myDefault(cls): return cls._default
 # have nothing to do with de/serialization to and from the channel
 
 
-def myValueGetter(self): return self._value
+def myValueGetter(self):
+    # DEBUG
+    print("myValueGetter returning %s" % self._value)
+    # END
+    return self._value
 
 
-def myValueSetter(self, value): self._value = value
+def myValueSetter(self, value):
+    # DEBUG
+    print("myValueSetter: value becomes %s" % value)
+    # END
+    self._value = value
 
 # -------------------------------------------------------------------
 # FIELD CLASS
@@ -51,13 +59,18 @@ class FieldImpl(object):
     # NOTE: if we inherit from type, we get a TypeError: nonempty
     # __slots__ not supported for subtype of type
     #################################################################
-    __slots__ = ['_value', ]
+    # commented out: "multiple bases have instance lay-out conflict"
+    # presumably caused by presence of __slots__
+    #__slots__ = ['_value', ]
 
     # should default precede value?  if a value is assigned, isn't that
     # a default?  In fact shouldn't the parameter list end with
     #   value=default?
     def __init__(self, value=None):
         # XXX NEED SOME VALIDATION
+        # DEBUG
+        print("FieldImpl.__init__: value = %s" % value)
+        # END
         self._value = value
 
     def __eq__(self, other):
@@ -86,16 +99,16 @@ class MetaField(type):
         """
         return dict(kwargs)
 
-    def __new__(meta, name, bases, namespace, **kwargs):
+    def __new__(cls, name, bases, namespace, **kwargs):
         # DEBUG
         # removed namespace from print
-        print("\nMetaField NEW, meta='%s',\n\tname='%s', bases='%s'" % (
-            meta, name, bases))
+        print("\nMetaField NEW, cls='%s',\n\tname='%s', bases='%s'" % (
+            cls, name, bases))
         sys.stdout.flush()
         # END
-        return super().__new__(meta, name, bases, namespace)
+        return super().__new__(cls, name, bases, namespace)
 
-    def __init__(cls, name, bases, namespace):
+    def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace)
 
         # DEBUG without namespace
@@ -144,19 +157,18 @@ def makeFieldClass(dottedMsgName, fieldSpec):
 #       dummy=0):
 #       pass
 
-    class M(metaclass=MetaField,
-            _name=fieldSpec.name,
-            # PROBLEM: THIS IS A SECOND USE OF THE ATTRIBUTE 'name'
-            # name=property(myName),
-            fType=myFType,
-            _quantifier=fieldSpec.quantifier,
-            quantifier=__quantifier,
-            fieldNbr=fieldSpec.fieldNbr,
-            default=fieldSpec.default):
+    class Field(FieldImpl, metaclass=MetaField,
+                # 'name' is already in use
+                _name=fieldSpec.name,
+                fType=fieldSpec.fTypeNdx,
+                quantifier=fieldSpec.quantifier,
+                fieldNbr=fieldSpec.fieldNbr,
+                default=fieldSpec.default,
+                value=__value):                    # LINE 154
         pass
     #----------------------------
     # possibly some more fiddling ...
     #----------------------------
 
-    fieldClsByQName[qualName] = M
-    return M
+    fieldClsByQName[qualName] = Field
+    return Field

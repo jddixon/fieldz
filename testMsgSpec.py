@@ -194,7 +194,7 @@ class TestMsgSpec (unittest.TestCase):
         self.assertEqual(len(fields), len(msgSpec))
         i = 0
         for field in msgSpec:
-            self.assertEqual(fields[i].name, field.name)
+            self.assertEqual(fields[i].name, field._name)
             self.assertEqual(fields[i].fTypeNdx, field.fTypeNdx)
             i += 1
 

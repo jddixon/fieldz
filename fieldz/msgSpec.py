@@ -293,7 +293,7 @@ class FieldSpec(object):
     @property
     def fTypeName(self):
         if 0 <= self._type and self._type <= F.MAX_NDX:
-            return FS.asStr(self._type)
+            return FS().asStr(self._type)
         regID = self._reg.regID2Name(self._type)
         if regID is None:
             # XXX parent must search upwards if not found
@@ -630,14 +630,18 @@ class MsgSpec(SuperSpec):
         return self._fields[k]
 
     def fName(self, i):
-        if i < 0 or i > self.__len__():
-            raise ValueError('field number out of range')
+        if self.__len__() == 0:
+            raise ValueError("INTERNAL ERROR: message has no fields")
+        if i < 0 or i >= self.__len__():
+            raise ValueError('field number %d out of range' % i)
         return self._fields[i].name
 
     def fTypeName(self, i):
         # field numbers are zero-based
+        if self.__len__() == 0:
+            raise ValueError("INTERNAL ERROR: message has no fields")
         if i < 0 or i >= self.__len__():
-            raise ValueError('field number out of range')
+            raise ValueError('field number %d out of range' % i)
         # XXX WRONG-ish: fType MUST be numeric; this should return
         # the string equivalent; HOWEVER, if the type is lMsg, we
         # want to return the message name ... XXX
@@ -645,8 +649,10 @@ class MsgSpec(SuperSpec):
 
     def fTypeNdx(self, i):
         # field numbers are zero-based
+        if self.__len__() == 0:
+            raise ValueError("INTERNAL ERROR: message has no fields")
         if i < 0 or i >= self.__len__():
-            raise ValueError('field number out of range')
+            raise ValueError('field number %d out of range' % i)
 
         # XXX WRONG-ish: fType MUST be numeric; this should return
         # the string equivalent; HOWEVER, if the type is lMsg, we
@@ -655,8 +661,10 @@ class MsgSpec(SuperSpec):
 
     def fDefault(self, i):
         # field numbers are zero-based
+        if self.__len__() == 0:
+            raise ValueError("INTERNAL ERROR: message has no fields")
         if i < 0 or i >= self.__len__():
-            raise ValueError('field number out of range')
+            raise ValueError('field number %d out of range' % i)
         return self._fields[i].default
 
     # -- serialization ----------------------------------------------
@@ -686,7 +694,7 @@ class MsgSpec(SuperSpec):
                 s.append(e.indentedStr(indent + step, step))
         if self._msgs is not None:
             for m in self._msgs:
-                s.append(m.indentedStr(indent + step, step))
+                -s.append(m.indentedStr(indent + step, step))
         for f in self._fields:
             s.append(f.indentedStr(indent + step, step))
         return ''.join(s)

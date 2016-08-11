@@ -164,7 +164,7 @@ class TestRingDataProto (unittest.TestCase):
         # OUTER MESSAGE SPEC ----------------------------------------
         msgSpec = sOM.msgs[0]
         field = msgSpec[0]
-        self.assertEqual(field.name, 'hosts')
+        self.assertEqual(field._name, 'hosts')
         self.assertEqual(field.fTypeName, 'hostInfo')
         self.assertEqual(field.quantifier, M.Q_PLUS)
 
