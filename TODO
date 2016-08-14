@@ -13,6 +13,14 @@
     are not canonical
 -----------------------------------------------------------------
 
+2016-08-13
+    * the language syntax as set out in README.md is inconsitent 
+        with that in the *.xlgo files and possibly with the 
+        2012 implementation of the code.  
+        - The three need to be reconciled
+        - We need syntax checks in the form of test*.py
+    * README.md needs to be extended to specify enum syntax
+
 2016-08-08
     * as currently [re]defined, FieldTypes is based upon a static 
         list; it must allow dynamic defintion of new types

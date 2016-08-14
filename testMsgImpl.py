@@ -162,7 +162,7 @@ class TestMsgImpl (unittest.TestCase):
         leMsg0 = Clz0(values)
         leMsg1 = Clz0(values)
         # we don't cache instances, so these will differ
-        self.assertNotEquals(id(leMsg0), id(leMsg1))
+        self.assertNotEqual(id(leMsg0), id(leMsg1))
 
         fieldSpec = msgSpec[0]
         dottedName = "%s.%s" % (self.protoName, msgSpec.name)
@@ -227,15 +227,15 @@ class TestMsgImpl (unittest.TestCase):
                 # END
                 pass
 
-        # leMsg.name is a property
+        # leMsg._name is a property
         # TEST TEMPORARILY DISABLED
 #        try:
-#            leMsg.name = 'boo'
+#            leMsg._name = 'boo'
 #            self.fail("ERROR: attempt to change message name succeeded")
 #        except AttributeError:
 #            pass
 
-        self.assertEqual(msgSpec.name, leMsg.name)
+        self.assertEqual(msgSpec.name, leMsg._name)
         # we don't have any nested enums or messages
         self.assertEqual(0, len(leMsg.enums))
         self.assertEqual(0, len(leMsg.msgs))

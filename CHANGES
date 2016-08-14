@@ -1,5 +1,8 @@
 ~/dev/py/fieldz/CHANGES
 
+v0.10.19
+    2016-08-13
+        * elaborate README.md                                       SLOC 6635
 v0.10.18
     2016-08-11
         * testFieldImpl.py succeeds                                 SLOC 6618
@@ -327,6 +330,7 @@ v0.1.2
         * working varint, fixed len 32- and 64-bit, var len bytestring
             and associated tests
         * initial svn import
+
 
 
 

@@ -125,7 +125,7 @@ class TestFieldImpl (unittest.TestCase):
         if '__dict__' in dir(Clz):
             print('\nGENERATED FieldImpl CLASS DICTIONARY')
             for e in list(Clz.__dict__.keys()):
-                print("%-20s %s" % (e, Clz.__dict__[e]))
+                print("  %-20s %s" % (e, Clz.__dict__[e]))
 
         self.assertIsNotNone(Clz)
         f = Clz(value)                                      # an instance
