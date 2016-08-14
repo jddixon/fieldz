@@ -122,11 +122,11 @@ class MsgImpl(object):
 #                '_msgs',          # nested messages
 #                ]
 
-#    def __init__(self):
-#        """ added 16-08-02 """
-#        self._fields = []
-#        self._enums = []
-#        self._msgs = []
+    def __init__(self, name, fields=None, enums=None, msgs=None):
+        self._name = name
+        self._fields = fields
+        self._enums = enums
+        self._msgs = msgs
 
     def __eq__(self, other):
         if other is None:
@@ -494,20 +494,20 @@ def msgInitter(cls, *args, **attrs):
     # assign 'arg' to field 'idx'.  This means that field instances
     # need to have been created before we get here
 
-    #   # DEBUG
-    #   print 'INITTER:'
-    #   if args:
-    #       for idx,arg in enumerate(args):
-    #           print "  arg %u is '%s'" % (idx, str(arg))
-    #   if attrs:
-    #       for key,val in attrs.iteritems:
-    #           print "  kwarg attr is '%s', value is '%s'" % (key, str(val))
+    # DEBUG
+    print('INITTER:')
+    if args:
+        for idx, arg in enumerate(args):
+            print("  arg %u is '%s'" % (idx, str(arg)))
+    if attrs:
+        for key, val in attrs.iteritems:
+            print("  kwarg attr is '%s', value is '%s'" % (key, str(val)))
 
-    #   # END
+    # END
 
     # XXX if msgInitter is dropped from the dictionary, I get an error at
     # line 249 in __call__,
-    #    return type.__call__(cls, *args, **kwargs)
+    #  return type.__call__(cls, *args, **kwargs)
     #  TypeError: object.__new__() takes no parameters
     #
     pass

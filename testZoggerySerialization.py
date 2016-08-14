@@ -86,6 +86,10 @@ class TestZoggerySerialization (unittest.TestCase):
         # create the LogEntryMsg class ------------------------------
         LogEntryMsg = makeMsgClass(self.sOM, msgName)
 
+        # DEBUG
+        print("testZoggery: LogEntryMsg is of type ", type(LogEntryMsg))
+        # END
+
         # create a message instance ---------------------------------
         values = self.leMsgValues()        # a list of quasi-random values
         leMsg = LogEntryMsg(values)
@@ -99,7 +103,7 @@ class TestZoggerySerialization (unittest.TestCase):
 
         (timestamp, key, length, nodeID, by, path) = tuple(values)
 
-        self.assertEqual(msgSpec.name, leMsg.name)
+        self.assertEqual(msgSpec.name, leMsg._name)
         # we don't have any nested enums or messages
 
         # XXX FAIL: properties have no len()

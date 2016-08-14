@@ -69,7 +69,8 @@ class FieldImpl(object):
     def __init__(self, value=None):
         # XXX NEED SOME VALIDATION
         # DEBUG
-        print("FieldImpl.__init__: value = %s" % value)
+        print("  type of value: %s" % type(value))
+        print("FieldImpl.__init__: value = %s" % value)  # .decode('utf-8'))
         # END
         self._value = value
 
