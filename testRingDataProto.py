@@ -14,7 +14,7 @@ from fieldz.parser import StringProtoSpecParser
 import fieldz.fieldTypes as F
 import fieldz.msgSpec as M
 import fieldz.typed as T
-from pzog.xlattice.node import Node
+from xlattice.node import Node
 from fieldz.chan import Channel
 from fieldz.msgImpl import makeMsgClass, makeFieldClass
 

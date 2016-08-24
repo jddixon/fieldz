@@ -27,9 +27,14 @@ setup(name='fieldz',
       # scripts should have a globally unique name; they might be in a
       #   scripts/ subdir; SQuote the script name
       scripts=['fieldzSpecc'],
-      # MISSING description
+      description='python3 protocol for compressing/decompressing data',
+      url='https://jddixon.github.io/fieldz',
       classifiers=[
+          'Development Status :: 3 - Alpha',
+          'Intended Audience :: Developers',
           'License :: OSI Approved :: MIT License',
-          'Programming Language :: Python :: 3',
+          'Natural Language :: English',
+          'Programming Language :: Python 3',
+          'Topic :: Software Development :: Libraries :: Python Modules',
       ],
       )
