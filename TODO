@@ -13,6 +13,13 @@
     are not canonical
 -----------------------------------------------------------------
 
+2016-08-14
+    * test.all now has one FAILED, reported as three ERRORs:
+        testTFWriter.py L123 --> msgSpec.py L 653,
+        "INTERNAL ERROR: hessage has no fields"
+        - it appears that the field specs collected at testTFWriter.py
+            L36 are never attachd to testMsgSpec defined L55 !!
+
 2016-08-13
     * the language syntax as set out in README.md is inconsitent 
         with that in the *.xlgo files and possibly with the 

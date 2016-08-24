@@ -4,6 +4,8 @@ dir:local:specs
 code:std:.dvcz/projCfg
 code:std:.dvcz/projCfg.local
 
+txt:std:LICENSE-MIT.md
+
 code:local:example.msgSpec
 code:local:netDistrib.conf
 code:local:testForOK

@@ -44,6 +44,10 @@ class TestFieldTypes (unittest.TestCase):
             # 'success: caught attempt to reassign constant'
             pass
 
+        for t in range(F.MAX_NDX + 1):
+            typeName = FS.asStr(t)
+            self.assertEqual(fs.ndx(typeName), t)
+
     def testLenFuncs(self):
         n = self.rng.nextInt16()        # random field number
         x = self.rng.nextInt16()        # random integer value

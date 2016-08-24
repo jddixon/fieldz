@@ -2,8 +2,8 @@
 project:fieldz
 package:fieldz
 mainlang:py
-version:0.10.14
-versionDate:2016-08-03
+version:0.10.19
+versionDate:2016-08-13
 :?dirs?:
 dir:std:ghpDoc
 dir:std:dist
@@ -31,8 +31,8 @@ code:local:testForOK
 code:local:test_util.xxx_IS_ONE_LEVEL_UP
 code:local:unittest.xlgo
 code:local:unittest_import.xlgo
+txt:std:LICENSE-MIT.md
 txt:std:CHANGES
-txt:std:LICENSE.md
 txt:std:README
 txt:std:README.api
 txt:std:README.channels

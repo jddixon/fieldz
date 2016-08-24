@@ -266,22 +266,36 @@ class StringSpecParser(object):
             fName, typeName, quantifier))
         # END #####
 
-        # first check against list of names of basic field types
-        if FS().ndx(typeName):
-            fType = FS().ndx(typeName)
+        # first check against list of names of field types
+        fs = FS()
+        try:
+            fType = fs.ndx(typeName)
+            # DEBUG
+            print("LIST typeName is '%s', index is '%s'" % (typeName, fType))
+            # END
+        except KeyError:
+            # DEBUG
+            print("NOT IN LIST typeName '%s'" % typeName)
+            # END
+            fType = None
 
         if fType is None:
             # check at the message level
             fType = msgSpec.reg.name2RegID(typeName)
+            # DEBUG
+            print("MSG typeName is '%s', index is '%s'" % (typeName, fType))
+            # END
 
         if fType is None:
-            print("DEBUG fType for '%s' not found at message level" % typeName)
             # ask the parent to resolve
             fType = msgSpec.parent.reg.name2RegID(typeName)
+            # DEBUG
+            print("PARENT typeName is '%s', index is '%s'" % (typeName, fType))
+            # END
 
         if fType is None:
-            print("DEBUG fType for '%s' not found in parent" % typeName)
-            raise ParserError("can't identify type name in '%s'" % line)
+            raise ParserError("can't identify type %s name in '%s'" % (
+                fType, line))
 
         # -- field number -----------------------
         fieldNbr = -1
