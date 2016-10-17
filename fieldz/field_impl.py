@@ -2,7 +2,7 @@
 
 import sys   # for debugging
 
-from fieldz.msgSpec import FieldSpec
+from fieldz.msg_spec import FieldSpec
 
 # XXX THIS IS UNSAFE!!! XXX
 fieldClsByQName = {}        # PROTO_NAME . MSG_NAME . FIELD_NAME => class

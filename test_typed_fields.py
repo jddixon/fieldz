@@ -9,7 +9,7 @@ import unittest
 
 from rnglib import SimpleRNG
 from fieldz.raw import *
-from fieldz.fieldTypes import FieldTypes as F, FieldStr as FS
+from fieldz.field_types import FieldTypes as F, FieldStr as FS
 
 LEN_NULLS = 1024
 NULLS = [0] * LEN_NULLS

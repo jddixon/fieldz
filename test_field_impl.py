@@ -9,15 +9,15 @@ from io import StringIO
 from rnglib import SimpleRNG
 
 #from fieldz.parser import StringProtoSpecParser
-from fieldz.fieldTypes import FieldTypes as F, FieldStr as FS
-import fieldz.msgSpec as M
+from fieldz.field_types import FieldTypes as F, FieldStr as FS
+import fieldz.msg_spec as M
 #import fieldz.typed as T
 import fieldz.reg as R
 
-from fieldz.fieldImpl import makeFieldClass
+from fieldz.field_impl import makeFieldClass
 
 #from fieldz.chan import Channel
-#from fieldz.msgImpl import makeMsgClass, makeFieldClass, MsgImpl
+#from fieldz.msg_impl import makeMsgClass, makeFieldClass, MsgImpl
 #from fieldz.raw import writeFieldHdr, writeRawVarint, LEN_PLUS_TYPE
 
 PROTOCOL_UNDER_TEST = 'org.xlattice.fieldz.test.fieldSpec'

@@ -8,15 +8,15 @@ import unittest
 from io import StringIO
 
 from rnglib import SimpleRNG
-from ringDataProto import RING_DATA_PROTO_SPEC
+from ring_data_proto import RING_DATA_PROTO_SPEC
 
 from fieldz.parser import StringProtoSpecParser
-import fieldz.fieldTypes as F
-import fieldz.msgSpec as M
+import fieldz.field_types as F
+import fieldz.msg_spec as M
 import fieldz.typed as T
 from xlattice.node import Node
 from fieldz.chan import Channel
-from fieldz.msgImpl import makeMsgClass, makeFieldClass
+from fieldz.msg_impl import makeMsgClass, makeFieldClass
 
 rng = SimpleRNG(int(time.time()))
 BUFSIZE = 16 * 1024

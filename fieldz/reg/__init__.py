@@ -8,11 +8,11 @@ __all__ = ['RegEntry',                      # abstract type
            'MsgEntry', 'EnumEntry',         # either of these
            ]
 
-from fieldz.msgSpec import validateDottedName
+from fieldz.msg_spec import validateDottedName
 import fieldz.typed as T
-from fieldz.fieldTypes import FieldTypes as F, FieldStr as FS
-import fieldz.coreTypes as C
-import fieldz.msgSpec as M
+from fieldz.field_types import FieldTypes as F, FieldStr as FS
+import fieldz.core_types as C
+import fieldz.msg_spec as M
 
 # BEGIN NEW CLASSES =================================================
 

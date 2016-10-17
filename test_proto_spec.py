@@ -12,21 +12,21 @@ from io import StringIO
 
 from rnglib import SimpleRNG
 
-from fieldz.fieldImpl import makeFieldClass         # added 2016-08-02
+from fieldz.field_impl import makeFieldClass         # added 2016-08-02
 from fieldz.parser import StringProtoSpecParser
-from fieldz.fieldTypes import FieldTypes as F, FieldStr as FS
-import fieldz.msgSpec as M
+from fieldz.field_types import FieldTypes as F, FieldStr as FS
+import fieldz.msg_spec as M
 import fieldz.typed as T
 import fieldz.reg as R
 
 from fieldz import reg
-from fieldz.msgImpl import makeMsgClass
+from fieldz.msg_impl import makeMsgClass
 
 # PROTOCOLS ---------------------------------------------------------
-from simpleProtocol import SIMPLE_PROTOCOL
-from zoggeryProtoSpec import ZOGGERY_PROTO_SPEC
-from nestedEnumProtoSpec import NESTED_ENUM_PROTO_SPEC
-from nestedMsgsProtoSpec import NESTED_MSGS_PROTO_SPEC
+from simple_protocol import SIMPLE_PROTOCOL
+from zoggery_proto_spec import ZOGGERY_PROTO_SPEC
+from nested_enum_proto_spec import NESTED_ENUM_PROTO_SPEC
+from nested_msgs_proto_spec import NESTED_MSGS_PROTO_SPEC
 
 rng = SimpleRNG(time.time())
 

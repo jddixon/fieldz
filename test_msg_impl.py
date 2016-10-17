@@ -8,11 +8,11 @@ from io import StringIO
 from rnglib import SimpleRNG
 
 from fieldz.parser import StringProtoSpecParser
-import fieldz.fieldTypes as F
-import fieldz.msgSpec as M
+import fieldz.field_types as F
+import fieldz.msg_spec as M
 import fieldz.typed as T
 from fieldz.chan import Channel
-from fieldz.msgImpl import makeMsgClass, makeFieldClass, MsgImpl
+from fieldz.msg_impl import makeMsgClass, makeFieldClass, MsgImpl
 # XXX NEEDS FIXING: we shouldn't be using this low-level code
 from fieldz.raw import writeFieldHdr, writeRawVarint, LEN_PLUS_TYPE
 
@@ -21,12 +21,12 @@ from fieldz.raw import writeFieldHdr, writeRawVarint, LEN_PLUS_TYPE
 #################################################################
 
 # PROTOCOLS ---------------------------------------------------------
-from littleBigTest import LITTLE_BIG_PROTO_SPEC
+from little_big_test import LITTLE_BIG_PROTO_SPEC
 
-from simpleProtocol import SIMPLE_PROTOCOL
-from zoggeryProtoSpec import ZOGGERY_PROTO_SPEC
-from nestedEnumProtoSpec import NESTED_ENUM_PROTO_SPEC
-from nestedMsgsProtoSpec import NESTED_MSGS_PROTO_SPEC
+from simple_protocol import SIMPLE_PROTOCOL
+from zoggery_proto_spec import ZOGGERY_PROTO_SPEC
+from nested_enum_proto_spec import NESTED_ENUM_PROTO_SPEC
+from nested_msgs_proto_spec import NESTED_MSGS_PROTO_SPEC
 
 BUFSIZE = 16 * 1024
 rng = SimpleRNG(time.time())

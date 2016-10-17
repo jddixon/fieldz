@@ -1,10 +1,10 @@
 # fieldz/fieldz/parser.py
 
-from fieldz.fieldTypes import FieldTypes as F, FieldStr as FS
+from fieldz.field_types import FieldTypes as F, FieldStr as FS
 import fieldz.reg as R
-import fieldz.msgSpec as M
+import fieldz.msg_spec as M
 
-from fieldz.msgSpec import *
+from fieldz.msg_spec import *
 
 __all__ = [
     'StringSpecParser',

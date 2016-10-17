@@ -6,13 +6,13 @@ import unittest
 from io import StringIO
 
 from rnglib import SimpleRNG
-from fieldz.msgSpec import *
+from fieldz.msg_spec import *
 from fieldz.parser import StringProtoSpecParser
 
-import fieldz.enumSpec as Q
+import fieldz.enum_spec as Q
 import fieldz.reg as R
 
-from bigTest import BIG_TEST
+from big_test import BIG_TEST
 
 
 class TestBigTest (unittest.TestCase):

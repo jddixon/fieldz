@@ -5,7 +5,7 @@ import time
 import unittest
 
 from rnglib import SimpleRNG
-import fieldz.enumSpec as Q
+import fieldz.enum_spec as Q
 
 
 class TestSimpleEnum (unittest.TestCase):

@@ -8,14 +8,14 @@ from io import StringIO
 from rnglib import SimpleRNG
 
 from fieldz.parser import StringProtoSpecParser
-from fieldz.fieldTypes import FieldTypes as F, FieldStr as FS
-import fieldz.msgSpec as M
+from fieldz.field_types import FieldTypes as F, FieldStr as FS
+import fieldz.msg_spec as M
 import fieldz.typed as T
 from fieldz.chan import Channel
-from fieldz.msgImpl import makeMsgClass, makeFieldClass, MsgImpl
+from fieldz.msg_impl import makeMsgClass, makeFieldClass, MsgImpl
 
 # PROTOCOLS ---------------------------------------------------------
-from zoggeryProtoSpec import ZOGGERY_PROTO_SPEC
+from zoggery_proto_spec import ZOGGERY_PROTO_SPEC
 
 BUFSIZE = 16 * 1024
 rng = SimpleRNG(time.time())

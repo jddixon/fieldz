@@ -4,13 +4,13 @@ import ctypes
 import struct
 import sys
 
-from fieldz.fieldTypes import FieldTypes as F
+from fieldz.field_types import FieldTypes as F
 
 from fieldz.chan import Channel
 from fieldz.raw import *
 
 # MsgSpec cannot be imported
-#from fieldz.msgSpec import  MsgSpec
+#from fieldz.msg_spec import  MsgSpec
 
 __all__ = [
     'encodeSint32', 'decodeSint32',
