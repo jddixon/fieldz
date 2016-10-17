@@ -4,7 +4,7 @@
 import time
 import unittest
 
-from fieldz.fieldTypes import FieldTypes as F, FieldStr as FS
+from fieldz.field_types import FieldTypes as F, FieldStr as FS
 
 import fieldz.raw as R
 import fieldz.typed as T

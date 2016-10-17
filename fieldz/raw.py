@@ -1,7 +1,7 @@
 # fieldz/raw.py
 
 import ctypes
-from fieldz.fieldTypes import FieldTypes as F, FieldStr as FS
+from fieldz.field_types import FieldTypes as F, FieldStr as FS
 
 # for debugging
 #import binascii

@@ -6,8 +6,8 @@ import sys
 from fieldz.raw import *
 from fieldz.typed import *
 
-from fieldz.fieldTypes import FieldTypes as F, FieldStr as FS
-import fieldz.coreTypes as C
+from fieldz.field_types import FieldTypes as F, FieldStr as FS
+import fieldz.core_types as C
 
 __all__ = [  \
     # constants, so to speak: quantifiers
@@ -800,10 +800,10 @@ def enumPairSpecGetter(dummyReg, chan):
     obj = EnumPairSpec(sym, val)
     return obj
 
-cLenFuncs[cTypes._ENUM_PAIR_SPEC] = enumPairSpecLen
-cPLenFuncs[cTypes._ENUM_PAIR_SPEC] = enumPairSpecPrefixedLen
-cPutFuncs[cTypes._ENUM_PAIR_SPEC] = enumPairSpecPutter
-cGetFuncs[cTypes._ENUM_PAIR_SPEC] = enumPairSpecGetter
+cLenFuncs[cTypes.ENUM_PAIR_SPEC] = enumPairSpecLen
+cPLenFuncs[cTypes.ENUM_PAIR_SPEC] = enumPairSpecPrefixedLen
+cPutFuncs[cTypes.ENUM_PAIR_SPEC] = enumPairSpecPutter
+cGetFuncs[cTypes.ENUM_PAIR_SPEC] = enumPairSpecGetter
 
 # ---------------------------------------------------------
 
@@ -873,10 +873,10 @@ def enumSpecGetter(chan):
     val = EnumSpec(name, pairs)
     return val
 
-cLenFuncs[cTypes._ENUM_SPEC] = enumSpecLen
-cPLenFuncs[cTypes._ENUM_SPEC] = enumSpecPrefixedLen
-cPutFuncs[cTypes._ENUM_SPEC] = enumSpecPutter
-cGetFuncs[cTypes._ENUM_SPEC] = enumSpecGetter
+cLenFuncs[cTypes.ENUM_SPEC] = enumSpecLen
+cPLenFuncs[cTypes.ENUM_SPEC] = enumSpecPrefixedLen
+cPutFuncs[cTypes.ENUM_SPEC] = enumSpecPutter
+cGetFuncs[cTypes.ENUM_SPEC] = enumSpecGetter
 
 # ---------------------------------------------------------
 
@@ -965,10 +965,10 @@ def fieldSpecGetter(msgReg, chan):
 
     return val
 
-cLenFuncs[cTypes._FIELD_SPEC] = fieldSpecLen
-cPLenFuncs[cTypes._FIELD_SPEC] = fieldSpecPrefixedLen
-cPutFuncs[cTypes._FIELD_SPEC] = fieldSpecPutter
-cGetFuncs[cTypes._FIELD_SPEC] = fieldSpecGetter
+cLenFuncs[cTypes.FIELD_SPEC] = fieldSpecLen
+cPLenFuncs[cTypes.FIELD_SPEC] = fieldSpecPrefixedLen
+cPutFuncs[cTypes.FIELD_SPEC] = fieldSpecPutter
+cGetFuncs[cTypes.FIELD_SPEC] = fieldSpecGetter
 
 # ---------------------------------------------------------
 # XXX use of 'n' parameter ?
@@ -1061,10 +1061,10 @@ def msgSpecGetter(msgReg, chan):
     val = MsgSpec(name, msgReg, dummyParent)
     return val
 
-cLenFuncs[cTypes._MSG_SPEC] = msgSpecLen
-cPLenFuncs[cTypes._MSG_SPEC] = msgSpecPrefixedLen
-cPutFuncs[cTypes._MSG_SPEC] = msgSpecPutter
-cGetFuncs[cTypes._MSG_SPEC] = msgSpecGetter
+cLenFuncs[cTypes.MSG_SPEC] = msgSpecLen
+cPLenFuncs[cTypes.MSG_SPEC] = msgSpecPrefixedLen
+cPutFuncs[cTypes.MSG_SPEC] = msgSpecPutter
+cGetFuncs[cTypes.MSG_SPEC] = msgSpecGetter
 
 # ---------------------------------------------------------
 
@@ -1088,10 +1088,10 @@ def seqSpecGetter(dummyReg, chan):
     # STUB
     return val
 
-cLenFuncs[cTypes._SEQ_SPEC] = seqSpecLen
-cPLenFuncs[cTypes._SEQ_SPEC] = seqSpecPrefixedLen
-cPutFuncs[cTypes._SEQ_SPEC] = seqSpecPutter
-cGetFuncs[cTypes._SEQ_SPEC] = seqSpecGetter
+cLenFuncs[cTypes.SEQ_SPEC] = seqSpecLen
+cPLenFuncs[cTypes.SEQ_SPEC] = seqSpecPrefixedLen
+cPutFuncs[cTypes.SEQ_SPEC] = seqSpecPutter
+cGetFuncs[cTypes.SEQ_SPEC] = seqSpecGetter
 
 # ---------------------------------------------------------
 
@@ -1115,7 +1115,7 @@ def protoSpecGetter(chan):
     # STUB
     return val              # END DISPATCH TABLES
 
-cLenFuncs[cTypes._PROTO_SPEC] = protoSpecLen
-cPLenFuncs[cTypes._PROTO_SPEC] = protoSpecPrefixedLen
-cPutFuncs[cTypes._PROTO_SPEC] = protoSpecPutter
-cGetFuncs[cTypes._PROTO_SPEC] = protoSpecGetter
+cLenFuncs[cTypes.PROTO_SPEC] = protoSpecLen
+cPLenFuncs[cTypes.PROTO_SPEC] = protoSpecPrefixedLen
+cPutFuncs[cTypes.PROTO_SPEC] = protoSpecPutter
+cGetFuncs[cTypes.PROTO_SPEC] = protoSpecGetter

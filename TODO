@@ -13,6 +13,9 @@
     are not canonical
 -----------------------------------------------------------------
 
+2016-09-30
+    * bigTest.py and littleBigTest.py should NOT have that extension
+
 2016-08-14
     * test.all now has one FAILED, reported as three ERRORs:
         testTFWriter.py L123 --> msgSpec.py L 653,

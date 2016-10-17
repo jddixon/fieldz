@@ -2,15 +2,15 @@
 
 import sys      # for debugging
 
-from fieldz.fieldImpl import FieldImpl, MetaField, makeFieldClass
+from fieldz.field_impl import FieldImpl, MetaField, makeFieldClass
 
-import fieldz.fieldTypes as F
+import fieldz.field_types as F
 from fieldz.raw import (lengthAsVarint, fieldHdrLen, readFieldHdr,
                         writeRawVarint, readRawVarint,
                         writeFieldHdr, LEN_PLUS_TYPE)
 
 from fieldz.typed import *
-from fieldz.msgSpec import *
+from fieldz.msg_spec import *
 
 import fieldz.reg as R
 

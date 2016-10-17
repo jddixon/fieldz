@@ -1,7 +1,7 @@
 # fieldz/__init__.py
 
-__version__ = '0.10.20'
-__version_date__ = '2016-08-24'
+__version__ = '0.10.21'
+__version_date__ = '2016-10-17'
 
 
 __all__ = ['__version__', '__version_date__',

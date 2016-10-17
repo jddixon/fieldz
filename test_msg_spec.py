@@ -9,11 +9,11 @@ from io import StringIO
 from rnglib import SimpleRNG
 
 
-from fieldz.fieldTypes import FieldTypes as F
-from fieldz.fieldTypes import FieldStr as FS
+from fieldz.field_types import FieldTypes as F
+from fieldz.field_types import FieldStr as FS
 
 from fieldz.parser import StringMsgSpecParser
-import fieldz.msgSpec as M
+import fieldz.msg_spec as M
 import fieldz.typed as T
 import fieldz.reg as R
 

@@ -4,28 +4,28 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/fieldz
   
-  ./testBigTest.py
-  ./testCoreTypes.py
-  ./testFieldImpl.py
-  ./testFieldTypes.py
-  ./testFixedLen.py
-  ./testGenEnum.py
-  ./testLenPlus.py
-  ./testLittleBig.py
-  ./testLogEntry.py
-  ./testMsgImpl.py
-  ./testMsgSpec.py
-  ./testProtoSpec.py
-  ./testReg.py
-  ./testRingDataProto.py
-  ./testSimpleEnum.py
-  ./testSolo.py
-  ./testTFWriter.py
-  ./testTypedFields.py
-  ./testVarint.py
-  ./testWireBuffer.py
-  ./testZigZag.py
-  ./testZoggerySerialization.py
+  ./test_big_test.py
+  ./test_core_types.py
+  ./test_field_impl.py
+  ./test_field_types.py
+  ./test_fixed_len.py
+  ./test_gen_enum.py
+  ./test_len_plus.py
+  ./test_little_big.py
+  ./test_log_entry.py
+  ./test_msg_impl.py
+  ./test_msg_spec.py
+  ./test_proto_spec.py
+  ./test_reg.py
+  ./test_ring_data_proto.py
+  ./test_simple_enum.py
+  ./test_solo.py
+  ./test_tfwriter.py
+  ./test_typed_fields.py
+  ./test_varint.py
+  ./test_wired_buffer.py
+  ./test_zigzag.py
+  ./test_zoggery_serialization.py
   
 else
   echo "DEV_BASE is not defined"

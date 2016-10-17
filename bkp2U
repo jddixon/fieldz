@@ -8,6 +8,8 @@ then
     -d ../fieldz \
     -1L  \
     -u $DVCZ_UDIR \
+    -X cover \
+    -X htmlcov \
     -X .ssh \
     $@
   

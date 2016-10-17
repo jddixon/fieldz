@@ -6,8 +6,8 @@ import unittest
 
 from rnglib import SimpleRNG
 from fieldz.reg import NodeReg
-import fieldz.coreTypes as C
-from fieldz.fieldTypes import FieldTypes as F, FieldStr as FS
+import fieldz.core_types as C
+from fieldz.field_types import FieldTypes as F, FieldStr as FS
 
 # TESTS --------------------------------------------------------------
 

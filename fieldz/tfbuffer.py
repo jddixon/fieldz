@@ -4,11 +4,11 @@ import ctypes
 import sys
 
 import fieldz.chan
-from fieldz.msgSpec import MsgSpec
+from fieldz.msg_spec import MsgSpec
 from fieldz.raw import *
 from fieldz.typed import tPutFuncs, tGetFuncs, tLenFuncs
 
-import fieldz.fieldTypes as F
+import fieldz.field_types as F
 
 __all__ = [\
     # value uncertain

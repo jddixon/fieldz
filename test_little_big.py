@@ -8,12 +8,12 @@ from io import StringIO
 from rnglib import SimpleRNG
 
 # XXX FAILS to import write if named 'putter':
-from fieldz.msgImpl import makeMsgClass,  \
+from fieldz.msg_impl import makeMsgClass,  \
     makeFieldClass
 
 from fieldz.parser import StringProtoSpecParser
-import fieldz.fieldTypes as F
-import fieldz.msgSpec as M
+import fieldz.field_types as F
+import fieldz.msg_spec as M
 import fieldz.typed as T
 from fieldz.chan import Channel
 
@@ -22,7 +22,7 @@ from fieldz.chan import Channel
 #################################################################
 
 # PROTOCOLS ---------------------------------------------------------
-from littleBigTest import LITTLE_BIG_PROTO_SPEC
+from little_big_test import LITTLE_BIG_PROTO_SPEC
 
 BUFSIZE = 16 * 1024
 

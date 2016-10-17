@@ -2,9 +2,11 @@
 
 # ~/dev/py/fieldz/setup.py
 
+""" Set up fieldz package. """
+
 import re
 from distutils.core import setup
-__version__ = re.search("__version__\s*=\s*'(.*)'",
+__version__ = re.search(r"__version__\s*=\s*'(.*)'",
                         open('fieldz/__init__.py').read()).group(1)
 
 # see http://docs.python.org/distutils/setupscript.html

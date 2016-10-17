@@ -6,12 +6,12 @@ import unittest
 
 from rnglib import SimpleRNG
 
-from fieldz.fieldTypes import FieldTypes as F, FieldStr as FS
-import fieldz.msgSpec as M
+from fieldz.field_types import FieldTypes as F, FieldStr as FS
+import fieldz.msg_spec as M
 import fieldz.reg as R
 
 from fieldz.typed import *
-from fieldz.msgSpec import *
+from fieldz.msg_spec import *
 from fieldz.tfbuffer import *
 
 # scratch variables
