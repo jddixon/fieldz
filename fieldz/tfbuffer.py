@@ -5,10 +5,30 @@ import sys
 
 import fieldz.chan
 from fieldz.msg_spec import MsgSpec
-from fieldz.raw import *
-from fieldz.typed import tPutFuncs, tGetFuncs, tLenFuncs
 
-import fieldz.field_types as F
+# from fieldz.raw import *
+from fieldz.raw import(
+    # VARINT_TYPE,                            # PACKED_VARINT_TYPE,
+    B32_TYPE, B64_TYPE, LEN_PLUS_TYPE,
+    B128_TYPE, B160_TYPE, B256_TYPE,
+
+    # field_hdr, read_field_hdr, field_hdr_len,
+    # hdr_field_nbr, hdr_type,
+    # length_as_varint, write_varint_field,
+    read_raw_varint, write_raw_varint,
+    read_raw_b32,           # write_b32_field,
+    read_raw_b64,           # write_b64_field,
+    read_raw_len_plus,      # write_len_plus_field,
+    read_raw_b128,          # write_b128_field,
+    read_raw_b160,          # write_b160_field,
+    read_raw_b256,          # write_b256_field,
+    # next_power_of_two,
+    # WireBuffer,
+)
+
+from fieldz.typed import T_PUT_FUNCS, T_GET_FUNCS, T_LEN_FUNCS
+
+from fieldz.field_types import FieldTypes as F
 
 __all__ = [\
     # value uncertain
@@ -20,62 +40,63 @@ __all__ = [\
 
 class TFBuffer(fieldz.chan.Channel):
 
-    __slots__ = [ \
-        # '_buffer',
-        '_msgSpec', ]
-
-    def __init__(self, msgSpec, n=1024, buffer=None):
-        super(TFBuffer, self).__init__(n, buffer)
-        if msgSpec is None:
+    def __init__(self, msg_spec, nnn=1024, buffer=None):
+        super(TFBuffer, self).__init__(nnn, buffer)
+        if msg_spec is None:
             raise ValueError('no msgSpec')
-        if not isinstance(msgSpec, MsgSpec):
+        if not isinstance(msg_spec, MsgSpec):
             raise ValueError('object is not a MsgSpec')
-        self._msgSpec = msgSpec
+        self._msg_spec = msg_spec
 
     @classmethod
-    def create(cls, msgSpec, n):
-        if n <= 0:
+    def create(cls, msg_spec, nnn):
+        if nnn <= 0:
             raise ValueError("buffer size must be a positive number")
-        buffer = bytearray(n)
-        return cls(msgSpec, n, buffer)
+        buffer = bytearray(nnn)
+        return cls(msg_spec, nnn, buffer)
 
 
 class TFReader(TFBuffer):
     # needs some thought; the pType is for debug
-    __slots__ = ['_fieldNbr', '_fType', '_pType', '_value', ]
+    # __slots__ = ['_field_nbr', '_field_type', '_p_type', '_value', ]
 
-    def __init(self, msgSpec, n, buffer):
+    def __init__(self, msg_spec, nnn, buffer):
         #super(TFReader, self).__init__(msgSpec, len(buffer), buffer)
-        super(TFReader, self).__init__(msgSpec, n, buffer)
+        super(TFReader, self).__init__(msg_spec, nnn, buffer)
         # this is a decision: we could read the first field
-        self._fieldNbr = -1
-        self._fType = -1
-        self._pType = -1
+        self._field_nbr = -1
+        self._field_type = -1
+        self._p_type = -1
         self._value = None
 
     # def create(n) inherited
 
     @property
-    def fieldNbr(self): return self._fieldNbr
+    def field_nbr(self):
+        return self._field_nbr
 
     @property
-    def fType(self): return self._fType
+    def field_type(self):
+        return self._field_type
 
     @property
-    def pType(self): return self._pType      # for DEBUG
+    def p_type(self):
+        return self._p_type      # for DEBUG
 
     @property
-    def value(self): return self._value
+    def value(self):
+        return self._value
 
-    def getNext(self):
-        (self._pType, self._fieldNbr) = readFieldHdr(self)
+    def get_next(self):
+        (self._p_type, self._field_nbr) = read_field_hdr(self)
 
         # getter has range check
-        fType = self._fType = self._msgSpec.fTypeNdx(self._fieldNbr)
+        field_type = self._field_type = self._msg_spec.FIELD_TYPE_NDX(
+            self._field_nbr)
 
         # gets through dispatch table -------------------------------
-        if 0 <= fType and fType <= F._V_SINT64:
-            self._value = tGetFuncs[fType](self)
+        if field_type >= 0 and field_type <= F.V_SINT64:
+            self._value = T_GET_FUNCS[field_type](self)
             return
 
         # we use the field type to verify that have have read the right
@@ -101,109 +122,115 @@ class TFReader(TFBuffer):
 #           #END VARINT_GET
 
         # implemented using B32 -------------------------------------
-        if self._fType <= F._F_FLOAT:
-            self._pType = B32_TYPE              # DEBUG
-            v = readRawB32(self)
-            if self._fType == F._F_UINT32:
-                self._value = ctypes.c_uint32(v).value
-            elif self._fType == F._F_SINT32:
-                self._value = ctypes.c_int32(v).value
+        if self._field_type <= F.F_FLOAT:
+            self._p_type = B32_TYPE              # DEBUG
+            varint_ = read_raw_b32(self)
+            if self._field_type == F.F_UINT32:
+                self._value = ctypes.c_uint32(varint_).value
+            elif self._field_type == F.F_SINT32:
+                self._value = ctypes.c_int32(varint_).value
             else:
                 raise NotImplementedError('B32 handling for float')
 
         # implemented using B64 -------------------------------------
-        elif self._fType <= F._F_DOUBLE:
-            self._pType = B64_TYPE              # DEBUG
-            (v, self._position) = readRawB64(self)
-            if self._fType == F._F_UINT64:
-                self._value = ctypes.c_uint64(v).value
-            elif self._fType == F._F_SINT64:
-                self._value = ctypes.c_int64(v).value
+        elif self._field_type <= F.F_DOUBLE:
+            self._p_type = B64_TYPE              # DEBUG
+            (varint_, self._position) = read_raw_b64(self)
+            if self._field_type == F.F_UINT64:
+                self._value = ctypes.c_uint64(varint_).value
+            elif self._field_type == F.F_SINT64:
+                self._value = ctypes.c_int64(varint_).value
             else:
                 raise NotImplementedError('B64 handling for double')
 
         # implemented using LEN_PLUS --------------------------------
-        elif self._fType <= F._L_MSG:
-            self._pType = LEN_PLUS_TYPE         # DEBUG
-            v = readRawLenPlus(self)
-            if self._fType == F._L_STRING:
-                self._value = v.decode('utf-8')
-            elif self._fType == F._L_BYTES:
-                self._value = v
+        elif self._field_type <= F.L_MSG:
+            self._p_type = LEN_PLUS_TYPE         # DEBUG
+            varint_ = read_raw_len_plus(self)
+            if self._field_type == F.L_STRING:
+                self._value = varint_.decode('utf-8')
+            elif self._field_type == F.L_BYTES:
+                self._value = varint_
             else:
                 raise NotImplementedError('LEN_PLUS handled as L_MSG')
 
         # implemented using B128, B160, B256 ------------------------
-        elif self._fType == F._F_BYTES16:
-            self._pType = B128_TYPE             # DEBUG
-            self._value = readRawB128(self)
-        elif self._fType == F._F_BYTES20:
-            self._pType = B160_TYPE             # DEBUG
-            self._value = readRawB160(self)
-        elif self._fType == F._F_BYTES32:
-            self._pType = B256_TYPE             # DEBUG
-            self._value = readRawB256(self)
+        elif self._field_type == F.F_BYTES16:
+            self._p_type = B128_TYPE             # DEBUG
+            self._value = read_raw_b128(self)
+        elif self._field_type == F.F_BYTES20:
+            self._p_type = B160_TYPE             # DEBUG
+            self._value = read_raw_b160(self)
+        elif self._field_type == F.F_BYTES32:
+            self._p_type = B256_TYPE             # DEBUG
+            self._value = read_raw_b256(self)
 
         else:
             raise NotImplementedError(
-                "decode for type %d has not been implemented" % self._fType)
+                "decode for type %d has not been implemented" % self._field_type)
 
         # END GET
 
 
 class TFWriter(TFBuffer):
     # needs some thought; MOSTLY FOR DEBUG
-    __slots__ = ['_fieldNbr', '_fType', '_pType', '_value', ]
+    __slots__ = ['_field_nbr', '_field_type', '_p_type', '_value', ]
 
-    def __init(self, msgSpec, n=1024, buffer=None):
-        super(TFWriter, self).__init__(msgSpec, n, buffer)
+    def __init__(self, msg_spec, nnn=1024, buffer=None):
+        super(TFWriter, self).__init__(msg_spec, nnn, buffer)
         # this is a decision: we could read the first field
-        self._fieldNbr = -1
-        self._fType = -1
-        self._pType = -1
+        self._field_nbr = -1
+        self._field_type = -1
+        self._p_type = -1
         self._value = None
 
     # def create(n) inherited
 
     # These are for DEBUG
     @property
-    def fieldNbr(self): return self._fieldNbr
+    def field_nbr(self):
+        return self._field_nbr
 
     @property
-    def fType(self): return self._fType
+    def field_type(self):
+        return self._field_type
 
     @property
-    def pType(self): return self._pType
+    def p_type(self):
+        return self._p_type
 
     @property
-    def value(self): return self._value
+    def value(self):
+        return self._value
     # END DEBUG PROPERTIES
 
-    def putNext(self, fieldNbr, value):
+    def put_next(self, field_nbr, value):
 
         # getter has range check
-        fType = self._msgSpec.fTypeNdx(fieldNbr)
+        field_type = self._msg_spec.FIELD_TYPE_NDX(field_nbr)
 
         # puts through dispatch table -------------------------------
-        if 0 <= fType and fType <= F._F_BYTES32:
+        if 0 <= field_type and field_type <= F.F_BYTES32:
             # DEBUG
-            print("putNext: field type is %d (%s)" % (fType, F.asStr(fType)))
+            print(
+                "putNext: field type is %d (%s)" %
+                (field_type, F.as_str(field_type)))
             sys.stdout.flush()
             # END
-            tPutFuncs[fType](self, value, fieldNbr)
+            T_PUT_FUNCS[field_type](self, value, field_nbr)
             # DEBUG
-            if fType < F._L_STRING:
+            if field_type < F.L_STRING:
                 print("putNext through dispatch table:\n"
                       "         field   %u\n"
                       "         fType   %u,  %s\n"
                       "         value   %d (0x%x)\n"
                       "         offset  %u" % (
-                          fieldNbr, fType, F.asStr(fType),
+                          field_nbr, field_type, F.as_str(field_type),
                           value, value, self._position))
             # END
             return
         else:
-            print("unknown/unimplemented field type %s" % str(fType))
+            print("unknown/unimplemented field type %s" % str(field_type))
 
         # -- NOW VESTIGIAL ------------------------------------------
-        v = None
+        varint_ = None

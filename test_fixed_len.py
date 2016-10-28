@@ -6,7 +6,7 @@ import unittest
 
 from rnglib import SimpleRNG
 from fieldz.chan import Channel
-from fieldz.raw import *
+# from fieldz.raw import *
 
 LEN_BUFF = 1024
 
@@ -22,12 +22,12 @@ class TestFixedLen (unittest.TestCase):
     # utility functions #############################################
 
     # actual unit tests #############################################
-    def dumpBuffer(self, buf):
+    def dump_buffer(self, buf):
         for i in range(16):
             print("0x%02x " % buf[i])
         print()
 
-    def roundTrip32(self, n):
+    def roundTrip32(self, nnn):
         """
         this tests writing and reading a 32-bit integer as the first and
         only field in a buffer
@@ -36,26 +36,26 @@ class TestFixedLen (unittest.TestCase):
         buf = chan.buffer
 
         # -- write 32-bit value -------------------------------------
-        fieldNbr = 1 + self.rng.nextInt16(1024)
-        writeB32Field(chan, n, fieldNbr)
+        field_nbr = 1 + self.rng.next_int16(1024)
+        write_b32_field(chan, nnn, field_nbr)
         chan.flip()
 
         # -- read 32-bit value --------------------------------------
         # first the header (which is a varint) ------------
-        (fieldType, fieldNbr2) = readFieldHdr(chan)
+        (fieldType, fieldNbr2) = read_field_hdr(chan)
         offset2 = chan.position
         self.assertEqual(B32_TYPE, fieldType)
-        self.assertEqual(fieldNbr, fieldNbr2)
-        self.assertEqual(lengthAsVarint(fieldHdr(fieldNbr, B32_TYPE)),
+        self.assertEqual(field_nbr, fieldNbr2)
+        self.assertEqual(length_as_varint(field_hdr(field_nbr, B32_TYPE)),
                          offset2)
 
         # then the varint proper --------------------------
-        v = readRawB32(chan)
+        varint_ = read_raw_b32(chan)
         offset3 = chan.position
-        self.assertEqual(n, v)
+        self.assertEqual(nnn, varint_)
         self.assertEqual(offset2 + 4, offset3)
 
-    def roundTrip64(self, n):
+    def roundTrip64(self, nnn):
         """
         this tests writing and reading a 64-bit integer as the first and
         only field in a buffer
@@ -64,8 +64,8 @@ class TestFixedLen (unittest.TestCase):
         buf = chan.buffer
 
         # -- write 64-bit value -------------------------------------
-        fieldNbr = 1 + self.rng.nextInt16(1024)
-        writeB64Field(chan, n, fieldNbr)
+        field_nbr = 1 + self.rng.next_int16(1024)
+        write_b64_field(chan, nnn, field_nbr)
         chan.flip()
 
 #       # DEBUG
@@ -75,17 +75,17 @@ class TestFixedLen (unittest.TestCase):
 
         # -- read 64-bit value --------------------------------------
         # first the header (which is a varint) ------------
-        (fieldType, fieldNbr2) = readFieldHdr(chan)
+        (fieldType, fieldNbr2) = read_field_hdr(chan)
         offset2 = chan.position
         self.assertEqual(B64_TYPE, fieldType)
-        self.assertEqual(fieldNbr, fieldNbr2)
-        self.assertEqual(lengthAsVarint(fieldHdr(fieldNbr, B64_TYPE)),
+        self.assertEqual(field_nbr, fieldNbr2)
+        self.assertEqual(length_as_varint(field_hdr(field_nbr, B64_TYPE)),
                          offset2)
 
         # then the varint proper --------------------------
-        v = readRawB64(chan)
+        varint_ = read_raw_b64(chan)
         offset3 = chan.position
-        self.assertEqual(n, v)
+        self.assertEqual(nnn, varint_)
         self.assertEqual(offset2 + 8, offset3)
 
     def testEncodeDecode(self):

@@ -7,8 +7,8 @@ from io import StringIO
 
 from rnglib import SimpleRNG
 from fieldz.chan import Channel
-from fieldz.raw import *
-from fieldz.typed import *
+# from fieldz.raw import *
+# from fieldz.typed import *
 import fieldz.msg_spec as M
 import fieldz.core_types as C
 from fieldz.field_types import FieldTypes as F, FieldStr as FS
@@ -29,7 +29,7 @@ message logEntry:
 """
 
 
-class TestCoreTypes (unittest.TestCase):
+class TestCoreTypes(unittest.TestCase):
 
     def setUp(self):
         #       self.rng = SimpleRNG( time.time() )
@@ -39,42 +39,42 @@ class TestCoreTypes (unittest.TestCase):
         pass
 
     # utility functions #############################################
-    def makeRegistries(self, protocol):
-        nodeReg = R.NodeReg()
-        protoReg = R.ProtoReg(protocol, nodeReg)
-        msgReg = R.MsgReg(protoReg)
-        return (nodeReg, protoReg, msgReg)
+    def make_registries(self, protocol):
+        node_reg = R.NodeReg()
+        proto_reg = R.ProtoReg(protocol, node_reg)
+        msg_reg = R.MsgReg(proto_reg)
+        return (node_reg, proto_reg, msg_reg)
 
     # actual unit tests #############################################
     def testTheEnum(self):
-        cTypes = C.CoreTypes()
-        self.assertEqual(5, cTypes.maxNdx)
-        self.assertEqual(0, cTypes.ENUM_PAIR_SPEC)
-        self.assertEqual(5, cTypes.PROTO_SPEC)
+        C_TYPES = C.CoreTypes()
+        self.assertEqual(5, C_TYPES.max_ndx)
+        self.assertEqual(0, C_TYPES.ENUM_PAIR_SPEC)
+        self.assertEqual(5, C_TYPES.PROTO_SPEC)
 
-    def roundTripToWireFormat(self, chan, n, cType, val):
-        nodeReg, protoReg, msgReg = self.makeRegistries(
+    def roundTripToWireFormat(self, chan, nnn, cType, val):
+        node_reg, proto_reg, msg_reg = self.make_registries(
             'org.xlattice.fieldz.test.roundTrip')
 
         # DEBUG
-        print("roundTrioWireFormat: n = %d, cType = %d" % (n, cType))
+        print("roundTrioWireFormat: n = %d, cType = %d" % (nnn, cType))
         # END
         chan.clear()                            # I guess :-)
 
         buf = chan.buffer
-        putter = M.cPutFuncs[cType]
-        getter = M.cGetFuncs[cType]
+        putter = M.C_PUT_FUNCS[cType]
+        getter = M.C_GET_FUNCS[cType]
         # DEBUG
         print("  PUTTER: %s" % putter)
         print("  GETTER: %s" % getter)
         # END
-        lenFunc = M.cLenFuncs[cType]
-        pLenFunc = M.cPLenFuncs[cType]
+        len_func = M.C_LEN_FUNCS[cType]
+        p_len_func = M.C_P_LEN_FUNCS[cType]
         # comment of unknown value/validity:  # BUT cType must be >18!
-        h = fieldHdrLen(n, cType)
+        h = field_hdr_len(nnn, cType)
 
         rPos = 0  # read
-        expectedPos = pLenFunc(val, n)
+        expectedPos = p_len_func(val, nnn)
 
         putter(chan, val, 0)  # writing field 0
         chan.flip()
@@ -82,10 +82,10 @@ class TestCoreTypes (unittest.TestCase):
 
         self.assertEqual(expectedPos, wPos)
 
-        (pType, n) = readFieldHdr(chan)
+        (p_type, nnn) = read_field_hdr(chan)
         actualHdrLen = chan.position
-        self.assertEqual(LEN_PLUS_TYPE, pType)
-        self.assertEqual(0, n)    # field number
+        self.assertEqual(LEN_PLUS_TYPE, p_type)
+        self.assertEqual(0, nnn)    # field number
         self.assertEqual(h, actualHdrLen)
 
         # FAILS:
@@ -94,7 +94,7 @@ class TestCoreTypes (unittest.TestCase):
         #retVal = getter(msgReg, chan)
         #   else # chan is absent
         #     fieldSpecGetter() missing 1 required  positional argument: 'chan'
-        retVal = getter(msgReg, chan)
+        retVal = getter(msg_reg, chan)
 
         # gets the same error:retVal = M.cGetFuncs[cType](chan)
 
@@ -108,50 +108,55 @@ class TestCoreTypes (unittest.TestCase):
     def testRoundTrippingCoreTypes(self):
         BUFSIZE = 16 * 1024
         chan = Channel(BUFSIZE)
-        cTypes = C.CoreTypes()
+        C_TYPES = C.CoreTypes()
 
         # -----------------------------------------------------------
         # XXX FAILS if msgReg arg added: WRONG NUMBER OF ARGS
         # XXX n=0 is wired into roundTripToWireFormat XXX
-        n = 0                           # 0-based field number
-        s = M.EnumPairSpec('funnyFarm', 497)
-        self.roundTripToWireFormat(chan, n, cTypes.ENUM_PAIR_SPEC, s)
+        nnn = 0                           # 0-based field number
+        string = M.EnumPairSpec('funnyFarm', 497)
+        self.roundTripToWireFormat(chan, nnn, C_TYPES.ENUM_PAIR_SPEC, string)
 
         # -----------------------------------------------------------
         protocol = 'org.xlattice.upax'
-        nodeReg, protoReg, msgReg = self.makeRegistries(protocol)
-        n = 0                          # 0-based field number
+        node_reg, proto_reg, msg_reg = self.make_registries(protocol)
+        nnn = 0                          # 0-based field number
         pairs = [('funnyFarm', 497),
                  ('myOpia', 53),
                  ('frogHeaven', 919),
                  ]
-        s = M.EnumSpec.create('thisEnum', pairs)
-        self.assertEqual(3, len(s))
+        string = M.EnumSpec.create('thisEnum', pairs)
+        self.assertEqual(3, len(string))
         # XXX FAILS if msgReg arg added: WRONG NUMBER OF ARGS
 #       self.roundTripToWireFormat( chan, n, cTypes.ENUM_SPEC, s)
 
         # -----------------------------------------------------------
         protocol = 'org.xlattice.upax'
-        nodeReg, protoReg, msgReg = self.makeRegistries(protocol)
-        n = 0                          # 0-based field number
-        s = M.FieldSpec(msgReg, 'jollyGood', F._V_SINT32, M.Q_OPTIONAL, 37)
+        node_reg, proto_reg, msg_reg = self.make_registries(protocol)
+        nnn = 0                          # 0-based field number
+        string = M.FieldSpec(
+            msg_reg,
+            'jollyGood',
+            F.V_SINT32,
+            M.Q_OPTIONAL,
+            37)
         # XXX FAILS: invalid (optionlly dotted) name 'bytearray(b'jollyGood')
-        self.roundTripToWireFormat(chan, n, cTypes.FIELD_SPEC, s)
+        self.roundTripToWireFormat(chan, nnn, C_TYPES.FIELD_SPEC, string)
 
         # -----------------------------------------------------------
 
         # MsgSpec without enum
         protocol = 'org.xlattice.upax'
-        nodeReg, protoReg, msgReg = self.makeRegistries(protocol)
+        node_reg, proto_reg, msg_reg = self.make_registries(protocol)
         data = StringIO(LOG_ENTRYMSG_SPEC)
-        p = StringMsgSpecParser(data)
-        sOM = p.parse()             # object model from string serialization
-        self.assertIsNotNone(sOM)
-        self.assertTrue(isinstance(sOM, M.MsgSpec))
+        ppp = StringMsgSpecParser(data)
+        str_obj_model = ppp.parse()             # object model from string serialization
+        self.assertIsNotNone(str_obj_model)
+        self.assertTrue(isinstance(str_obj_model, M.MsgSpec))
 
-        n = 0
+        nnn = 0
         # XXX FAILS if msgReg arg added: WRONG NUMBER OF ARGS
-        self.roundTripToWireFormat(chan, n, cTypes.MSG_SPEC, sOM)
+        self.roundTripToWireFormat(chan, nnn, C_TYPES.MSG_SPEC, str_obj_model)
 
 
 if __name__ == '__main__':

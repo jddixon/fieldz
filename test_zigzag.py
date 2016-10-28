@@ -6,9 +6,8 @@ import unittest
 import ctypes
 
 from rnglib import SimpleRNG
-from fieldz.raw import *
-# for encodeSint64
-from fieldz.typed import *
+# from fieldz.raw import *
+from fieldz.typed import encode_sint32, encode_sint64
 
 
 class TestTFReader (unittest.TestCase):
@@ -20,32 +19,33 @@ class TestTFReader (unittest.TestCase):
         pass
 
     # utility functions #############################################
-    def dumpBuffer(self, buf):
-        for b in buf:
-            print("0x%02x " % b, end=' ')
+    def dump_buffer(self, buf):
+        for b_val in buf:
+            print("0x%02x " % b_val, end=' ')
         print()
 
     # actual unit tests #############################################
 
     def testInt32s(self):
-        v = 0xffffffff
-        s32 = ctypes.c_int32(v).value
+        varint_ = 0xffffffff
+        s32 = ctypes.c_int32(varint_).value
         self.assertEqual(-1, s32)
-        u32 = ctypes.c_uint32(v).value
+        u32 = ctypes.c_uint32(varint_).value
         self.assertEqual(256 * 256 * 256 * 256 - 1, u32)
 
-        x = 0xffffff00
-        v = ~x
-        s32 = ctypes.c_int32(v).value
+        ndx_ = 0xffffff00
+        varint_ = ~ndx_
+        s32 = ctypes.c_int32(varint_).value
         self.assertEqual(0xff, s32)
-        u32 = ctypes.c_uint32(v).value
+        u32 = ctypes.c_uint32(varint_).value
         self.assertEqual(0xff, u32)
 
     def testInt64s(self):
-        v = 0xffffffffffffffff
-        s64 = ctypes.c_int64(v).value   # 'value' converts back to Python type
+        varint_ = 0xffffffffffffffff
+        # 'value' converts back to Python type
+        s64 = ctypes.c_int64(varint_).value
         self.assertEqual(-1, s64)
-        u64 = ctypes.c_uint64(v).value
+        u64 = ctypes.c_uint64(varint_).value
         self.assertEqual(
             256 *
             256 *
@@ -62,17 +62,17 @@ class TestTFReader (unittest.TestCase):
         # negative numbers, that is
         pass
 
-    def doRoundTrip32(self, s):
-        z = encodeSint32(s)
-        s2 = decodeSint32(z)
-        self.assertEqual(s, s2)
+    def doRoundTrip32(self, string):
+        zzz = encode_sint32(string)
+        string2 = decode_sint32(zzz)
+        self.assertEqual(string, string2)
 
-    def doRoundTrip64(self, s):
-        z = encodeSint64(s)
-        s2 = decodeSint64(z)
-        self.assertEqual(s, s2)
+    def doRoundTrip64(self, string):
+        zzz = encode_sint64(string)
+        string2 = decode_sint64(zzz)
+        self.assertEqual(string, string2)
 
-    def testZZ32(self):
+    def test_zz32(self):
         self.doRoundTrip32(0)
         self.doRoundTrip32(-1)
         self.doRoundTrip32(1)
@@ -92,7 +92,7 @@ class TestTFReader (unittest.TestCase):
         # XXX need to also verify that sensible truncation takes place
         # if value doesn't actually fit in an int32
 
-    def testZZ64(self):
+    def test_zz64(self):
         self.doRoundTrip64(0)
         self.doRoundTrip64(-1)
         self.doRoundTrip64(1)

@@ -5,39 +5,40 @@ import sys   # for debugging
 from fieldz.msg_spec import FieldSpec
 
 # XXX THIS IS UNSAFE!!! XXX
-fieldClsByQName = {}        # PROTO_NAME . MSG_NAME . FIELD_NAME => class
+FIELD_CLS_BY_Q_NAME = {}        # PROTO_NAME . MSG_NAME . FIELD_NAME => class
 
 # -------------------------------------------------------------------
 # CODE FRAGMENTS
 # -------------------------------------------------------------------
 
 
-def myName(self): return self._name
+def my_name(self):
+    return self._name
 
 
-def myFType(cls): return cls._fType
+def my_quantitier(cls):
+    return cls._quantifier
 
 
-def myQuantifier(cls): return cls._quantifier
+def my_field_nbr(cls):
+    return cls._field_nbr
 
 
-def myFieldNbr(cls): return cls._fieldNbr
-
-
-def myDefault(cls): return cls._default
+def my_default(cls):
+    return cls._default
 
 # these get and set the value attribute of the field instance; they
 # have nothing to do with de/serialization to and from the channel
 
 
-def myValueGetter(self):
+def my_value_getter(self):
     # DEBUG
     print("myValueGetter returning %s" % self._value)
     # END
     return self._value
 
 
-def myValueSetter(self, value):
+def my_value_setter(self, value):
     # DEBUG
     print("myValueSetter: value becomes %s" % value)
     # END
@@ -79,13 +80,13 @@ class FieldImpl(object):
             return False
         if self is other:
             return True
-        if self._name != other._name:
+        if self._name != other.name:
             return False
-        if self._fType != other._fType:
+        if self._field_type != other.field_type:
             return False
-        if self._quantifier != other._quantifier:
+        if self._quantifier != other.quantifier:
             return False
-        if self._fieldNbr != other._fieldNbr:
+        if self._field_nbr != other.field_nbr:
             return False
         # ignore defaults for now
         return True
@@ -100,14 +101,14 @@ class MetaField(type):
         """
         return dict(kwargs)
 
-    def __new__(cls, name, bases, namespace, **kwargs):
+    def __new__(mcs, name, bases, namespace, **kwargs):
         # DEBUG
         # removed namespace from print
-        print("\nMetaField NEW, cls='%s',\n\tname='%s', bases='%s'" % (
-            cls, name, bases))
+        print("\nMetaField NEW, mcs='%s',\n\tname='%s', bases='%s'" % (
+            mcs, name, bases))
         sys.stdout.flush()
         # END
-        return super().__new__(cls, name, bases, namespace)
+        return super().__new__(mcs, name, bases, namespace)
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace)
@@ -121,25 +122,25 @@ class MetaField(type):
 # -- MAKER ----------------------------------------------------------
 
 
-def makeFieldClass(dottedMsgName, fieldSpec):
-    if dottedMsgName is None:
+def make_field_class(dotted_msg_name, field_spec):
+    if dotted_msg_name is None:
         raise ValueError('null message name')
-    if fieldSpec is None:
+    if field_spec is None:
         raise ValueError('null field spec')
-    qualName = '%s.%s' % (dottedMsgName, fieldSpec.name)
+    qual_name = '%s.%s' % (dotted_msg_name, field_spec.name)
     # DEBUG
-    print('MAKE_FIELD_CLASS for %s' % qualName)
+    print('MAKE_FIELD_CLASS for %s' % qual_name)
     # END
-    if qualName in fieldClsByQName:
-        return fieldClsByQName[qualName]
+    if qual_name in FIELD_CLS_BY_Q_NAME:
+        return FIELD_CLS_BY_Q_NAME[qual_name]
 
     # We want an attribute and a property for each fieldSpec attr.
     # This needs to be elaborated as appropriate to deal with the
     # 18 or so field types.
 
-    __fieldNbr = property(myFieldNbr)
-    __quantifier = property(myQuantifier)
-    __value = property(myValueGetter, myValueSetter)
+    _field_nbr = property(my_field_nbr)
+    _quantifier = property(my_quantitier)
+    _value = property(my_value_getter, my_value_setter)
 
 #   class M(metaclass=MetaField,
 #       _name=fieldSpec.name,
@@ -149,27 +150,27 @@ def makeFieldClass(dottedMsgName, fieldSpec):
 #       _fType=fieldSpec.fTypeNdx,
 #       fType=property(myFType),
 #       _quantifier=fieldSpec.quantifier,
-#       quantifier=__quantifier,
+#       quantifier=_quantifier,
 #       _fieldNbr=fieldSpec.fieldNbr,
-#       fieldNbr=__fieldNbr,
+#       fieldNbr=_field_nbr,
 #       _default=fieldSpec.default,
 #       default=property(myDefault),
-#       value=__value,
+#       value=_value,
 #       dummy=0):
 #       pass
 
     class Field(FieldImpl, metaclass=MetaField,
                 # 'name' is already in use
-                _name=fieldSpec.name,
-                fType=fieldSpec.fTypeNdx,
-                quantifier=fieldSpec.quantifier,
-                fieldNbr=fieldSpec.fieldNbr,
-                default=fieldSpec.default,
-                value=__value):                    # LINE 154
+                _name=field_spec.name,
+                field_type=field_spec.FIELD_TYPE_NDX,
+                quantifier=field_spec.quantifier,
+                field_nbr=field_spec.field_nbr,
+                default=field_spec.default,
+                value=_value):
         pass
     #----------------------------
     # possibly some more fiddling ...
     #----------------------------
 
-    fieldClsByQName[qualName] = Field
+    FIELD_CLS_BY_Q_NAME[qual_name] = Field
     return Field

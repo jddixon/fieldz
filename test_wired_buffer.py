@@ -5,7 +5,7 @@ import time
 import unittest
 
 from rnglib import SimpleRNG
-from fieldz.raw import *
+# from fieldz.raw import *
 
 
 class TestWireBuffer (unittest.TestCase):
@@ -19,10 +19,10 @@ class TestWireBuffer (unittest.TestCase):
     # actual unit tests #############################################
 
     def testPowersOfTwo(self):
-        self.assertRaises(ValueError, nextPowerOfTwo, -1)
-        self.assertRaises(ValueError, nextPowerOfTwo, 0)
-        self.assertEqual(16, nextPowerOfTwo(15))
-        self.assertEqual(16, nextPowerOfTwo(16))
+        self.assertRaises(ValueError, next_power_of_two, -1)
+        self.assertRaises(ValueError, next_power_of_two, 0)
+        self.assertEqual(16, next_power_of_two(15))
+        self.assertEqual(16, next_power_of_two(16))
 
     def testWireBuffer(self):
 

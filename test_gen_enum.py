@@ -10,7 +10,7 @@ class EnumError(RuntimeError):
     pass
 
 
-def saferSetter(obj, sym, value):
+def safer_setter(obj, sym, value):
     """ object attributes may be set but never reset """
 
     try:
@@ -45,8 +45,8 @@ class MetaEnum(type):
 
 class GeneratedEnum(metaclass=MetaEnum):
 
-    def __init__(self, a, b):
-        print("GeneratedEnum object: a = %s, b = %s" % (a, b))
+    def __init__(self, aVal, b_val):
+        print("GeneratedEnum object: a = %s, b = %s" % (aVal, b_val))
 
     def foo(self, whatever):
         print("foo called with param %s" % str(whatever))
@@ -63,21 +63,21 @@ class TestGenEnum (unittest.TestCase):
     # utility functions #############################################
 
     # actual unit tests #############################################
-    def testGenEnum(self):
-        g = GeneratedEnum(13, 97)
+    def test_gen_enum(self):
+        enum1 = GeneratedEnum(13, 97)
         print("ABOUT TO CREATE SECOND INSTANCE")
-        h = GeneratedEnum(13, 97)
+        enum2 = GeneratedEnum(13, 97)
 
     def testGeneratingClass(self):
         class F(metaclass=MetaEnum,
-                A=3, B=7, C=11, echo=echo, __setattr__=saferSetter):
+                A=3, B=7, C=11, echo=echo, __setattr__=safer_setter):
             pass
-        f = F()
+        file = F()
 
         # the keywords passed result in instance attributes
-        self.assertEqual(3, f.A)
-        self.assertEqual(7, f.B)
-        self.assertEqual(11, f.C)
+        self.assertEqual(3, file.A)
+        self.assertEqual(7, file.B)
+        self.assertEqual(11, file.C)
 
         # ... not class attributes
         try:
@@ -91,13 +91,13 @@ class TestGenEnum (unittest.TestCase):
         # 'bound method' != function
         # self.assertEqual(F.__setattr__, saferSetter)
 
-        f = F()
-        f.echo('I printed this using F.echo()')
+        file = F()
+        file.echo('I printed this using F.echo()')
 
-        self.assertEqual(f.C, 11)
+        self.assertEqual(file.C, 11)
         try:
-            f.C = 137
-            self.assertEqual(137, f.C)
+            file.C = 137
+            self.assertEqual(137, file.C)
             self.fail('ERROR: successfully changed value of f.C')
         except EnumError:
             # success: caught attempt to set new symbol

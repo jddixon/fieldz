@@ -2,20 +2,20 @@
 
 import sys      # for debugging
 
-from fieldz.field_impl import FieldImpl, MetaField, makeFieldClass
+from fieldz.field_impl import FieldImpl, MetaField, make_field_class
 
 import fieldz.field_types as F
-from fieldz.raw import (lengthAsVarint, fieldHdrLen, readFieldHdr,
-                        writeRawVarint, readRawVarint,
-                        writeFieldHdr, LEN_PLUS_TYPE)
+from fieldz.raw import (length_as_varint, field_hdr_len, read_field_hdr,
+                        write_raw_varint, read_raw_varint,
+                        write_field_hdr, LEN_PLUS_TYPE)
 
-from fieldz.typed import *
-from fieldz.msg_spec import *
+# from fieldz.typed import *
+from fieldz.msg_spec import Q_REQUIRED, Q_OPTIONAL, Q_PLUS, Q_STAR
 
 import fieldz.reg as R
 
-__all__ = ['makeMsgClass', 'makeFieldClass',
-           'write', 'implLen',
+__all__ = ['make_msg_class', 'make_field_class',
+           'write', 'impl_len',
            ]
 
 # SERIALIZATION METHODS ---------------------------------------------
@@ -23,57 +23,54 @@ __all__ = ['makeMsgClass', 'makeFieldClass',
 # is NOT.  SHOULD REPLACE buf, pos WITH chan IN ALL PARAMETER LISTS
 
 
-def implLen(msg, n):
+def impl_len(msg, nnn):
     """
     msg is a reference to an instance of the MsgImpl class, n is its
     field number.  Returns the int length of the serialized object,
     including the lenght of the field header.
     """
-    return msg.wireLen(n)
+    return msg.wire_len(nnn)
 
 
-def _checkPosition(chan, end):
+def _check_position(chan, end):
     if chan.position > end:
-        errMsg = "read beyond end of buffer: position :=  %d, end is %d" % (
+        err_msg = "read beyond end of buffer: position :=  %d, end is %d" % (
             chan.position, end)
-        raise RuntimeError(errMsg)
+        raise RuntimeError(err_msg)
 
 # -------------------------------------------------------------------
 # CODE FRAGMENTS: METHODS USED AS COMPONENTS IN BUILDING CLASSES
 # -------------------------------------------------------------------
 
 
-def myName(self): return self._name
-
-
 def write(self):
-    return notImpl
+    return not_impl
 
 
-def myGetter(self):
-    return notImpl
+def my_getter(self):
+    return not_impl
 
 
-def myWireLen(self):
+def my_wire_len(self):
     print("DEBUG: myWireLen invoked")
-    return notImpl
+    return not_impl
 
 
-def myPWireLen(self, n):    # n is field number for nested msg, regID otherwise
-    return notImpl
+def my_p_wire_len(self, nnn):    # n is field number for nested msg, regID otherwise
+    return not_impl
 
 # specific to messages ----------------------------------------------
 
 
-def myEnums(self):
+def my_enums(self):
     return self._enums
 
 
-def myMsgs(self):
+def my_msgs(self):
     return self._msgs
 
 
-def myFieldClasses(self):
+def my_field_classes(self):
     return self._fieldClasses
 
 # specific to fields ------------------------------------------------
@@ -133,19 +130,19 @@ class MsgImpl(object):
             return False
         if self is other:
             return True
-        if self._name != other._name:
+        if self._name != other.name:
             return False
 
 #       print "MESSAGE NAMES THE SAME"              # DEBUG
 
         # -- compare fields -------------------------------
-        if self._fields is None or other._fields is None:
+        if self._fields is None or other.fields is None:
             return False
 #       print "SAME NUMBER OF FIELDS"               # DEBUG
-        if len(self._fields) != len(other._fields):
+        if len(self._fields) != len(other.fields):
             return False
         for i in range(len(self._fields)):
-            if self._fields[i] != other._fields[i]:
+            if self._fields[i] != other.fields[i]:
                 # DEBUG
                 print("MESSAGE FIELDS %d DIFFER" % i)
                 # END
@@ -154,21 +151,21 @@ class MsgImpl(object):
 #       print "FIELDS ARE THE SAME"                 # DEBUG
 
         # -- compare nested enums -------------------------
-        if self._enums is None or other._enums is None:
+        if self._enums is None or other.enums is None:
             return False
-        if len(self._enums) != len(other._enums):
+        if len(self._enums) != len(other.enums):
             return False
         for i in range(len(self._enums)):
-            if self._enums[i] != other._enums[i]:
+            if self._enums[i] != other.enums[i]:
                 return False
 
         # -- compare nested msgs --------------------------
-        if self._msgs is None or other._msgs is None:
+        if self._msgs is None or other.msgs is None:
             return False
-        if len(self._msgs) != len(other._msgs):
+        if len(self._msgs) != len(other.msgs):
             return False
         for i in range(len(self._msgs)):
-            if self._msgs[i] != other._msgs[i]:
+            if self._msgs[i] != other.msgs[i]:
                 return False
 
         return True
@@ -178,21 +175,21 @@ class MsgImpl(object):
         # return len(self._fields)
         return len(self._fieldClasses)
 
-    def __getitem__(self, n):
+    def __getitem__(self, nnn):
         # 2016-08-02, same fix
         # return self._fields[n]
-        return self._fieldClasses[n]
+        return self._fieldClasses[nnn]
 
     # -- INSTANCE SERIALIZATION -------------------------------------
 
     # INSTANCE PUT ----------------------------------------
-    def writeStandAlone(self, chan):
+    def write_stand_alone(self, chan):
         """
         Write the message stand-alone, as the topmost message on the
         channel.  Returns the message index as a convenience in testing.
         """
         name = self._name
-        ndx = self.parentSpec.msgNameIndex(name)
+        ndx = self.parent_spec.msg_name_index(name)
         # DEBUG
         print("WRITE_STAND_ALONE: MSG %s INDEX IS %d" % (name, ndx))
         # END
@@ -200,17 +197,17 @@ class MsgImpl(object):
         self.write(chan, ndx)
         return ndx
 
-    def write(self, chan, n):
+    def write(self, chan, nnn):
         """
         n is the msg's field number OR regID
         """
-        writeFieldHdr(chan, n, LEN_PLUS_TYPE)   # write the field header
-        msgLen = self._wireLen()         # then the unprefixed length
-        writeRawVarint(chan, msgLen)
+        write_field_hdr(chan, nnn, LEN_PLUS_TYPE)   # write the field header
+        msg_len = self._wire_len()         # then the unprefixed length
+        write_raw_varint(chan, msg_len)
 
         # XXX DEBUG
         print("ENTERING MsgImpl.write FIELD NBR %u, MSG LEN IS %u; AFTER WRITING HDR OFFSET  %u" % (
-            n, msgLen, chan.position))
+            nnn, msg_len, chan.position))
 
         # XXX This only makes sense for simple messages all of whose
         # fields are required and so have only a single instance
@@ -220,173 +217,178 @@ class MsgImpl(object):
             #                       '_fieldNbr', '_default',]
             # INSTANCE-LEVEL SLOT is '_value'
 
-            fName = field._name
-            fNbr = field.fieldNbr
-            fQuant = field.quantifier          # NEXT HURDLE
-            fType = field.fType
+            f_name = field._name
+            f_nbr = field.field_nbr
+            f_quant = field.quantifier          # NEXT HURDLE
+            field_type = field.field_type
             value = field.value
             default = field.default
 
-            if fQuant == Q_REQUIRED or fQuant == Q_OPTIONAL:
-                if fType > 23:
+            if f_quant == Q_REQUIRED or f_quant == Q_OPTIONAL:
+                if field_type > 23:
                     # DEBUG
-                    reg = self.msgSpec.reg
+                    reg = self.msg_spec.reg
                     print("RECURSING TO WRITE FIELD %u TYPE %s" % (
-                        fNbr, reg.regID2Name(fType)))
+                        f_nbr, reg.reg_id2name(field_type)))
                     # END
-                    value.write(chan, fNbr)
+                    value.write(chan, f_nbr)
                 else:
                     # DEBUG
-                    displayVal = value
-                    if fType == F._L_STRING and len(displayVal) > 16:
-                        displayVal = displayVal[:16] + '...'
+                    display_val = value
+                    if field_type == F.L_STRING and len(display_val) > 16:
+                        display_val = display_val[:16] + '...'
                     print("WRITING FIELD %u TYPE %u VALUE %s" % (
-                        fNbr, fType, displayVal))
+                        f_nbr, field_type, display_val))
                     # END
-                    tPutFuncs[fType](chan, value, fNbr)
-            elif fQuant == Q_PLUS or fQuant == Q_STAR:
-                vList = value
-                for v in vList:
+                    T_PUT_FUNCS[field_type](chan, value, f_nbr)
+            elif f_quant == Q_PLUS or f_quant == Q_STAR:
+                v_list = value
+                for varint_ in v_list:
                     # WORKING HERE
-                    if fType > 23:
+                    if field_type > 23:
                         # DEBUG
-                        reg = self.msgSpec.reg
+                        reg = self.msg_spec.reg
                         print("RECURSING TO WRITE FIELD %u TYPE %s" % (
-                            fNbr, reg.regID2Name(fType)))
+                            f_nbr, reg.reg_id2name(field_type)))
                         # END
-                        v.write(chan, fNbr)         # this function recursing
+                        # this function recursing
+                        varint_.write(chan, f_nbr)
                     else:
-                        tPutFuncs[fType](chan, v, fNbr)
+                        T_PUT_FUNCS[field_type](chan, varint_, f_nbr)
             else:
                 raise RuntimeError(
                     "field '%s' has unknown quantifier '%s'" % (
-                        fName, Q_NAMES[fQuant]))  # GEEP
+                        f_name, Q_NAMES[f_quant]))  # GEEP
 #       # DEBUG
 #       print "AFTER WRITING ENTIRE MESSAGE OFFSET IS %d" % chan.position
 #       # END
 
     # -- INSTANCE GET -------------------------------------
     @classmethod
-    def read(cls, chan, parentSpec):
+    def read(cls, chan, parent_spec):
         """msg refers to the msg, n is field number; returns msg, n"""
-        (pType, n) = readFieldHdr(chan)
-        if n < 0 or n >= len(parentSpec._msgs):
-            raise RuntimeError("msg ID '%s' out of range" % n)
+        (p_type, nnn) = read_field_hdr(chan)
+        if nnn < 0 or nnn >= len(parent_spec._msgs):
+            raise RuntimeError("msg ID '%s' out of range" % nnn)
 
-        msgSpec = parentSpec._msgs[n]
+        msg_spec = parent_spec._msgs[nnn]
 
-        msgLen = readRawVarint(chan)
+        msg_len = read_raw_varint(chan)
         # DEBUG
         print("IMPL_GETTER, P_TYPE %d, MSG/FIELD NBR %d, MSG_LEN %d" % (
-            pType, n, msgLen))
+            p_type, nnn, msg_len))
         # END
 
-        end = chan.position + msgLen
-        clz = _makeMsgClass(parentSpec, msgSpec)      # generated class
+        end = chan.position + msg_len
+        cls = _make_msg_class(parent_spec, msg_spec)      # generated class
 
         fields = []                     # ???
         values = []                     # ???
 
         # XXX THIS IS NOT GOING TO WORK, BECAUSE WE NEED TO PEEK XXX
-        for fClass in clz._fieldClasses:
+        for f_class in cls._fieldClasses:
 
-            fType = fClass._fType       # a number
-            fQuant = fClass._quantifier
-            fieldNbr = fClass._fieldNbr
+            field_type = f_class._field_type       # a number
+            f_quant = f_class._quantifier
+            field_nbr = f_class._field_nbr
 
             # read the field header
-            (pType, nbr) = readFieldHdr(chan)
+            (p_type, nbr) = read_field_hdr(chan)
             # DEBUG
-            print("    GET_FROM_CHAN, FIELD %u, TYPE %u" % (fieldNbr, fType))
+            print(
+                "    GET_FROM_CHAN, FIELD %u, TYPE %u" %
+                (field_nbr, field_type))
             # END
-            if fieldNbr != nbr:
+            if field_nbr != nbr:
                 raise RuntimeError(" EXPECTED FIELD_NBR %d, GOT %d" % (
-                    fieldNbr, nbr))
-            if fQuant == Q_REQUIRED or fQuant == Q_OPTIONAL:
-                if fType > 23:
-                    reg = self.msgSpec.reg
+                    field_nbr, nbr))
+            if f_quant == Q_REQUIRED or f_quant == Q_OPTIONAL:
+                if field_type > 23:
+                    reg = self.msg_spec.reg
                     # BEGIN JUNK ------------------------------------
                     # DEBUG
-                    print("READING: FIELD TYPE IS %s" % reg.regID2Name(fType))
+                    print(
+                        "READING: FIELD TYPE IS %s" %
+                        reg.reg_id2name(field_type))
                     # END
-                    entry = reg.regID2Entry(fType)
+                    entry = reg.reg_id2entry(field_type)
                     print("READING: FIELD TYPE bis IS %s" % entry.name)
                     # END JUNK --------------------------------------
-                    childSpec = entry.msgSpec
+                    child_spec = entry.msg_spec
 
-                    childClass = _makeMsgClass(msgSpec, CHILD_SPEC)
+                    child_class = _make_msg_class(msg_spec, child_spec)
 
                     # RECURSE: read(childCls, chan, msgSpec)
                     # msgSpec is parentSpec here
-                    value = tGetFuncs[fType](chan)  # XXX WRONG
+                    value = T_GET_FUNCS[field_type](chan)  # XXX WRONG
                 else:
-                    value = tGetFuncs[fType](chan)
-                _checkPosition(chan, end)
+                    value = T_GET_FUNCS[field_type](chan)
+                _check_position(chan, end)
                 values.append(value)
 
-            elif fQuant == Q_PLUS or fQuant == Q_STAR:
-                vList = []              # we are reading a list of values
+            elif f_quant == Q_PLUS or f_quant == Q_STAR:
+                v_list = []              # we are reading a list of values
 
                 # WORKING HERE
 
             else:
-                raise RunTimeError("unknown quantifier, index '%u'" % fQuant)
+                raise RunTimeError("unknown quantifier, index '%u'" % f_quant)
         # DEBUG
         print("AFTER COLLECTING %u FIELDS, OFFSET IS %u" % (
             len(fields), chan.position))
         # END
 
         # XXX BLOWS UP: can't handle Q_PLUS or Q_STAR (about line 407)
-        return (clz(values), n)                                 # GEEP
+        return (cls(values), nnn)                                 # GEEP
 
     # -- INSTANCE SERIALIZED LENGTH -----------------------
-    def _wireLen(self):
+    def _wire_len(self):
         """
         Returns the length of the body of a serialized message, excluding
         the header.
         """
-        msgLen = 0
-        n = 0  # DEBUG
+        msg_len = 0
+        nnn = 0  # DEBUG
         for field in self._fields:
-            fName = field._name
-            fNbr = field.fieldNbr
-            fQuant = field.quantifier          # NEXT HURDLE
-            fType = field.fType
+            f_name = field._name
+            f_nbr = field.field_nbr
+            f_quant = field.quantifier          # NEXT HURDLE
+            field_type = field.field_type
             value = field.value
 
             # XXX What follows doesn't quite make sense.  If a REQUIRED
             # message is missing, we simply won't find it.  Likewise
             # for Q_STAR
-            if fQuant == Q_REQUIRED or fQuant == Q_OPTIONAL:
-                contrib = tLenFuncs[fType](value, fNbr)
+            if f_quant == Q_REQUIRED or f_quant == Q_OPTIONAL:
+                contrib = T_LEN_FUNCS[field_type](value, f_nbr)
 
                 # DEBUG
-                if fType > 23:
+                if field_type > 23:
                     # XXX is the registry for the protocol? msgSpec?
-                    print("    F_TYPE %u IS MSG %s" % (fType,
-                                                       XXX.regID2Name(fType)))
+                    print("    F_TYPE %u IS MSG %s" % (field_type,
+                                                       XXX.reg_id2name(field_type)))
                     print("    LEN: FIELD %u (%s), TYPE %u, CONTRIBUTION %d" % (
-                        n, fName, fType, contrib))
-                n += 1
+                        nnn, f_name, field_type, contrib))
+                nnn += 1
                 # END
-                msgLen += contrib
+                msg_len += contrib
 
-            elif fQuant == Q_PLUS or fQuant == Q_STAR:
+            elif f_quant == Q_PLUS or f_quant == Q_STAR:
                 # value will be a non-empty list; handle each individual
                 # member like Q_REQUIRED
-                vList = value
-                for v in vList:
+                v_list = value
+                for varint_ in v_list:
                     # HACKING ABOUT
-                    if fType > 23:
-                        reg = self.msgSpec.reg
+                    if field_type > 23:
+                        reg = self.msg_spec.reg
                         # DEBUG
                         print("    LEN: FIELD TYPE IS %s" %
-                              reg.regID2Name(fType))
+                              reg.reg_id2name(field_type))
 #                       entry = reg.regID2Entry(fType)
 #                       print "    LEN: FIELD TYPE bis IS %s" % entry.name
                         # END
 
-                        contrib = v.wireLen(fNbr)
+                        contrib = varint_.wire_len(f_nbr)
 
                     else:
                         # END HACKING
@@ -395,32 +397,32 @@ class MsgImpl(object):
                         # XXX FAILS with list index error, fType == 24 XXX
                         # -----------------------------------------------
                         print("DEBUG FIELD '%s' Q_PLUS MEMBER TYPE IS %s" % (
-                            fName, fType))
-                        contrib = tLenFuncs[fType](v, fNbr)
+                            f_name, field_type))
+                        contrib = T_LEN_FUNCS[field_type](varint_, f_nbr)
 
                         # DEBUG
                         print("    LEN: FIELD %u (%s), TYPE %u, CONTRIB %d" % (
-                            n, fName, fType, contrib))
+                            nnn, f_name, field_type, contrib))
                         # END
-                    n += 1
-                    msgLen += contrib
+                    nnn += 1
+                    msg_len += contrib
 
             else:
                 raise RuntimeError(
                     "field '%s' has unknown quantifier '%s'" % (
-                        fName, Q_NAMES[fQuant]))  # GEEP
+                        f_name, Q_NAMES[f_quant]))  # GEEP
 
-        return msgLen
+        return msg_len
 
-    def wireLen(self, n):
+    def wire_len(self, nnn):
         """
         Return the length of a serialized message including the field
         header, where n is the field number of a nested message or the
         regID if the message is not nested.
         """
-        h = lengthAsVarint(fieldHdrLen(n, LEN_PLUS_TYPE))
-        count = self._wireLen()
-        return h + lengthAsVarint(count) + count
+        len_ = length_as_varint(field_hdr_len(nnn, LEN_PLUS_TYPE))
+        count = self._wire_len()
+        return len_ + length_as_varint(count) + count
 
 # META_MSG ======================================================
 
@@ -450,10 +452,10 @@ class MetaMsg(type):
 #       cls._fieldsByName   = {}
         values = args[0]
         for idx, val in enumerate(values):
-            thisField = cls._fieldClasses[idx](val)
-            cls._fields.append(thisField)
+            this_field = cls._fieldClasses[idx](val)
+            cls._fields.append(this_field)
 #           cls._fieldsByName[thisField.name] = thisField
-            setattr(cls, thisField.name, val)
+            setattr(cls, this_field.name, val)
 
 #           # DEBUG
 #           print "META_MSG.__call__: idx   = %u" % idx
@@ -489,7 +491,7 @@ class MetaMsg(type):
 # DROPPING THIS FOR NOW
 
 
-def msgInitter(cls, *args, **attrs):
+def msg_initter(cls, *args, **attrs):
     # We want to create instances of the respective fields and
     # assign 'arg' to field 'idx'.  This means that field instances
     # need to have been created before we get here
@@ -513,45 +515,45 @@ def msgInitter(cls, *args, **attrs):
     pass
 
 # XXX A Strange Litle Device:
-msgClsByQName = {}    # PROTO_NAME . MSG_NAME => class
+MSG_CLS_BY_Q_NAME = {}    # PROTO_NAME . MSG_NAME => class
 
 
-def makeMsgClass(parent, name):
+def make_msg_class(parent, name):
     """ construct a MsgClass given a msg name known to the parent """
-    msgSpec = parent.getMsgSpec(name)
-    return _makeMsgClass(parent, msgSpec)
+    msg_spec = parent.get_msg_spec(name)
+    return _make_msg_class(parent, msg_spec)
 
 
-def _makeMsgClass(parent, msgSpec):
+def _make_msg_class(parent, msg_spec):
     """ construct a MsgClass given a MsgSpec """
     if parent is None:
         raise ValueError('parent must be specified')
-    protoName = parent.name
+    proto_name = parent.name
 
-    if msgSpec is None:
+    if msg_spec is None:
         raise ValueError('msgSpec be specified')
 
     # XXX single-dot name and so NO NESTED MSG_CLASSes
-    qualName = '%s.%s' % (protoName, msgSpec.name)
+    qual_name = '%s.%s' % (proto_name, msg_spec.name)
 
     # DEBUG
-    print('MAKE_MSG_CLASS for %s' % qualName)
+    print('MAKE_MSG_CLASS for %s' % qual_name)
     # END
-    if qualName in msgClsByQName:
-        return msgClsByQName[qualName]
+    if qual_name in MSG_CLS_BY_Q_NAME:
+        return MSG_CLS_BY_Q_NAME[qual_name]
 
     # build list of field classes -----------------------------------
-    fieldClasses = []
-    fieldClassesByName = {}
-    fieldClassesByNbr = {}        # by field nbr, not index
+    field_classes = []
+    field_classes_by_name = {}
+    field_classes_by_nbr = {}        # by field nbr, not index
     # XXX implicit assumption is that fields are ordered by ascending
     # XXX field number
-    for fieldSpec in msgSpec:
+    for field_spec in msg_spec:
         # XXX NO ALLOWANCE FOR NESTED MSG_SPEC
-        clz = makeFieldClass(qualName, fieldSpec)
-        fieldClasses.append(clz)
-        fieldClassesByName['%s.%s' % (qualName, fieldSpec.name)] = clz
-        fieldClassesByNbr[fieldSpec.fieldNbr] = clz
+        cls = make_field_class(qual_name, field_spec)
+        field_classes.append(cls)
+        field_classes_by_name['%s.%s' % (qual_name, field_spec.name)] = cls
+        field_classes_by_nbr[field_spec.field_nbr] = cls
 
     # class is not in cache, so construct ---------------------------
 
@@ -561,14 +563,14 @@ def _makeMsgClass(parent, msgSpec):
     class Msg(MsgImpl, metaclass=MetaMsg,
               # __init__ = msgInitter,
               # 'name' already in use?
-              _name=msgSpec.name,
-              enums=property(myEnums),
-              msgs=property(myMsgs),
-              fieldClasses=property(myFieldClasses),
+              _name=msg_spec.name,
+              enums=property(my_enums),
+              msgs=property(my_msgs),
+              field_classes=property(my_field_classes),
 
               # EXPERIMENT 2012-12-15
-              parentSpec=parent,
-              msgSpec=msgSpec
+              parent_spec=parent,
+              msg_spec=msg_spec
               # END EXPERIMENT
               ):
         pass
@@ -587,5 +589,5 @@ def _makeMsgClass(parent, msgSpec):
     # possibly some more fiddling ...
     #----------------------------
 
-    msgClsByQName[qualName] = Msg
-    return Msg                        # GEEPGEEP
+    MSG_CLS_BY_Q_NAME[qual_name] = Msg
+    return Msg

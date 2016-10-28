@@ -3,13 +3,13 @@
 import re
 import sys
 
-from fieldz.raw import *
-from fieldz.typed import *
+#from fieldz.raw import *
+#from fieldz.typed import *
 
 from fieldz.field_types import FieldTypes as F, FieldStr as FS
 import fieldz.core_types as C
 
-__all__ = [  \
+__all__ = [\
     # constants, so to speak: quantifiers
     'Q_REQUIRED',   # no quantifier, so one and only one such field
     'Q_OPTIONAL',   # ?: either zero or one instance of the field
@@ -17,19 +17,19 @@ __all__ = [  \
     'Q_PLUS',       # +: one or more instances of the field
     'Q_NAMES',      # list of the four above
     # methods
-    'qName', 'validateSimpleName', 'validateDottedName',
+    'q_name', 'validate_dimple_name', 'validate_dotted_name',
 
     # class-level
-    'cPutFuncs', 'cGetFuncs', 'cLenFuncs',
+    'C_PUT_FUNCS', 'C_GET_FUNCS', 'C_LEN_FUNCS',
 
-    'enumPairSpecPutter', 'enumSpecPutter', 'fieldSpecPutter',
-    'msgSpecPutter', 'seqSpecPutter', 'protoSpecPutter',
+    'enum_pair_spec_putter', 'enum_spec_putter', 'field_spec_putter',
+    'msg_spec_putter', 'seq_spec_putter', 'proto_spec_putter',
 
-    'enumPairSpecGetter', 'enumSpecGetter', 'fieldSpecGetter',
-    'msgSpecGetter', 'seqSpecGetter', 'protoSpecGetter',
+    'enum_pair_spec_getter', 'enum_spec_getter', 'field_spec_getter',
+    'msg_spec_getter', 'seq_spec_getter', 'proto_spec_getter',
 
-    'enumPairSpecLen', 'enumSpecLen', 'fieldSpecLen',
-    'msgSpecLen', 'seqSpecLen', 'protoSpecLen',
+    'enum_pair_spec_len', 'enum_spec_len', 'field_spec_len',
+    'msg_spec_len', 'seq_spec_len', 'proto_spec_len',
 
     # classes
     'EnumPairSpec', 'EnumSpec', 'FieldSpec',
@@ -45,10 +45,10 @@ Q_PLUS = 3
 Q_NAMES = ['', '?', '*', '+', ]
 
 
-def qName(n):
-    if n < 0 or n >= len(Q_NAMES):
-        raise ValueError('does not map to a valid quantifier: %s' % str(n))
-    return Q_NAMES[n]
+def q_name(nnn):
+    if nnn < 0 or nnn >= len(Q_NAMES):
+        raise ValueError('does not map to a valid quantifier: %s' % str(nnn))
+    return Q_NAMES[nnn]
 
 # base names, forming part of a larger pattern
 _VALID_NAME_PAT = "[a-zA-Z_][a-zA-Z_0-9]*"
@@ -59,20 +59,20 @@ _VALID_SIMPLE_NAME_PAT = _VALID_NAME_PAT + '$'
 _VALID_SIMPLE_NAME_RE = re.compile(_VALID_SIMPLE_NAME_PAT)
 
 
-def validateSimpleName(s):
-    m = _VALID_SIMPLE_NAME_RE.match(s)
-    if m is None:
-        raise RuntimeError("invalid simple name '%s'" % s)
+def validate_dimple_name(string):
+    match = _VALID_SIMPLE_NAME_RE.match(string)
+    if match is None:
+        raise RuntimeError("invalid simple name '%s'" % string)
 
 # both protocol names and field names can be qualified
 _VALID_DOTTED_NAME_PAT = _VALID_NAME_PAT + '(\.' + _VALID_NAME_PAT + ')*$'
 _VALID_DOTTED_NAME_RE = re.compile(_VALID_DOTTED_NAME_PAT)
 
 
-def validateDottedName(s):
-    m = _VALID_DOTTED_NAME_RE.match(s)
-    if m is None:
-        raise RuntimeError("invalid (optionally dotted) name %s'" % s)
+def validate_dotted_name(string):
+    match = _VALID_DOTTED_NAME_RE.match(string)
+    if match is None:
+        raise RuntimeError("invalid (optionally dotted) name %s'" % string)
 
 
 # -- CLASSES --------------------------------------------------------
@@ -80,7 +80,7 @@ class EnumPairSpec(object):
     __slots__ = ['_symbol', '_value', ]
 
     def __init__(self, symbol, value):
-        validateSimpleName(symbol)
+        validate_dimple_name(symbol)
         self._symbol = symbol
         self._value = int(value)
 
@@ -102,16 +102,16 @@ class EnumPairSpec(object):
 #       print "  other other: %s" % other
         return True
 
-    def indentedStr(self, indent='', step=''):
+    def indented_str(self, indent='', step=''):
         return "%s%s = %d\n" % (indent, self._symbol, self._value)
 
     def __str__(self):
         """ return a usable representation of the EnumPairSpec """
-        return self.indentedStr('    ')
+        return self.indented_str('    ')
 
     def __repr__(self):
         """ return the EnumPairSpec in today's notion of the canonical form """
-        return self.indentedStr(' ')
+        return self.indented_str(' ')
 
 
 class EnumSpec(object):
@@ -124,7 +124,7 @@ class EnumSpec(object):
 
     def __init__(self, name, pairs):
         """pairs are EnumPairSpecs """
-        validateDottedName(name)
+        validate_dotted_name(name)
         self._name = name
         if pairs is None:
             raise ValueError('null list of enum pairs')
@@ -143,7 +143,7 @@ class EnumSpec(object):
     @classmethod
     def create(cls, name, pairs):
         """pairs are 2-tuples, (symbol, value), where value is uInt16 """
-        validateDottedName(name)
+        validate_dotted_name(name)
         if pairs is None:
             raise ValueError('null list of enum pairs')
         if len(pairs) == 0:
@@ -153,13 +153,13 @@ class EnumSpec(object):
         for pair in pairs:
             sym = pair[0]
             val = pair[1]
-            p = EnumPairSpec(sym, val)
-            _pairs.append(p)
+            ppp = EnumPairSpec(sym, val)
+            _pairs.append(ppp)
         return EnumSpec(name, _pairs)
 
-    def value(self, s):
+    def value(self, string):
         """ map a name to the corresponding value """
-        return self._sym2pair[s].value
+        return self._sym2pair[string].value
 
     @property
     def name(self): return self._name
@@ -184,7 +184,7 @@ class EnumSpec(object):
         # print "  ENUM LENGTHS match"
         for i in range(self.__len__()):
             # if self[i] != other[i]:
-            if self[i].symbol != other[i].symbol or \
+            if self[i].symbol != other[i].symbol or\
                     self[i].value != other[i].value:
                 print("ENUM_PAIR_SPECS DIFFER:")
                 print("  my    pair %u: %s" % (i, self[i]))
@@ -192,28 +192,28 @@ class EnumSpec(object):
                 return False
         return True
 
-    def indentedStr(self, indent='', step=''):
+    def indented_str(self, indent='', step=''):
         # DEBUG
         print("EnumSpec.indentedStr <-------------------")
         # END
-        s = []
-        s.append('%senum %s\n' % (indent, self.name))
+        string = []
+        string.append('%senum %s\n' % (indent, self.name))
         for pair in self._pairs:
-            s.append(pair.indentedStr(indent + step, step))
-        return ''.join(s)
+            string.append(pair.indented_str(indent + step, step))
+        return ''.join(string)
 
     def __str__(self):
         """ return a usable representation of the EnumSpec """
-        return self.indentedStr('', '    ')
+        return self.indented_str('', '    ')
 
     def __repr__(self):
         """ return the EnumSpec in today's notion of the canonical form """
-        return self.indentedStr('', ' ')
+        return self.indented_str('', ' ')
 
 
 class FieldSpec(object):
     __slots__ = ['_reg',
-                 '_name', '_type', '_quantifier', '_fieldNbr', '_default', ]
+                 '_name', '_type', '_quantifier', '_field_nbr', '_default', ]
 
     def __eq__(self, other):
         if other is None or not isinstance(other, FieldSpec):
@@ -234,11 +234,11 @@ class FieldSpec(object):
         if other._quantifier != self._quantifier:
             print("FIELD_SPEC QUANTIFIERS DIFFER")
             return False
-        if self._fieldNbr:
-            if other._fieldNbr is None:
+        if self._field_nbr:
+            if other._field_nbr is None:
                 print("OTHER FIELD_SPEC HAS NO FIELD NBR")
                 return False
-            if self._fieldNbr != other._fieldNbr:
+            if self._field_nbr != other._field_nbr:
                 print("FIELD_SPEC FIELD NBRS DIFFER")
                 return False
 
@@ -246,8 +246,8 @@ class FieldSpec(object):
 
         return True
 
-    def __init__(self, reg, name, fType, quantifier=Q_REQUIRED,
-                 fieldNbr=-1, default=None):
+    def __init__(self, reg, name, field_type, quantifier=Q_REQUIRED,
+                 field_nbr=-1, default=None):
         if reg is None:
             raise ValueError('reg must be specified')
         self._reg = reg
@@ -260,13 +260,13 @@ class FieldSpec(object):
         # print("FieldSpec.__init__: name '%s' is of type %s" % (
         #    name, type(name)))
         # END
-        validateDottedName(name)
+        validate_dotted_name(name)
         self._name = name
 
         # -- fType --------------------------------------------------
-        if fType < 0 or fType > F.MAX_NDX:
-            raise ValueError("invalid fType '%s'" % str(fType))
-        self._type = fType
+        if field_type < 0 or field_type > F.MAX_NDX:
+            raise ValueError("invalid fType '%s'" % str(field_type))
+        self._type = field_type
 
         # -- quantifier ---------------------------------------------
         # XXX BAD RANGE CHECK ??
@@ -275,7 +275,7 @@ class FieldSpec(object):
         self._quantifier = quantifier
 
         # -- fieldNbr -----------------------------------------------
-        self._fieldNbr = int(fieldNbr)
+        self._field_nbr = int(field_nbr)
 
         # -- default ------------------------------------------------
         # if default is None, could provide a default appropriate for the type
@@ -291,59 +291,60 @@ class FieldSpec(object):
 
     # XXX return a string value
     @property
-    def fTypeName(self):
+    def field_type_name(self):
         if 0 <= self._type and self._type <= F.MAX_NDX:
-            return FS().asStr(self._type)
-        regID = self._reg.regID2Name(self._type)
-        if regID is None:
+            return FS().as_str(self._type)
+        reg_id = self._reg.reg_id2name(self._type)
+        if reg_id is None:
             # XXX parent must search upwards if not found
-            regID = self._reg.parent.regID2Name(self._type)
-        return regID
+            reg_id = self._reg.parent.reg_id2name(self._type)
+        return reg_id
 
     # XXX return a number
     @property
-    def fTypeNdx(self): return self._type
+    def FIELD_TYPE_NDX(self): return self._type
 
     @property
     def quantifier(self): return self._quantifier
     #def quantifier(self):   return Q_NAMES[self._quantifier]
 
     @property
-    def fieldNbr(self):
-        return self._fieldNbr
+    def field_nbr(self):
+        return self._field_nbr
 
-    @fieldNbr.setter
-    def fieldNbr(self, value):
-        v = int(value)
-        if v < 0:
+    @field_nbr.setter
+    def field_nbr(self, value):
+        varint_ = int(value)
+        if varint_ < 0:
             raise ValueError('field number may not be negative')
-        self._fieldNbr = v
+        self._field_nbr = varint_
 
     @property
     def default(self): return self._default
 
-    def indentedStr(self, indent, step):
-        s = []
-        s.append('%s%s ' % (indent, self._name))
+    def indented_str(self, indent, step):
+        string = []
+        string.append('%s%s ' % (indent, self._name))
 
-        tName = self.fTypeName
+        tName = self.field_type_name
         if self._quantifier != Q_REQUIRED:
-            tName += qName(self._quantifier)
-        s.append('%s ' % tName)               # at least one space
+            tName += q_name(self._quantifier)
+        string.append('%s ' % tName)               # at least one space
 
-        if self._fieldNbr is not None:
-            s.append('@%d ' % self._fieldNbr)  # again, at least one space
+        if self._field_nbr is not None:
+            # again, at least one space
+            string.append('@%d ' % self._field_nbr)
 
         #========================
         # XXX default not handled
         #========================
-        s.append('\n')
+        string.append('\n')
 
-        return '' . join(s)
+        return '' . join(string)
 
     def __str__(self):
         """ return a prettier representation of the FieldSpec """
-        return self.indentedStr('', '    ')
+        return self.indented_str('', '    ')
 
     def __repr__(self):
         """
@@ -351,7 +352,7 @@ class FieldSpec(object):
         This doesn't have to be pretty, just absolutely clear and
         unambiguous.
         """
-        return self.indentedStr('', ' ')
+        return self.indented_str('', ' ')
 
 
 class SeqSpec(object):
@@ -363,39 +364,39 @@ class SeqSpec(object):
         pass
         # XXX STUB
 
-    def indentedStr(self, indent, step):
+    def indented_str(self, indent, step):
         raise NotImplementedError('indentedStr for SeqSpec')
 
     def __str__(self):
-        return self.indentedStr('', '    ')
+        return self.indented_str('', '    ')
 
     def __repr__(self):
-        return self.indentedStr('', ' ')                # GEEP
+        return self.indented_str('', ' ')                # GEEP
 
 # SUPER SPECS =======================================================
 
 
 class SuperSpec(object):
-    __slots__ = ['_name', '_parent', '_myReg', '_enums', '_msgs',
-                 '_msgsByName', '_msgNameNdx', '_nextMsg',
+    __slots__ = ['_name', '_parent', '_my_reg', '_enums', '_msgs',
+                 '_msgs_by_name', '_msg_name_ndx', '_nextMsg',
                  ]
 
     def __init__(self, name, reg, parent=None):
         if name is None:
             raise ValueError('missing protocol name')
-        validateDottedName(name)
+        validate_dotted_name(name)
         self._name = name
 
         if reg is None:
             raise ValueError('proto reg must be specified')
-        self._myReg = reg
+        self._my_reg = reg
 
         self._parent = parent
 
         self._enums = []
         self._msgs = []
-        self._msgsByName = {}
-        self._msgNameNdx = {}    # map name to index
+        self._msgs_by_name = {}
+        self._msg_name_ndx = {}    # map name to index
         self._nextMsg = 0
 
     @property
@@ -405,7 +406,7 @@ class SuperSpec(object):
     def parent(self): return self._parent             # FOO
 
     @property
-    def reg(self): return self._myReg          # this protocol's reg
+    def reg(self): return self._my_reg          # this protocol's reg
 
     # XXX we should make iterators available instead
     @property
@@ -414,41 +415,41 @@ class SuperSpec(object):
     @property
     def msgs(self): return self._msgs
 
-    def addEnum(self, e):
+    def add_enum(self, exc):
         # should validate AND check for uniqueness
 
         # DEBUG
-        name = e.name
+        name = exc.name
         print("ADDING ENUM %s TO SUPER_SPEC" % name)
         # END
 
         # WORKING HERE
-        self._enums.append(e)
+        self._enums.append(exc)
 
-    def addMsg(self, m):
-        name = m.name
+    def add_msg(self, match):
+        name = match.name
         # XXX This forbids shadowing of the name in the parent but
         #     not further up the tree
-        if name in self._msgsByName or (self.parent is not None
-                                        and name in self.parent._msgsByName):
+        if name in self._msgs_by_name or (self.parent is not None
+                                          and name in self.parent._msgs_by_name):
             raise RuntimeError("name '%s' is already in use" % name)
         print("ADDING MSG %d '%s' TO PROTO SPEC LIST" %
               (self._nextMsg, name))         # DEBUG
-        self._msgs.append(m)
-        self._msgsByName[name] = m                             # FOO
-        self._msgNameNdx[name] = self._nextMsg
+        self._msgs.append(match)
+        self._msgs_by_name[name] = match                             # FOO
+        self._msg_name_ndx[name] = self._nextMsg
         self._nextMsg += 1
 
-    def getMsgSpec(self, name):
+    def get_msg_spec(self, name):
         """ given a name, returns the corresponding msgSpec """
-        return self._msgsByName[name]
+        return self._msgs_by_name[name]
 
-    def msgNameIndex(self, name):
+    def msg_name_index(self, name):
         """ given a name, returns its index """
-        return self._msgNameNdx[name]
+        return self._msg_name_ndx[name]
 
     # XXX USELESS IN ITS PRESENT STATE ------------------------------
-    def getRegIDForName(self, name):
+    def get_reg_id_for_name(self, name):
         """
         If the name is in use, raise an exception.  Otherwise, return
         the next free regID.
@@ -458,7 +459,7 @@ class SuperSpec(object):
 
         # XXX THIS IS NONSENSE: there is no MsgSpec._byName
 
-        if name in self._msgsByName or name in self.parent._msgsByName:
+        if name in self._msgs_by_name or name in self.parent._msgs_by_name:
             raise RuntimeError("name '%s' is already in use" % name)
 
         # XXX STUB XXX GET THE NEXT FREE regID
@@ -481,9 +482,9 @@ class ProtoSpec(SuperSpec):
     @property
     def seqs(self): return self._seqs
 
-    def addSeq(self, s):
+    def addSeq(self, string):
         # should validate AND check for uniqueness
-        self._seqs.append(s)
+        self._seqs.append(string)
 
     # MOVE MOST OF THIS INTO SuperSpec ##############################
     def __eq__(self, other):
@@ -507,10 +508,10 @@ class ProtoSpec(SuperSpec):
         else:
             if other._enums is None:
                 return False
-            n = len(self._enums)
-            if n != len(other._enums):
+            nnn = len(self._enums)
+            if nnn != len(other._enums):
                 return False
-            for i in range(n):
+            for i in range(nnn):
                 # XXX DOES NOT WORK AS EXPECTED
                 # if self._enums[i] != other._enums[i]:   return False
                 if not self._enums[i].__eq__(other._enums[i]):
@@ -522,10 +523,10 @@ class ProtoSpec(SuperSpec):
         else:
             if other._msgs is None:
                 return False
-            n = len(self._msgs)
-            if n != len(other._msgs):
+            nnn = len(self._msgs)
+            if nnn != len(other._msgs):
                 return False
-            for i in range(n):
+            for i in range(nnn):
                 if not self._msgs[i].__eq__(other._msgs[i]):
                     return False
 
@@ -535,36 +536,36 @@ class ProtoSpec(SuperSpec):
         else:
             if other._seqs is None:
                 return False
-            n = len(self._seqs)
-            if n != len(other._seqs):
+            nnn = len(self._seqs)
+            if nnn != len(other._seqs):
                 return False
-            for i in range(n):
+            for i in range(nnn):
                 if self._seqs[i] != other._seqs[i]:
                     return False
 
         return True
 
-    def indentedStr(self, indent='', step=' '):
-        s = []
-        s.append("%sprotocol %s\n" % (indent, self._name))
+    def indented_str(self, indent='', step=' '):
+        string = []
+        string.append("%sprotocol %s\n" % (indent, self._name))
         if self._enums is not None:
-            for e in self._enums:
-                s.append(e.indentedStr(indent, step))
+            for exc in self._enums:
+                string.append(exc.indented_str(indent, step))
         if self._msgs is not None:
-            for m in self._msgs:
-                print("DEBUG: ProtoSpec SERIALIZING " + m.name)
-                s.append(m.indentedStr(indent, step))
+            for match in self._msgs:
+                print("DEBUG: ProtoSpec SERIALIZING " + match.name)
+                string.append(match.indented_str(indent, step))
         if self._seqs is not None:
-            for q in self._seqs:
-                s.append(q.indentedStr(indent, step))
+            for qqq in self._seqs:
+                string.append(qqq.indented_str(indent, step))
 
-        return ''.join(s)
+        return ''.join(string)
 
     def __str__(self):
-        return self.indentedStr('', '    ')
+        return self.indented_str('', '    ')
 
     def __repr__(self):
-        return self.indentedStr('', ' ')                        # GEEP
+        return self.indented_str('', ' ')                        # GEEP
 
 
 class MsgSpec(SuperSpec):
@@ -592,35 +593,35 @@ class MsgSpec(SuperSpec):
         # if parent is None:
         #    raise ValueError('parent must be specified')
         name = str(name)
-        validateSimpleName(name)
+        validate_dimple_name(name)
         super(MsgSpec, self).__init__(name, reg, parent)
 
         # XXX QUESTIONABLE
         if parent:
-            parent.addMsg(self)
+            parent.add_msg(self)
 
         self._fields = []
         self._lastFieldNbr = -1
         self.fieldNameToNdx = {}    # XXX value?
         self._fieldNdx = 0     # zero-based index of field in MsgSpec
 
-    def addField(self, f):
-        fName = f.name
-        if not isinstance(f, FieldSpec):
-            raise ValueError("'%s' is not a FieldSpec!" % fName)
-        if fName in self.fieldNameToNdx:
-            raise KeyError("field named %s already exists" % fName)
-        if f.fieldNbr < 0:
+    def addField(self, file):
+        f_name = file.name
+        if not isinstance(file, FieldSpec):
+            raise ValueError("'%s' is not a FieldSpec!" % f_name)
+        if f_name in self.fieldNameToNdx:
+            raise KeyError("field named %s already exists" % f_name)
+        if file.field_nbr < 0:
             self._lastFieldNbr += 1
-            f.fieldNbr = self._lastFieldNbr
-        elif f.fieldNbr <= self._lastFieldNbr:
+            file.field_nbr = self._lastFieldNbr
+        elif file.field_nbr <= self._lastFieldNbr:
             raise ValueError(
                 "field number is %d not greater than last %d" % (
-                    f.fieldNbr, self._lastFieldNbr))
+                    file.field_nbr, self._lastFieldNbr))
         else:
-            self._lastFieldNbr = f.fieldNbr
-        self._fields.append(f)
-        self.fieldNameToNdx[fName] = self._fieldNdx
+            self._lastFieldNbr = file.field_nbr
+        self._fields.append(file)
+        self.fieldNameToNdx[f_name] = self._fieldNdx
         self._fieldNdx += 1         # so this is a count of fields
 
     def __len__(self): return len(self._fields)
@@ -629,14 +630,14 @@ class MsgSpec(SuperSpec):
         """ iterates over fields of the message """
         return self._fields[k]
 
-    def fName(self, i):
+    def f_name(self, i):
         if self.__len__() == 0:
             raise ValueError("INTERNAL ERROR: message has no fields")
         if i < 0 or i >= self.__len__():
             raise ValueError('field number %d out of range' % i)
         return self._fields[i].name
 
-    def fTypeName(self, i):
+    def field_type_name(self, i):
         # field numbers are zero-based
         if self.__len__() == 0:
             raise ValueError("INTERNAL ERROR: message has no fields")
@@ -645,9 +646,9 @@ class MsgSpec(SuperSpec):
         # XXX WRONG-ish: fType MUST be numeric; this should return
         # the string equivalent; HOWEVER, if the type is lMsg, we
         # want to return the message name ... XXX
-        return self._fields[i].fTypeName
+        return self._fields[i].field_type_name
 
-    def fTypeNdx(self, i):
+    def FIELD_TYPE_NDX(self, i):
         # field numbers are zero-based
         if self.__len__() == 0:
             raise ValueError("INTERNAL ERROR: message has no fields")
@@ -657,9 +658,9 @@ class MsgSpec(SuperSpec):
         # XXX WRONG-ish: fType MUST be numeric; this should return
         # the string equivalent; HOWEVER, if the type is lMsg, we
         # want to return the message name ... XXX
-        return self._fields[i].fTypeNdx
+        return self._fields[i].FIELD_TYPE_NDX
 
-    def fDefault(self, i):
+    def field_default(self, i):
         # field numbers are zero-based
         if self.__len__() == 0:
             raise ValueError("INTERNAL ERROR: message has no fields")
@@ -680,32 +681,32 @@ class MsgSpec(SuperSpec):
             return False
         if self.__len__() != other.__len__():
             return False
-        for n in range(self.__len__()):
-            if not self._fields[n].__eq__(other._fields[n]):
+        for nnn in range(self.__len__()):
+            if not self._fields[nnn].__eq__(other._fields[nnn]):
                 return False
         return True
 
-    def indentedStr(self, indent, step):
-        s = []
+    def indented_str(self, indent, step):
+        string = []
         # s.append( "%sprotocol %s\n\n" % (indent, self._protocol))
-        s.append("%smessage %s\n" % (indent, self._name))
+        string.append("%smessage %s\n" % (indent, self._name))
         if self._enums is not None:
-            for e in self._enums:
-                s.append(e.indentedStr(indent + step, step))
+            for exc in self._enums:
+                string.append(exc.indented_str(indent + step, step))
         if self._msgs is not None:
-            for m in self._msgs:
-                -s.append(m.indentedStr(indent + step, step))
-        for f in self._fields:
-            s.append(f.indentedStr(indent + step, step))
-        return ''.join(s)
+            for match in self._msgs:
+                -string.append(match.indented_str(indent + step, step))
+        for file in self._fields:
+            string.append(file.indented_str(indent + step, step))
+        return ''.join(string)
 
     def __str__(self):
         """ return string representation in perhaps prettier format """
-        return self.indentedStr('', '    ')
+        return self.indented_str('', '    ')
 
     def __repr__(self):
         """ return string representation in canonical format """
-        return self.indentedStr('', ' ')                        # GEEP
+        return self.indented_str('', ' ')                        # GEEP
 
 # DISPATCH TABLES ===================================================
 
@@ -713,218 +714,219 @@ class MsgSpec(SuperSpec):
 #                                          from fieldz.typed import *
 
 
-def notImpl(*arg): raise NotImplementedError
+def not_impl(*arg): raise NotImplementedError
 
-cTypes = C.CoreTypes()
+C_TYPES = C.CoreTypes()
 
-cPutFuncs = [notImpl] * (cTypes.maxNdx + 1)
-cGetFuncs = [notImpl] * (cTypes.maxNdx + 1)
-cLenFuncs = [notImpl] * (cTypes.maxNdx + 1)
-cPLenFuncs = [notImpl] * (cTypes.maxNdx + 1)
+C_PUT_FUNCS = [not_impl] * (C_TYPES.max_ndx + 1)
+C_GET_FUNCS = [not_impl] * (C_TYPES.max_ndx + 1)
+C_LEN_FUNCS = [not_impl] * (C_TYPES.max_ndx + 1)
+C_P_LEN_FUNCS = [not_impl] * (C_TYPES.max_ndx + 1)
 
 # PUTTERS, GETTERS, LEN FUNCS ---------------------------------------
 
-lStringLen = tLenFuncs[F._L_STRING]
-lStringPut = tPutFuncs[F._L_STRING]
-vuInt32Len = tLenFuncs[F._V_UINT32]
-vuInt32Put = tPutFuncs[F._V_UINT32]
-vEnumGet = tGetFuncs[F._V_ENUM]
-vEnumLen = tLenFuncs[F._V_ENUM]
-vEnumPut = tPutFuncs[F._V_ENUM]
+l_string_len = T_LEN_FUNCS[F.L_STRING]
+l_string_put = T_PUT_FUNCS[F.L_STRING]
+vuint32_len = T_LEN_FUNCS[F.V_UINT32]
+vuint32_put = T_PUT_FUNCS[F.V_UINT32]
+venum_get = T_GET_FUNCS[F.V_ENUM]
+venum_len = T_LEN_FUNCS[F.V_ENUM]
+venum_put = T_PUT_FUNCS[F.V_ENUM]
 
 # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 # LEN PARAMETERS MUST BE (val, n), where n is the field number
 # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 
-def enumPairSpecLen(val, n):
+def enum_pair_spec_len(val, nnn):
     """
     val is guaranteed to be a well-formed EnumPair object; this is
     the length of the spec on the wire, what is written before the spec.
     Returns the total of the encoded length of the symbol and that of
     its value.
     """
-    return lStringLen(val.symbol, n) + vuInt32Len(val.value, n)
+    return l_string_len(val.symbol, nnn) + vuint32_len(val.value, nnn)
 
 
-def enumPairSpecPrefixedLen(val, n):
+def enum_pair_spec_prefixed_len(val, nnn):
     """
     val is guaranteed to be a well-formed EnumPair object; this is
     the length of the spec on the wire, what is written before the spec.
     So it is the total length of the header plus the length of the encoded
     byte count plus the length of the encoded enumPairSpec.
     """
-    h = lengthAsVarint(fieldHdrLen(n, LEN_PLUS_TYPE))
-    byteCount = enumPairSpecLen(val, n)
-    return h + lengthAsVarint(byteCount) + byteCount
+    h = length_as_varint(field_hdr_len(nnn, LEN_PLUS_TYPE))
+    byteCount = enum_pair_spec_len(val, nnn)
+    return h + length_as_varint(byteCount) + byteCount
 
 # val = instance of the type, n = field number
 
 
-def enumPairSpecPutter(chan, val, n):
+def enum_pair_spec_putter(chan, val, nnn):
     # write the field header
-    writeRawVarint(chan, fieldHdr(n, LEN_PLUS_TYPE))
+    write_raw_varint(chan, field_hdr(nnn, LEN_PLUS_TYPE))
 
     # write the byte count
-    count = enumPairSpecLen(val, n)
-    writeRawVarint(chan, count)
+    count = enum_pair_spec_len(val, nnn)
+    write_raw_varint(chan, count)
 #   print "AFTER WRITING BYTE COUNT %u pos = %u" % (count, pos)
 
     # write field 0, the symbol
-    lStringPut(chan, val.symbol, 0)
+    l_string_put(chan, val.symbol, 0)
 #   print "AFTER WRITING SYMBOL %s pos = %u" % ( val.symbol, pos)
 
     # write field 1, the value
-    vuInt32Put(chan, val.value, 1)
+    vuint32_put(chan, val.value, 1)
 #   print "AFTER WRITING VALUE %u pos = %u" % (val.value, pos)
 
 
-def enumPairSpecGetter(dummyReg, chan):
+def enum_pair_spec_getter(dummyReg, chan):
     # we have already read the header containing the field number
     # read the byte count, the length of the spec
-    byteCount = readRawVarint(chan)
+    byteCount = read_raw_varint(chan)
     end = chan.position + byteCount           # XXX should use for validation
 
     # read field 0
-    hdr = readRawVarint(chan)
+    hdr = read_raw_varint(chan)
     # SHOULD COMPLAIN IF WRONG HEADER
-    s = readRawLenPlus(chan)
-    sym = s.decode('utf-8')                   # convert bytes to str
+    string = read_raw_len_plus(chan)
+    sym = string.decode('utf-8')                   # convert bytes to str
 
     # read field 1
-    hdr = readRawVarint(chan)
+    hdr = read_raw_varint(chan)
     # SHOULD COMPLAIN IF WRONG HEADER
-    val = readRawVarint(chan)
+    val = read_raw_varint(chan)
 
     # construct the EnumPairSpec object from field values
     obj = EnumPairSpec(sym, val)
     return obj
 
-cLenFuncs[cTypes.ENUM_PAIR_SPEC] = enumPairSpecLen
-cPLenFuncs[cTypes.ENUM_PAIR_SPEC] = enumPairSpecPrefixedLen
-cPutFuncs[cTypes.ENUM_PAIR_SPEC] = enumPairSpecPutter
-cGetFuncs[cTypes.ENUM_PAIR_SPEC] = enumPairSpecGetter
+C_LEN_FUNCS[C_TYPES.ENUM_PAIR_SPEC] = enum_pair_spec_len
+C_P_LEN_FUNCS[C_TYPES.ENUM_PAIR_SPEC] = enum_pair_spec_prefixed_len
+C_PUT_FUNCS[C_TYPES.ENUM_PAIR_SPEC] = enum_pair_spec_putter
+C_GET_FUNCS[C_TYPES.ENUM_PAIR_SPEC] = enum_pair_spec_getter
 
 # ---------------------------------------------------------
 
 
-def enumSpecLen(val, n):
+def enum_spec_len(val, nnn):
     # val is guaranteed to be a well-formed EnumSpec object
 
-    count = lStringLen(val.name, 0)               # field 0 contribution
+    count = l_string_len(val.name, 0)               # field 0 contribution
     for pair in val:
-        count += enumPairSpecPrefixedLen(pair, 1)   # field 1 contribution(s)
+        # field 1 contribution(s)
+        count += enum_pair_spec_prefixed_len(pair, 1)
     return count
 
 
-def enumSpecPrefixedLen(val, n):
+def enumSpecPrefixedLen(val, nnn):
     # val is guaranteed to be a well-formed EnumSpec object
 
     # we are going to write the header, then a byte count, then the enum
     # name, then one or more EnumPairSpecs
-    h = lengthAsVarint(fieldHdrLen(n, LEN_PLUS_TYPE))
-    count = enumSpecLen(val, n)
-    return h + lengthAsVarint(count) + count
+    len_ = length_as_varint(field_hdr_len(nnn, LEN_PLUS_TYPE))
+    count = enum_spec_len(val, nnn)
+    return len_ + length_as_varint(count) + count
 
 
-def enumSpecPutter(chan, val, n):
+def enum_spec_putter(chan, val, nnn):
     # write the field header
-    writeRawVarint(chan, fieldHdr(n, LEN_PLUS_TYPE))
+    write_raw_varint(chan, field_hdr(nnn, LEN_PLUS_TYPE))
 #   print "AFTER WRITING HEADER pos = %u" %  pos
 
     # write the byte count
-    count = enumSpecLen(val, n)
-    writeRawVarint(chan, count)
+    count = enum_spec_len(val, nnn)
+    write_raw_varint(chan, count)
 #   print "AFTER WRITING BYTE COUNT %u pos = %u" % (count, pos)
 
     # write the enum's name
-    lStringPut(chan, val.name, 0)             # field 0
+    l_string_put(chan, val.name, 0)             # field 0
 
     # write the pairs
     for pair in val:
-        enumPairSpecPutter(chan, pair, 1)   # field 1 instances
+        enum_pair_spec_putter(chan, pair, 1)   # field 1 instances
 
 
-def enumSpecGetter(chan):
+def enum_spec_getter(chan):
     # we have already read the header containing the field number
     # read the byte count, the length of the spec
-    byteCount = readRawVarint(chan)
+    byteCount = read_raw_varint(chan)
     end = chan.position + byteCount           # XXX should use for validation
 
     # read field 0
-    hdr = readRawVarint(chan)
+    hdr = read_raw_varint(chan)
     # SHOULD COMPLAIN IF WRONG HEADER
-    s = readRawLenPlus(chan)
-    name = s.decode('utf-8')                  # convert bytes to str
+    string = read_raw_len_plus(chan)
+    name = string.decode('utf-8')                  # convert bytes to str
 
     # read instances of field 1: should enforce the + quantifier here
     pairs = []
     while chan.position < end:
-        hdr = readRawVarint(chan)
-        if hdrFieldNbr(hdr) != 1:
+        hdr = read_raw_varint(chan)
+        if hdr_field_nbr(hdr) != 1:
             # XXX SHOULD COMPLAIN IF WRONG HEADER
             # XXX This is a a peek: pos only gets advanced if OK
-            print("EXPECTED FIELD 1, FOUND %s" % hdrFieldNbr(hdr))
+            print("EXPECTED FIELD 1, FOUND %s" % hdr_field_nbr(hdr))
             break
-        e = enumPairSpecGetter(chan0)
-        pairs.append(e)
+        exc = enum_pair_spec_getter(chan0)
+        pairs.append(exc)
 
     # create EnumSpec instance, which gets returned
     val = EnumSpec(name, pairs)
     return val
 
-cLenFuncs[cTypes.ENUM_SPEC] = enumSpecLen
-cPLenFuncs[cTypes.ENUM_SPEC] = enumSpecPrefixedLen
-cPutFuncs[cTypes.ENUM_SPEC] = enumSpecPutter
-cGetFuncs[cTypes.ENUM_SPEC] = enumSpecGetter
+C_LEN_FUNCS[C_TYPES.ENUM_SPEC] = enum_spec_len
+C_P_LEN_FUNCS[C_TYPES.ENUM_SPEC] = enumSpecPrefixedLen
+C_PUT_FUNCS[C_TYPES.ENUM_SPEC] = enum_spec_putter
+C_GET_FUNCS[C_TYPES.ENUM_SPEC] = enum_spec_getter
 
 # ---------------------------------------------------------
 
 
-def fieldSpecLen(val, n):
+def field_spec_len(val, nnn):
     # val is guaranteed to be a well-formed fieldSpec object
     # fields are '_name', '_type', '_quantifier', '_fieldNbr', '_default'
 
-    count = lStringLen(val.name, 0)      # field 0 contribution
-    count += vEnumLen(val.fTypeNdx, 1)
-    count += vEnumLen(val.quantifier, 2)
-    count += vuInt32Len(val.fieldNbr, 3)
+    count = l_string_len(val.name, 0)      # field 0 contribution
+    count += venum_len(val.FIELD_TYPE_NDX, 1)
+    count += venum_len(val.quantifier, 2)
+    count += vuint32_len(val.field_nbr, 3)
     if val.default is not None:
         # TYPE OF DEFAULT VALUE MUST MATCH val.fType
         pass
     return count
 
 
-def fieldSpecPrefixedLen(val, n):
+def field_spec_prefixed_len(val, nnn):
     # val is guaranteed to be a well-formed fieldSpec object
-    h = lengthAsVarint(fieldHdrLen(n, LEN_PLUS_TYPE))
-    count = fieldSpecLen(val, n)
-    return h + lengthAsVarint(count) + count
+    h = length_as_varint(field_hdr_len(nnn, LEN_PLUS_TYPE))
+    count = field_spec_len(val, nnn)
+    return h + length_as_varint(count) + count
 
 
-def fieldSpecPutter(chan, val, n):
+def field_spec_putter(chan, val, nnn):
     # fields are '_name', '_type', '_quantifier', '_fieldNbr', '_default'
 
     # write the field header
-    writeRawVarint(chan, fieldHdr(n, LEN_PLUS_TYPE))
+    write_raw_varint(chan, field_hdr(nnn, LEN_PLUS_TYPE))
 #   print "FIELD SPEC: AFTER WRITING HEADER pos = %u" %  pos
 
     # write the byte count
-    count = fieldSpecLen(val, n)
-    writeRawVarint(chan, count)
+    count = field_spec_len(val, nnn)
+    write_raw_varint(chan, count)
 #   print "FIELD SPEC: AFTER WRITING BYTE COUNT %u pos = %u" % (count, pos)
 
     # write the field's name
-    lStringPut(chan, val.name, 0)             # field 0
+    l_string_put(chan, val.name, 0)             # field 0
 
     # write the type
-    vEnumPut(chan, val.fTypeNdx, 1)
+    venum_put(chan, val.FIELD_TYPE_NDX, 1)
 
     # write the quantifier
-    vEnumPut(chan, val.quantifier, 2)
+    venum_put(chan, val.quantifier, 2)
 
     # write the field number
-    vuInt32Put(chan, val.fieldNbr, 3)
+    vuint32_put(chan, val.field_nbr, 3)
 
     # write the default, should there be one
     if val.default is not None:
@@ -932,190 +934,190 @@ def fieldSpecPutter(chan, val, n):
         pass
 
 
-def fieldSpecGetter(msgReg, chan):
+def field_spec_getter(msg_reg, chan):
     # we have already read the header containing the field number
     # read the byte count, the length of the spec
-    byteCount = readRawVarint(chan)
+    byteCount = read_raw_varint(chan)
     end = chan.position + byteCount
 
     # read field 0
-    hdr = readRawVarint(chan)
+    hdr = read_raw_varint(chan)
     # SHOULD COMPLAIN IF WRONG HEADER
-    s = readRawLenPlus(chan)
-    name = s.decode('utf-8')                      # convert bytes to str
+    string = read_raw_len_plus(chan)
+    name = string.decode('utf-8')                      # convert bytes to str
 
     # read field 1
-    hdr = readRawVarint(chan)
+    hdr = read_raw_varint(chan)
     # SHOULD COMPLAIN IF WRONG HEADER
-    fType = vEnumGet(chan)
+    field_type = venum_get(chan)
 
     # read field 2
-    hdr = readRawVarint(chan)
+    hdr = read_raw_varint(chan)
     # SHOULD COMPLAIN IF WRONG HEADER
-    quant = vEnumGet(chan)
+    quant = venum_get(chan)
 
     # read field 3
-    hdr = readRawVarint(chan)
+    hdr = read_raw_varint(chan)
     # SHOULD COMPLAIN IF WRONG HEADER
-    fNbr = vEnumGet(chan)
+    f_nbr = venum_get(chan)
 
     # XXX IGNORING DEFAULT
     default = None
-    val = FieldSpec(msgReg, name, fType, quant, fNbr, default)
+    val = FieldSpec(msg_reg, name, field_type, quant, f_nbr, default)
 
     return val
 
-cLenFuncs[cTypes.FIELD_SPEC] = fieldSpecLen
-cPLenFuncs[cTypes.FIELD_SPEC] = fieldSpecPrefixedLen
-cPutFuncs[cTypes.FIELD_SPEC] = fieldSpecPutter
-cGetFuncs[cTypes.FIELD_SPEC] = fieldSpecGetter
+C_LEN_FUNCS[C_TYPES.FIELD_SPEC] = field_spec_len
+C_P_LEN_FUNCS[C_TYPES.FIELD_SPEC] = field_spec_prefixed_len
+C_PUT_FUNCS[C_TYPES.FIELD_SPEC] = field_spec_putter
+C_GET_FUNCS[C_TYPES.FIELD_SPEC] = field_spec_getter
 
 # ---------------------------------------------------------
 # XXX use of 'n' parameter ?
 
 
-def msgSpecLen(val, n):
+def msg_spec_len(val, nnn):
     # val is guaranteed to be a well-formed msgSpec object
     # fields are  protocol, name, fields, enum=None
 
-    count = lStringLen(val.name, 0)                # field 0, name
+    count = l_string_len(val.name, 0)                # field 0, name
     for field in val:
-        count += fieldSpecPrefixedLen(field, 1)     # field 1, fields
+        count += field_spec_prefixed_len(field, 1)     # field 1, fields
     if val.enums is not None and val.enums != []:
         for enum in val.enums:
             count += enumSpecPrefixedLen(enum, 2)   # field 2, optional enums
     return count
 
 
-def msgSpecPrefixedLen(val, n):
+def msg_spec_prefixed_len(val, nnn):
     # val is guaranteed to be a well-formed msgSpec object
-    h = lengthAsVarint(fieldHdrLen(n, LEN_PLUS_TYPE))
-    count = msgSpecLen(val, n)
-    return h + lengthAsVarint(count) + count
+    h = length_as_varint(field_hdr_len(nnn, LEN_PLUS_TYPE))
+    count = msg_spec_len(val, nnn)
+    return h + length_as_varint(count) + count
 
 
-def msgSpecPutter(chan, val, n):
+def msg_spec_putter(chan, val, nnn):
     # fields are  protocol, name, fields, enum=None
 
     # write the field header
-    writeRawVarint(chan, fieldHdr(n, LEN_PLUS_TYPE))
+    write_raw_varint(chan, field_hdr(nnn, LEN_PLUS_TYPE))
     print("MSG SPEC: AFTER WRITING HEADER pos = %u" % chan.position)
 
     # write the byte count
-    count = msgSpecLen(val, n)
-    writeRawVarint(chan, count)
+    count = msg_spec_len(val, nnn)
+    write_raw_varint(chan, count)
     print("MSG SPEC: AFTER WRITING BYTE COUNT %u pos = %u" % (
         count, chan.position))
 
     # write the spec's name
-    lStringPut(chan, val.name, 0)                 # field 0
+    l_string_put(chan, val.name, 0)                 # field 0
 
     # write the fields
     for field in val:
-        fieldSpecPutter(chan, field, 1)          # field 1 instances
+        field_spec_putter(chan, field, 1)          # field 1 instances
 
     # write the enum, should there be one
     if val.enums is not None and val.enums != []:
         for enum in val.enums:
-            enumSpecPutter(chan, enum, 2)         # yup, field 2
+            enum_spec_putter(chan, enum, 2)         # yup, field 2
 
 
 # 'msgReg' param added 2016-06-24
-def msgSpecGetter(msgReg, chan):
+def msg_spec_getter(msg_reg, chan):
     # read the byte count, the length of the spec
-    byteCount = readRawVarint(chan)
+    byteCount = read_raw_varint(chan)
     end = chan.position + byteCount
 
     # read field 0
-    hdr = readRawVarint(chan)
+    hdr = read_raw_varint(chan)
     # SHOULD COMPLAIN IF WRONG HEADER
-    s = readRawLenPlus(chan)
-    name = s.decode('utf8')                 # convert byte to str
+    string = read_raw_len_plus(chan)
+    name = string.decode('utf8')                 # convert byte to str
 
     # read instances of field 1: should enforce the + quantifier here
     fields = []
     while chan.position < end:
-        hdr = readRawVarint(chan)
-        if hdrFieldNbr(hdr) != 1:
+        hdr = read_raw_varint(chan)
+        if hdr_field_nbr(hdr) != 1:
             # XXX SHOULD COMPLAIN IF WRONG HEADER
             # XXX This is a a peek: pos only gets advanced if OK
-            print("EXPECTED FIELD 1, FOUND %s" % hdrFieldNbr(hdr))
+            print("EXPECTED FIELD 1, FOUND %s" % hdr_field_nbr(hdr))
             break
         # XXX params should be (msgReg, chan)
-        f = fieldSpecGetter(msgReg, chan)       # was chan0
-        fields.append(f)
+        file = field_spec_getter(msg_reg, chan)       # was chan0
+        fields.append(file)
 
     # we may have multiple enums
     enums = []
     while chan.position < end:
-        hdr = readRawVarint(chan)
-        if hdrFieldNbr(hdr) != 2:
-            print("EXPECTED FIELD 2, FOUND %s" % hdrFieldNbr(hdr))
+        hdr = read_raw_varint(chan)
+        if hdr_field_nbr(hdr) != 2:
+            print("EXPECTED FIELD 2, FOUND %s" % hdr_field_nbr(hdr))
             break
-        enum = enumSpecGetter(chan)     # was chan0
+        enum = enum_spec_getter(chan)     # was chan0
         enums.append(enum)
 
     # XXX WRONG PARAMETER LIST
     # val = MsgSpec(name, fields, enums)
-    dummyParent = MsgSpec('dummy', msgReg, None)
-    val = MsgSpec(name, msgReg, dummyParent)
+    dummyParent = MsgSpec('dummy', msg_reg, None)
+    val = MsgSpec(name, msg_reg, dummyParent)
     return val
 
-cLenFuncs[cTypes.MSG_SPEC] = msgSpecLen
-cPLenFuncs[cTypes.MSG_SPEC] = msgSpecPrefixedLen
-cPutFuncs[cTypes.MSG_SPEC] = msgSpecPutter
-cGetFuncs[cTypes.MSG_SPEC] = msgSpecGetter
+C_LEN_FUNCS[C_TYPES.MSG_SPEC] = msg_spec_len
+C_P_LEN_FUNCS[C_TYPES.MSG_SPEC] = msg_spec_prefixed_len
+C_PUT_FUNCS[C_TYPES.MSG_SPEC] = msg_spec_putter
+C_GET_FUNCS[C_TYPES.MSG_SPEC] = msg_spec_getter
 
 # ---------------------------------------------------------
 
 
-def seqSpecLen(val, n):
+def seq_spec_len(val, nnn):
     # val is guaranteed to be a well-formed seqSpec object
     pass
 
 
-def seqSpecPrefixedLen(val, n):
+def seq_spec_prefixed_len(val, nnn):
     # val is guaranteed to be a well-formed seqSpec object
     pass
 
 
-def seqSpecPutter(chan, val, n):
+def seq_spec_putter(chan, val, nnn):
     # STUB
     pass
 
 
-def seqSpecGetter(dummyReg, chan):
+def seq_spec_getter(dummyReg, chan):
     # STUB
     return val
 
-cLenFuncs[cTypes.SEQ_SPEC] = seqSpecLen
-cPLenFuncs[cTypes.SEQ_SPEC] = seqSpecPrefixedLen
-cPutFuncs[cTypes.SEQ_SPEC] = seqSpecPutter
-cGetFuncs[cTypes.SEQ_SPEC] = seqSpecGetter
+C_LEN_FUNCS[C_TYPES.SEQ_SPEC] = seq_spec_len
+C_P_LEN_FUNCS[C_TYPES.SEQ_SPEC] = seq_spec_prefixed_len
+C_PUT_FUNCS[C_TYPES.SEQ_SPEC] = seq_spec_putter
+C_GET_FUNCS[C_TYPES.SEQ_SPEC] = seq_spec_getter
 
 # ---------------------------------------------------------
 
 
-def protoSpecLen(val, n):
+def proto_spec_len(val, nnn):
     # val is guaranteed to be a well-formed protoSpec object
     pass
 
 
-def protoSpecPrefixedLen(val, n):
+def proto_spec_prefixed_len(val, nnn):
     # val is guaranteed to be a well-formed protoSpec object
     pass
 
 
-def protoSpecPutter(chan, val, n):
+def proto_spec_putter(chan, val, nnn):
     # STUB
     pass
 
 
-def protoSpecGetter(chan):
+def proto_spec_getter(chan):
     # STUB
     return val              # END DISPATCH TABLES
 
-cLenFuncs[cTypes.PROTO_SPEC] = protoSpecLen
-cPLenFuncs[cTypes.PROTO_SPEC] = protoSpecPrefixedLen
-cPutFuncs[cTypes.PROTO_SPEC] = protoSpecPutter
-cGetFuncs[cTypes.PROTO_SPEC] = protoSpecGetter
+C_LEN_FUNCS[C_TYPES.PROTO_SPEC] = proto_spec_len
+C_P_LEN_FUNCS[C_TYPES.PROTO_SPEC] = proto_spec_prefixed_len
+C_PUT_FUNCS[C_TYPES.PROTO_SPEC] = proto_spec_putter
+C_GET_FUNCS[C_TYPES.PROTO_SPEC] = proto_spec_getter

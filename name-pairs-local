@@ -1,0 +1,157 @@
+#         fieldz/name-pairs-local
+
+#         options
+
+inDir                           in_dir
+justShow                        just_show
+logDir                          log_dir
+noChanges                       no_changes
+showTimestamp                   show_timestamp
+showVersion                     show_version
+uDir                            u_dir
+
+#         other
+aPair                           a_pair
+bPair                           b_pair
+cPair                           c_pair
+dPair                           d_pair
+ePair                           e_pair
+
+acceptMsgSpecs                  acept_msg_specs
+ae                              a_exc
+assertEquals                    assertEqual
+assertNotEquals                 assertNotEqual
+
+b128Buf                         b128_buf
+b160Buf                         b160_buf
+b256Buf                         b256_buf
+barEnum                         bar_enum
+bufSize                         buf_size
+by                              by_
+byteBuf                         byte_buf
+byteCount                       byte_count
+
+canonicalSpec                   canonical_spec
+checkFieldImplAgainstSpec       check_field_impl_against_spec
+childClass                      child_class
+childSpec                       child_spec
+cloneRepr                       clone_repr
+clonedSpec                      cloned_spec
+clz                             cls
+Clz                             Cls
+
+displayVal                      display_val
+doRoundTrip2                    do_round_trip2
+dottedMsgName                   dotted_msg_name
+dottedName                      dotted_name
+dummyBuffer                     dummy_buffer
+dumpBuffer                      dump_buffer
+
+e                               exc
+enumStart                       enum_start
+errMsg                          err_msg
+eSpec                           e_spec
+
+fClass                          f_class
+
+fieldClsByQName                 field_cls_by_q_name
+fieldClasses                    field_classes
+fieldClassesByName              field_classes_by_name
+fieldClassesByNbr               field_classes_by_nbr
+fieldNbr                        field_nbr
+_fieldNbr                       _field_nbr
+fieldSpec                       field_spec
+fName                           f_name
+fNbr                            f_nbr
+fooEnum                         foo_enum
+fQuant                          f_quant
+fs                              f_types
+
+hostByAddr                      HOST_BY_ADDR
+hostByName                      HOST_BY_NAME
+hostByNodeID                    HOST_BY_NODE_ID
+hostByPubKey                    HOST_BY_PUB_KEY
+hostByPrivateKey                HOST_BY_PRIVATE_KEYE
+
+ie                              i_exc
+innerMsg0                       inner_msg0
+innerMsg1                       inner_msg1
+innerMsgSpec                    inner_msg_spec
+
+leMsg                           le_msg
+leMsg0                          le_msg0
+leMsg1                          le_msg1
+leMsg2                          le_msg2
+leMsgValues                     le_msg_values
+lilBigMsg                       lil_big_msg
+lilBigMsg0                      lil_big_msg0
+lilBigMsg1                      lil_big_msg1
+lilBigMsg2                      lil_big_msg2
+lilBigMsgValues                 lil_big_msg_values
+
+_m                              _msg_spec
+m                               match
+makeRegistries                  make_registries
+makeSOM                         make_str_obj_model
+maxCount                        max_count
+maxName                         max_name
+msgLen                          msg_len
+msgName                         msg_name
+msgReg                          msg_reg
+msgSpec                         msg_spec
+msgStarter                      msg_starter
+
+n2                              nn2
+n3                              nn3
+
+outerMsg0                       outer_msg0
+outerMsg1                       outer_msg1
+outerMsgSpec                    outer_msg_spec
+oldPosition                     old_position
+
+p                               ppp
+pgmNameAndVersion               pgm_name_and_version
+_protoName                      _proto_name
+protoName                       proto_name
+protoReg                        proto_reg
+qualName                        qual_name
+
+readBack                        read_back
+rndLen                          rnd_len
+
+s2                              string2
+saferSetter                     safer_setter
+
+tName                           t_name
+thisField                       this_field
+thisMsg                         this_msg
+typeName                        type_name
+
+vList                           v_list
+wordCount                       word_count
+x                               ndx_
+z                               zzz
+
+# mostly_tests ------------------------------------------------------                                 
+doFieldTypes                    do_field_types
+doWhatever                      do_whatevr
+
+roundTripFieldSpecViaString     round_trip_field_spec_via_string
+roundTripProtoSpecViaString     round_trip_poto_spec_via_string
+
+testCaching                     test_caching
+testEnum                        test_enum
+testFieldImpl                   test_field_impl
+testFieldSpec                   test_field_spec
+testGenEnum                     test_gen_enum
+testMaps                        test_maps
+testMsgImpl                     test_msg_impl
+testMsgSpec                     test_msg_spec
+testNestedEnum                  test_nested_enum
+testParseAndWriteProtoSpec      test_parse_and_write_proto_spec
+testProtoSpec                   test_proto_spec
+testRingDataProto               test_ring_data_proto
+testRoundTripRingDataInstancesToWireFormat test_round_trip_ring_data_instances_to_wire_format
+testTheEnum                     test_the_enum
+testZZ32                        test_zz32
+testZZ64                        test_zz64

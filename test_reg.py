@@ -33,37 +33,37 @@ class TestReg (unittest.TestCase):
         self.assertEqual(
             F.MAX_NDX +
             1 +
-            C.CoreTypes().maxNdx +
+            C.CoreTypes().max_ndx +
             1,
-            testReg.nextRegID)
+            testReg.next_reg_id)
 
         # verify that all fieldTypes are defined in the registry, each
         # with the proper index (vBool through fBytes32 at F.MAX_NDX)
-        fs = FS()
-        cTypes = C.CoreTypes()
+        f_types = FS()
+        C_TYPES = C.CoreTypes()
         for i in range(F.MAX_NDX + 1):
-            name = testReg[i].qualName
+            name = testReg[i].qual_name
             # DEBUG
 #           print '%2u %s' % (i, name)
             # END
-            self.assertEqual(fs.asStr(i), name)
-            self.assertEqual(i, testReg.name2RegID(name))
+            self.assertEqual(f_types.as_str(i), name)
+            self.assertEqual(i, testReg.name2reg_id(name))
 
-        for i in range(F.MAX_NDX + 1, F.MAX_NDX + 1 + cTypes.maxNdx + 1):
-            name = testReg[i].qualName
+        for i in range(F.MAX_NDX + 1, F.MAX_NDX + 1 + C_TYPES.max_ndx + 1):
+            name = testReg[i].qual_name
             # DEBUG
 #           print '%2u %s' % (i, name)
             # END
-            self.assertEqual(cTypes.asStr(i - (F.MAX_NDX + 1)), name)
-            self.assertEqual(i, testReg.name2RegID(name))
+            self.assertEqual(C_TYPES.as_str(i - (F.MAX_NDX + 1)), name)
+            self.assertEqual(i, testReg.name2reg_id(name))
 
         # F and C range from 0 to maxNdx
-        self.assertEqual(F.MAX_NDX + 1 + cTypes.maxNdx + 1, len(testReg))
+        self.assertEqual(F.MAX_NDX + 1 + C_TYPES.max_ndx + 1, len(testReg))
 
 #       print "DEBUG: len(testReg) is %u" % len(testReg)
 #       print "DEBUG: nextRegID is %u"    % testReg.nextRegID
 
-        self.assertEqual(len(testReg), testReg.nextRegID)
+        self.assertEqual(len(testReg), testReg.next_reg_id)
 
 
 if __name__ == '__main__':

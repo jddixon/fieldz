@@ -5,8 +5,8 @@ import time
 import unittest
 
 from rnglib import SimpleRNG
-from fieldz.chan import *
-from fieldz.raw import *
+#from fieldz.chan import *
+#from fieldz.raw import *
 
 LEN_BUFF = 1024
 
@@ -22,12 +22,12 @@ class TestLenPlus (unittest.TestCase):
     # utility functions #############################################
 
     # actual unit tests #############################################
-    def dumpBuffer(self, buf):
+    def dump_buffer(self, buf):
         for i in range(16):
             print("0x%02x " % buf[i], end=' ')
         print()
 
-    def roundTrip(self, s):
+    def roundTrip(self, string):
         """
         this tests writing and reading a string of bytes as the first and
         only field in a buffer
@@ -36,8 +36,8 @@ class TestLenPlus (unittest.TestCase):
         buf = chan.buffer
 
         # -- write the bytearray ------------------------------------
-        fieldNbr = 1 + self.rng.nextInt16(1024)
-        writeLenPlusField(chan, s, fieldNbr)
+        field_nbr = 1 + self.rng.next_int16(1024)
+        write_len_plus_field(chan, string, field_nbr)
         chan.flip()
 
 #       # DEBUG
@@ -46,22 +46,27 @@ class TestLenPlus (unittest.TestCase):
 
         # -- read the value written ---------------------------------
         # first the header (which is a varint) ------------
-        (fieldType, fieldNbr2,) = readFieldHdr(chan)
+        (fieldType, fieldNbr2,) = read_field_hdr(chan)
         offset2 = chan.position
         self.assertEqual(LEN_PLUS_TYPE, fieldType)
-        self.assertEqual(fieldNbr, fieldNbr2)
-        self.assertEqual(lengthAsVarint(fieldHdr(fieldNbr, LEN_PLUS_TYPE)),
+        self.assertEqual(field_nbr, fieldNbr2)
+        self.assertEqual(length_as_varint(field_hdr(field_nbr, LEN_PLUS_TYPE)),
                          offset2)
 
         # then the actual value written -------------------
-        t = readRawLenPlus(chan)
+        tstamp = read_raw_len_plus(chan)
         offset3 = chan.position
-        self.assertEqual(s, t)
-        self.assertEqual(offset2 + lengthAsVarint(len(s)) + len(s), offset3)
+        self.assertEqual(string, tstamp)
+        self.assertEqual(
+            offset2 +
+            length_as_varint(
+                len(string)) +
+            len(string),
+            offset3)
 
     def testEncodeDecode(self):
         self.roundTrip(''.encode('utf8'))
-        self.roundTrip('x'.encode('utf8'))
+        self.roundTrip('ndx_'.encode('utf8'))
         self.roundTrip('should be a random string of bytes'.encode('utf8'))
 
 if __name__ == '__main__':

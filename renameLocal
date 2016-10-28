@@ -1,4 +1,9 @@
-pylint setup.py big_test.py little_big_test.py fieldzSpecc  \
+# ringd/renamePerAPI
+
+sdRenameInFiles -v1rw                   \
+    -m ../rnglib/name-pairs-api         \
+    -m name-pairs-api                 \
+    -m name-pairs-local                 \
     fieldz/chan.py                \
     fieldz/compiler/__init__.py                \
     fieldz/core_types.py                \
@@ -14,5 +19,4 @@ pylint setup.py big_test.py little_big_test.py fieldzSpecc  \
     fieldz/tfbuffer.py                \
     fieldz/typed.py                \
     fieldz/__init__.py                  \
-    test*.py
-
+    setup.py big_test.py fieldzSpecc little_big_test.py test*.py

@@ -12,7 +12,7 @@ from fieldz.field_types import FieldTypes as F, FieldStr as FS
 import fieldz.msg_spec as M
 import fieldz.typed as T
 from fieldz.chan import Channel
-from fieldz.msg_impl import makeMsgClass, makeFieldClass, MsgImpl
+from fieldz.msg_impl import make_msg_class, make_field_class, MsgImpl
 
 # PROTOCOLS ---------------------------------------------------------
 from zoggery_proto_spec import ZOGGERY_PROTO_SPEC
@@ -27,26 +27,26 @@ class TestZoggerySerialization (unittest.TestCase):
 
     def setUp(self):
         data = StringIO(ZOGGERY_PROTO_SPEC)
-        p = StringProtoSpecParser(data)   # data should be file-like
-        self.sOM = p.parse()     # object model from string serialization
+        ppp = StringProtoSpecParser(data)   # data should be file-like
+        self.str_obj_model = ppp.parse()     # object model from string serialization
 
     def tearDown(self):
         pass
 
     # utility functions #############################################
-    def leMsgValues(self):
+    def le_msg_values(self):
         """ returns a list """
         timestamp = int(time.time())
-        nodeID = [0] * 20
+        node_id = [0] * 20
         key = [0] * 20
-        length = rng.nextInt32()
-        by = 'who is responsible'
+        length = rng.next_int32()
+        by_ = 'who is responsible'
         path = '/home/jdd/tarballs/something.tar.gz'
         # let's have some random bytes
-        rng.nextBytes(nodeID)
-        rng.nextBytes(key)
+        rng.next_bytes(node_id)
+        rng.next_bytes(key)
         # NOTE that this is a list
-        return [timestamp, nodeID, key, length, by, path]
+        return [timestamp, node_id, key, length, by_, path]
 
     # actual unit tests #############################################
 
@@ -64,17 +64,17 @@ class TestZoggerySerialization (unittest.TestCase):
         # verify that this adds 1 (msg) + 5 (field count) to the number
         # of entries in getters, putters, etc
 
-        self.assertIsNotNone(self.sOM)
-        self.assertTrue(isinstance(self.sOM, M.ProtoSpec))
-        self.assertEqual('org.xlattice.zoggery', self.sOM.name)
+        self.assertIsNotNone(self.str_obj_model)
+        self.assertTrue(isinstance(self.str_obj_model, M.ProtoSpec))
+        self.assertEqual('org.xlattice.zoggery', self.str_obj_model.name)
 
-        self.assertEqual(len(self.sOM.enums), 0)
-        self.assertEqual(len(self.sOM.msgs), 1)
-        self.assertEqual(len(self.sOM.seqs), 0)
+        self.assertEqual(len(self.str_obj_model.enums), 0)
+        self.assertEqual(len(self.str_obj_model.msgs), 1)
+        self.assertEqual(len(self.str_obj_model.seqs), 0)
 
-        msgSpec = self.sOM.msgs[0]
-        msgName = msgSpec.name
-        self.assertEqual('logEntry', msgName)
+        msg_spec = self.str_obj_model.msgs[0]
+        msg_name = msg_spec.name
+        self.assertEqual('logEntry', msg_name)
 
         # Create a channel ------------------------------------------
         # its buffer will be used for both serializing # the instance
@@ -84,84 +84,84 @@ class TestZoggerySerialization (unittest.TestCase):
         self.assertEqual(BUFSIZE, len(buf))
 
         # create the LogEntryMsg class ------------------------------
-        LogEntryMsg = makeMsgClass(self.sOM, msgName)
+        LogEntryMsg = make_msg_class(self.str_obj_model, msg_name)
 
         # DEBUG
         print("testZoggery: LogEntryMsg is of type ", type(LogEntryMsg))
         # END
 
         # create a message instance ---------------------------------
-        values = self.leMsgValues()        # a list of quasi-random values
-        leMsg = LogEntryMsg(values)
+        values = self.le_msg_values()        # a list of quasi-random values
+        le_msg = LogEntryMsg(values)
 
         # DEBUG
         print("type of LogEntryMsg: ", type(LogEntryMsg))
-        print("type of leMsg:       ", type(leMsg))
+        print("type of leMsg:       ", type(le_msg))
         # END
 
-        self.assertTrue(isinstance(leMsg, LogEntryMsg))
+        self.assertTrue(isinstance(le_msg, LogEntryMsg))
 
-        (timestamp, key, length, nodeID, by, path) = tuple(values)
+        (timestamp, key, length, node_id, by_, path) = tuple(values)
 
-        self.assertEqual(msgSpec.name, leMsg._name)
+        self.assertEqual(msg_spec.name, le_msg._name)
         # we don't have any nested enums or messages
 
         # XXX FAIL: properties have no len()
         # self.assertEqual(0, len(leMsg.enums))
 
         # DEBUG
-        print("leMsg.enums: ", leMsg.enums)
+        print("leMsg.enums: ", le_msg.enums)
         # END
 
         # self.assertEqual(0, len(leMsg.msgs))
 
-        self.assertEqual(6, len(leMsg.fieldClasses))
-        self.assertEqual(6, len(leMsg))        # number of fields in instance
-        for i in range(len(leMsg)):
+        self.assertEqual(6, len(le_msg.field_classes))
+        self.assertEqual(6, len(le_msg))        # number of fields in instance
+        for i in range(len(le_msg)):
             # DEBUG
             print("value %d is %s" % (i, values[i]))
 
             # FAILS: is a PROPERTY OBJECT
-            print("leMsg %d is %s" % (i, leMsg[i].value))
+            print("leMsg %d is %s" % (i, le_msg[i].value))
             # END
-            self.assertEqual(values[i], leMsg[i].value)         # FAILS
+            self.assertEqual(values[i], le_msg[i].value)         # FAILS
 
         # verify fields are accessible in the object ----------------
-        (timestamp, nodeID, key, length, by, path) = tuple(values)
-        self.assertEqual(timestamp, leMsg.timestamp)
-        self.assertEqual(nodeID, leMsg.nodeID)
-        self.assertEqual(key, leMsg.key)
-        self.assertEqual(length, leMsg.length)
-        self.assertEqual(by, leMsg.by)
-        self.assertEqual(path, leMsg.path)
+        (timestamp, node_id, key, length, by_, path) = tuple(values)
+        self.assertEqual(timestamp, le_msg.timestamp)
+        self.assertEqual(node_id, le_msg.node_id)
+        self.assertEqual(key, le_msg.key)
+        self.assertEqual(length, le_msg.length)
+        self.assertEqual(by_, le_msg.by_)
+        self.assertEqual(path, le_msg.path)
 
         # serialize the object to the channel -----------------------
         buf = chan.buffer
         chan.clear()
-        n = leMsg.writeStandAlone(chan)
-        self.assertEqual(0, n)
-        oldPosition = chan.position                     # TESTING flip()
+        nnn = le_msg.write_stand_alone(chan)
+        self.assertEqual(0, nnn)
+        old_position = chan.position                     # TESTING flip()
         chan.flip()
-        self.assertEqual(oldPosition, chan.limit)      # TESTING flip()
+        self.assertEqual(old_position, chan.limit)      # TESTING flip()
         self.assertEqual(0, chan.position)   # TESTING flip()
         actual = chan.limit
 
         print("ACTUAL LENGTH OF SERIALIZED OBJECT: %u" % actual)
 
         # deserialize the channel, making a clone of the message ----
-        (readBack, n2) = MsgImpl.read(chan, self.sOM)
-        self.assertIsNotNone(readBack)
-        self.assertTrue(leMsg.__eq__(readBack))
+        (read_back, nn2) = MsgImpl.read(chan, self.str_obj_model)
+        self.assertIsNotNone(read_back)
+        self.assertTrue(le_msg.__eq__(read_back))
 
         # produce another message from the same values --------------
-        leMsg2 = LogEntryMsg(values)
+        le_msg2 = LogEntryMsg(values)
         chan2 = Channel(BUFSIZE)
-        n = leMsg2.writeStandAlone(chan2)
+        nnn = le_msg2.write_stand_alone(chan2)
         chan2.flip()
-        (copy2, n3) = LogEntryMsg.read(chan2, self.sOM)
-        self.assertTrue(leMsg.__eq__(readBack))
-        self.assertTrue(leMsg2.__eq__(copy2))
-        self.assertEqual(n, n3)
+        (copy2, nn3) = LogEntryMsg.read(chan2, self.str_obj_model)
+        self.assertTrue(le_msg.__eq__(read_back))
+        self.assertTrue(le_msg2.__eq__(copy2))
+        self.assertEqual(nnn, nn3)
 
 if __name__ == '__main__':
     unittest.main()

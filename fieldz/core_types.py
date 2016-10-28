@@ -1,6 +1,6 @@
 # corez/coreTypes.py
 
-import sys
+#import sys
 from fieldz.enum import SimpleEnumWithRepr
 
 #@singleton
