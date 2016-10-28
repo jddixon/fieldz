@@ -7,410 +7,411 @@ import sys
 from fieldz.field_types import FieldTypes as F
 
 from fieldz.chan import Channel
-from fieldz.raw import *
+# from fieldz.raw import *
 
 # MsgSpec cannot be imported
 #from fieldz.msg_spec import  MsgSpec
 
 __all__ = [
-    'encodeSint32', 'decodeSint32',
-    'encodeSint64', 'decodeSint64',
-    'notImpl',
-    'tPutFuncs', 'tGetFuncs', 'tLenFuncs',
+    'encode_sint32', 'decode_sint32',
+    'encode_sint64', 'decode_sint64',
+    'not_impl',
+    'T_PUT_FUNCS', 'T_GET_FUNCS', 'T_LEN_FUNCS',
 ]
 
 
-def encodeSint32(s):
-    x = ctypes.c_int32(0xffffffff & s).value
+def encode_sint32(string):
+    ndx_ = ctypes.c_int32(0xffffffff & string).value
     # we must have the sign filling in from the left
-    v = (x << 1) ^ (x >> 31)
+    varint_ = (ndx_ << 1) ^ (ndx_ >> 31)
 #   # DEBUG
 #   print "\nencodeSint32: 0x%x --> 0x%x" % (s, v)
 #   # END
-    return v
+    return varint_
 
 
-def decodeSint32(v):
+def decode_sint32(varint_):
     # decode zig-zag:  stackoverflow 2210923
-    x = (v >> 1) ^ (-(v & 1))
-    s = ctypes.c_int32(x).value
+    ndx_ = (varint_ >> 1) ^ (-(varint_ & 1))
+    string = ctypes.c_int32(ndx_).value
 #   # DEBUG
 #   print "decodeSint32: 0x%x --> 0x%x" % (v, s)
 #   # END
-    return s
+    return string
 
 
-def encodeSint64(s):
-    v = ctypes.c_int64(0xffffffffffffffff & s).value
+def encode_sint64(string):
+    varint_ = ctypes.c_int64(0xffffffffffffffff & string).value
     # we must have the sign filling in from the left
-    v = (v << 1) ^ (v >> 63)
-    return v
+    varint_ = (varint_ << 1) ^ (varint_ >> 63)
+    return varint_
 
 
-def decodeSint64(v):
-    v = (v >> 1) ^ (-(v & 1))
-    s = ctypes.c_int64(v).value
-    return s
+def decode_sint64(varint_):
+    varint_ = (varint_ >> 1) ^ (-(varint_ & 1))
+    string = ctypes.c_int64(varint_).value
+    return string
 
 # DISPATCH TABLES ===================================================
 
 
-def notImpl(*arg): raise NotImplementedError
+def not_impl(*arg):
+    raise NotImplementedError
 
-tPutFuncs = [notImpl] * (int(F.MAX_NDX) + 1)
-tGetFuncs = [notImpl] * (int(F.MAX_NDX) + 1)
-tLenFuncs = [notImpl] * (int(F.MAX_NDX) + 1)
+T_PUT_FUNCS = [not_impl] * (int(F.MAX_NDX) + 1)
+T_GET_FUNCS = [not_impl] * (int(F.MAX_NDX) + 1)
+T_LEN_FUNCS = [not_impl] * (int(F.MAX_NDX) + 1)
 
 # puts implemented using varInts --------------------------
 
 
-def vBoolPut(chan, val, n):
+def vbool_put(chan, val, nnn):
     if val is True:
-        writeVarintField(chan, 1, n)
+        write_varint_field(chan, 1, nnn)
     else:
-        writeVarintField(chan, 0, n)
-tPutFuncs[F._V_BOOL] = vBoolPut
+        write_varint_field(chan, 0, nnn)
+T_PUT_FUNCS[F.V_BOOL] = vbool_put
 
 
-def vEnumPut(chan, val, n):
+def venum_put(chan, val, nnn):
     # just handle enums as simple ints for now, but constrain
     # to 16 bits; any sign is uhm mangled
-    v = 0xffff & val
-    writeVarintField(chan, v, n)
-tPutFuncs[F._V_ENUM] = vEnumPut
+    varint_ = 0xffff & val
+    write_varint_field(chan, varint_, nnn)
+T_PUT_FUNCS[F.V_ENUM] = venum_put
 
 
-def vuInt32Put(chan, val, n):
-    v = 0xffffffff & val
-    writeVarintField(chan, v, n)
-tPutFuncs[F._V_UINT32] = vuInt32Put
+def vuint32_put(chan, val, nnn):
+    varint_ = 0xffffffff & val
+    write_varint_field(chan, varint_, nnn)
+T_PUT_FUNCS[F.V_UINT32] = vuint32_put
 
 
-def vsInt32Put(chan, val, n):
-    v = encodeSint32(val)
-    writeVarintField(chan, v, n)
-tPutFuncs[F._V_SINT32] = vsInt32Put
+def vsint32_put(chan, val, nnn):
+    varint_ = encode_sint32(val)
+    write_varint_field(chan, varint_, nnn)
+T_PUT_FUNCS[F.V_SINT32] = vsint32_put
 
 
-def vuInt64Put(chan, val, n):
-    v = 0xffffffffffffffff & val
-    writeVarintField(chan, v, n)
-tPutFuncs[F._V_UINT64] = vuInt64Put
+def vuint64_put(chan, val, nnn):
+    varint_ = 0xffffffffffffffff & val
+    write_varint_field(chan, varint_, nnn)
+T_PUT_FUNCS[F.V_UINT64] = vuint64_put
 
 
-def vsInt64Put(chan, val, n):
-    v = encodeSint64(val)
-    writeVarintField(chan, v, n)
-tPutFuncs[F._V_SINT64] = vsInt64Put
+def vsint64_put(chan, val, nnn):
+    varint_ = encode_sint64(val)
+    write_varint_field(chan, varint_, nnn)
+T_PUT_FUNCS[F.V_SINT64] = vsint64_put
 
 # -- implemented using B32 --------------------------------
 
 
-def fuInt32Put(chan, val, n):
+def fuint32_put(chan, val, nnn):
     val = ctypes.c_uint32(val).value
-    writeB32Field(chan, val, n)
-tPutFuncs[F._F_UINT32] = fuInt32Put
+    write_b32_field(chan, val, nnn)
+T_PUT_FUNCS[F.F_UINT32] = fuint32_put
 
 
-def fsInt32Put(chan, val, n):
+def fsint32_put(chan, val, nnn):
     val = ctypes.c_int32(val).value
-    writeB32Field(chan, val, n)
-tPutFuncs[F._F_SINT32] = fsInt32Put
+    write_b32_field(chan, val, nnn)
+T_PUT_FUNCS[F.F_SINT32] = fsint32_put
 
 
-def fFloatPut(chan, val, n):
+def ffloat_put(chan, val, nnn):
     # @ means native byte order; < would mean little-endian
-    vRep = struct.pack('@f', val)
-    v = struct.unpack('@I', vRep)[0]
-    writeB32Field(chan, v, n)
-tPutFuncs[F._F_FLOAT] = fFloatPut
+    v_rep = struct.pack('@f', val)
+    varint_ = struct.unpack('@I', v_rep)[0]
+    write_b32_field(chan, varint_, nnn)
+T_PUT_FUNCS[F.F_FLOAT] = ffloat_put
 
 # -- implemented using B64 --------------------------------
 
 
-def fuInt64Put(chan, val, n):
+def fuint64_put(chan, val, nnn):
     val = ctypes.c_uint64(val).value
-    writeB64Field(chan, val, n)
-tPutFuncs[F._F_UINT64] = fuInt64Put
+    write_b64_field(chan, val, nnn)
+T_PUT_FUNCS[F.F_UINT64] = fuint64_put
 
 
-def fsInt64Put(chan, val, n):
-    v = ctypes.c_int64(val).value
-    writeB64Field(chan, v, n)
-tPutFuncs[F._F_SINT64] = fsInt64Put
+def fsint64_put(chan, val, nnn):
+    varint_ = ctypes.c_int64(val).value
+    write_b64_field(chan, varint_, nnn)
+T_PUT_FUNCS[F.F_SINT64] = fsint64_put
 
 
-def fDoublePut(chan, val, n):
+def fdouble_put(chan, val, nnn):
     #val = ctypes.c_double(val).value
-    vRep = struct.pack('@d', val)       # this gives us an 8-byte string
-    v = struct.unpack('@L', vRep)[0]
-    writeB64Field(chan, v, n)
-tPutFuncs[F._F_DOUBLE] = fDoublePut                        # END B64
+    v_rep = struct.pack('@d', val)       # this gives us an 8-byte string
+    varint_ = struct.unpack('@L', v_rep)[0]
+    write_b64_field(chan, varint_, nnn)
+T_PUT_FUNCS[F.F_DOUBLE] = fdouble_put                        # END B64
 
 
-def lStringPut(chan, val, n):
-    return writeLenPlusField(chan, val.encode('utf-8'), n)
-tPutFuncs[F._L_STRING] = lStringPut
+def l_string_put(chan, val, nnn):
+    return write_len_plus_field(chan, val.encode('utf-8'), nnn)
+T_PUT_FUNCS[F.L_STRING] = l_string_put
 
 
-def lBytesPut(chan, val, n):
-    return writeLenPlusField(chan, val, n)
-tPutFuncs[F._L_BYTES] = lBytesPut
+def lbytes_put(chan, val, nnn):
+    return write_len_plus_field(chan, val, nnn)
+T_PUT_FUNCS[F.L_BYTES] = lbytes_put
 
 # XXX NOT GOOD.  val WILL BE DYNAMICALLY DEFINED
 
 
-def lMsgPut(chan, val, n):
+def lmsg_put(chan, val, nnn):
     raise NotImplementedError
-tPutFuncs[F._L_MSG] = lMsgPut
+T_PUT_FUNCS[F.L_MSG] = lmsg_put
 
 
-def fBytes16Put(chan, val, n):
-    return writeB128Field(chan, val, n)
-tPutFuncs[F._F_BYTES16] = fBytes16Put
+def fbytes16_put(chan, val, nnn):
+    return write_b128_field(chan, val, nnn)
+T_PUT_FUNCS[F.F_BYTES16] = fbytes16_put
 
 
-def fBytes20Put(chan, val, n):
-    return writeB160Field(chan, val, n)
-tPutFuncs[F._F_BYTES20] = fBytes20Put
+def fbytes20_put(chan, val, nnn):
+    return write_b160_field(chan, val, nnn)
+T_PUT_FUNCS[F.F_BYTES20] = fbytes20_put
 
 
-def fBytes32Put(chan, val, n):
-    return writeB256Field(chan, val, n)
-tPutFuncs[F._F_BYTES32] = fBytes32Put                # END B256
+def fbytes32_put(chan, val, nnn):
+    return write_b256_field(chan, val, nnn)
+T_PUT_FUNCS[F.F_BYTES32] = fbytes32_put                # END B256
 
 # GETS ==============================================================
 
 # varint fields -------------------------------------------
 
 
-def vEnumGet(chan):
-    return readRawVarint(chan)
-tGetFuncs[F._V_ENUM] = vEnumGet
+def venum_get(chan):
+    return read_raw_varint(chan)
+T_GET_FUNCS[F.V_ENUM] = venum_get
 
 
-def vBoolGet(chan):
-    v = readRawVarint(chan)
-    if v is True:
+def vbool_get(chan):
+    varint_ = read_raw_varint(chan)
+    if varint_ is True:
         return True
     else:
         return False
-tGetFuncs[F._V_BOOL] = vBoolGet
+T_GET_FUNCS[F.V_BOOL] = vbool_get
 
 
-def vuInt32Get(chan):
-    return readRawVarint(chan)
-tGetFuncs[F._V_UINT32] = vuInt32Get
+def vuint32_get(chan):
+    return read_raw_varint(chan)
+T_GET_FUNCS[F.V_UINT32] = vuint32_get
 
 
-def vsInt32Get(chan):
-    v = readRawVarint(chan)
-    return decodeSint32(v)
-tGetFuncs[F._V_SINT32] = vsInt32Get
+def vsint32_get(chan):
+    varint_ = read_raw_varint(chan)
+    return decode_sint32(varint_)
+T_GET_FUNCS[F.V_SINT32] = vsint32_get
 
 
-def vuInt64Get(chan):
-    return readRawVarint(chan)
-tGetFuncs[F._V_UINT64] = vuInt64Get
+def vuint64_get(chan):
+    return read_raw_varint(chan)
+T_GET_FUNCS[F.V_UINT64] = vuint64_get
 
 
-def vsInt64Get(chan):
-    v = readRawVarint(chan)
-    return decodeSint64(v)
-tGetFuncs[F._V_SINT64] = vsInt64Get              # END VAR
+def vsint64_get(chan):
+    varint_ = read_raw_varint(chan)
+    return decode_sint64(varint_)
+T_GET_FUNCS[F.V_SINT64] = vsint64_get              # END VAR
 
 # B32 fields ----------------------------------------------
 
 
-def fuInt32Get(chan):
-    return readRawB32(chan)
-tGetFuncs[F._F_UINT32] = fuInt32Get
+def fuint32_get(chan):
+    return read_raw_b32(chan)
+T_GET_FUNCS[F.F_UINT32] = fuint32_get
 
 
-def fsInt32Get(chan):
-    return readRawB32(chan)
-tGetFuncs[F._F_SINT32] = fuInt32Get
+def fsint32_get(chan):
+    return read_raw_b32(chan)
+T_GET_FUNCS[F.F_SINT32] = fuint32_get
 
 
-def fFloatGet(chan):
-    val = readRawB32(chan)
+def ffloat_get(chan):
+    val = read_raw_b32(chan)
     # XXX STUB: cast 32-bit val to double
     return val
-tGetFuncs[F._F_FLOAT] = fFloatGet
+T_GET_FUNCS[F.F_FLOAT] = ffloat_get
 
 # B64 fields ----------------------------------------------
 
 
-def fuInt64Get(chan):
-    return readRawB64(chan)
-tGetFuncs[F._F_UINT64] = fuInt64Get
+def fuint64_get(chan):
+    return read_raw_b64(chan)
+T_GET_FUNCS[F.F_UINT64] = fuint64_get
 
 
-def fsInt64Get(chan):
-    return readRawB64(chan)
-tGetFuncs[F._F_SINT64] = fuInt64Get
+def fsint64_get(chan):
+    return read_raw_b64(chan)
+T_GET_FUNCS[F.F_SINT64] = fuint64_get
 
 
-def fDoubleGet(chan):
-    val = readRawB64(chan)
+def fdouble_get(chan):
+    val = read_raw_b64(chan)
     # XXX STUB: cast 64-bit val to double
     return val
-tGetFuncs[F._F_DOUBLE] = fDoubleGet
+T_GET_FUNCS[F.F_DOUBLE] = fdouble_get
 
 # LEN_PLUS fields -----------------------------------------
 
 
-def lStringGet(chan):
-    bArray = readRawLenPlus(chan)
-    s = bArray.decode('utf-8')
+def lstring_get(chan):
+    b_array = read_raw_len_plus(chan)
+    string = b_array.decode('utf-8')
     # DEBUG
-    print("lStringGet '%s' => '%s'" % (bArray, s))
+    print("lStringGet '%s' => '%s'" % (b_array, string))
     # END
-    return s
-tGetFuncs[F._L_STRING] = lStringGet
+    return string
+T_GET_FUNCS[F.L_STRING] = lstring_get
 
 
-def lBytesGet(chan):
-    return readRawLenPlus(chan)
-tGetFuncs[F._L_BYTES] = lBytesGet
+def lbytes_get(chan):
+    return read_raw_len_plus(chan)
+T_GET_FUNCS[F.L_BYTES] = lbytes_get
 
 
-def lMsgGet(chan):
+def lmsg_get(chan):
     # caller must interpret the raw byte array
-    return readRawLenPlus(chan)
-tGetFuncs[F._L_MSG] = lMsgGet
+    return read_raw_len_plus(chan)
+T_GET_FUNCS[F.L_MSG] = lmsg_get
 
 # other fixed-length byte fields --------------------------
 
 
-def fBytes16Get(chan):
-    return readRawB128(chan)
-tGetFuncs[F._F_BYTES16] = fBytes16Get
+def fbytes16_get(chan):
+    return read_raw_b128(chan)
+T_GET_FUNCS[F.F_BYTES16] = fbytes16_get
 
 
-def fBytes20Get(chan):
-    return readRawB160(chan)
-tGetFuncs[F._F_BYTES20] = fBytes20Get
+def fbytes20_get(chan):
+    return read_raw_b160(chan)
+T_GET_FUNCS[F.F_BYTES20] = fbytes20_get
 
 
-def fBytes32Get(chan):
-    return readRawB256(chan)
-tGetFuncs[F._F_BYTES32] = fBytes32Get
+def fbytes32_get(chan):
+    return read_raw_b256(chan)
+T_GET_FUNCS[F.F_BYTES32] = fbytes32_get
 
 
 # LEN ===============================================================
 
-def vBoolLen(val, n):
-    h = fieldHdrLen(n, F._V_BOOL)
-    return h + 1        # header plus one for value
-tLenFuncs[F._V_BOOL] = vBoolLen
+def vbool_len(val, nnn):
+    len_ = field_hdr_len(nnn, F.V_BOOL)
+    return len_ + + 1        # header plus one for value
+T_LEN_FUNCS[F.V_BOOL] = vbool_len
 
 # XXX This needs some thought
 
 
-def vEnumLen(val, n):
-    h = fieldHdrLen(n, F._V_ENUM)
+def venum_len(val, nnn):
+    len_ = field_hdr_len(nnn, F.V_ENUM)
     # XXX we constrain val to this range of non-negative ints
-    return h + lengthAsVarint(val & 0xffff)
-tLenFuncs[F._V_ENUM] = vEnumLen
+    return len_ + + length_as_varint(val & 0xffff)
+T_LEN_FUNCS[F.V_ENUM] = venum_len
 
 
-def vuInt32Len(val, n):
-    h = fieldHdrLen(n, F._V_UINT32)
+def vuint32_len(val, nnn):
+    len_ = field_hdr_len(nnn, F.V_UINT32)
     # XXX we constrain val to this range of non-negative ints
-    return h + lengthAsVarint(val & 0xffffffff)
-tLenFuncs[F._V_UINT32] = vuInt32Len
+    return len_ + + length_as_varint(val & 0xffffffff)
+T_LEN_FUNCS[F.V_UINT32] = vuint32_len
 
 
-def vsInt32Len(val, n):
-    h = fieldHdrLen(n, F._V_SINT32)
-    return h + lengthAsVarint(encodeSint32(val))
-tLenFuncs[F._V_SINT32] = vsInt32Len
+def vsint32_len(val, nnn):
+    len_ = field_hdr_len(nnn, F.V_SINT32)
+    return len_ + + length_as_varint(encode_sint32(val))
+T_LEN_FUNCS[F.V_SINT32] = vsint32_len
 
 
-def vuInt64Len(val, n):
-    h = fieldHdrLen(n, F._V_UINT64)
+def vuint64_len(val, nnn):
+    len_ = field_hdr_len(nnn, F.V_UINT64)
     # XXX we constrain val to this range of non-negative ints
-    return h + lengthAsVarint(val & 0xffffffffffffffff)
-tLenFuncs[F._V_UINT64] = vuInt64Len
+    return len_ + + length_as_varint(val & 0xffffffffffffffff)
+T_LEN_FUNCS[F.V_UINT64] = vuint64_len
 
 
-def vsInt64Len(val, n):
-    h = fieldHdrLen(n, F._V_SINT64)
-    return h + lengthAsVarint(encodeSint64(val))
-tLenFuncs[F._V_SINT64] = vsInt64Len
+def vsint64_len(val, nnn):
+    len_ = field_hdr_len(nnn, F.V_SINT64)
+    return len_ + + length_as_varint(encode_sint64(val))
+T_LEN_FUNCS[F.V_SINT64] = vsint64_len
 
 
-def fuInt32Len(val, n):
-    h = fieldHdrLen(n, F._F_UINT32)
-    return h + 4
-tLenFuncs[F._F_UINT32] = fuInt32Len
+def fuint32_len(val, nnn):
+    len_ = field_hdr_len(nnn, F.F_UINT32)
+    return len_ + + 4
+T_LEN_FUNCS[F.F_UINT32] = fuint32_len
 
 
-def fsInt32Len(val, n):
-    h = fieldHdrLen(n, F._F_SINT32)
-    return h + 4
-tLenFuncs[F._F_SINT32] = fsInt32Len
+def fsint32_len(val, nnn):
+    len_ = field_hdr_len(nnn, F.F_SINT32)
+    return len_ + + 4
+T_LEN_FUNCS[F.F_SINT32] = fsint32_len
 
 
-def fFloatLen(val, n):
-    h = fieldHdrLen(n, F._F_FLOAT)
-    return h + 4
-tLenFuncs[F._F_FLOAT] = fFloatLen
+def ffloat_len(val, nnn):
+    len_ = field_hdr_len(nnn, F.F_FLOAT)
+    return len_ + + 4
+T_LEN_FUNCS[F.F_FLOAT] = ffloat_len
 
 
-def fuInt64Len(val, n):
-    h = fieldHdrLen(n, F._F_UINT64)
-    return h + 8
-tLenFuncs[F._F_UINT64] = fuInt64Len
+def fuint64_len(val, nnn):
+    len_ = field_hdr_len(nnn, F.F_UINT64)
+    return len_ + + 8
+T_LEN_FUNCS[F.F_UINT64] = fuint64_len
 
 
-def fsInt64Len(val, n):
-    h = fieldHdrLen(n, F._F_SINT64)
-    return h + 8
-tLenFuncs[F._F_SINT64] = fsInt64Len
+def fsint64_len(val, nnn):
+    len_ = field_hdr_len(nnn, F.F_SINT64)
+    return len_ + + 8
+T_LEN_FUNCS[F.F_SINT64] = fsint64_len
 
 
-def fDoubleLen(val, n):
-    h = fieldHdrLen(n, F._F_DOUBLE)
-    return h + 8
-tLenFuncs[F._F_DOUBLE] = fDoubleLen
+def fdouble_len(val, nnn):
+    len_ = field_hdr_len(nnn, F.F_DOUBLE)
+    return len_ + + 8
+T_LEN_FUNCS[F.F_DOUBLE] = fdouble_len
 
 
-def lStringLen(val, n):
-    h = fieldHdrLen(n, F._L_STRING)
-    x = len(val)
-    return h + lengthAsVarint(x) + x
-tLenFuncs[F._L_STRING] = lStringLen
+def l_string_len(val, nnn):
+    len_ = field_hdr_len(nnn, F.L_STRING)
+    ndx_ = len(val)
+    return len_ + + length_as_varint(ndx_) + ndx_
+T_LEN_FUNCS[F.L_STRING] = l_string_len
 
 
-def lBytesLen(val, n):
-    h = fieldHdrLen(n, F._L_BYTES)
-    x = len(val)
-    return h + lengthAsVarint(x) + x
-tLenFuncs[F._L_BYTES] = lBytesLen
+def lbytes_len(val, nnn):
+    len_ = field_hdr_len(nnn, F.L_BYTES)
+    ndx_ = len(val)
+    return len_ + + length_as_varint(ndx_) + ndx_
+T_LEN_FUNCS[F.L_BYTES] = lbytes_len
 
 
-def lMsgLen(val, n):
-    h = fieldHdrLen(n, F._L_MSG)
-    x = val.wireLen
-    return h + lengthAsVarint(x) + x
-tLenFuncs[F._L_MSG] = lMsgLen
+def lmsg_len(val, nnn):
+    len_ = field_hdr_len(nnn, F.L_MSG)
+    ndx_ = val.wire_len
+    return len_ + + length_as_varint(ndx_) + ndx_
+T_LEN_FUNCS[F.L_MSG] = lmsg_len
 
 
-def fBytes16Len(val, n):
-    h = fieldHdrLen(n, F._F_BYTES16)
-    return h + 16
-tLenFuncs[F._F_BYTES16] = fBytes16Len
+def fbytes16_len(val, nnn):
+    len_ = field_hdr_len(nnn, F.F_BYTES16)
+    return len_ + + 16
+T_LEN_FUNCS[F.F_BYTES16] = fbytes16_len
 
 
-def fBytes20Len(val, n):
-    h = fieldHdrLen(n, F._F_BYTES20)
-    return h + 20
-tLenFuncs[F._F_BYTES20] = fBytes20Len
+def fbytes20_len(val, nnn):
+    len_ = field_hdr_len(nnn, F.F_BYTES20)
+    return len_ + + 20
+T_LEN_FUNCS[F.F_BYTES20] = fbytes20_len
 
 
-def fBytes32Len(val, n):
-    h = fieldHdrLen(n, F._F_BYTES32)
-    return h + 32
-tLenFuncs[F._F_BYTES32] = fBytes32Len
+def fbytes32_len(val, nnn):
+    len_ = field_hdr_len(nnn, F.F_BYTES32)
+    return len_ + + 32
+T_LEN_FUNCS[F.F_BYTES32] = fbytes32_len

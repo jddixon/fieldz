@@ -1,6 +1,6 @@
 # fieldz/core.py
 
-__all__ = [ \
+__all__ = [\
     # classes being played around with
     'SimpleEnum', 'SimpleEnumWithRepr',
 ]
@@ -30,10 +30,10 @@ class SimpleEnum(object):
     """
 
     def __init__(self, symbols):
-        for i in range(len(symbols)):
+        for ndx in range(len(symbols)):
             # XXX we could enforce capitalization here
-            self.__dict__[symbols[i]] = i
-        self._MAX_NDX = i
+            self.__dict__[symbols[ndx]] = ndx
+            self._max_ndx_ = len(symbols)
 
     def __setattr__(self, sym, value):
         """ instance variables may be set but never reset """
@@ -44,9 +44,9 @@ class SimpleEnum(object):
                 'attempt to change value of constant ' + sym)
 
     @property
-    def maxNdx(self):
+    def max_ndx(self):
         """ return the highest index number currently in use """
-        return self._MAX_NDX
+        return self._max_ndx_
 
 # -------------------------------------------------------------------
 
@@ -72,33 +72,32 @@ class SimpleEnumWithRepr(object):
         its representation, Q.name(Q.PLUS), would be '+'.
         """
 
-        self._strForm = []            # list of string representations
+        self._str_form = []            # list of string representations
         self._str2ndx = {}             # maps string strForm to ints
-        for i in range(len(pairs)):
-            pair = pairs[i]
+        for ndx, pair in enumerate(pairs):
             sym = pair[0]              # a string
-            self.__dict__[sym] = i      # the corresponding int value
-            self._strForm.append(pair[1])
-            self._str2ndx[pair[1]] = i
+            self.__dict__[sym] = ndx      # the corresponding int value
+            self._str_form.append(pair[1])
+            self._str2ndx[pair[1]] = ndx
 
-        self._MAX_TYPE = self.__dict__[pairs[-1][0]]
+        self._max_type_ = self.__dict__[pairs[-1][0]]
 
-    def asStr(self, n):
-        if n is None or n < 0 or self._MAX_TYPE < n:
-            raise ValueError('symbol index out of range: %s' % str(n))
-        return self._strForm[n]
+    def as_str(self, ndx):
+        if ndx is None or ndx < 0 or self._max_type_ < ndx:
+            raise ValueError('symbol index out of range: %s' % str(ndx))
+        return self._str_form[ndx]
 
-    def ndx(self, s):
+    def ndx(self, string):
         """
         Maps a string representation to the unique integer value associated
         with the corresponding symbol.
         """
-        if s is None or not s in self._str2ndx:
-            print("DEBUG: symbol '%s' not in enum" % s)
+        if string is None or not string in self._str2ndx:
+            print("DEBUG: symbol '%s' not in enum" % string)
             return None
         else:
-            return self._str2ndx[s]
+            return self._str2ndx[string]
 
     @property
-    def maxNdx(self):
-        return self._MAX_TYPE
+    def max_ndx(self):
+        return self._max_type_

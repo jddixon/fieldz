@@ -49,7 +49,7 @@ message multiEnum
 """
 
 
-class TestMsgSpec (unittest.TestCase):
+class TestMsgSpec(unittest.TestCase):
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())
@@ -58,20 +58,20 @@ class TestMsgSpec (unittest.TestCase):
         pass
 
     # utility functions #############################################
-    def makeRegistries(self, protocol):
-        nodeReg = R.NodeReg()
-        protoReg = R.ProtoReg(protocol, nodeReg)
-        msgReg = R.MsgReg(protoReg)
-        return (nodeReg, protoReg, msgReg)
+    def make_registries(self, protocol):
+        node_reg = R.NodeReg()
+        proto_reg = R.ProtoReg(protocol, node_reg)
+        msg_reg = R.MsgReg(proto_reg)
+        return (node_reg, proto_reg, msg_reg)
 
     # actual unit tests #############################################
 
-    def testMaps(self):
-        maxNdx = F.MAX_NDX
-        maxName = FS().asStr(maxNdx)
-        self.assertEqual('fBytes32', maxName)
+    def test_maps(self):
+        max_ndx = F.MAX_NDX
+        max_name = FS().as_str(max_ndx)
+        self.assertEqual('fbytes32', max_name)
 
-    def testEnum(self):
+    def test_enum(self):
         """
         A not very useful enum, limited to mapping a fixed list of
         names into a zero-based sequence of integers.
@@ -87,43 +87,49 @@ class TestMsgSpec (unittest.TestCase):
         self.assertEqual(7, enum.value('ghi'))
 
     # FOO
-    def doFieldTest(self, name, fType, quantifier=M.Q_REQUIRED,
-                    fieldNbr=0, default=None):
-        nodeReg, protoReg, msgReg = self.makeRegistries(
+    def doFieldTest(self, name, field_type, quantifier=M.Q_REQUIRED,
+                    field_nbr=0, default=None):
+        node_reg, proto_reg, msg_reg = self.make_registries(
             'org.xlattice.fieldz.test.fieldSpec')
 
         # XXX Defaults are ignore for now.
-        f = M.FieldSpec(msgReg, name, fType, quantifier, fieldNbr, default)
+        file = M.FieldSpec(
+            msg_reg,
+            name,
+            field_type,
+            quantifier,
+            field_nbr,
+            default)
 
-        self.assertEqual(name, f.name)
-        self.assertEqual(fType, f.fTypeNdx)
-        self.assertEqual(quantifier, f.quantifier)
-        self.assertEqual(fieldNbr, f.fieldNbr)
+        self.assertEqual(name, file.name)
+        self.assertEqual(field_type, file.FIELD_TYPE_NDX)
+        self.assertEqual(quantifier, file.quantifier)
+        self.assertEqual(field_nbr, file.field_nbr)
         if default is not None:
-            self.assertEqual(default, f.default)
+            self.assertEqual(default, file.default)
 
         expectedRepr = "%s %s%s @%d \n" % (
-            name, f.fTypeName, M.qName(quantifier), fieldNbr)
+            name, file.field_type_name, M.q_name(quantifier), field_nbr)
         # DEFAULTS NOT SUPPORTED
-        self.assertEqual(expectedRepr, f.__repr__())
+        self.assertEqual(expectedRepr, file.__repr__())
 
     def testsQuantifiers(self):
-        qName = M.qName
-        self.assertEqual('', qName(M.Q_REQUIRED))
-        self.assertEqual('?', qName(M.Q_OPTIONAL))
-        self.assertEqual('*', qName(M.Q_STAR))
-        self.assertEqual('+', qName(M.Q_PLUS))
+        q_name = M.q_name
+        self.assertEqual('', q_name(M.Q_REQUIRED))
+        self.assertEqual('?', q_name(M.Q_OPTIONAL))
+        self.assertEqual('*', q_name(M.Q_STAR))
+        self.assertEqual('+', q_name(M.Q_PLUS))
 
-    def testFieldSpec(self):
+    def test_field_spec(self):
         # default is not implemented yet
-        self.doFieldTest('foo', F._V_UINT32, M.Q_REQUIRED, 9)
-        self.doFieldTest('bar', F._V_SINT32, M.Q_STAR, 17)
-        self.doFieldTest('nodeID', F._F_BYTES20, M.Q_OPTIONAL, 92)
-        self.doFieldTest('tix', F._V_BOOL, M.Q_PLUS, 147)
+        self.doFieldTest('foo', F.V_UINT32, M.Q_REQUIRED, 9)
+        self.doFieldTest('bar', F.V_SINT32, M.Q_STAR, 17)
+        self.doFieldTest('node_id', F.F_BYTES20, M.Q_OPTIONAL, 92)
+        self.doFieldTest('tix', F.V_BOOL, M.Q_PLUS, 147)
 
     # GEEP
 
-    def roundTripMsgSpecViaString(self, m, protocol):
+    def roundTripMsgSpecViaString(self, match, protocol):
         """
         Convert a MsgSpec object model to canonical string form,
         parse that to make a clone, and verify that the two are
@@ -131,143 +137,149 @@ class TestMsgSpec (unittest.TestCase):
         """
 
         # should be unicode
-        canonicalSpec = m.__repr__()
+        canonical_spec = match.__repr__()
         # DEBUG
-        print("Type of m: ", type(m))
-        print("CANONICAL SPEC:\n" + canonicalSpec)
+        print("Type of m: ", type(match))
+        print("CANONICAL SPEC:\n" + canonical_spec)
         # END
 
-        nodeReg = R.NodeReg()
-        protoReg = R.ProtoReg(protocol, nodeReg)
-        p = StringMsgSpecParser(StringIO(canonicalSpec))
+        node_reg = R.NodeReg()
+        proto_reg = R.ProtoReg(protocol, node_reg)
+        ppp = StringMsgSpecParser(StringIO(canonical_spec))
 
         # XXX FAILS: protoSpec has ill-formed protocol line
-        clonedSpec = p.parse()
+        cloned_spec = ppp.parse()
 
-        self.assertIsNotNone(clonedSpec)
+        self.assertIsNotNone(cloned_spec)
         # DEBUG =======================
-        print('CLONED SPEC:\n' + clonedSpec.__repr__())
+        print('CLONED SPEC:\n' + cloned_spec.__repr__())
         # END =========================
         # crude tests of __eq__ AKA ==
-        self.assertFalse(m is None)
-        self.assertTrue(m == m)
+        self.assertFalse(match is None)
+        self.assertTrue(match == match)
 
         # one way of saying it ------------------
-        self.assertTrue(m.__eq__(clonedSpec))
-        self.assertTrue(clonedSpec.__eq__(m))
+        self.assertTrue(match.__eq__(cloned_spec))
+        self.assertTrue(cloned_spec.__eq__(match))
         # this is the same test -----------------
-        self.assertTrue(m == clonedSpec)
-        self.assertTrue(clonedSpec == m)                # FOO
+        self.assertTrue(match == cloned_spec)
+        self.assertTrue(cloned_spec == match)                # FOO
 
-    def testMsgSpec(self):
+    def test_msg_spec(self):
         """ this is in fact the current spec for a log entry """
         protocol = 'org.xlattice.upax'
-        nodeReg, protoReg, msgReg = self.makeRegistries(protocol)
+        node_reg, proto_reg, msg_reg = self.make_registries(protocol)
         # dummy:
-        parent = M.ProtoSpec(protocol, protoReg)
+        parent = M.ProtoSpec(protocol, proto_reg)
 
         # the enum is not used
         enum = M.EnumSpec.create('Joe', [
             ('oh', 92), ('hello', 47), ('there', 322), ])
         fields = [
-            M.FieldSpec(msgReg, 'timestamp', F._F_UINT32, M.Q_REQUIRED, 0),
-            M.FieldSpec(msgReg, 'nodeID', F._F_BYTES20, M.Q_REQUIRED, 1),
-            M.FieldSpec(msgReg, 'key', F._F_BYTES20, M.Q_REQUIRED, 2),
-            M.FieldSpec(msgReg, 'by', F._L_STRING, M.Q_REQUIRED, 3),
-            M.FieldSpec(msgReg, 'path', F._L_STRING, M.Q_REQUIRED, 4),
+            M.FieldSpec(msg_reg, 'timestamp', F.F_UINT32, M.Q_REQUIRED, 0),
+            M.FieldSpec(msg_reg, 'node_id', F.F_BYTES20, M.Q_REQUIRED, 1),
+            M.FieldSpec(msg_reg, 'key', F.F_BYTES20, M.Q_REQUIRED, 2),
+            M.FieldSpec(msg_reg, 'by_', F.L_STRING, M.Q_REQUIRED, 3),
+            M.FieldSpec(msg_reg, 'path', F.L_STRING, M.Q_REQUIRED, 4),
         ]
         name = 'logEntry'
-        msgSpec = M.MsgSpec(name, protocol, msgReg)
-        for f in fields:
-            msgSpec.addField(f)
-        msgSpec.addEnum(enum)
+        msg_spec = M.MsgSpec(name, protocol, msg_reg)
+        for file in fields:
+            msg_spec.addField(file)
+        msg_spec.add_enum(enum)
 
-        self.assertEqual(name, msgSpec.name)
+        self.assertEqual(name, msg_spec.name)
 
         # XXX DEPRECATED
-        self.assertEqual(len(fields), len(msgSpec))
-        for i in range(len(msgSpec)):
-            self.assertEqual(fields[i].name, msgSpec.fName(i))
-            self.assertEqual(fields[i].fTypeName, msgSpec.fTypeName(i))
+        self.assertEqual(len(fields), len(msg_spec))
+        for i in range(len(msg_spec)):
+            self.assertEqual(fields[i].name, msg_spec.f_name(i))
+            self.assertEqual(
+                fields[i].field_type_name,
+                msg_spec.field_type_name(i))
         # END DEPRECATED
 
-        self.assertEqual(len(fields), len(msgSpec))
+        self.assertEqual(len(fields), len(msg_spec))
         i = 0
-        for field in msgSpec:
+        for field in msg_spec:
             self.assertEqual(fields[i].name, field._name)
-            self.assertEqual(fields[i].fTypeNdx, field.fTypeNdx)
+            self.assertEqual(fields[i].FIELD_TYPE_NDX, field.FIELD_TYPE_NDX)
             i += 1
 
-        self.roundTripMsgSpecViaString(msgSpec, protocol)                 # BAZ
+        self.roundTripMsgSpecViaString(
+            msg_spec, protocol)                 # BAZ
 
     def testParseAndWriteMsgSpec(self):
         data = StringIO(LOG_ENTRY_MSG_SPEC)
-        p = StringMsgSpecParser(data)   # data should be file-like
-        sOM = p.parse()             # object model from string serialization
-        self.assertIsNotNone(sOM)
-        self.assertTrue(isinstance(sOM, M.MsgSpec))
+        ppp = StringMsgSpecParser(data)   # data should be file-like
+        str_obj_model = ppp.parse()             # object model from string serialization
+        self.assertIsNotNone(str_obj_model)
+        self.assertTrue(isinstance(str_obj_model, M.MsgSpec))
 
-        self.assertEqual('logEntry', sOM.name)
+        self.assertEqual('logEntry', str_obj_model.name)
 
         # XXX THIS SHOULD BE A LOOP, with no magic numbers
-        self.assertEqual(sOM.fName(0), 'timestamp')
-        self.assertEqual(sOM.fTypeName(0), 'fuInt32')
-        self.assertEqual(sOM.fName(1), 'nodeID')
-        self.assertEqual(sOM.fTypeName(1), 'fBytes20')
-        self.assertEqual(sOM.fName(2), 'key')
-        self.assertEqual(sOM.fTypeName(2), 'fBytes20')
-        self.assertEqual(sOM.fName(3), 'length')
-        self.assertEqual(sOM.fTypeName(3), 'vuInt32')
-        self.assertEqual(sOM.fName(4), 'by')
-        self.assertEqual(sOM.fTypeName(4), 'lString')
-        self.assertEqual(sOM.fName(5), 'path')
-        self.assertEqual(sOM.fTypeName(5), 'lString')          # BAR
+        self.assertEqual(str_obj_model.f_name(0), 'timestamp')
+        self.assertEqual(str_obj_model.field_type_name(0), 'fuint32')
+        self.assertEqual(str_obj_model.f_name(1), 'node_id')
+        self.assertEqual(str_obj_model.field_type_name(1), 'fbytes20')
+        self.assertEqual(str_obj_model.f_name(2), 'key')
+        self.assertEqual(str_obj_model.field_type_name(2), 'fbytes20')
+        self.assertEqual(str_obj_model.f_name(3), 'length')
+        self.assertEqual(str_obj_model.field_type_name(3), 'vuint32')
+        self.assertEqual(str_obj_model.f_name(4), 'by_')
+        self.assertEqual(str_obj_model.field_type_name(4), 'lstring')
+        self.assertEqual(str_obj_model.f_name(5), 'path')
+        self.assertEqual(
+            str_obj_model.field_type_name(5),
+            'lstring')          # BAR
 
     def testMultiEnum(self):
         protocol = 'org.xlattice.fieldz.test.multiEnum'
 
         data = StringIO(MULTI_ENUM_MSG_SPEC)
-        p = StringMsgSpecParser(data)   # data should be file-like
-        sOM = p.parse()             # object model from string serialization
-        self.assertIsNotNone(sOM)
-        self.assertTrue(isinstance(sOM, M.MsgSpec))
+        ppp = StringMsgSpecParser(data)   # data should be file-like
+        str_obj_model = ppp.parse()             # object model from string serialization
+        self.assertIsNotNone(str_obj_model)
+        self.assertTrue(isinstance(str_obj_model, M.MsgSpec))
 
         # self.assertEqual( 'org.xlattice.zoggery', sOM.protocol )
-        self.assertEqual('multiEnum', sOM.name)
+        self.assertEqual('multiEnum', str_obj_model.name)
 
-        enums = sOM.enums
+        enums = str_obj_model.enums
         self.assertIsNotNone(enums)
         self.assertEqual(2, len(enums))
 
-        fooEnum = enums[0]
-        barEnum = enums[1]
-        self.assertEqual('Foo', fooEnum.name)
-        self.assertEqual('Bar', barEnum.name)
+        foo_enum = enums[0]
+        bar_enum = enums[1]
+        self.assertEqual('Foo', foo_enum.name)
+        self.assertEqual('Bar', bar_enum.name)
 
-        self.assertEqual(2, len(fooEnum))
-        self.assertEqual(3, len(barEnum))
+        self.assertEqual(2, len(foo_enum))
+        self.assertEqual(3, len(bar_enum))
 
-        aPair = fooEnum[0]
-        self.assertEqual('a', aPair.symbol)
-        self.assertEqual(1, aPair.value)
+        a_pair = foo_enum[0]
+        self.assertEqual('aVal', a_pair.symbol)
+        self.assertEqual(1, a_pair.value)
 
-        bPair = fooEnum[1]
-        self.assertEqual('b', bPair.symbol)
-        self.assertEqual(2, bPair.value)
+        b_pair = foo_enum[1]
+        self.assertEqual('b_val', b_pair.symbol)
+        self.assertEqual(2, b_pair.value)
 
-        cPair = barEnum[0]
-        self.assertEqual('c', cPair.symbol)
-        self.assertEqual(3, cPair.value)
+        c_pair = bar_enum[0]
+        self.assertEqual('cVal', c_pair.symbol)
+        self.assertEqual(3, c_pair.value)
 
-        dPair = barEnum[1]
-        self.assertEqual('d', dPair.symbol)
-        self.assertEqual(4, dPair.value)
+        d_pair = bar_enum[1]
+        self.assertEqual('dVal', d_pair.symbol)
+        self.assertEqual(4, d_pair.value)
 
-        ePair = barEnum[2]
-        self.assertEqual('e', ePair.symbol)
-        self.assertEqual(5, ePair.value)
+        e_pair = bar_enum[2]
+        self.assertEqual('exc', e_pair.symbol)
+        self.assertEqual(5, e_pair.value)
 
-        self.roundTripMsgSpecViaString(sOM, protocol)             # GEEP
+        self.roundTripMsgSpecViaString(
+            str_obj_model, protocol)             # GEEP
 
 if __name__ == '__main__':
     unittest.main()

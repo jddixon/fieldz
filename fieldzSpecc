@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# ~/dev/py/upax/fieldzSpecc
+# ~/dev/py/fieldz/fieldzSpecc
 
 import os
 import re
@@ -17,47 +17,47 @@ import fieldz.compiler
 # PATs AND REs ######################################################
 
 
-def doWhatever(args):
-    noChanges = args.noChanges
-    uDir = args.uDir
+def do_whatevr(args):
+    no_changes = args.no_changes
+    u_dir = args.u_dir
     verbose = args.verbose
 
-    logDir = args.logDir       # XXX A DIFFERENT LOG
+    log_dir = args.log_dir       # XXX A DIFFERENT LOG
 
-    s = upax.BlockingServer(uDir)
-    upaxLog = s.log
+    string = upax.BlockingServer(u_dir)
+    upax_log = string.log
     if verbose:
-        print "there were %7u files in %s at the beginning of the run" % (
-            len(upaxLog), uDir)
+        print("there were %7u files in %s at the beginning of the run" % (
+            len(upax_log), u_dir))
 
-    src = args.pgmNameAndVersion
+    src = args.pgm_name_and_version
 
-    def parseSpecFile(pathToFile):
+    def parse_spec_file(path_to_file):
         lines = []
-        with open(pathToFile, 'r') as f:
-            line = f.readline()
+        with open(path_to_file, 'r') as file:
+            line = file.readline()
             while line:
-                print ":: " + line,         # DEBUG
+                print(":: " + line, end=' ')         # DEBUG
 
                 lines.append(line)
-                line = f.readline()
+                line = file.readline()
 
         pass
 
-    def walkSpecsTree(dir):
+    def walk_specs_tree(dir):
         """ walk the specs tree, parsing whatever we find """
         files = sorted(os.listdir(dir))
         for file in files:
             if file.startswith('.'):            # eg .svn
-                print "skipping '%s'" % file
+                print("skipping '%s'" % file)
                 continue
-            pathToFile = os.path.join(dir, file)
-            if os.path.isdir(pathToFile):
-                walkSpecsTree(pathToFile)
-            elif pathToFile.endswith('.xlgo'):
-                parseSpecFile(pathToFile)
+            path_to_file = os.path.join(dir, file)
+            if os.path.isdir(path_to_file):
+                walk_specs_tree(path_to_file)
+            elif path_to_file.endswith('.xlgo'):
+                parse_spec_file(path_to_file)
             else:
-                print "don't recognize    '%s'" % pathToFile
+                print("don't recognize    '%s'" % path_to_file)
 
 #           hash        = u.fileSHA1(pathToFile)
 #           if noChanges:
@@ -65,17 +65,17 @@ def doWhatever(args):
 #           else:
 #               s.put (pathToFile, hash, src)   # GEEP
 
-    walkSpecsTree(args.inDir)
+    walk_specs_tree(args.in_dir)
 
     if verbose:
-        print "there are  %7u files in %s at the end of the run" % (
-            len(upaxLog), uDir)
-    s.close()
+        print("there are  %7u files in %s at the end of the run" % (
+            len(upax_log), u_dir))
+    string.close()
 
 
 def main():
 
-    pgmNameAndVersion = "fieldzSpecc v%s %s" % (
+    pgm_name_and_version = "fieldzSpecc v%s %s" % (
         __version__, __version_date__)
     timestamp = "%04d%02d%02d-%02d%02d%02d" % time.gmtime()[:6]
 
@@ -121,62 +121,62 @@ def main():
     args = parser.parse_args()      # a Namespace object
 
     # -- fixups -----------------------------------------------------
-    args.pgmNameAndVersion = pgmNameAndVersion
+    args.pgm_name_and_version = pgm_name_and_version
     if args.testing:
         # args.inDir = 'testIn'
         pass
     args.timestamp = timestamp
 
     # -- sanity checks ----------------------------------------------
-    if not os.path.exists(args.inDir):
-        print "input directory '%s' does not exist" % args.inDir
+    if not os.path.exists(args.in_dir):
+        print("input directory '%s' does not exist" % args.in_dir)
         sys.exit(1)
 
     # fixups --------------------------------------------------------
-    args.pgmNameAndVersion = pgmNameAndVersion
-    if args.uDir and args.uDir[-1] == '/':
-        args.uDir = args.uDir[:-1]          # drop any trailing slash
+    args.pgm_name_and_version = pgm_name_and_version
+    if args.u_dir and args.u_dir[-1] == '/':
+        args.u_dir = args.u_dir[:-1]          # drop any trailing slash
 
     if args.testing:
-        args.uDir = 'uDir'                 # a local directory
+        args.u_dir = 'u_dir'                 # a local directory
     elif args.ec2Host:
-        args.uDir = os.path.join('/vol', args.uDir)
+        args.u_dir = os.path.join('/vol', args.u_dir)
     else:
-        args.uDir = os.path.join('/var', args.uDir)
+        args.u_dir = os.path.join('/var', args.u_dir)
 
-    if not os.path.exists(args.logDir):
+    if not os.path.exists(args.log_dir):
         # XXX can't handle .. in path
-        os.makedirs(args.logDir)
+        os.makedirs(args.log_dir)
 
     # -- do it ------------------------------------------------------
-    if args.verbose or args.showVersion or args.justShow:
-        print args.pgmNameAndVersion
-    if args.showTimestamp:
-        print 'run at %s GMT' % timestamp   # could be prettier
+    if args.verbose or args.show_version or args.just_show:
+        print(args.pgm_name_and_version)
+    if args.show_timestamp:
+        print('run at %s GMT' % timestamp)   # could be prettier
     else:
-        print                               # there's a comma up there
+        print()                               # there's a comma up there
 
-    if args.justShow or args.verbose:
-        print 'inDir            = ' + str(args.inDir)
-        print 'justShow         = ' + str(args.justShow)
-        print 'logDir           = ' + str(args.logDir)
-        print 'noChanges        = ' + str(args.noChanges)
-        print 'showTimestamp    = ' + str(args.showTimestamp)
-        print 'showVersion      = ' + str(args.showVersion)
-        print 'testing          = ' + str(args.testing)
-        print 'timestamp        = ' + str(args.timestamp)
-        print 'uDir             = ' + str(args.uDir)
-        print 'verbose          = ' + str(args.verbose)
+    if args.just_show or args.verbose:
+        print('inDir            = ' + str(args.in_dir))
+        print('justShow         = ' + str(args.just_show))
+        print('logDir           = ' + str(args.log_dir))
+        print('noChanges        = ' + str(args.no_changes))
+        print('showTimestamp    = ' + str(args.show_timestamp))
+        print('showVersion      = ' + str(args.show_version))
+        print('testing          = ' + str(args.testing))
+        print('timestamp        = ' + str(args.timestamp))
+        print('uDir             = ' + str(args.u_dir))
+        print('verbose          = ' + str(args.verbose))
 
-    if not args.justShow:
-        lock = u.ULock(args.uDir)
+    if not args.just_show:
+        lock = u.ULock(args.u_dir)
         try:
-            if lock.getLock():
-                doWhatever(args)
+            if lock.get_lock():
+                do_whatevr(args)
             else:
-                print 'could not get lock on %s' % args.uDir
+                print('could not get lock on %s' % args.u_dir)
         finally:
-            lock.releaseLock()
+            lock.release_lock()
 
 if __name__ == '__main__':
     main()

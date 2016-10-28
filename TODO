@@ -13,6 +13,9 @@
     are not canonical
 -----------------------------------------------------------------
 
+2016-10-27
+    * field/enum.py raises non-existent FieldTypeError
+
 2016-09-30
     * bigTest.py and littleBigTest.py should NOT have that extension
 

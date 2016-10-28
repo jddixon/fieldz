@@ -11,18 +11,18 @@ __all__ = [
     'B32_TYPE', 'B64_TYPE', 'LEN_PLUS_TYPE',
     'B128_TYPE', 'B160_TYPE', 'B256_TYPE',
 
-    'fieldHdr', 'readFieldHdr', 'fieldHdrLen',
-    'hdrFieldNbr', 'hdrType',
-    'lengthAsVarint', 'writeVarintField',
-    'readRawVarint', 'writeRawVarint',
-    'readRawB32', 'writeB32Field',
-    'readRawB64', 'writeB64Field',
-    'readRawLenPlus', 'writeLenPlusField',
-    'readRawB128', 'writeB128Field',
-    'readRawB160', 'writeB160Field',
-    'readRawB256', 'writeB256Field',
+    'field_hdr', 'read_field_hdr', 'field_hdr_len',
+    'hdr_field_nbr', 'hdr_type',
+    'length_as_varint', 'write_varint_field',
+    'read_raw_varint', 'write_raw_varint',
+    'read_raw_b32', 'write_b32_field',
+    'read_raw_b64', 'write_b64_field',
+    'read_raw_len_plus', 'write_len_plus_field',
+    'read_raw_b128', 'write_b128_field',
+    'read_raw_b160', 'write_b160_field',
+    'read_raw_b256', 'write_b256_field',
     # -- methods --------------------------------------------
-    'nextPowerOfTwo',
+    'next_power_of_two',
     # -- classes --------------------------------------------
     'WireBuffer',
 ]
@@ -41,359 +41,359 @@ B256_TYPE = 7  # fixed length, 128 bits (SHA3 content key)
 # FIELD HEADERS #####################################################
 
 
-def fieldHdr(n, t):
+def field_hdr(ndx, tstamp):
     # it would be prudent but slower to validate the parameters
     # DEBUG
-    #   print "n = %u, t = %u, header is 0x%x" % (n, t, (n << 3) | t)
+    #   print "ndx = %u, t = %u, header is 0x%x" % (n, t, (n << 3) | t)
     # END
-    return (n << 3) | t
+    return (ndx << 3) | tstamp
 
 
-def fieldHdrLen(n, t):
-    return lengthAsVarint(fieldHdr(n, t))
+def field_hdr_len(nnn, tstamp):
+    return length_as_varint(field_hdr(nnn, tstamp))
 
 
-def hdrFieldNbr(h):
-    return h >> 3
+def hdr_field_nbr(ndx):
+    return ndx >> 3
 
 
-def hdrType(h):
-    return h & 7
+def hdr_type(ndx):
+    return ndx & 7
 
 
-def readFieldHdr(chan):
-    hdr = readRawVarint(chan)
-    pType = hdrType(hdr)      # this is the primitive field type
-    fieldNbr = hdrFieldNbr(hdr)
-    return (pType, fieldNbr)
+def read_field_hdr(chan):
+    hdr = read_raw_varint(chan)
+    p_type = hdr_type(hdr)      # this is the primitive field type
+    field_nbr = hdr_field_nbr(hdr)
+    return (p_type, field_nbr)
 
 # VARINTS ###########################################################
 
 
-def lengthAsVarint(v):
+def length_as_varint(varint_):
     """
     Return the number of bytes occupied by an unsigned int.
     caller is responsible for assuring that v is in fact properly
     cast as unsigned occupying no more space than an int64 (and
     so no more than 10 bytes).
     """
-    if v < (1 << 7):
+    if varint_ < (1 << 7):
         return 1
-    elif v < (1 << 14):
+    elif varint_ < (1 << 14):
         return 2
-    elif v < (1 << 21):
+    elif varint_ < (1 << 21):
         return 3
-    elif v < (1 << 28):
+    elif varint_ < (1 << 28):
         return 4
-    elif v < (1 << 35):
+    elif varint_ < (1 << 35):
         return 5
-    elif v < (1 << 42):
+    elif varint_ < (1 << 42):
         return 6
-    elif v < (1 << 49):
+    elif varint_ < (1 << 49):
         return 7
-    elif v < (1 << 56):
+    elif varint_ < (1 << 56):
         return 8
-    elif v < (1 << 63):
+    elif varint_ < (1 << 63):
         return 9
     else:
         return 10
 
 
-def readRawVarint(chan):
+def read_raw_varint(chan):
     buf = chan.buffer
     offset = chan.position
-    v = 0
-    x = 0
+    varint_ = 0
+    ndx_ = 0
     while True:
         if offset >= len(buf):
             raise ValueError("attempt to read beyond end of buffer")
-        nextByte = buf[offset]
+        next_byte = buf[offset]
         offset += 1
 
-        sign = nextByte & 0x80
-        nextByte = nextByte & 0x7f
-        nextByte <<= (x * 7)
-        v |= nextByte
-        x += 1
+        sign = next_byte & 0x80
+        next_byte = next_byte & 0x7f
+        next_byte <<= (ndx_ * 7)
+        varint_ |= next_byte
+        ndx_ += 1
 
         if sign == 0:
             break
     chan.position = offset
-    return v
+    return varint_
 
 
-def writeRawVarint(chan, s):
+def write_raw_varint(chan, string):
     buf = chan.buffer
     offset = chan.position
     # all varints are construed as 64 bit unsigned numbers
-    v = ctypes.c_uint64(s).value
+    varint_ = ctypes.c_uint64(string).value
 #   # DEBUG
 #   print "entering writeRaw: will write 0x%x at offset %u" % ( v, offset)
 #   # END
-    l = lengthAsVarint(v)
-    if offset + l > len(buf):
-        raise ValueError("can't fit varint of length %u into buffer" % l)
+    len_ = length_as_varint(varint_)
+    if offset + len_ > len(buf):
+        raise ValueError("can't fit varint of length %u into buffer" % len_)
     while True:
-        buf[offset] = (v & 0x7f)
+        buf[offset] = (varint_ & 0x7f)
         offset += 1
-        v >>= 7
-        if v == 0:
+        varint_ >>= 7
+        if varint_ == 0:
             chan.position = offset   # next unused byte
             break
         else:
             buf[offset - 1] |= 0x80
 
 
-def writeVarintField(chan, v, n):
+def write_varint_field(chan, varint_, nnn):
     # the header is the field number << 3 ORed with 0, VARINT_TYPE
-    hdr = fieldHdr(n, VARINT_TYPE)
-    writeRawVarint(chan, hdr)
+    hdr = field_hdr(nnn, VARINT_TYPE)
+    write_raw_varint(chan, hdr)
 #   # DEBUG
 #   print "header was 0x%x; writing value 0x%x at offset %u" % (
 #                                               hdr, v, chan.position)
 #   # END
-    writeRawVarint(chan, v)
+    write_raw_varint(chan, varint_)
 
 # 32- AND 64-BIT FIXED LENGTH FIELDS ################################
 
 
-def readRawB32(chan):
+def read_raw_b32(chan):
     """ buf construed as array of unsigned bytes """
     buf = chan.buffer
     offset = chan.position
     # XXX verify buffer long enough
-    v = buf[offset]
+    varint_ = buf[offset]
     offset += 1         # little-endian
-    v |= buf[offset] << 8
+    varint_ |= buf[offset] << 8
     offset += 1
-    v |= buf[offset] << 16
+    varint_ |= buf[offset] << 16
     offset += 1
-    v |= buf[offset] << 24
+    varint_ |= buf[offset] << 24
     offset += 1
     chan.position = offset
-    return v
+    return varint_
 
 
-def writeRawB32(chan, v):
+def write_raw_b32(chan, varint_):
     buf = chan.buffer
     offset = chan.position
-    buf[offset] = 0xff & v
-    v >>= 8
+    buf[offset] = 0xff & varint_
+    varint_ >>= 8
     offset += 1
-    buf[offset] = 0xff & v
-    v >>= 8
+    buf[offset] = 0xff & varint_
+    varint_ >>= 8
     offset += 1
-    buf[offset] = 0xff & v
-    v >>= 8
+    buf[offset] = 0xff & varint_
+    varint_ >>= 8
     offset += 1
-    buf[offset] = 0xff & v
+    buf[offset] = 0xff & varint_
     offset += 1
     chan.position = offset
 
 
-def writeB32Field(chan, v, f):
-    hdr = fieldHdr(f, B32_TYPE)
-    writeRawVarint(chan, hdr)
-    writeRawB32(chan, v)
+def write_b32_field(chan, varint_, file):
+    hdr = field_hdr(file, B32_TYPE)
+    write_raw_varint(chan, hdr)
+    write_raw_b32(chan, varint_)
 
 
-def readRawB64(chan):
+def read_raw_b64(chan):
     """ buf construed as array of unsigned bytes """
     buf = chan.buffer
     offset = chan.position
     # XXX verify buffer long enough
-    v = buf[offset]
+    varint_ = buf[offset]
     offset += 1         # little-endian
-    v |= buf[offset] << 8
+    varint_ |= buf[offset] << 8
     offset += 1
-    v |= buf[offset] << 16
+    varint_ |= buf[offset] << 16
     offset += 1
-    v |= buf[offset] << 24
+    varint_ |= buf[offset] << 24
     offset += 1
-    v |= buf[offset] << 32
+    varint_ |= buf[offset] << 32
     offset += 1
-    v |= buf[offset] << 40
+    varint_ |= buf[offset] << 40
     offset += 1
-    v |= buf[offset] << 48
+    varint_ |= buf[offset] << 48
     offset += 1
-    v |= buf[offset] << 56
+    varint_ |= buf[offset] << 56
     offset += 1
     chan.position = offset
-    return v
+    return varint_
 
 
-def writeRawB64(chan, v):
+def write_raw_b64(chan, varint_):
     # XXX verify buffer long enough
     buf = chan.buffer
     offset = chan.position
-    buf[offset] = 0xff & v
-    v >>= 8
+    buf[offset] = 0xff & varint_
+    varint_ >>= 8
     offset += 1
-    buf[offset] = 0xff & v
-    v >>= 8
+    buf[offset] = 0xff & varint_
+    varint_ >>= 8
     offset += 1
-    buf[offset] = 0xff & v
-    v >>= 8
+    buf[offset] = 0xff & varint_
+    varint_ >>= 8
     offset += 1
-    buf[offset] = 0xff & v
-    v >>= 8
+    buf[offset] = 0xff & varint_
+    varint_ >>= 8
     offset += 1
-    buf[offset] = 0xff & v
-    v >>= 8
+    buf[offset] = 0xff & varint_
+    varint_ >>= 8
     offset += 1
-    buf[offset] = 0xff & v
-    v >>= 8
+    buf[offset] = 0xff & varint_
+    varint_ >>= 8
     offset += 1
-    buf[offset] = 0xff & v
-    v >>= 8
+    buf[offset] = 0xff & varint_
+    varint_ >>= 8
     offset += 1
-    buf[offset] = 0xff & v
+    buf[offset] = 0xff & varint_
     offset += 1
     chan.position = offset
 
 
-def writeB64Field(chan, v, f):
-    hdr = fieldHdr(f, B64_TYPE)
-    writeRawVarint(chan, hdr)
-    writeRawB64(chan, v)
+def write_b64_field(chan, varint_, file):
+    hdr = field_hdr(file, B64_TYPE)
+    write_raw_varint(chan, hdr)
+    write_raw_b64(chan, varint_)
 
 # VARIABLE LENGTH FIELDS ############################################
 
 
-def readRawLenPlus(chan):
+def read_raw_len_plus(chan):
 
     # read the varint len
-    n = readRawVarint(chan)
+    len_ = read_raw_varint(chan)
     buf = chan.buffer
     offset = chan.position
 
 #   # DEBUG
-#   print "readRawLenPlus: length of text is %d bytes" % n
+#   print "readRawLenPlus: length of text is %d bytes" % len_
 #   # END
 
     # then read n actual bytes
-    s = []
+    string = []
     count = 0
-    while count < n:
-        s.append(buf[offset])
+    while count < nnn:
+        string.append(buf[offset])
         count += 1
         offset += 1
     chan.position = offset
-    return bytearray(s)
+    return bytearray(string)
 
 
-def writeRawBytes(chan, bytes):
+def write_raw_bytes(chan, bytes_):
     """ bytes a byte array """
     buf = chan.buffer
     offset = chan.position
     # XXX CHECK LEN OFFSET
 
     # DEBUG
-    print("writeRawBytes: type(bytes) is ", type(bytes))
+    print("writeRawBytes: type(bytes) is ", type(bytes_))
     # END
 
-    for b in bytes:
-        buf[offset] = int(b)
+    for b_val in bytes_:
+        buf[offset] = int(b_val)
         offset += 1
 #   # DEBUG
-#   print "wrote '%s' as %u raw bytes" % (str(bytes), len(bytes))
+    print("wrote '%s' as %u raw bytes" % (str(bytes_), len(bytes_)))
 #   # END
     chan.position = offset
 
 # XXX 2012-12-11 currently used only in one place
 
 
-def writeFieldHdr(chan, fieldNbr, primType):
+def write_field_hdr(chan, field_nbr, prim_type):
     """ write the field header """
-    hdr = fieldHdr(fieldNbr, primType)
-    writeRawVarint(chan, hdr)
+    hdr = field_hdr(field_nbr, prim_type)
+    write_raw_varint(chan, hdr)
 
 
-def writeLenPlusField(chan, s, f):
+def write_len_plus_field(chan, string, file):
     """s is a bytearray or string"""
-    writeFieldHdr(chan, f, LEN_PLUS_TYPE)
+    write_field_hdr(chan, file, LEN_PLUS_TYPE)
     # write the length of the byte array --------
-    writeRawVarint(chan, len(s))
+    write_raw_varint(chan, len(string))
 
     # now write the byte array itself -----------
-    writeRawBytes(chan, s)
+    write_raw_bytes(chan, string)
 
 # LONGER FIXED-LENGTH BYTE FIELDS ===================================
 
 
-def readRawB128(chan):
+def read_raw_b128(chan):
     """ buf construed as array of unsigned bytes """
     # XXX verify buffer long enough
     buf = chan.buffer
     offset = chan.position
-    s = []
+    string = []
     for i in range(16):
-        s.append(buf[offset + i])
+        string.append(buf[offset + i])
     offset += 16
     chan.position = offset
-    return bytearray(s)
+    return bytearray(string)
 
 
-def writeRawB128(chan, v):
+def write_raw_b128(chan, varint_):
     """ v is a bytearray or string """
     buf = chan.buffer
     offset = chan.position
     for i in range(16):
         # this is a possibly unnecessary cast
-        buf[offset] = 0xff & v[i]
+        buf[offset] = 0xff & varint_[i]
         offset += 1
     chan.position = offset
 
 
-def writeB128Field(chan, v, f):
-    hdr = fieldHdr(f, B128_TYPE)
-    writeRawVarint(chan, hdr)
-    writeRawB128(chan, v)                  # GEEP
+def write_b128_field(chan, varint_, file):
+    hdr = field_hdr(file, B128_TYPE)
+    write_raw_varint(chan, hdr)
+    write_raw_b128(chan, varint_)                  # GEEP
 
 
-def readRawB160(chan):
+def read_raw_b160(chan):
     """ buf construed as array of unsigned bytes """
     # XXX verify buffer long enough
     buf = chan.buffer
     offset = chan.position
-    s = []
+    string = []
     for i in range(20):
-        s.append(buf[offset + i])
+        string.append(buf[offset + i])
     offset += 20
     chan.position = offset
-    return bytearray(s)
+    return bytearray(string)
 
 
-def writeRawB160(chan, v):
+def write_raw_b160(chan, varint_):
     """ v is a bytearray or string """
     buf = chan.buffer
     offset = chan.position
     for i in range(20):
-        buf[offset] = v[i]
+        buf[offset] = varint_[i]
         offset += 1
     chan.position = offset
 
 
-def writeB160Field(chan, v, f):
-    hdr = fieldHdr(f, B160_TYPE)
-    writeRawVarint(chan, hdr)
-    writeRawB160(chan, v)                  # GEEP
+def write_b160_field(chan, varint_, file):
+    hdr = field_hdr(file, B160_TYPE)
+    write_raw_varint(chan, hdr)
+    write_raw_b160(chan, varint_)                  # GEEP
 
 
-def readRawB256(chan):
+def read_raw_b256(chan):
     """ buf construed as array of unsigned bytes """
     # XXX verify buffer long enough
     buf = chan.buffer
     offset = chan.position
-    s = []
+    string = []
     for i in range(32):
-        s.append(buf[offset + i])
+        string.append(buf[offset + i])
     offset += 32
     chan.position = offset
-    return bytearray(s)
+    return bytearray(string)
 
 
-def writeRawB256(chan, v):
+def write_raw_b256(chan, varint_):
     """ v is a bytearray or string """
     buf = chan.buffer
     offset = chan.position
@@ -402,15 +402,15 @@ def writeRawB256(chan, v):
     # END
     for i in range(32):
         # print "DEBUG:    v[%u] = %s" % (i, binascii.b2a_hex(v[i]))
-        buf[offset] = v[i]
+        buf[offset] = varint_[i]
         offset += 1
     chan.position = offset
 
 
-def writeB256Field(chan, v, f):
-    hdr = fieldHdr(f, B256_TYPE)
-    writeRawVarint(chan, hdr)
-    writeRawB256(chan, v)                  # GEEP
+def write_b256_field(chan, varint_, file):
+    hdr = field_hdr(file, B256_TYPE)
+    write_raw_varint(chan, hdr)
+    write_raw_b256(chan, varint_)                  # GEEP
 
 # PRIMITIVE FIELD NAMES =============================================
 
@@ -455,36 +455,36 @@ class PrimFields(object):
     _names[_P_B256] = 'pB256'
 
     @classmethod
-    def name(clz, v):
-        if v is None or v < 0 or FieldTypes._MAX_TYPE < v:
-            raise ValueError('no such field type: %s' + str(v))
-        return clz._names[v]
+    def name(cls, varint_):
+        if varint_ is None or varint_ < 0 or FieldTypes._MAX_TYPE < varint_:
+            raise ValueError('no such field type: %s' + str(varint_))
+        return cls._names[varint_]
 
 # -- WireBuffer -----------------------------------------------------
 
 
-def nextPowerOfTwo(n):
+def next_power_of_two(nnn):
     """
     If n is a power of two, return n.  Otherwise return the next
     higher power of 2.
     See eg http://acius2.blogspot.com/2007/11/calculating-next-power-of-2.html
     """
-    if n < 1:
-        raise ValueError("nextPowerOfTwo: %s < 1" % str(n))
-    n = n - 1
-    n = (n >> 1) | n
-    n = (n >> 2) | n
-    n = (n >> 4) | n
-    n = (n >> 8) | n
-    n = (n >> 16) | n
-    return n + 1
+    if nnn < 1:
+        raise ValueError("nextPowerOfTwo: %s < 1" % str(nnn))
+    nnn = nnn - 1
+    nnn = (nnn >> 1) | nnn
+    nnn = (nnn >> 2) | nnn
+    nnn = (nnn >> 4) | nnn
+    nnn = (nnn >> 8) | nnn
+    nnn = (nnn >> 16) | nnn
+    return nnn + 1
 
 
 class WireBuffer(object):
 
     __slots__ = ['_buffer', '_capacity', '_limit', '_position', ]
 
-    def __init__(self, n=1024, buffer=None):
+    def __init__(self, nnn=1024, buffer=None):
         """
         Initialize the object.  If a buffer is specified, use it.
         Otherwise create one.  The resulting buffer will have a
@@ -492,21 +492,21 @@ class WireBuffer(object):
         """
         if buffer:
             self._buffer = buffer
-            bufSize = len(buffer)
-            if n < bufSize:
-                n = bufSize
-            n = nextPowerOfTwo(n)
+            buf_size = len(buffer)
+            if nnn < buf_size:
+                nnn = buf_size
+            nnn = next_power_of_two(nnn)
             # DANGER: buffer capacities of cloned buffers can get out of sync
-            if n > bufSize:
-                more = bytearray(n - bufSize)
+            if nnn > buf_size:
+                more = bytearray(nnn - buf_size)
                 self.buffer.extend(more)
         else:
-            n = nextPowerOfTwo(n)
+            nnn = next_power_of_two(nnn)
             # allocate and initialize the buffer; init probably a waste of time
-            self._buffer = bytearray(n)
+            self._buffer = bytearray(nnn)
 
-        self._capacity = n
-        self._limit = n
+        self._capacity = nnn
+        self._limit = nnn
         self._position = 0
 
     def copy(self):
@@ -517,30 +517,33 @@ class WireBuffer(object):
         return WireBuffer(len(self._buffer), self._buffer)
 
     @property
-    def buffer(self): return self._buffer
+    def buffer(self):
+        return self._buffer
 
     @property
-    def position(self): return self._position
+    def position(self):
+        return self._position
 
     @position.setter
     def position(self, offset):
         if offset < 0:
             raise ValueError('position cannot be negative')
-        if (offset >= len(self._buffer)):
+        if offset >= len(self._buffer):
             raise ValueError('position cannot be beyond capacity')
         self._position = offset
 
     @property
-    def limit(self): return self._limit
+    def limit(self):
+        return self._limit
 
     @limit.setter
     def limit(self, offset):
         if offset < 0:
             raise ValueError('limit cannot be set to a negative')
-        if (offset < self._position):
+        if offset < self._position:
             raise ValueError(
                 "limit can't be set to less than current position")
-        if (offset > self._capacity):
+        if offset > self._capacity:
             raise ValueError('limit cannot be beyond capacity')
         self._limit = offset
 

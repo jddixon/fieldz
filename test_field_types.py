@@ -25,120 +25,120 @@ class TestFieldTypes (unittest.TestCase):
 
     # utility functions #############################################
 
-    def dumpBuffer(self, buf):
+    def dump_buffer(self, buf):
         for i in range(16):
             print("0x%02x " % buf[i])
         print()
 
     # actual unit tests #############################################
     def testConstants(self):
-        fs = FS()
-        self.assertEqual(0, F._V_BOOL)
-        self.assertEqual(fs.asStr(F._V_BOOL), 'vBool')
+        f_types = FS()
+        self.assertEqual(0, F.V_BOOL)
+        self.assertEqual(f_types.as_str(F.V_BOOL), 'vbool')
 
-        self.assertEqual(19, F._F_BYTES32)
-        self.assertEqual(fs.asStr(F._F_BYTES32), 'fBytes32')
+        self.assertEqual(19, F.F_BYTES32)
+        self.assertEqual(f_types.as_str(F.F_BYTES32), 'fbytes32')
         try:
-            F._V_BOOL = 47
-        except AttributeError as e:
+            F.V_BOOL = 47
+        except AttributeError as exc:
             # 'success: caught attempt to reassign constant'
             pass
 
-        for t in range(F.MAX_NDX + 1):
-            typeName = FS.asStr(t)
-            self.assertEqual(fs.ndx(typeName), t)
+        for tstamp in range(F.MAX_NDX + 1):
+            type_name = FS.as_str(tstamp)
+            self.assertEqual(f_types.ndx(type_name), tstamp)
 
     def testLenFuncs(self):
-        n = self.rng.nextInt16()        # random field number
-        x = self.rng.nextInt16()        # random integer value
+        nnn = self.rng.next_int16()        # random field number
+        ndx_ = self.rng.next_int16()        # random integer value
 
         # == varint types ===========================================
-        h = R.fieldHdrLen(n, F._V_BOOL)
-        self.assertEqual(h + 1, T.vBoolLen(True, n))
-        self.assertEqual(h + 1, T.vBoolLen(False, n))
+        h = R.field_hdr_len(nnn, F.V_BOOL)
+        self.assertEqual(h + 1, T.vbool_len(True, nnn))
+        self.assertEqual(h + 1, T.vbool_len(False, nnn))
 
-        h = R.fieldHdrLen(n, F._V_ENUM)
-        z = h + R.lengthAsVarint(x)
-        self.assertEqual(z, T.vEnumLen(x, n))
+        h = R.field_hdr_len(nnn, F.V_ENUM)
+        zzz = h + R.length_as_varint(ndx_)
+        self.assertEqual(zzz, T.venum_len(ndx_, nnn))
         # self.assertEqual( x, T.vEnumLen(-x, n) )
 
-        x = self.rng.nextInt32()
-        self.assertTrue(x >= 0)
+        ndx_ = self.rng.next_int32()
+        self.assertTrue(ndx_ >= 0)
 
-        h = R.fieldHdrLen(n, F._V_UINT32)
-        z = h + R.lengthAsVarint(x)
-        self.assertEqual(z, T.vuInt32Len(x, n))
+        h = R.field_hdr_len(nnn, F.V_UINT32)
+        zzz = h + R.length_as_varint(ndx_)
+        self.assertEqual(zzz, T.vuint32_len(ndx_, nnn))
 
-        x = self.rng.nextInt32()
-        self.assertTrue(x >= 0)
-        x = x - 0x80000000
+        ndx_ = self.rng.next_int32()
+        self.assertTrue(ndx_ >= 0)
+        ndx_ = ndx_ - 0x80000000
 
-        h = R.fieldHdrLen(n, F._V_SINT32)
-        p = T.encodeSint32(x)
-        z = h + R.lengthAsVarint(p)
-        self.assertEqual(z, T.vsInt32Len(x, n))
+        h = R.field_hdr_len(nnn, F.V_SINT32)
+        ppp = T.encode_sint32(ndx_)
+        zzz = h + R.length_as_varint(ppp)
+        self.assertEqual(zzz, T.vsint32_len(ndx_, nnn))
 
-        x = self.rng.nextInt64()
-        self.assertTrue(x >= 0)
+        ndx_ = self.rng.next_int64()
+        self.assertTrue(ndx_ >= 0)
 
-        h = R.fieldHdrLen(n, F._V_UINT64)
-        z = h + R.lengthAsVarint(x)
-        self.assertEqual(z, T.vuInt64Len(x, n))
+        h = R.field_hdr_len(nnn, F.V_UINT64)
+        zzz = h + R.length_as_varint(ndx_)
+        self.assertEqual(zzz, T.vuint64_len(ndx_, nnn))
 
-        x = self.rng.nextInt64()
-        self.assertTrue(x >= 0)
-        x = x - 0x8000000000000000
+        ndx_ = self.rng.next_int64()
+        self.assertTrue(ndx_ >= 0)
+        ndx_ = ndx_ - 0x8000000000000000
 
-        h = R.fieldHdrLen(n, F._V_SINT64)
-        p = T.encodeSint64(x)
-        z = h + R.lengthAsVarint(p)
-        self.assertEqual(z, T.vsInt64Len(x, n))
+        h = R.field_hdr_len(nnn, F.V_SINT64)
+        ppp = T.encode_sint64(ndx_)
+        zzz = h + R.length_as_varint(ppp)
+        self.assertEqual(zzz, T.vsint64_len(ndx_, nnn))
 
         # == fixed length 4 byte ====================================
-        x = self.rng.nextInt64()        # value should be ignored
+        ndx_ = self.rng.next_int64()        # value should be ignored
 
-        self.assertTrue(x >= 0)
-        x = x - 0x8000000000000000
+        self.assertTrue(ndx_ >= 0)
+        ndx_ = ndx_ - 0x8000000000000000
 
         # x is a signed 64 bit value whose value should be irrelevant
-        h = R.fieldHdrLen(n, F._F_UINT32)
-        self.assertEqual(h + 4, T.fuInt32Len(x, n))
+        h = R.field_hdr_len(nnn, F.F_UINT32)
+        self.assertEqual(h + 4, T.fuint32_len(ndx_, nnn))
 
-        h = R.fieldHdrLen(n, F._F_SINT32)
-        self.assertEqual(h + 4, T.fsInt32Len(x, n))
+        h = R.field_hdr_len(nnn, F.F_SINT32)
+        self.assertEqual(h + 4, T.fsint32_len(ndx_, nnn))
 
-        h = R.fieldHdrLen(n, F._F_FLOAT)
-        self.assertEqual(h + 4, T.fFloatLen(x, n))
+        h = R.field_hdr_len(nnn, F.F_FLOAT)
+        self.assertEqual(h + 4, T.ffloat_len(ndx_, nnn))
 
         # == fixed length 8 byte ====================================
         # n is that signed 64 bit value whose value should be irrelevant
-        h = R.fieldHdrLen(n, F._F_UINT64)
-        self.assertEqual(h + 8, T.fuInt64Len(x, n))
-        h = R.fieldHdrLen(n, F._F_SINT64)
-        self.assertEqual(h + 8, T.fsInt64Len(x, n))
-        h = R.fieldHdrLen(n, F._F_DOUBLE)
-        self.assertEqual(h + 8, T.fDoubleLen(x, n))
+        h = R.field_hdr_len(nnn, F.F_UINT64)
+        self.assertEqual(h + 8, T.fuint64_len(ndx_, nnn))
+        h = R.field_hdr_len(nnn, F.F_SINT64)
+        self.assertEqual(h + 8, T.fsint64_len(ndx_, nnn))
+        h = R.field_hdr_len(nnn, F.F_DOUBLE)
+        self.assertEqual(h + 8, T.fdouble_len(ndx_, nnn))
 
         # == LEN PLUS types =========================================
-        def doLenPlusTest(x, n):
-            s = [0] * x
-            k = len(s)
-            h = R.fieldHdrLen(n, F._L_BYTES)
-            expectedLen = h + R.lengthAsVarint(k) + k
-            self.assertEqual(expectedLen, T.lBytesLen(s, n))
+        def doLenPlusTest(ndx_, nnn):
+            string = [0] * ndx_
+            k = len(string)
+            h = R.field_hdr_len(nnn, F.L_BYTES)
+            expectedLen = h + R.length_as_varint(k) + k
+            self.assertEqual(expectedLen, T.lbytes_len(string, nnn))
 
         # -- lString ---------------------------------------
-        s = self.rng.nextFileName(256)
-        h = R.fieldHdrLen(n, F._L_STRING)
-        k = len(s)
-        expectedLen = h + R.lengthAsVarint(k) + k
-        self.assertEqual(expectedLen, T.lStringLen(s, n))
+        string = self.rng.next_file_name(256)
+        h = R.field_hdr_len(nnn, F.L_STRING)
+        k = len(string)
+        expectedLen = h + R.length_as_varint(k) + k
+        self.assertEqual(expectedLen, T.l_string_len(string, nnn))
 
         # -- lBytes ----------------------------------------
-        doLenPlusTest(0x7f, n)
-        doLenPlusTest(0x80, n)
-        doLenPlusTest(0x3fff, n)
-        doLenPlusTest(0x4000, n)
+        doLenPlusTest(0x7f, nnn)
+        doLenPlusTest(0x80, nnn)
+        doLenPlusTest(0x3fff, nnn)
+        doLenPlusTest(0x4000, nnn)
 
         # -- lMsg ------------------------------------------
         # XXX STUB
@@ -146,14 +146,14 @@ class TestFieldTypes (unittest.TestCase):
         # -- fixed length byte arrays -------------------------------
         buf = [0] * 512       # length functions should ignore actual size
 
-        h = R.fieldHdrLen(n, F._F_BYTES16)
-        self.assertEqual(h + 16, T.fBytes16Len(buf, n))
+        h = R.field_hdr_len(nnn, F.F_BYTES16)
+        self.assertEqual(h + 16, T.fbytes16_len(buf, nnn))
 
-        h = R.fieldHdrLen(n, F._F_BYTES20)
-        self.assertEqual(h + 20, T.fBytes20Len(buf, n))
+        h = R.field_hdr_len(nnn, F.F_BYTES20)
+        self.assertEqual(h + 20, T.fbytes20_len(buf, nnn))
 
-        h = R.fieldHdrLen(n, F._F_BYTES32)
-        self.assertEqual(h + 32, T.fBytes32Len(buf, n))
+        h = R.field_hdr_len(nnn, F.F_BYTES32)
+        self.assertEqual(h + 32, T.fbytes32_len(buf, nnn))
 
 if __name__ == '__main__':
     unittest.main()

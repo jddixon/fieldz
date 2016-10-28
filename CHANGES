@@ -1,5 +1,8 @@
 ~/dev/py/fieldz/CHANGES
 
+v0.10.22
+    2016-10-27
+        * rename API per PEP 8, with some debugging                 SLOC 6944
 v0.10.21
     2016-10-17
         * rename files per PEP 8; add pylint and coverage           SLOC 6927
@@ -336,6 +339,7 @@ v0.1.2
         * working varint, fixed len 32- and 64-bit, var len bytestring
             and associated tests
         * initial svn import
+
 
 
 

@@ -10,33 +10,33 @@
 #     def __init__(self):
 #         super(FieldTypes, self).__init__( [ \
 #             # FIELDS IMPLEMENTED USING VARINTS --
-#             ('_V_BOOL', 'vBool'),
-#             ('_V_ENUM', 'vEnum'),
+#             ('V_BOOL', 'vBool'),
+#             ('V_ENUM', 'vEnum'),
 #             # -------------------------------------------------------
 #             # NEXT PAIR HAVE BEEN DROPPED, perhaps foolishly; IF SE
 #             # ARE ADDED BACK IN, PUT THEM IN THEIR CORRECT ORDER
-#             #           ('_V_INT32',    'vInt32'),  ('_V_INT64',    'vInt64'),
+#             #           ('V_INT32',    'vInt32'),  ('_V_INT64',    'vInt64'),
 #             # -------------------------------------------------------
-#             ('_V_UINT32', 'vuInt32'),
-#             ('_V_SINT32', 'vsInt32'),
-#             ('_V_UINT64', 'vuInt64'),
-#             ('_V_SINT64', 'vsInt64'),
+#             ('V_UINT32', 'vuInt32'),
+#             ('V_SINT32', 'vsInt32'),
+#             ('V_UINT64', 'vuInt64'),
+#             ('V_SINT64', 'vsInt64'),
 #             # IMPLEMENTED USING B32 -------------
-#             ('_F_UINT32', 'fuInt32'),
-#             ('_F_SINT32', 'fsInt32'),
-#             ('_F_FLOAT', 'fFloat'),
+#             ('F_UINT32', 'fuInt32'),
+#             ('F_SINT32', 'fsInt32'),
+#             ('F_FLOAT', 'fFloat'),
 #             # IMPLEMENTED USING B64 -------------
-#             ('_F_UINT64', 'fuInt64'),
-#             ('_F_SINT64', 'fsInt64'),
-#             ('_F_DOUBLE', 'fDouble'),
-#             # IMPLEMENTED USING LEN_PLUS --------
-#             ('_L_strFormING', 'lString'),
-#             ('_L_BYTES', 'lBytes'),
-#             ('_L_MSG', 'lMsg'),
+#             ('F_UINT64', 'fuInt64'),
+#             ('F_SINT64', 'fsInt64'),
+#             ('F_DOUBLE', 'fDouble'),
+#             # IMPLEMENTED USING LENPLUS --------
+#             ('L_strFormING', 'lString'),
+#             ('L_BYTES', 'lBytes'),
+#             ('L_MSG', 'lMsg'),
 #             # OTHER FIXED LENGTH BYTE SEQUENCES -
-#             ('_F_BYTES16', 'fBytes16'),
-#             ('_F_BYTES20', 'fBytes20'),
-#             ('_F_BYTES32', 'fBytes32'),
+#             ('F_BYTES16', 'fBytes16'),
+#             ('F_BYTES20', 'fBytes20'),
+#             ('F_BYTES32', 'fBytes32'),
 #         ])
 
 from enum import IntEnum
@@ -45,66 +45,66 @@ from enum import IntEnum
 
 
 class FieldTypes(IntEnum):
-    _V_BOOL = 0
-    _V_ENUM = 1
-    _V_INT32 = 2
-    _V_INT64 = 3
-    _V_UINT32 = 4       # skipped in the original version
-    _V_SINT32 = 5       # skipped in the original version
-    _V_UINT64 = 6
-    _V_SINT64 = 7
-    _F_UINT32 = 8
-    _F_SINT32 = 9
-    _F_FLOAT = 10
-    _F_UINT64 = 11
-    _F_SINT64 = 12
-    _F_DOUBLE = 13
-    _L_STRING = 14
-    _L_BYTES = 15
-    _L_MSG = 16
-    _F_BYTES16 = 17
-    _F_BYTES20 = 18
+    V_BOOL = 0
+    V_ENUM = 1
+    V_INT32 = 2
+    V_INT64 = 3
+    V_UINT32 = 4       # skipped in the original version
+    V_SINT32 = 5       # skipped in the original version
+    V_UINT64 = 6
+    V_SINT64 = 7
+    F_UINT32 = 8
+    F_SINT32 = 9
+    F_FLOAT = 10
+    F_UINT64 = 11
+    F_SINT64 = 12
+    F_DOUBLE = 13
+    L_STRING = 14
+    L_BYTES = 15
+    L_MSG = 16
+    F_BYTES16 = 17
+    F_BYTES20 = 18
     # XXX next two must be identical
-    _F_BYTES32 = 19
+    F_BYTES32 = 19
     MAX_NDX = 19
 
 
 class FieldStr(object):
 
-    _strForm = [
-        'vBool',
-        'vEnum',
-        'vInt32',
-        'vInt64',
-        'vuInt32',
-        'vsInt32',
-        'vuInt64',
-        'vsInt64',
-        'fuInt32',
-        'fsInt32',
-        'fFloat',
-        'fuInt64',
-        'fsInt64',
-        'fDouble',
-        'lString',
-        'lBytes',
-        'lMsg',
-        'fBytes16',
-        'fBytes20',
-        'fBytes32',
+    _str_form = [
+        'vbool',
+        'venum',
+        'vint32',
+        'vint64',
+        'vuint32',
+        'vsint32',
+        'vuint64',
+        'vsint64',
+        'fuint32',
+        'fsint32',
+        'ffloat',
+        'fuint64',
+        'fsint64',
+        'fdouble',
+        'lstring',
+        'lbytes',
+        'lmsg',
+        'fbytes16',
+        'fbytes20',
+        'fbytes32',
     ]
 
     @classmethod
-    def asStr(cls, n):
-        return FieldStr._strForm[n]
+    def as_str(cls, ndx):
+        return FieldStr._str_form[ndx]
 
     def __init__(self):
         self._str2ndx = {}
         for _type in FieldTypes:
-            self._str2ndx[FieldStr._strForm[_type]] = _type
+            self._str2ndx[FieldStr._str_form[_type]] = _type
 
-    def ndx(self, s):
-        return self._str2ndx[s]
+    def ndx(self, string):
+        return self._str2ndx[string]
 
 
 # sys.modules[__name__] = FieldTypes

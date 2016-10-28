@@ -5,7 +5,7 @@ import time
 import unittest
 
 from rnglib import SimpleRNG
-import fieldz.enum_spec as Q
+import fieldz.enum_spec as QQQ
 from fieldz.reg import NodeReg
 
 SOLO = """
@@ -30,7 +30,7 @@ class TestSolo (unittest.TestCase):
 
     # utility functions #############################################
 
-    def dumpBuffer(self, buf):
+    def dump_buffer(self, buf):
         for i in range(16):
             print("0x%02x " % buf[i], end=' ')
         print()

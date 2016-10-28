@@ -9,32 +9,32 @@ import fieldz.typed as T
 import fieldz.field_types as F
 import fieldz.msg_spec as M
 import fieldz.reg as R
-from fieldz.tfbuffer import *
+# from fieldz.tfbuffer import *
 
 rng = SimpleRNG(time.time())
 
 # -- logEntry msgSpec ---------------------------
 protocol = 'org.xlattice.upax'
-nodeReg = R.NodeReg()
-protoReg = R.ProtoReg(protocol, nodeReg)
-parent = M.ProtoSpec(protocol, protoReg)
-msgReg = R.MsgReg(protoReg)
+node_reg = R.NodeReg()
+proto_reg = R.ProtoReg(protocol, node_reg)
+parent = M.ProtoSpec(protocol, proto_reg)
+msg_reg = R.MsgReg(proto_reg)
 name = 'logEntry'
 enum = M.EnumSpec.create('foo', [('not', 0), ('being', 1), ('used', 2), ])
 fields = [
-    M.FieldSpec(msgReg, 'timestamp', F._F_UINT32, M.Q_REQUIRED, 0),
-    M.FieldSpec(msgReg, 'nodeID', F._F_BYTES20, M.Q_REQUIRED, 1),
-    M.FieldSpec(msgReg, 'key', F._F_BYTES20, M.Q_REQUIRED, 2),
-    M.FieldSpec(msgReg, 'length', F._V_UINT32, M.Q_REQUIRED, 3),
-    M.FieldSpec(msgReg, 'by', F._L_STRING, M.Q_REQUIRED, 4),
-    M.FieldSpec(msgReg, 'path', F._L_STRING, M.Q_REQUIRED, 5),
+    M.FieldSpec(msg_reg, 'timestamp', F.F_UINT32, M.Q_REQUIRED, 0),
+    M.FieldSpec(msg_reg, 'node_id', F.F_BYTES20, M.Q_REQUIRED, 1),
+    M.FieldSpec(msg_reg, 'key', F.F_BYTES20, M.Q_REQUIRED, 2),
+    M.FieldSpec(msg_reg, 'length', F.V_UINT32, M.Q_REQUIRED, 3),
+    M.FieldSpec(msg_reg, 'by_', F.L_STRING, M.Q_REQUIRED, 4),
+    M.FieldSpec(msg_reg, 'path', F.L_STRING, M.Q_REQUIRED, 5),
 ]
-leMsgSpec = M.MsgSpec(name, protoReg, parent)
-for f in fields:
-    leMsgSpec.addField(f)
-upaxProtoSpec = M.ProtoSpec(protocol, protoReg)
-upaxProtoSpec.addEnum(enum)
-upaxProtoSpec.addMsg(leMsgSpec)
+leMsgSpec = M.MsgSpec(name, proto_reg, parent)
+for file in fields:
+    leMsgSpec.addField(file)
+upaxProtoSpec = M.ProtoSpec(protocol, proto_reg)
+upaxProtoSpec.add_enum(enum)
+upaxProtoSpec.add_msg(leMsgSpec)
 
 # -- end logEntry msgSpec -----------------------
 
@@ -54,9 +54,9 @@ class TestLogEntry (unittest.TestCase):
         print()
 
     # actual unit tests #############################################
-    def testProtoSpec(self):
-        self.assertIsNotNone(nodeReg)
-        self.assertIsNotNone(protoReg)
+    def test_proto_spec(self):
+        self.assertIsNotNone(node_reg)
+        self.assertIsNotNone(proto_reg)
 
     def testConstructors(self):
         pSpec = upaxProtoSpec
@@ -74,63 +74,63 @@ class TestLogEntry (unittest.TestCase):
         # reader and writer share same buffer
         reader = TFReader(leMsgSpec, BUFSIZE, buf)
 
-        t = int(time.time())
-        nodeID = bytearray(20)         # 160 bit
-        rng.nextBytes(nodeID)  # .... random value
+        tstamp = int(time.time())
+        node_id = bytearray(20)         # 160 bit
+        rng.next_bytes(node_id)  # .... random value
         key = bytearray(20)         # 160 bit
-        rng.nextBytes(key)  # .... random value
-        length = rng.nextInt32()
-        by = rng.nextFileName(16)
-        path = 'path/to/' + rng.nextFileName(16)
+        rng.next_bytes(key)  # .... random value
+        length = rng.next_int32()
+        by_ = rng.next_file_name(16)
+        path = 'path/to/' + rng.next_file_name(16)
 
-        n = 0                           # 0-based field number
+        nnn = 0                           # 0-based field number
         # write a log entry into the buffer
-        writer.putNext(n, t)
-        n = n + 1
-        writer.putNext(n, nodeID)
-        n = n + 1
-        writer.putNext(n, key)
-        n = n + 1
-        writer.putNext(n, length)
-        n = n + 1
-        writer.putNext(n, by)
-        n = n + 1
-        writer.putNext(n, path)
+        writer.put_next(nnn, tstamp)
+        nnn = nnn + 1
+        writer.put_next(nnn, node_id)
+        nnn = nnn + 1
+        writer.put_next(nnn, key)
+        nnn = nnn + 1
+        writer.put_next(nnn, length)
+        nnn = nnn + 1
+        writer.put_next(nnn, by_)
+        nnn = nnn + 1
+        writer.put_next(nnn, path)
 
         # now read the buffer to see what actually was written
         self.assertEqual(0, reader.position)
 
-        reader.getNext()
-        self.assertEqual(0, reader.fieldNbr)
-        self.assertEqual('fuInt32', F.asStr(reader.fType))
-        self.assertEqual(t, reader.value)
+        reader.get_next()
+        self.assertEqual(0, reader.field_nbr)
+        self.assertEqual('fuint32', F.as_str(reader.field_type))
+        self.assertEqual(tstamp, reader.value)
         self.assertEqual(5, reader.position)
 
-        reader.getNext()
-        self.assertEqual(1, reader.fieldNbr)
-        self.assertEqual('fBytes20', F.asStr(reader.fType))
-        self.assertEqual(nodeID, reader.value)
+        reader.get_next()
+        self.assertEqual(1, reader.field_nbr)
+        self.assertEqual('fbytes20', F.as_str(reader.field_type))
+        self.assertEqual(node_id, reader.value)
         self.assertEqual(26, reader.position)
 
-        reader.getNext()
-        self.assertEqual(2, reader.fieldNbr)
-        self.assertEqual('fBytes20', F.asStr(reader.fType))
+        reader.get_next()
+        self.assertEqual(2, reader.field_nbr)
+        self.assertEqual('fbytes20', F.as_str(reader.field_type))
         self.assertEqual(key, reader.value)
         self.assertEqual(47, reader.position)
 
-        reader.getNext()
-        self.assertEqual(3, reader.fieldNbr)
-        self.assertEqual('vuInt32', F.asStr(reader.fType))
+        reader.get_next()
+        self.assertEqual(3, reader.field_nbr)
+        self.assertEqual('vuint32', F.as_str(reader.field_type))
         self.assertEqual(length, reader.value)
 
-        reader.getNext()
-        self.assertEqual(4, reader.fieldNbr)
-        self.assertEqual('lString', F.asStr(reader.fType))
-        self.assertEqual(by, reader.value)
+        reader.get_next()
+        self.assertEqual(4, reader.field_nbr)
+        self.assertEqual('lstring', F.as_str(reader.field_type))
+        self.assertEqual(by_, reader.value)
 
-        reader.getNext()
-        self.assertEqual(5, reader.fieldNbr)
-        self.assertEqual('lString', F.asStr(reader.fType))
+        reader.get_next()
+        self.assertEqual(5, reader.field_nbr)
+        self.assertEqual('lstring', F.as_str(reader.field_type))
         self.assertEqual(path, reader.value)
 
 if __name__ == '__main__':

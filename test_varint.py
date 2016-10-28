@@ -5,8 +5,8 @@ import time
 import unittest
 
 from rnglib import SimpleRNG
-from fieldz.raw import *
-from fieldz.chan import *
+# from fieldz.raw import *
+# from fieldz.chan import *
 
 LEN_BUFFER = 1024
 
@@ -20,14 +20,14 @@ class TestVarint (unittest.TestCase):
         pass
 
     # utility functions #############################################
-    def dumpBuffer(self, buf):
+    def dump_buffer(self, buf):
         for i in range(16):
             print("0x%02x " % buf[i], end=' ')
         print()
 
     # actual unit tests #############################################
     def testLengthAsVarint(self):
-        len = lengthAsVarint
+        len = length_as_varint
         self.assertEqual(1, len(0))
         self.assertEqual(1, len(0x7f))
         self.assertEqual(2, len(0x80))
@@ -49,37 +49,37 @@ class TestVarint (unittest.TestCase):
         self.assertEqual(10, len(0x8000000000000000))
         # the next test fails if I don't parenthesize the shift term or
         # convert >1 to /2
-        bigNumber = 0x80000000000000000 + (self.rng.nextInt64() > 1)
+        bigNumber = 0x80000000000000000 + (self.rng.next_int64() > 1)
         self.assertEqual(10, len(bigNumber))
 
         # MAKE SURE THIS WORKS WITH SIGNED NUMBERS
 
-    def roundTrip(self, n):
+    def roundTrip(self, nnn):
         """
         this tests writing and reading a varint as the first and
         only field in a buffer
         """
         # -- write varint -------------------------------------------
-        fieldNbr = 1 + self.rng.nextInt16(1024)
+        field_nbr = 1 + self.rng.next_int16(1024)
         chan = Channel(LEN_BUFFER)
         buf = chan.buffer
-        offset = writeVarintField(chan, n, fieldNbr)
+        offset = write_varint_field(chan, nnn, field_nbr)
         chan.flip()
 
         # -- read varint --------------------------------------------
         # first the header (which is a varint) ------------
-        (primType, fieldNbr2) = readFieldHdr(chan)
+        (prim_type, fieldNbr2) = read_field_hdr(chan)
         offset2 = chan.position
-        self.assertEqual(VARINT_TYPE, primType)
-        self.assertEqual(fieldNbr, fieldNbr2)
-        self.assertEqual(lengthAsVarint(fieldNbr << 3), offset2)
+        self.assertEqual(VARINT_TYPE, prim_type)
+        self.assertEqual(field_nbr, fieldNbr2)
+        self.assertEqual(length_as_varint(field_nbr << 3), offset2)
 
         # then the varint proper --------------------------
-        v = readRawVarint(chan)
+        varint_ = read_raw_varint(chan)
         chan.flip()
         offset3 = chan.limit
-        self.assertEqual(n, v)
-        self.assertEqual(offset2 + lengthAsVarint(n), offset3)
+        self.assertEqual(nnn, varint_)
+        self.assertEqual(offset2 + length_as_varint(nnn), offset3)
 
     def testEncodeDecode(self):
         """
