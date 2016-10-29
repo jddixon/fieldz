@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# testSimpleEnum.py
+# test_simple_enum.py
 import time
 import unittest
 
@@ -8,7 +8,7 @@ from rnglib import SimpleRNG
 import fieldz.enum_spec as QQQ
 
 
-class TestSimpleEnum (unittest.TestCase):
+class TestSimpleEnum(unittest.TestCase):
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())
@@ -24,7 +24,7 @@ class TestSimpleEnum (unittest.TestCase):
         print()
 
     # actual unit tests #############################################
-    def testSimpleEnum(self):
+    def test_simple_enum(self):
         self.assertEqual(0, QQQ.REQUIRED)
 
 if __name__ == '__main__':

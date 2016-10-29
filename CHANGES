@@ -1,5 +1,8 @@
 ~/dev/py/fieldz/CHANGES
 
+v0.10.24
+    2016-10-29
+        * rename vars per PEP 8, phase 2                            sLOC 7081
 v0.10.23
     2016-10-28
         * rename vars per PEP 8 (phase 1), some debugging           SLOC 7038
@@ -342,6 +345,7 @@ v0.1.2
         * working varint, fixed len 32- and 64-bit, var len bytestring
             and associated tests
         * initial svn import
+
 
 
 

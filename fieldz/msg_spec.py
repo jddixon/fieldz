@@ -325,7 +325,7 @@ class FieldSpec(object):
 
     # XXX return a number
     @property
-    def FIELD_TYPE_NDX(self):
+    def field_type_ndx(self):
         return self._type
 
     @property
@@ -617,7 +617,7 @@ class MsgSpec(SuperSpec):
     __slots__ = ['_fields',
                  '_last_field_nbr',           # must increase monotonically
                  'field_name_to_ndx',
-                 '_fieldNdx',                    # zero-based field index
+                 '_field_ndx',                    # zero-based field index
                  ]
 
     # XXX 2016-06-24 inverted order of last two paramaters
@@ -635,9 +635,9 @@ class MsgSpec(SuperSpec):
         self._fields = []
         self._last_field_nbr = -1
         self.field_name_to_ndx = {}    # XXX value?
-        self._fieldNdx = 0     # zero-based index of field in MsgSpec
+        self._field_ndx = 0     # zero-based index of field in MsgSpec
 
-    def addField(self, file):
+    def add_field(self, file):
         f_name = file.name
         if not isinstance(file, FieldSpec):
             raise ValueError("'%s' is not a FieldSpec!" % f_name)
@@ -653,8 +653,8 @@ class MsgSpec(SuperSpec):
         else:
             self._last_field_nbr = file.field_nbr
         self._fields.append(file)
-        self.field_name_to_ndx[f_name] = self._fieldNdx
-        self._fieldNdx += 1         # so this is a count of fields
+        self.field_name_to_ndx[f_name] = self._field_ndx
+        self._field_ndx += 1         # so this is a count of fields
 
     def __len__(self): return len(self._fields)
 
@@ -680,7 +680,7 @@ class MsgSpec(SuperSpec):
         # want to return the message name ... XXX
         return self._fields[i].field_type_name
 
-    def FIELD_TYPE_NDX(self, i):
+    def field_type_ndx(self, i):
         # field numbers are zero-based
         if self.__len__() == 0:
             raise ValueError("INTERNAL ERROR: message has no fields")
@@ -690,7 +690,7 @@ class MsgSpec(SuperSpec):
         # XXX WRONG-ish: fType MUST be numeric; this should return
         # the string equivalent; HOWEVER, if the type is lMsg, we
         # want to return the message name ... XXX
-        return self._fields[i].FIELD_TYPE_NDX
+        return self._fields[i].field_type_ndx
 
     def field_default(self, i):
         # field numbers are zero-based
@@ -851,7 +851,7 @@ def enum_spec_len(val, nnn):
     return count
 
 
-def enumSpecPrefixedLen(val, nnn):
+def enum_spec_prefixed_len(val, nnn):
     # val is guaranteed to be a well-formed EnumSpec object
 
     # we are going to write the header, then a byte count, then the enum
@@ -908,7 +908,7 @@ def enum_spec_getter(chan):
     return val
 
 C_LEN_FUNCS[C_TYPES.ENUM_SPEC] = enum_spec_len
-C_P_LEN_FUNCS[C_TYPES.ENUM_SPEC] = enumSpecPrefixedLen
+C_P_LEN_FUNCS[C_TYPES.ENUM_SPEC] = enum_spec_prefixed_len
 C_PUT_FUNCS[C_TYPES.ENUM_SPEC] = enum_spec_putter
 C_GET_FUNCS[C_TYPES.ENUM_SPEC] = enum_spec_getter
 
@@ -920,7 +920,7 @@ def field_spec_len(val, nnn):
     # fields are '_name', '_type', '_quantifier', '_fieldNbr', '_default'
 
     count = L_STRING_LEN(val.name, 0)      # field 0 contribution
-    count += VENUM_LEN(val.FIELD_TYPE_NDX, 1)
+    count += VENUM_LEN(val.field_type_ndx, 1)
     count += VENUM_LEN(val.quantifier, 2)
     count += VUINT32_LEN(val.field_nbr, 3)
     if val.default is not None:
@@ -952,7 +952,7 @@ def field_spec_putter(chan, val, nnn):
     L_STRING_PUT(chan, val.name, 0)             # field 0
 
     # write the type
-    VENUM_PUT(chan, val.FIELD_TYPE_NDX, 1)
+    VENUM_PUT(chan, val.field_type_ndx, 1)
 
     # write the quantifier
     VENUM_PUT(chan, val.quantifier, 2)
@@ -1017,7 +1017,8 @@ def msg_spec_len(val, nnn):
         count += field_spec_prefixed_len(field, 1)     # field 1, fields
     if val.enums is not None and val.enums != []:
         for enum in val.enums:
-            count += enumSpecPrefixedLen(enum, 2)   # field 2, optional enums
+            # field 2, optional enums
+            count += enum_spec_prefixed_len(enum, 2)
     return count
 
 

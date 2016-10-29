@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# testSolo.py
+# test_solo.py
 import time
 import unittest
 
@@ -16,7 +16,7 @@ message SoloMsg
 """
 
 
-class TestSolo (unittest.TestCase):
+class TestSolo(unittest.TestCase):
     """
     Send the definition of the msgSpec Solo down a channel followed
     by a single instance of the msgSpec.
@@ -36,10 +36,10 @@ class TestSolo (unittest.TestCase):
         print()
 
     # actual unit tests #############################################
-    def testSolo(self):
-        # Create a registry, writeReg.  (Don't need persistence at this
+    def test_solo(self):
+        # Create a registry, write_reg.  (Don't need persistence at this
         # stage.)
-        writeReg = NodeReg()        # 2012-11-11 was Registry()
+        write_reg = NodeReg()        # 2012-11-11 was Registry()
 
         # Create writer, a TFWriter, and so wb, the buffer we are going to
         # write to.
@@ -47,7 +47,7 @@ class TestSolo (unittest.TestCase):
         # Deserialize SOLO as soloSpec, confirming that it is an instance
         # of MsgSpec.
 
-        # Register the soloSpec object with writeReg.
+        # Register the soloSpec object with write_reg.
 
         # Verify that this has automatically created a ProtoSpec instance
         # for org.xlattice.fieldz.test
@@ -62,8 +62,8 @@ class TestSolo (unittest.TestCase):
         # limit will be used to see how much we read from the buffer.
         # wb.position is reset to zero.
 
-        # Create a separate read registry, readReg.
-        readReg = NodeReg()
+        # Create a separate read registry, read_reg.
+        read_reg = NodeReg()
 
         # Read the first message from the TFReader, deserializing it
         # as a ProtoSpec (questionable)

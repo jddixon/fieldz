@@ -16,7 +16,7 @@ import fieldz.reg as R
 from big_test import BIG_TEST
 
 
-class TestBigTest (unittest.TestCase):
+class TestBigTest(unittest.TestCase):
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())

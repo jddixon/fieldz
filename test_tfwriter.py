@@ -11,7 +11,9 @@ import fieldz.msg_spec as M
 import fieldz.reg as R
 
 # from fieldz.msg_spec import *
-from fieldz.msg_spec import Q_REQUIRED  # , Q_OPTIONAL, Q_PLUS, Q_STAR
+from fieldz.msg_spec import (
+    Q_REQUIRED  # , Q_OPTIONAL, Q_PLUS, Q_STAR,
+    FieldSpec, )
 # from fieldz.tfbuffer import *
 
 # scratch variables
@@ -57,7 +59,7 @@ test_msg_spec = MsgSpec(name, proto_reg, parent)
 # -------------------------------------------------------------------
 
 
-class TestTFWriter (unittest.TestCase):
+class TestTFWriter(unittest.TestCase):
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())

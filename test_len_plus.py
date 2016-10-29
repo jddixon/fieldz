@@ -11,7 +11,7 @@ from rnglib import SimpleRNG
 LEN_BUFF = 1024
 
 
-class TestLenPlus (unittest.TestCase):
+class TestLenPlus(unittest.TestCase):
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())
@@ -27,7 +27,7 @@ class TestLenPlus (unittest.TestCase):
             print("0x%02x " % buf[i], end=' ')
         print()
 
-    def roundTrip(self, string):
+    def round_trip(self, string):
         """
         this tests writing and reading a string of bytes as the first and
         only field in a buffer
@@ -46,10 +46,10 @@ class TestLenPlus (unittest.TestCase):
 
         # -- read the value written ---------------------------------
         # first the header (which is a varint) ------------
-        (fieldType, fieldNbr2,) = read_field_hdr(chan)
+        (field_type, field_nbr2,) = read_field_hdr(chan)
         offset2 = chan.position
-        self.assertEqual(LEN_PLUS_TYPE, fieldType)
-        self.assertEqual(field_nbr, fieldNbr2)
+        self.assertEqual(LEN_PLUS_TYPE, field_type)
+        self.assertEqual(field_nbr, field_nbr2)
         self.assertEqual(length_as_varint(field_hdr(field_nbr, LEN_PLUS_TYPE)),
                          offset2)
 
@@ -64,10 +64,10 @@ class TestLenPlus (unittest.TestCase):
             len(string),
             offset3)
 
-    def testEncodeDecode(self):
-        self.roundTrip(''.encode('utf8'))
-        self.roundTrip('ndx_'.encode('utf8'))
-        self.roundTrip('should be a random string of bytes'.encode('utf8'))
+    def test_encode_decode(self):
+        self.round_trip(''.encode('utf8'))
+        self.round_trip('ndx_'.encode('utf8'))
+        self.round_trip('should be a random string of bytes'.encode('utf8'))
 
 if __name__ == '__main__':
     unittest.main()

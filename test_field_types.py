@@ -11,7 +11,7 @@ import fieldz.typed as T
 from rnglib import SimpleRNG
 
 
-class TestFieldTypes (unittest.TestCase):
+class TestFieldTypes(unittest.TestCase):
     """
     Actually tests the method used for instantiating and importing
     an instance of the FieldTypes class.
@@ -31,7 +31,7 @@ class TestFieldTypes (unittest.TestCase):
         print()
 
     # actual unit tests #############################################
-    def testConstants(self):
+    def test_constants(self):
         self.assertEqual(0, FieldTypes.V_BOOL)
         self.assertEqual(FieldStr.as_str(FieldTypes.V_BOOL), 'vbool')
 
@@ -47,7 +47,7 @@ class TestFieldTypes (unittest.TestCase):
             type_name = FieldStr.as_str(tstamp)
             self.assertEqual(FieldStr.ndx(type_name), tstamp)
 
-    def testLenFuncs(self):
+    def test_len_funcs(self):
         nnn = self.rng.next_int16()        # random field number
         ndx_ = self.rng.next_int16()        # random integer value
 

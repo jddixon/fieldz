@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 
-# testReg.py
+# test_reg.py
 import time
 import unittest
 
 from rnglib import SimpleRNG
 from fieldz.reg import NodeReg
-import fieldz.core_types as C
+from fieldz.core_types import CoreTypes
 from fieldz.field_types import FieldTypes, FieldStr
 
 # TESTS --------------------------------------------------------------
 
 
-class TestReg (unittest.TestCase):
+class TestReg(unittest.TestCase):
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())
@@ -23,53 +23,52 @@ class TestReg (unittest.TestCase):
     # utility functions #############################################
 
     # actual unit tests #############################################
-    def testNodeReg(self):
-        testReg = NodeReg()
+    def test_node_reg(self):
+        test_reg = NodeReg()
 
         # bootstrap() has loaded fieldTypes and coreTypes
 #       print "DEBUG: FieldTypes.MAX_NDX is %d" % FieldTypes.MAX_NDX        # is 17
 #       print "DEBUG: C.maxNdx is %d" % C.maxNdx        # is  5
-#       print "DEBUG: testReg.nextRegID is %d" % testReg.nextRegID
+#       print "DEBUG: test_reg.nextRegID is %d" % test_reg.nextRegID
         self.assertEqual(
             FieldTypes.MAX_NDX +
             1 +
             C.CoreTypes().max_ndx +
             1,
-            testReg.next_reg_id)
+            test_reg.next_reg_id)
 
         # verify that all fieldTypes are defined in the registry, each
         # with the proper index (vBool through fBytes32 at FieldTypes.MAX_NDX)
-        C_TYPES = C.CoreTypes()
         for i in range(FieldTypes.MAX_NDX + 1):
-            name = testReg[i].qual_name
+            name = test_reg[i].qual_name
             # DEBUG
 #           print '%2u %s' % (i, name)
             # END
             self.assertEqual(FieldStr.as_str(i), name)
-            self.assertEqual(i, testReg.name2reg_id(name))
+            self.assertEqual(i, test_reg.name2reg_id(name))
 
         for i in range(FieldTypes.MAX_NDX + 1,
-                       FieldTypes.MAX_NDX + 1 + C_TYPES.max_ndx + 1):
-            name = testReg[i].qual_name
+                       FieldTypes.MAX_NDX + 1 + CoreTypes.max_ndx + 1):
+            name = test_reg[i].qual_name
             # DEBUG
 #           print '%2u %s' % (i, name)
             # END
-            self.assertEqual(C_TYPES.as_str(
+            self.assertEqual(CoreTypes.as_str(
                 i - (FieldTypes.MAX_NDX + 1)), name)
-            self.assertEqual(i, testReg.name2reg_id(name))
+            self.assertEqual(i, test_reg.name2reg_id(name))
 
         # F and C range from 0 to maxNdx
         self.assertEqual(
             FieldTypes.MAX_NDX +
             1 +
-            C_TYPES.max_ndx +
+            CoreTypes.max_ndx +
             1,
-            len(testReg))
+            len(test_reg))
 
-#       print "DEBUG: len(testReg) is %u" % len(testReg)
-#       print "DEBUG: nextRegID is %u"    % testReg.nextRegID
+#       print "DEBUG: len(test_reg) is %u" % len(test_reg)
+#       print "DEBUG: nextRegID is %u"    % test_reg.nextRegID
 
-        self.assertEqual(len(testReg), testReg.next_reg_id)
+        self.assertEqual(len(test_reg), test_reg.next_reg_id)
 
 
 if __name__ == '__main__':
