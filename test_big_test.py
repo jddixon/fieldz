@@ -50,7 +50,7 @@ class TestBigTest (unittest.TestCase):
         self.assertTrue(match == cloned_spec)
         self.assertTrue(cloned_spec == match)
 
-    def testCompiler(self):
+    def test_compiler(self):
         node_reg = R.NodeReg()
         protocol = 'org.xlattice.fieldz.test.bigProto'
         proto_reg = R.ProtoReg(protocol, node_reg)
@@ -58,19 +58,19 @@ class TestBigTest (unittest.TestCase):
         data = StringIO(BIG_TEST)
         self.assertIsNotNone(data)
         ppp = StringProtoSpecParser(data)
-        bigProtoSpec = ppp.parse()
+        big_proto_spec = ppp.parse()
 
         # confirm that field numbers are unique and increasing
-        match = bigProtoSpec.msgs[0]
-        lastFieldNbr = -1
+        match = big_proto_spec.msgs[0]
+        last_field_nbr = -1
         for field in match:
-            self.assertTrue(field.field_nbr > lastFieldNbr)
-            lastFieldNbr = field.field_nbr
+            self.assertTrue(field.field_nbr > last_field_nbr)
+            last_field_nbr = field.field_nbr
 
-        self.round_trip_poto_spec_via_string(bigProtoSpec)
+        self.round_trip_poto_spec_via_string(big_proto_spec)
 
     # ---------------------------------------------------------------
-    def roundTripProtoInstanceToWireFormat(self, match):
+    def round_trip_proto_instance_to_wire_format(self, match):
 
         # invoke WireMsgSpecWriter
         # XXX STUB
@@ -81,13 +81,13 @@ class TestBigTest (unittest.TestCase):
         pass
 
     # XXX IN EFFECT COMMENTED OUT XXX
-    def XtestRoundTripBigTestInstancesToWireFormat(self):
-        # strSpec = StringIO(BIG_TEST)
-        strSpec = StringIO(BIG_TEST)
-        ppp = StringProtoSpecParser(strSpec)
-        bigMsgSpec = ppp.parse()
+    def x_test_round_trip_big_test_instances_to_wire_format(self):
+        # str_spec = StringIO(BIG_TEST)
+        str_spec = StringIO(BIG_TEST)
+        ppp = StringProtoSpecParser(str_spec)
+        big_msg_spec = ppp.parse()
 
-        self.roundTripProtoInstanceToWireFormat(bigMsgSpec)
+        self.round_trip_proto_instance_to_wire_format(big_msg_spec)
 
 
 if __name__ == '__main__':

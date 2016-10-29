@@ -11,7 +11,6 @@ from rnglib import SimpleRNG
 from ring_data_proto import RING_DATA_PROTO_SPEC
 
 from fieldz.parser import StringProtoSpecParser
-import fieldz.field_types as F
 import fieldz.msg_spec as M
 import fieldz.typed as T
 from xlattice.node import Node

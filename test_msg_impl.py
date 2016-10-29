@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# testMsgImpl.py
+# test_msgImpl.py
 import time
 import unittest
 from io import StringIO
@@ -8,13 +8,12 @@ from io import StringIO
 from rnglib import SimpleRNG
 
 from fieldz.parser import StringProtoSpecParser
-import fieldz.field_types as F
+# import fieldz.field_types as F
 import fieldz.msg_spec as M
-import fieldz.typed as T
+# import fieldz.typed as T
 from fieldz.chan import Channel
 from fieldz.msg_impl import make_msg_class, make_field_class, MsgImpl
-# XXX NEEDS FIXING: we shouldn't be using this low-level code
-from fieldz.raw import write_field_hdr, write_raw_varint, LEN_PLUS_TYPE
+
 
 #################################################################
 # THIS WAS HACKED FROM testProtoSpec.py; CAN HACK MORE FROM THERE
@@ -65,7 +64,7 @@ class TestMsgImpl(unittest.TestCase):
         return [timestamp, node_id, key, length, by_, path]
 
     # NOT YET USED HERE
-    def littleBigValues(self):
+    def little_big_values(self):
         values = []
         # XXX these MUST be kept in sync with littleBigTest.py
         values.append(RNG.next_boolean())       # vBoolReqField
@@ -107,18 +106,18 @@ class TestMsgImpl(unittest.TestCase):
             self, proto_name, msg_name, field_spec, value):
         self.assertIsNotNone(field_spec)
         dotted_name = "%s.%s" % (proto_name, msg_name)
-        Cls = make_field_class(dotted_name, field_spec)
-        if '__dict__' in dir(Cls):
+        cls = make_field_class(dotted_name, field_spec)
+        if '__dict__' in dir(cls):
             print('\nGENERATED FieldImpl CLASS DICTIONARY')
-            for exc in list(Cls.__dict__.keys()):
-                print("%-20s %s" % (exc, Cls.__dict__[exc]))
+            for exc in list(cls.__dict__.keys()):
+                print("%-20s %s" % (exc, cls.__dict__[exc]))
 
-        self.assertIsNotNone(Cls)
-        file = Cls(value)
+        self.assertIsNotNone(cls)
+        file = cls(value)
         self.assertIsNotNone(file)
 
         # instance attributes -----------------------------
-        self.assertEqual(field_spec.name, file._name)
+        self.assertEqual(field_spec.name, file.name)
         self.assertEqual(field_spec.FIELD_TYPE_NDX, file.field_type)
         self.assertEqual(field_spec.quantifier, file.quantifier)
         self.assertEqual(field_spec.field_nbr, file.field_nbr)
@@ -268,8 +267,8 @@ class TestMsgImpl(unittest.TestCase):
 
         # serialize the object to the channel -----------------------
         # XXX not a public method
-        expectedMsgLen = le_msg._wire_len()
-        print("EXPECTED LENGTH OF SERIALIZED OBJECT: %u" % expectedMsgLen)
+        expected_msg_len = le_msg._wire_len()
+        print("EXPECTED LENGTH OF SERIALIZED OBJECT: %u" % expected_msg_len)
         buf = chan.buffer
 
         chan.clear()
@@ -298,7 +297,7 @@ class TestMsgImpl(unittest.TestCase):
         self.assertTrue(le_msg.__eq__(copy2))
         self.assertTrue(le_msg2.__eq__(copy2))
 
-#   def testMsg(self):
+#   def test_msg(self):
 #       # Testing MsgSpec with simple fields.  Verify that read,
 #       # putter, lenFunc, and pLenFunc work for the basic types
 #       # (ie, that they are correctly imported into this reg) and
@@ -312,7 +311,7 @@ class TestMsgImpl(unittest.TestCase):
 
 #       pass
 
-#   def testEnum(self):
+#   def test_enum(self):
 #       # need to verify that getter, putter, lenFunc, and pLenFunc work
 #       # for enums and nested enums
 
@@ -321,7 +320,7 @@ class TestMsgImpl(unittest.TestCase):
 
 #       pass
 
-#   def testNestedMsgs(self):
+#   def test_nested_msgs(self):
 #       # Test MsgSpec with embedded msg and enum fields, to a depth of
 #       # at least 3.  Need to verify that getter, putter, lenFunc, and
 #       # pLenFunc work.

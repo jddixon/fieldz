@@ -3,13 +3,31 @@
 # testTypedFields.py
 
 import ctypes                   # a bit of desperation here
-import sys
+# import sys
 import time
 import unittest
 
 from rnglib import SimpleRNG
-# from fieldz.raw import *
-from fieldz.field_types import FieldTypes as F, FieldStr as FS
+# from fieldz.raw import(
+# VARINT_TYPE,                            # PACKED_VARINT_TYPE,
+#B32_TYPE, B64_TYPE, LEN_PLUS_TYPE,
+#B128_TYPE, B160_TYPE, B256_TYPE,
+
+# field_hdr, field_hdr_len,
+# read_field_hdr,
+# hdr_field_nbr, hdr_type,
+# length_as_varint, write_varint_field,
+# read_raw_varint, write_raw_varint,
+# read_raw_b32,           # write_b32_field,
+# read_raw_b64,           # write_b64_field,
+# read_raw_len_plus,      # write_len_plus_field,
+# read_raw_b128,          # write_b128_field,
+# read_raw_b160,          # write_b160_field,
+# read_raw_b256,          # write_b256_field,
+# next_power_of_two,
+# WireBuffer,
+#)
+from fieldz.field_types import FieldTypes, FieldStr
 
 LEN_NULLS = 1024
 NULLS = [0] * LEN_NULLS
@@ -19,7 +37,7 @@ NULLS = [0] * LEN_NULLS
 # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 
-class TestTypedFields (unittest.TestCase):
+class TestTypedFields(unittest.TestCase):
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())
@@ -34,7 +52,7 @@ class TestTypedFields (unittest.TestCase):
         print()
 
     # actual unit tests #############################################
-    def roundTripList(self, triplets):
+    def round_trip_list(self, triplets):
         """
         Given a list of name-type-value pairs, produce an encoding in a
         buffer; then decode the buffer to produce a second list of
@@ -48,62 +66,61 @@ class TestTypedFields (unittest.TestCase):
         """
 
         # remember field numbers are one-based XXX
-        f_types = FS()
         for file in triplets:
             print("field  %-7s: " % file[0], end=' ')
-            print("type %2s = %-8s " % (file[1], f_types.as_str(file[1])))
+            print("type %2s = %-8s " % (file[1], FieldStr.as_str(file[1])))
 
-    def testEncodeDecode(self):
+    def test_encode_decode(self):
         # crude sanity check
         # OBSOLETE
-        #       self.assertEqual( F._V_BOOL,   F._V_BOOL     )
-        #       self.assertEqual( F._MAX_TYPE, F.fBytes32  )
+        #       self.assertEqual( FieldTypes._V_BOOL,   FieldTypes._V_BOOL     )
+        #       self.assertEqual( FieldTypes._MAX_TYPE, FieldTypes.fBytes32  )
 
         rng = self.rng
         buffer = [0] * (16 * LEN_NULLS)
         # for lBytes
         byte_buf = [0] * (1 + rng.next_int16(16))
-        byte20Buf = [0] * 20
-        byte32Buf = [0] * 32
+        byte20buf = [0] * 20
+        byte32buf = [0] * 32
 
-        fieldSpecs  = [\
+        field_specs = [\
             # name,    type,       value
-            ('inVino', F.V_BOOL, rng.next_boolean()),
+            ('inVino', FieldTypes.V_BOOL, rng.next_boolean()),
 
             # An enumeration has associated with it a list of names,
             # and that list has a length.  The field value is
             # restricted to 0..len
-            ('nummer', F.V_ENUM, rng.next_int16(7)),
+            ('nummer', FieldTypes.V_ENUM, rng.next_int16(7)),
 
             # simple varints; half will be negative and so very long
-            ('i32', F.V_INT32, rng.next_int32() - (65536 * 65536)),
-            ('i64',     F.V_INT64,   rng.next_int64()\
+            ('i32', FieldTypes.V_INT32, rng.next_int32() - (65536 * 65536)),
+            ('i64', FieldTypes.V_INT64, rng.next_int64()\
              - 65536 * 65536 * 65536 * 65536),
             # these are zig-zag encoded, optimal for small absolute values
-            ('si32', F.V_SINT32, rng.next_int32() - (65536 * 65536)),
-            ('si64',    F.V_SINT64,   rng.next_int64()\
+            ('si32', FieldTypes.V_SINT32, rng.next_int32() - (65536 * 65536)),
+            ('si64', FieldTypes.V_SINT64, rng.next_int64()\
              - 65536 * 65536 * 65536 * 65536),
             # unsigned, we hope
-            ('ui32', F.V_UINT32, rng.next_int32()),
-            ('ui64', F.V_UINT64, rng.next_int64()),
+            ('ui32', FieldTypes.V_UINT32, rng.next_int32()),
+            ('ui64', FieldTypes.V_UINT64, rng.next_int64()),
             # fixed length
-            ('fi32', F.F_UINT32, rng.next_int32() - (65536 * 65536)),
-            ('fi64',    F.F_UINT64,   rng.next_int64()\
+            ('fi32', FieldTypes.F_UINT32, rng.next_int32() - (65536 * 65536)),
+            ('fi64', FieldTypes.F_UINT64, rng.next_int64()\
              - 65536 * 65536 * 65536 * 65536),
 
             # XXX rnglib deficiency, or is it a Python deficiency?
             # These is no such thing as a four-byte float :-(
             # A Python float is a double.  We hack:
-            ('freal32', F.F_FLOAT, ctypes.c_float(rng.next_real())),
-            ('freal64', F.F_DOUBLE, rng.next_real()),
+            ('freal32', FieldTypes.F_FLOAT, ctypes.c_float(rng.next_real())),
+            ('freal64', FieldTypes.F_DOUBLE, rng.next_real()),
 
             # number of characters is 1..16
-            ('ls', F.L_STRING, rng.next_file_name(16)),
-            ('lb', F.L_BYTES, rng.next_bytes(byte_buf)),
-            ('fb20', F.F_BYTES20, rng.next_bytes(byte20Buf)),
-            ('fb32', F.F_BYTES32, rng.next_bytes(byte32Buf)),
+            ('ls', FieldTypes.L_STRING, rng.next_file_name(16)),
+            ('lb', FieldTypes.L_BYTES, rng.next_bytes(byte_buf)),
+            ('fb20', FieldTypes.F_BYTES20, rng.next_bytes(byte20buf)),
+            ('fb32', FieldTypes.F_BYTES32, rng.next_bytes(byte32buf)),
         ]
-        self.roundTripList(fieldSpecs)
+        self.round_trip_list(field_specs)
 
 if __name__ == '__main__':
     unittest.main()

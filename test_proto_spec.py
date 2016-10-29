@@ -14,7 +14,7 @@ from rnglib import SimpleRNG
 
 from fieldz.field_impl import make_field_class         # added 2016-08-02
 from fieldz.parser import StringProtoSpecParser
-from fieldz.field_types import FieldTypes as F, FieldStr as FS
+from fieldz.field_types import FieldTypes, FieldStr
 import fieldz.msg_spec as M
 import fieldz.typed as T
 import fieldz.reg as reg
@@ -58,7 +58,7 @@ class TestProtoSpec(unittest.TestCase):
     # actual unit tests #############################################
 
     def test_maps(self):
-        max_ndx = F.MAX_NDX
+        max_ndx = FieldTypes.MAX_NDX
         max_name = FS().as_str(max_ndx)
         self.assertEqual('fbytes32', max_name)
 
@@ -109,10 +109,10 @@ class TestProtoSpec(unittest.TestCase):
 #       msgReg = reg.MsgReg(protoReg)
 
 #       # default is not implemented yet
-#       self.doFieldTest(msgReg, 'foo', F._V_UINT32, M.Q_REQUIRED, 9)
-#       self.doFieldTest(msgReg, 'bar', F._V_SINT32, M.Q_STAR, 17)
-#       self.doFieldTest(msgReg, 'nodeID', F._F_BYTES20, M.Q_OPTIONAL, 92)
-#       self.doFieldTest(msgReg, 'tix', F._V_BOOL, M.Q_PLUS, 147)
+#       self.doFieldTest(msgReg, 'foo', FieldTypes._V_UINT32, M.Q_REQUIRED, 9)
+#       self.doFieldTest(msgReg, 'bar', FieldTypes._V_SINT32, M.Q_STAR, 17)
+#       self.doFieldTest(msgReg, 'nodeID', FieldTypes._F_BYTES20, M.Q_OPTIONAL, 92)
+#       self.doFieldTest(msgReg, 'tix', FieldTypes._V_BOOL, M.Q_PLUS, 147)
 #   # FOO
 
     def test_proto_spec(self):
@@ -130,12 +130,27 @@ class TestProtoSpec(unittest.TestCase):
         enum = M.EnumSpec.create('Joe', [
             ('oh', 92), ('hello', 47), ('there', 322), ])
         fields = [
-            M.FieldSpec(msg_reg, 'timestamp', F.F_UINT32, M.Q_REQUIRED, 0),
-            M.FieldSpec(msg_reg, 'node_id', F.F_BYTES20, M.Q_REQUIRED, 1),
-            M.FieldSpec(msg_reg, 'key', F.F_BYTES20, M.Q_REQUIRED, 2),
-            M.FieldSpec(msg_reg, 'length', F.V_UINT32, M.Q_REQUIRED, 3),
-            M.FieldSpec(msg_reg, 'by_', F.L_STRING, M.Q_REQUIRED, 4),
-            M.FieldSpec(msg_reg, 'path', F.L_STRING, M.Q_REQUIRED, 5),
+            M.FieldSpec(
+                msg_reg,
+                'timestamp',
+                FieldTypes.F_UINT32,
+                M.Q_REQUIRED,
+                0),
+            M.FieldSpec(
+                msg_reg,
+                'node_id',
+                FieldTypes.F_BYTES20,
+                M.Q_REQUIRED,
+                1),
+            M.FieldSpec(msg_reg, 'key', FieldTypes.F_BYTES20, M.Q_REQUIRED, 2),
+            M.FieldSpec(
+                msg_reg,
+                'length',
+                FieldTypes.V_UINT32,
+                M.Q_REQUIRED,
+                3),
+            M.FieldSpec(msg_reg, 'by_', FieldTypes.L_STRING, M.Q_REQUIRED, 4),
+            M.FieldSpec(msg_reg, 'path', FieldTypes.L_STRING, M.Q_REQUIRED, 5),
         ]
         msg_spec = M.MsgSpec(msg_name, proto_spec, msg_reg)
         self.assertEqual(msg_name, msg_spec.name)

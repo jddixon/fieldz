@@ -9,8 +9,7 @@ from io import StringIO
 from rnglib import SimpleRNG
 
 
-from fieldz.field_types import FieldTypes as F
-from fieldz.field_types import FieldStr as FS
+from fieldz.field_types import FieldTypes, FieldStr
 
 from fieldz.parser import StringMsgSpecParser
 import fieldz.msg_spec as M
@@ -67,8 +66,8 @@ class TestMsgSpec(unittest.TestCase):
     # actual unit tests #############################################
 
     def test_maps(self):
-        max_ndx = F.MAX_NDX
-        max_name = FS().as_str(max_ndx)
+        max_ndx = FieldTypes.MAX_NDX
+        max_name = FieldStr.as_str(max_ndx)
         self.assertEqual('fbytes32', max_name)
 
     def test_enum(self):
@@ -122,10 +121,10 @@ class TestMsgSpec(unittest.TestCase):
 
     def test_field_spec(self):
         # default is not implemented yet
-        self.doFieldTest('foo', F.V_UINT32, M.Q_REQUIRED, 9)
-        self.doFieldTest('bar', F.V_SINT32, M.Q_STAR, 17)
-        self.doFieldTest('node_id', F.F_BYTES20, M.Q_OPTIONAL, 92)
-        self.doFieldTest('tix', F.V_BOOL, M.Q_PLUS, 147)
+        self.doFieldTest('foo', FieldTypes.V_UINT32, M.Q_REQUIRED, 9)
+        self.doFieldTest('bar', FieldTypes.V_SINT32, M.Q_STAR, 17)
+        self.doFieldTest('node_id', FieldTypes.F_BYTES20, M.Q_OPTIONAL, 92)
+        self.doFieldTest('tix', FieldTypes.V_BOOL, M.Q_PLUS, 147)
 
     # GEEP
 
@@ -176,11 +175,21 @@ class TestMsgSpec(unittest.TestCase):
         enum = M.EnumSpec.create('Joe', [
             ('oh', 92), ('hello', 47), ('there', 322), ])
         fields = [
-            M.FieldSpec(msg_reg, 'timestamp', F.F_UINT32, M.Q_REQUIRED, 0),
-            M.FieldSpec(msg_reg, 'node_id', F.F_BYTES20, M.Q_REQUIRED, 1),
-            M.FieldSpec(msg_reg, 'key', F.F_BYTES20, M.Q_REQUIRED, 2),
-            M.FieldSpec(msg_reg, 'by_', F.L_STRING, M.Q_REQUIRED, 3),
-            M.FieldSpec(msg_reg, 'path', F.L_STRING, M.Q_REQUIRED, 4),
+            M.FieldSpec(
+                msg_reg,
+                'timestamp',
+                FieldTypes.F_UINT32,
+                M.Q_REQUIRED,
+                0),
+            M.FieldSpec(
+                msg_reg,
+                'node_id',
+                FieldTypes.F_BYTES20,
+                M.Q_REQUIRED,
+                1),
+            M.FieldSpec(msg_reg, 'key', FieldTypes.F_BYTES20, M.Q_REQUIRED, 2),
+            M.FieldSpec(msg_reg, 'by_', FieldTypes.L_STRING, M.Q_REQUIRED, 3),
+            M.FieldSpec(msg_reg, 'path', FieldTypes.L_STRING, M.Q_REQUIRED, 4),
         ]
         name = 'logEntry'
         msg_spec = M.MsgSpec(name, protocol, msg_reg)

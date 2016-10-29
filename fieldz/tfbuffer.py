@@ -12,7 +12,8 @@ from fieldz.raw import(
     B32_TYPE, B64_TYPE, LEN_PLUS_TYPE,
     B128_TYPE, B160_TYPE, B256_TYPE,
 
-    # field_hdr, read_field_hdr, field_hdr_len,
+    # field_hdr, field_hdr_len,
+    read_field_hdr,
     # hdr_field_nbr, hdr_type,
     # length_as_varint, write_varint_field,
     read_raw_varint, write_raw_varint,
@@ -26,9 +27,9 @@ from fieldz.raw import(
     # WireBuffer,
 )
 
-from fieldz.typed import T_PUT_FUNCS, T_GET_FUNCS, T_LEN_FUNCS
+from fieldz.typed import T_PUT_FUNCS, T_GET_FUNCS  # , T_LEN_FUNCS
 
-from fieldz.field_types import FieldTypes as F
+from fieldz.field_types import FieldTypes as ftypes, FieldStr as fstr
 
 __all__ = [\
     # value uncertain
@@ -95,14 +96,14 @@ class TFReader(TFBuffer):
             self._field_nbr)
 
         # gets through dispatch table -------------------------------
-        if field_type >= 0 and field_type <= F.V_SINT64:
+        if field_type >= 0 and field_type <= ftypes.V_SINT64:
             self._value = T_GET_FUNCS[field_type](self)
             return
 
         # we use the field type to verify that have have read the right
         # primitive type
 #       # - implemented using varints -------------------------------
-#       if self._fType <= F._V_UINT64:
+#       if self._fType <= ftypes._V_UINT64:
 #           if self._pType != VARINT_TYPE:
 #               raise RuntimeError("pType is %u but should be %u" % (
 #                                       self._pType, VARINT_TYPE))
@@ -111,57 +112,57 @@ class TFReader(TFBuffer):
 #           # DEBUG
 #           print "getNext: readRawVarint returns value = 0x%x" % self._value
 #           # END
-#           if self._fType == F._V_SINT32:
+#           if self._fType == ftypes._V_SINT32:
 #               self._value = decodeSint32(self._value)
 #               # DEBUG
 #               print "    after decode self._value is 0x%x" % self._value
 #               #
-#           elif self._fType == F._V_SINT64:
+#           elif self._fType == ftypes._V_SINT64:
 #               self._value = decodeSint64(self._value)
 
 #           #END VARINT_GET
 
         # implemented using B32 -------------------------------------
-        if self._field_type <= F.F_FLOAT:
+        if self._field_type <= ftypes.F_FLOAT:
             self._p_type = B32_TYPE              # DEBUG
             varint_ = read_raw_b32(self)
-            if self._field_type == F.F_UINT32:
+            if self._field_type == ftypes.F_UINT32:
                 self._value = ctypes.c_uint32(varint_).value
-            elif self._field_type == F.F_SINT32:
+            elif self._field_type == ftypes.F_SINT32:
                 self._value = ctypes.c_int32(varint_).value
             else:
                 raise NotImplementedError('B32 handling for float')
 
         # implemented using B64 -------------------------------------
-        elif self._field_type <= F.F_DOUBLE:
+        elif self._field_type <= ftypes.F_DOUBLE:
             self._p_type = B64_TYPE              # DEBUG
             (varint_, self._position) = read_raw_b64(self)
-            if self._field_type == F.F_UINT64:
+            if self._field_type == ftypes.F_UINT64:
                 self._value = ctypes.c_uint64(varint_).value
-            elif self._field_type == F.F_SINT64:
+            elif self._field_type == ftypes.F_SINT64:
                 self._value = ctypes.c_int64(varint_).value
             else:
                 raise NotImplementedError('B64 handling for double')
 
         # implemented using LEN_PLUS --------------------------------
-        elif self._field_type <= F.L_MSG:
+        elif self._field_type <= ftypes.L_MSG:
             self._p_type = LEN_PLUS_TYPE         # DEBUG
             varint_ = read_raw_len_plus(self)
-            if self._field_type == F.L_STRING:
+            if self._field_type == ftypes.L_STRING:
                 self._value = varint_.decode('utf-8')
-            elif self._field_type == F.L_BYTES:
+            elif self._field_type == ftypes.L_BYTES:
                 self._value = varint_
             else:
                 raise NotImplementedError('LEN_PLUS handled as L_MSG')
 
         # implemented using B128, B160, B256 ------------------------
-        elif self._field_type == F.F_BYTES16:
+        elif self._field_type == ftypes.F_BYTES16:
             self._p_type = B128_TYPE             # DEBUG
             self._value = read_raw_b128(self)
-        elif self._field_type == F.F_BYTES20:
+        elif self._field_type == ftypes.F_BYTES20:
             self._p_type = B160_TYPE             # DEBUG
             self._value = read_raw_b160(self)
-        elif self._field_type == F.F_BYTES32:
+        elif self._field_type == ftypes.F_BYTES32:
             self._p_type = B256_TYPE             # DEBUG
             self._value = read_raw_b256(self)
 
@@ -210,22 +211,22 @@ class TFWriter(TFBuffer):
         field_type = self._msg_spec.FIELD_TYPE_NDX(field_nbr)
 
         # puts through dispatch table -------------------------------
-        if 0 <= field_type and field_type <= F.F_BYTES32:
+        if 0 <= field_type and field_type <= ftypes.F_BYTES32:
             # DEBUG
             print(
                 "putNext: field type is %d (%s)" %
-                (field_type, F.as_str(field_type)))
+                (field_type, fstr.as_str(field_type)))
             sys.stdout.flush()
             # END
             T_PUT_FUNCS[field_type](self, value, field_nbr)
             # DEBUG
-            if field_type < F.L_STRING:
+            if field_type < ftypes.L_STRING:
                 print("putNext through dispatch table:\n"
                       "         field   %u\n"
                       "         fType   %u,  %s\n"
                       "         value   %d (0x%x)\n"
                       "         offset  %u" % (
-                          field_nbr, field_type, F.as_str(field_type),
+                          field_nbr, field_type, fstr.as_str(field_type),
                           value, value, self._position))
             # END
             return

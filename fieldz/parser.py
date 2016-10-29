@@ -1,10 +1,12 @@
 # fieldz/fieldz/parser.py
 
-from fieldz.field_types import FieldTypes as F, FieldStr as FS
+from fieldz.field_types import FieldStr
 import fieldz.reg as R
 import fieldz.msg_spec as M
 
-from fieldz.msg_spec import Q_REQUIRED, Q_OPTIONAL, Q_PLUS, Q_STAR
+from fieldz.msg_spec import(
+    Q_REQUIRED, Q_OPTIONAL, Q_PLUS, Q_STAR,
+    validate_simple_name, validate_dotted_name)
 
 __all__ = [
     'StringSpecParser',
@@ -82,7 +84,7 @@ class StringSpecParser(object):
         name = words[0]
         if name[-1] == ':':
             name = name[:-1]
-        validate_dimple_name(name)
+        validate_simple_name(name)
         # print "DEBUG: msgSpec name is '%s'" % str(name)
         return name
 
@@ -169,7 +171,7 @@ class StringSpecParser(object):
         if string[0] != ' ':
             raise ParserError("can't find enum name in '%s'" % line)
         name = string.strip()
-        validate_dimple_name(name)
+        validate_simple_name(name)
         pairs = []
         line = self.get_line()          # we require at least one pair
         pair = self.accept_enum_pair(line, indent + step, step)
@@ -241,7 +243,7 @@ class StringSpecParser(object):
 
         # -- field name -------------------------
         f_name = words[0]
-        validate_dimple_name(f_name)
+        validate_simple_name(f_name)
 
         # -- quantifier -------------------------
         qqq = words[1][-1]
@@ -267,7 +269,7 @@ class StringSpecParser(object):
         # END #####
 
         # first check against list of names of field types
-        f_types = FS()
+        f_types = FieldStr()
         try:
             field_type = f_types.ndx(type_name)
             # DEBUG
@@ -496,10 +498,10 @@ class WireMsgSpecWriter(object):
     produces a serialization using FieldTypes.
     """
 
-    def __init__(self, mSpec, wb):
-        if mSpec is None:
+    def __init__(self, m_spec, wb):
+        if m_spec is None:
             raise ValueError('no MsgSpec identified')
-        self._m = mSpec
+        self._msg_spec = m_spec
 
         if wb is None:
             raise ValueError('no WireBuffer specified')

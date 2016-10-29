@@ -8,7 +8,6 @@ from io import StringIO
 from rnglib import SimpleRNG
 
 from fieldz.parser import StringProtoSpecParser
-from fieldz.field_types import FieldTypes as F, FieldStr as FS
 import fieldz.msg_spec as M
 import fieldz.typed as T
 from fieldz.chan import Channel

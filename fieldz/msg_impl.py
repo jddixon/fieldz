@@ -1,15 +1,16 @@
 # ~/dev/py/fieldz/msgImpl.py
 
-import sys      # for debugging
+# import sys      # for debugging
 
+
+from fieldz.field_types import FieldTypes
 from fieldz.field_impl import FieldImpl, MetaField, make_field_class
 
-import fieldz.field_types as F
 from fieldz.raw import (length_as_varint, field_hdr_len, read_field_hdr,
                         write_raw_varint, read_raw_varint,
                         write_field_hdr, LEN_PLUS_TYPE)
 
-# from fieldz.typed import *
+from fieldz.typed import T_GET_FUNCS, T_LEN_FUNCS, T_PUT_FUNCS
 from fieldz.msg_spec import Q_REQUIRED, Q_OPTIONAL, Q_PLUS, Q_STAR
 
 import fieldz.reg as R
@@ -44,20 +45,20 @@ def _check_position(chan, end):
 
 
 def write(self):
-    return not_impl
+    raise NotImplementedError
 
 
 def my_getter(self):
-    return not_impl
+    raise NotImplementedError
 
 
 def my_wire_len(self):
     print("DEBUG: myWireLen invoked")
-    return not_impl
+    raise NotImplementedError
 
 
 def my_p_wire_len(self, nnn):    # n is field number for nested msg, regID otherwise
-    return not_impl
+    raise NotImplementedError
 
 # specific to messages ----------------------------------------------
 
@@ -235,7 +236,8 @@ class MsgImpl(object):
                 else:
                     # DEBUG
                     display_val = value
-                    if field_type == F.L_STRING and len(display_val) > 16:
+                    if field_type == FieldTypes.L_STRING and len(
+                            display_val) > 16:
                         display_val = display_val[:16] + '...'
                     print("WRITING FIELD %u TYPE %u VALUE %s" % (
                         f_nbr, field_type, display_val))
@@ -268,10 +270,10 @@ class MsgImpl(object):
     def read(cls, chan, parent_spec):
         """msg refers to the msg, n is field number; returns msg, n"""
         (p_type, nnn) = read_field_hdr(chan)
-        if nnn < 0 or nnn >= len(parent_spec._msgs):
+        if nnn < 0 or nnn >= len(parent_spec.msgs):
             raise RuntimeError("msg ID '%s' out of range" % nnn)
 
-        msg_spec = parent_spec._msgs[nnn]
+        msg_spec = parent_spec.msgs[nnn]
 
         msg_len = read_raw_varint(chan)
         # DEBUG
@@ -304,7 +306,7 @@ class MsgImpl(object):
                     field_nbr, nbr))
             if f_quant == Q_REQUIRED or f_quant == Q_OPTIONAL:
                 if field_type > 23:
-                    reg = self.msg_spec.reg
+                    reg = cls.msg_spec.reg
                     # BEGIN JUNK ------------------------------------
                     # DEBUG
                     print(
@@ -332,7 +334,7 @@ class MsgImpl(object):
                 # WORKING HERE
 
             else:
-                raise RunTimeError("unknown quantifier, index '%u'" % f_quant)
+                raise RuntimeError("unknown quantifier, index '%u'" % f_quant)
         # DEBUG
         print("AFTER COLLECTING %u FIELDS, OFFSET IS %u" % (
             len(fields), chan.position))
@@ -350,7 +352,7 @@ class MsgImpl(object):
         msg_len = 0
         nnn = 0  # DEBUG
         for field in self._fields:
-            f_name = field._name
+            f_name = field.name
             f_nbr = field.field_nbr
             f_quant = field.quantifier          # NEXT HURDLE
             field_type = field.field_type
@@ -448,14 +450,14 @@ class MetaMsg(type):
         #############################################################
         # BEING IGNORED - belongs in a maker class
         #############################################################
-        cls._fields = []
+#       cls._fields = []
 #       cls._fieldsByName   = {}
-        values = args[0]
-        for idx, val in enumerate(values):
-            this_field = cls._fieldClasses[idx](val)
-            cls._fields.append(this_field)
+#       values = args[0]
+#       for idx, val in enumerate(values):
+#           this_field = cls._fieldClasses[idx](val)
+#           cls._fields.append(this_field)
 #           cls._fieldsByName[thisField.name] = thisField
-            setattr(cls, this_field.name, val)
+#           setattr(cls, this_field.name, val)
 
 #           # DEBUG
 #           print "META_MSG.__call__: idx   = %u" % idx
@@ -465,7 +467,7 @@ class MetaMsg(type):
 
 #       print "  THERE ARE %u FIELDS SET" % len(cls._fields)    # DEBUG
 
-        return super().__init__(name, bases, namespace)
+#       return super().__init__(name, bases, namespace)
 
     #########################################################################
     # DISABLE FOR NOW; XXX SHOULD BE ADDED WHEN THE INSTANCE HAS BEEN CREATED
@@ -502,7 +504,8 @@ def msg_initter(cls, *args, **attrs):
         for idx, arg in enumerate(args):
             print("  arg %u is '%s'" % (idx, str(arg)))
     if attrs:
-        for key, val in attrs.iteritems:
+        # XXX REVIEW ME:
+        for key, val in iter(attrs.items):
             print("  kwarg attr is '%s', value is '%s'" % (key, str(val)))
 
     # END

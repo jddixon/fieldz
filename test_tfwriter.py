@@ -6,11 +6,10 @@ import unittest
 
 from rnglib import SimpleRNG
 
-from fieldz.field_types import FieldTypes as F, FieldStr as FS
+from fieldz.field_types import FieldStr
 import fieldz.msg_spec as M
 import fieldz.reg as R
 
-# from fieldz.typed import *
 # from fieldz.msg_spec import *
 from fieldz.msg_spec import Q_REQUIRED  # , Q_OPTIONAL, Q_PLUS, Q_STAR
 # from fieldz.tfbuffer import *
@@ -32,7 +31,7 @@ parent = M.ProtoSpec(protocol, proto_reg)
 
 # XXX MISSING reg; BUT DO WE REALLY WANT FIELD NAMES IN THE REGISTRY?
 
-ndx = FS().ndx
+ndx = FieldStr.ndx
 
 fields = [
 

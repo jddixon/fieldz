@@ -7,10 +7,11 @@ import ctypes
 
 from rnglib import SimpleRNG
 # from fieldz.raw import *
-from fieldz.typed import encode_sint32, encode_sint64
+from fieldz.typed import(
+    encode_sint32, encode_sint64, decode_sint32, decode_sint64)
 
 
-class TestTFReader (unittest.TestCase):
+class TestTFReader(unittest.TestCase):
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())
@@ -26,7 +27,7 @@ class TestTFReader (unittest.TestCase):
 
     # actual unit tests #############################################
 
-    def testInt32s(self):
+    def test_int32s(self):
         varint_ = 0xffffffff
         s32 = ctypes.c_int32(varint_).value
         self.assertEqual(-1, s32)
@@ -40,7 +41,7 @@ class TestTFReader (unittest.TestCase):
         u32 = ctypes.c_uint32(varint_).value
         self.assertEqual(0xff, u32)
 
-    def testInt64s(self):
+    def test_int64s(self):
         varint_ = 0xffffffffffffffff
         # 'value' converts back to Python type
         s64 = ctypes.c_int64(varint_).value
@@ -58,49 +59,49 @@ class TestTFReader (unittest.TestCase):
             1,
             u64)
 
-    def testVarintWithNegativeValues(self):
+    def test_varint_with_negative_values(self):
         # negative numbers, that is
         pass
 
-    def doRoundTrip32(self, string):
+    def do_round_trip32(self, string):
         zzz = encode_sint32(string)
         string2 = decode_sint32(zzz)
         self.assertEqual(string, string2)
 
-    def doRoundTrip64(self, string):
+    def do_round_trip64(self, string):
         zzz = encode_sint64(string)
         string2 = decode_sint64(zzz)
         self.assertEqual(string, string2)
 
     def test_zz32(self):
-        self.doRoundTrip32(0)
-        self.doRoundTrip32(-1)
-        self.doRoundTrip32(1)
-        self.doRoundTrip32(-2)
-        self.doRoundTrip32(2)
+        self.do_round_trip32(0)
+        self.do_round_trip32(-1)
+        self.do_round_trip32(1)
+        self.do_round_trip32(-2)
+        self.do_round_trip32(2)
 
         # XXX THIS VALUE CAUSES AN ERROR IN testTFWriter (returns -96)
-        self.doRoundTrip32(-192)
+        self.do_round_trip32(-192)
 
         # XXX should do a few random numbers here instead
-        self.doRoundTrip32(-15379)
-        self.doRoundTrip32(15379)
+        self.do_round_trip32(-15379)
+        self.do_round_trip32(15379)
 
-        self.doRoundTrip32(-128 * 256 * 256 * 256)
-        self.doRoundTrip32(128 * 256 * 256 * 256 - 1)
+        self.do_round_trip32(-128 * 256 * 256 * 256)
+        self.do_round_trip32(128 * 256 * 256 * 256 - 1)
 
         # XXX need to also verify that sensible truncation takes place
         # if value doesn't actually fit in an int32
 
     def test_zz64(self):
-        self.doRoundTrip64(0)
-        self.doRoundTrip64(-1)
-        self.doRoundTrip64(1)
-        self.doRoundTrip64(-2)
-        self.doRoundTrip64(2)
+        self.do_round_trip64(0)
+        self.do_round_trip64(-1)
+        self.do_round_trip64(1)
+        self.do_round_trip64(-2)
+        self.do_round_trip64(2)
 
-        self.doRoundTrip64(-128 * 256 * 256 * 256 * 256 * 256 * 256 * 256)
-        self.doRoundTrip64(128 * 256 * 256 * 256 * 256 * 256 * 256 * 256 - 1)
+        self.do_round_trip64(-128 * 256 * 256 * 256 * 256 * 256 * 256 * 256)
+        self.do_round_trip64(128 * 256 * 256 * 256 * 256 * 256 * 256 * 256 - 1)
 
 if __name__ == '__main__':
     unittest.main()

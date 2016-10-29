@@ -12,7 +12,7 @@ from fieldz.msg_impl import make_msg_class,\
     make_field_class
 
 from fieldz.parser import StringProtoSpecParser
-import fieldz.field_types as F
+#import fieldz.field_types as F
 import fieldz.msg_spec as M
 import fieldz.typed as T
 from fieldz.chan import Channel
