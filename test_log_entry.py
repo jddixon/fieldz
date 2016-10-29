@@ -5,8 +5,8 @@ import time
 import unittest
 
 from rnglib import SimpleRNG
+from fieldz.field_types import FieldTypes
 import fieldz.typed as T
-import fieldz.field_types as F
 import fieldz.msg_spec as M
 import fieldz.reg as R
 # from fieldz.tfbuffer import *
@@ -22,12 +22,12 @@ msg_reg = R.MsgReg(proto_reg)
 name = 'logEntry'
 enum = M.EnumSpec.create('foo', [('not', 0), ('being', 1), ('used', 2), ])
 fields = [
-    M.FieldSpec(msg_reg, 'timestamp', F.F_UINT32, M.Q_REQUIRED, 0),
-    M.FieldSpec(msg_reg, 'node_id', F.F_BYTES20, M.Q_REQUIRED, 1),
-    M.FieldSpec(msg_reg, 'key', F.F_BYTES20, M.Q_REQUIRED, 2),
-    M.FieldSpec(msg_reg, 'length', F.V_UINT32, M.Q_REQUIRED, 3),
-    M.FieldSpec(msg_reg, 'by_', F.L_STRING, M.Q_REQUIRED, 4),
-    M.FieldSpec(msg_reg, 'path', F.L_STRING, M.Q_REQUIRED, 5),
+    M.FieldSpec(msg_reg, 'timestamp', FieldTypes.F_UINT32, M.Q_REQUIRED, 0),
+    M.FieldSpec(msg_reg, 'node_id', FieldTypes.F_BYTES20, M.Q_REQUIRED, 1),
+    M.FieldSpec(msg_reg, 'key', FieldTypes.F_BYTES20, M.Q_REQUIRED, 2),
+    M.FieldSpec(msg_reg, 'length', FieldTypes.V_UINT32, M.Q_REQUIRED, 3),
+    M.FieldSpec(msg_reg, 'by_', FieldTypes.L_STRING, M.Q_REQUIRED, 4),
+    M.FieldSpec(msg_reg, 'path', FieldTypes.L_STRING, M.Q_REQUIRED, 5),
 ]
 leMsgSpec = M.MsgSpec(name, proto_reg, parent)
 for file in fields:
@@ -102,35 +102,35 @@ class TestLogEntry (unittest.TestCase):
 
         reader.get_next()
         self.assertEqual(0, reader.field_nbr)
-        self.assertEqual('fuint32', F.as_str(reader.field_type))
+        self.assertEqual('fuint32', FieldTypes.as_str(reader.field_type))
         self.assertEqual(tstamp, reader.value)
         self.assertEqual(5, reader.position)
 
         reader.get_next()
         self.assertEqual(1, reader.field_nbr)
-        self.assertEqual('fbytes20', F.as_str(reader.field_type))
+        self.assertEqual('fbytes20', FieldTypes.as_str(reader.field_type))
         self.assertEqual(node_id, reader.value)
         self.assertEqual(26, reader.position)
 
         reader.get_next()
         self.assertEqual(2, reader.field_nbr)
-        self.assertEqual('fbytes20', F.as_str(reader.field_type))
+        self.assertEqual('fbytes20', FieldTypes.as_str(reader.field_type))
         self.assertEqual(key, reader.value)
         self.assertEqual(47, reader.position)
 
         reader.get_next()
         self.assertEqual(3, reader.field_nbr)
-        self.assertEqual('vuint32', F.as_str(reader.field_type))
+        self.assertEqual('vuint32', FieldTypes.as_str(reader.field_type))
         self.assertEqual(length, reader.value)
 
         reader.get_next()
         self.assertEqual(4, reader.field_nbr)
-        self.assertEqual('lstring', F.as_str(reader.field_type))
+        self.assertEqual('lstring', FieldTypes.as_str(reader.field_type))
         self.assertEqual(by_, reader.value)
 
         reader.get_next()
         self.assertEqual(5, reader.field_nbr)
-        self.assertEqual('lstring', F.as_str(reader.field_type))
+        self.assertEqual('lstring', FieldTypes.as_str(reader.field_type))
         self.assertEqual(path, reader.value)
 
 if __name__ == '__main__':

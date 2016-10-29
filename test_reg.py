@@ -7,7 +7,7 @@ import unittest
 from rnglib import SimpleRNG
 from fieldz.reg import NodeReg
 import fieldz.core_types as C
-from fieldz.field_types import FieldTypes as F, FieldStr as FS
+from fieldz.field_types import FieldTypes, FieldStr
 
 # TESTS --------------------------------------------------------------
 
@@ -27,38 +27,44 @@ class TestReg (unittest.TestCase):
         testReg = NodeReg()
 
         # bootstrap() has loaded fieldTypes and coreTypes
-#       print "DEBUG: F.MAX_NDX is %d" % F.MAX_NDX        # is 17
+#       print "DEBUG: FieldTypes.MAX_NDX is %d" % FieldTypes.MAX_NDX        # is 17
 #       print "DEBUG: C.maxNdx is %d" % C.maxNdx        # is  5
 #       print "DEBUG: testReg.nextRegID is %d" % testReg.nextRegID
         self.assertEqual(
-            F.MAX_NDX +
+            FieldTypes.MAX_NDX +
             1 +
             C.CoreTypes().max_ndx +
             1,
             testReg.next_reg_id)
 
         # verify that all fieldTypes are defined in the registry, each
-        # with the proper index (vBool through fBytes32 at F.MAX_NDX)
-        f_types = FS()
+        # with the proper index (vBool through fBytes32 at FieldTypes.MAX_NDX)
         C_TYPES = C.CoreTypes()
-        for i in range(F.MAX_NDX + 1):
+        for i in range(FieldTypes.MAX_NDX + 1):
             name = testReg[i].qual_name
             # DEBUG
 #           print '%2u %s' % (i, name)
             # END
-            self.assertEqual(f_types.as_str(i), name)
+            self.assertEqual(FieldStr.as_str(i), name)
             self.assertEqual(i, testReg.name2reg_id(name))
 
-        for i in range(F.MAX_NDX + 1, F.MAX_NDX + 1 + C_TYPES.max_ndx + 1):
+        for i in range(FieldTypes.MAX_NDX + 1,
+                       FieldTypes.MAX_NDX + 1 + C_TYPES.max_ndx + 1):
             name = testReg[i].qual_name
             # DEBUG
 #           print '%2u %s' % (i, name)
             # END
-            self.assertEqual(C_TYPES.as_str(i - (F.MAX_NDX + 1)), name)
+            self.assertEqual(C_TYPES.as_str(
+                i - (FieldTypes.MAX_NDX + 1)), name)
             self.assertEqual(i, testReg.name2reg_id(name))
 
         # F and C range from 0 to maxNdx
-        self.assertEqual(F.MAX_NDX + 1 + C_TYPES.max_ndx + 1, len(testReg))
+        self.assertEqual(
+            FieldTypes.MAX_NDX +
+            1 +
+            C_TYPES.max_ndx +
+            1,
+            len(testReg))
 
 #       print "DEBUG: len(testReg) is %u" % len(testReg)
 #       print "DEBUG: nextRegID is %u"    % testReg.nextRegID

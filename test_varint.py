@@ -6,12 +6,32 @@ import unittest
 
 from rnglib import SimpleRNG
 # from fieldz.raw import *
-# from fieldz.chan import *
+
+from fieldz.raw import(
+    VARINT_TYPE,                            # PACKED_VARINT_TYPE,
+    #B32_TYPE, B64_TYPE, LEN_PLUS_TYPE,
+    #B128_TYPE, B160_TYPE, B256_TYPE,
+
+    # field_hdr, field_hdr_len,
+    read_field_hdr,
+    # hdr_field_nbr, hdr_type,
+    length_as_varint, write_varint_field,
+    read_raw_varint,  # write_raw_varint,
+    # read_raw_b32,           # write_b32_field,
+    # read_raw_b64,           # write_b64_field,
+    # read_raw_len_plus,      # write_len_plus_field,
+    # read_raw_b128,          # write_b128_field,
+    # read_raw_b160,          # write_b160_field,
+    # read_raw_b256,          # write_b256_field,
+    # next_power_of_two,
+    # WireBuffer,
+)
+from fieldz.chan import Channel
 
 LEN_BUFFER = 1024
 
 
-class TestVarint (unittest.TestCase):
+class TestVarint(unittest.TestCase):
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())
@@ -26,35 +46,35 @@ class TestVarint (unittest.TestCase):
         print()
 
     # actual unit tests #############################################
-    def testLengthAsVarint(self):
-        len = length_as_varint
-        self.assertEqual(1, len(0))
-        self.assertEqual(1, len(0x7f))
-        self.assertEqual(2, len(0x80))
-        self.assertEqual(2, len(0x3fff))
-        self.assertEqual(3, len(0x4000))
-        self.assertEqual(3, len(0x1fffff))
-        self.assertEqual(4, len(0x200000))
-        self.assertEqual(4, len(0xfffffff))
-        self.assertEqual(5, len(0x10000000))
-        self.assertEqual(5, len(0x7ffffffff))
-        self.assertEqual(6, len(0x800000000))
-        self.assertEqual(6, len(0x3ffffffffff))
-        self.assertEqual(7, len(0x40000000000))
-        self.assertEqual(7, len(0x1ffffffffffff))
-        self.assertEqual(8, len(0x2000000000000))
-        self.assertEqual(8, len(0xffffffffffffff))
-        self.assertEqual(9, len(0x100000000000000))
-        self.assertEqual(9, len(0x7fffffffffffffff))
-        self.assertEqual(10, len(0x8000000000000000))
+    def test_length_as_varint(self):
+        len_ = length_as_varint
+        self.assertEqual(1, len_(0))
+        self.assertEqual(1, len_(0x7f))
+        self.assertEqual(2, len_(0x80))
+        self.assertEqual(2, len_(0x3fff))
+        self.assertEqual(3, len_(0x4000))
+        self.assertEqual(3, len_(0x1fffff))
+        self.assertEqual(4, len_(0x200000))
+        self.assertEqual(4, len_(0xfffffff))
+        self.assertEqual(5, len_(0x10000000))
+        self.assertEqual(5, len_(0x7ffffffff))
+        self.assertEqual(6, len_(0x800000000))
+        self.assertEqual(6, len_(0x3ffffffffff))
+        self.assertEqual(7, len_(0x40000000000))
+        self.assertEqual(7, len_(0x1ffffffffffff))
+        self.assertEqual(8, len_(0x2000000000000))
+        self.assertEqual(8, len_(0xffffffffffffff))
+        self.assertEqual(9, len_(0x100000000000000))
+        self.assertEqual(9, len_(0x7fffffffffffffff))
+        self.assertEqual(10, len_(0x8000000000000000))
         # the next test fails if I don't parenthesize the shift term or
         # convert >1 to /2
-        bigNumber = 0x80000000000000000 + (self.rng.next_int64() > 1)
-        self.assertEqual(10, len(bigNumber))
+        big_number = 0x80000000000000000 + (self.rng.next_int64() > 1)
+        self.assertEqual(10, len(big_number))
 
         # MAKE SURE THIS WORKS WITH SIGNED NUMBERS
 
-    def roundTrip(self, nnn):
+    def round_trip(self, nnn):
         """
         this tests writing and reading a varint as the first and
         only field in a buffer
@@ -68,10 +88,10 @@ class TestVarint (unittest.TestCase):
 
         # -- read varint --------------------------------------------
         # first the header (which is a varint) ------------
-        (prim_type, fieldNbr2) = read_field_hdr(chan)
+        (prim_type, field_nbr2) = read_field_hdr(chan)
         offset2 = chan.position
         self.assertEqual(VARINT_TYPE, prim_type)
-        self.assertEqual(field_nbr, fieldNbr2)
+        self.assertEqual(field_nbr, field_nbr2)
         self.assertEqual(length_as_varint(field_nbr << 3), offset2)
 
         # then the varint proper --------------------------
@@ -81,33 +101,33 @@ class TestVarint (unittest.TestCase):
         self.assertEqual(nnn, varint_)
         self.assertEqual(offset2 + length_as_varint(nnn), offset3)
 
-    def testEncodeDecode(self):
+    def test_encode_decode(self):
         """
         All varints are handled as 64 bit unsigned ints.  WE MAY SOMETIMES
         WANT TO RESTRICT THEM TO uint32s.  Other than 42, these are the
         usual border values.
         """
-        self.roundTrip(0)
-        self.roundTrip(42)
-        self.roundTrip(0x7f)
-        self.roundTrip(0x80)
-        self.roundTrip(0x3fff)
-        self.roundTrip(0x4000)
-        self.roundTrip(0x1fffff)
-        self.roundTrip(0x200000)
-        self.roundTrip(0xfffffff)
-        self.roundTrip(0x10000000)
-        self.roundTrip(0x7ffffffff)
-        self.roundTrip(0x800000000)
-        self.roundTrip(0x3ffffffffff)
-        self.roundTrip(0x40000000000)
-        self.roundTrip(0x1ffffffffffff)
-        self.roundTrip(0x2000000000000)
-        self.roundTrip(0xffffffffffffff)
-        self.roundTrip(0x100000000000000)
-        self.roundTrip(0x7fffffffffffffff)
-        self.roundTrip(0x8000000000000000)
-        self.roundTrip(0xffffffffffffffff)
+        self.round_trip(0)
+        self.round_trip(42)
+        self.round_trip(0x7f)
+        self.round_trip(0x80)
+        self.round_trip(0x3fff)
+        self.round_trip(0x4000)
+        self.round_trip(0x1fffff)
+        self.round_trip(0x200000)
+        self.round_trip(0xfffffff)
+        self.round_trip(0x10000000)
+        self.round_trip(0x7ffffffff)
+        self.round_trip(0x800000000)
+        self.round_trip(0x3ffffffffff)
+        self.round_trip(0x40000000000)
+        self.round_trip(0x1ffffffffffff)
+        self.round_trip(0x2000000000000)
+        self.round_trip(0xffffffffffffff)
+        self.round_trip(0x100000000000000)
+        self.round_trip(0x7fffffffffffffff)
+        self.round_trip(0x8000000000000000)
+        self.round_trip(0xffffffffffffffff)
 
 
 if __name__ == '__main__':

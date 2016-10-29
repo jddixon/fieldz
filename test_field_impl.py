@@ -9,7 +9,7 @@ from io import StringIO
 from rnglib import SimpleRNG
 
 #from fieldz.parser import StringProtoSpecParser
-from fieldz.field_types import FieldTypes as F, FieldStr as FS
+from fieldz.field_types import FieldTypes
 import fieldz.msg_spec as M
 #import fieldz.typed as T
 import fieldz.reg as R
@@ -18,7 +18,7 @@ from fieldz.field_impl import make_field_class
 
 #from fieldz.chan import Channel
 #from fieldz.msg_impl import makeMsgClass, makeFieldClass, MsgImpl
-#from fieldz.raw import writeFieldHdr, writeRawVarint, LEN_PLUS_TYPE
+from fieldz.raw import write_field_hdr, write_raw_varint, LEN_PLUS_TYPE
 
 PROTOCOL_UNDER_TEST = 'org.xlattice.fieldz.test.fieldSpec'
 MSG_UNDER_TEST = 'myTestMsg'
@@ -26,15 +26,16 @@ MSG_UNDER_TEST = 'myTestMsg'
 BUFSIZE = 16 * 1024
 
 
-class TestFieldImpl (unittest.TestCase):
+class TestFieldImpl(unittest.TestCase):
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())
 
 #       data = StringIO(ZOGGERY_PROTO_SPEC)
 #       p = StringProtoSpecParser(data)   # data should be file-like
-#       self.sOM = p.parse()     # object model from string serialization
-#       self.protoName = self.sOM.name  # the dotted name of the protocol
+#       self.str_obj_model = p.parse()     # object model from string serialization
+# self.proto_name = self.str_obj_model.name  # the dotted name of the
+# protocol
 
     def tearDown(self):
         pass
@@ -122,16 +123,16 @@ class TestFieldImpl (unittest.TestCase):
 
         self.assertIsNotNone(field_spec)
         dotted_name = "%s.%s" % (proto_name, msg_name)
-        Cls = make_field_class(dotted_name, field_spec)         # a class
-        if '__dict__' in dir(Cls):
+        cls = make_field_class(dotted_name, field_spec)         # a class
+        if '__dict__' in dir(cls):
             print('\nGENERATED FieldImpl CLASS DICTIONARY')
-            for exc in list(Cls.__dict__.keys()):
-                print("  %-20s %s" % (exc, Cls.__dict__[exc]))
+            for exc in list(cls.__dict__.keys()):
+                print("  %-20s %s" % (exc, cls.__dict__[exc]))
 
-        self.assertIsNotNone(Cls)
-        file = Cls(value)                                      # an instance
+        self.assertIsNotNone(cls)
+        file = cls(value)                                      # an instance
         self.assertIsNotNone(file)
-        self.assertTrue(isinstance(file, Cls))
+        self.assertTrue(isinstance(file, cls))
 
         # instance attributes -----------------------------
         # we verify that the properties work correctly
@@ -168,18 +169,18 @@ class TestFieldImpl (unittest.TestCase):
         # There are 18 values corresponding to the 18 field types;
         # _L_MSG should be skipped
 
-        for tstamp in range(F.F_BYTES32 + 1):
+        for tstamp in range(FieldTypes.F_BYTES32 + 1):
             # DEBUG
             print("testFieldImpl: t = %d" % tstamp)
             # END
-            if tstamp == F.L_MSG:
+            if tstamp == FieldTypes.L_MSG:
                 continue
 
             # default quantifier is Q_REQ_, default is None
 
-            fieldName = 'field%d' % tstamp
+            field_name = 'field%d' % tstamp
             field_spec = M.FieldSpec(
-                msg_reg, fieldName, tstamp, field_nbr=tstamp + 100)
+                msg_reg, field_name, tstamp, field_nbr=tstamp + 100)
 
             self.check_field_impl_against_spec(
                 PROTOCOL_UNDER_TEST, MSG_UNDER_TEST,
@@ -187,8 +188,8 @@ class TestFieldImpl (unittest.TestCase):
 
     # TEST FIELD SPEC -----------------------------------------------
 
-    def doFieldSpecTest(self, name, field_type, quantifier=M.Q_REQUIRED,
-                        field_nbr=0, default=None):
+    def do_field_spec_test(self, name, field_type, quantifier=M.Q_REQUIRED,
+                           field_nbr=0, default=None):
 
         node_reg, proto_reg, msg_reg = self.make_registries(
             PROTOCOL_UNDER_TEST)
@@ -209,12 +210,12 @@ class TestFieldImpl (unittest.TestCase):
         if default is not None:
             self.assertEqual(default, file.default)
 
-        expectedRepr = "%s %s%s @%d \n" % (
+        expected_repr = "%s %s%s @%d \n" % (
             name, file.field_type_name, M.q_name(quantifier), field_nbr)
         # DEFAULTS NOT SUPPORTED
-        self.assertEqual(expectedRepr, file.__repr__())
+        self.assertEqual(expected_repr, file.__repr__())
 
-    def testsQuantifiers(self):
+    def test_quantifiers(self):
         q_name = M.q_name
         self.assertEqual('', q_name(M.Q_REQUIRED))
         self.assertEqual('?', q_name(M.Q_OPTIONAL))
@@ -223,10 +224,14 @@ class TestFieldImpl (unittest.TestCase):
 
     def test_field_spec(self):
         # default is not implemented yet
-        self.doFieldSpecTest('foo', F.V_UINT32, M.Q_REQUIRED, 9)
-        self.doFieldSpecTest('bar', F.V_SINT32, M.Q_STAR, 17)
-        self.doFieldSpecTest('node_id', F.F_BYTES20, M.Q_OPTIONAL, 92)
-        self.doFieldSpecTest('tix', F.V_BOOL, M.Q_PLUS, 147)
+        self.do_field_spec_test('foo', FieldTypes.V_UINT32, M.Q_REQUIRED, 9)
+        self.do_field_spec_test('bar', FieldTypes.V_SINT32, M.Q_STAR, 17)
+        self.do_field_spec_test(
+            'node_id',
+            FieldTypes.F_BYTES20,
+            M.Q_OPTIONAL,
+            92)
+        self.do_field_spec_test('tix', FieldTypes.V_BOOL, M.Q_PLUS, 147)
 
 
 if __name__ == '__main__':

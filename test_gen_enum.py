@@ -2,7 +2,6 @@
 
 # testGenEnum.py
 
-import time
 import unittest
 
 
@@ -29,15 +28,15 @@ def echo(cls, text):
 class MetaEnum(type):
 
     @classmethod
-    def __prepare__(meta, name, bases, **kwargs):
+    def __prepare__(mcs, name, bases, **kwargs):
         """
         Required: we are passing arguments which become class attributes.
         """
         return dict(kwargs)
 
-    def __new__(meta, name, bases, namespace, **kwargs):
+    def __new__(mcs, name, bases, namespace, **kwargs):
         print("METACLASS NEW gets called once")
-        return super().__new__(meta, name, bases, namespace)
+        return super().__new__(mcs, name, bases, namespace)
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super(MetaEnum, cls).__init__(name, bases, namespace)
@@ -46,15 +45,15 @@ class MetaEnum(type):
 class GeneratedEnum(metaclass=MetaEnum):
 
     def __init__(self, aVal, b_val):
-        print("GeneratedEnum object: a = %s, b = %s" % (aVal, b_val))
+        print("GeneratedEnum object: aaa = %s, bbb = %s" % (aVal, b_val))
 
-    def foo(self, whatever):
-        print("foo called with param %s" % str(whatever))
+    def foo_(self, whatever):
+        print("foo_ called with param %s" % str(whatever))
 
     barAttr = 47
 
 
-class TestGenEnum (unittest.TestCase):
+class TestGenEnum(unittest.TestCase):
 
     def setUp(self): pass
 
@@ -69,19 +68,20 @@ class TestGenEnum (unittest.TestCase):
         enum2 = GeneratedEnum(13, 97)
 
     def testGeneratingClass(self):
-        class F(metaclass=MetaEnum,
-                A=3, B=7, C=11, echo=echo, __setattr__=safer_setter):
+        class FCls(metaclass=MetaEnum,
+                   aaa=3, bbb=7, ccc=11,
+                   echo=echo, __setattr__=safer_setter):
             pass
-        file = F()
+        f_inst = FCls()
 
         # the keywords passed result in instance attributes
-        self.assertEqual(3, file.A)
-        self.assertEqual(7, file.B)
-        self.assertEqual(11, file.C)
+        self.assertEqual(3, f_inst.aaa)
+        self.assertEqual(7, f_inst.bbb)
+        self.assertEqual(11, f_inst.ccc)
 
         # ... not class attributes
         try:
-            F.A
+            FCls.aaa
         except AttributeError:
             pass
 
@@ -89,16 +89,16 @@ class TestGenEnum (unittest.TestCase):
         # self.assertEqual(f.echo, echo)
 
         # 'bound method' != function
-        # self.assertEqual(F.__setattr__, saferSetter)
+        # self.assertEqual(FCls.__setattr__, saferSetter)
 
-        file = F()
-        file.echo('I printed this using F.echo()')
+        f_inst = FCls()
+        f_inst.echo('I printed this using FCls.echo()')
 
-        self.assertEqual(file.C, 11)
+        self.assertEqual(f_inst.ccc, 11)
         try:
-            file.C = 137
-            self.assertEqual(137, file.C)
-            self.fail('ERROR: successfully changed value of f.C')
+            f_inst.ccc = 137
+            self.assertEqual(137, f_inst.ccc)
+            self.fail('ERROR: successfully changed value of f.ccc')
         except EnumError:
             # success: caught attempt to set new symbol
             pass

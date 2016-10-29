@@ -1,7 +1,7 @@
 # fieldz/raw.py
 
 import ctypes
-from fieldz.field_types import FieldTypes as F, FieldStr as FS
+from fieldz.field_types import FieldTypes
 
 # for debugging
 #import binascii
@@ -274,7 +274,7 @@ def read_raw_len_plus(chan):
     # then read n actual bytes
     string = []
     count = 0
-    while count < nnn:
+    while count < len_:
         string.append(buf[offset])
         count += 1
         offset += 1

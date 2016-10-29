@@ -9,7 +9,7 @@ __all__ = ['RegEntry',                      # abstract type
            ]
 
 from fieldz.msg_spec import validate_dotted_name
-import fieldz.typed as T
+from fieldz.typed import T_GET_FUNCS, T_PUT_FUNCS
 from fieldz.field_types import FieldTypes as F, FieldStr as FS
 import fieldz.core_types as C
 import fieldz.msg_spec as M
@@ -145,12 +145,12 @@ class NodeReg(UniqueNameRegistry):
         # core classes
 
         # -- add fieldTypes -----------------------------------------
-        for ndx in range(F.MAX_ND ^ X + 1):
+        for ndx in range(F.MAX_NDX + 1):
             entry = FieldTypeEntry(
                 self,               # reg
                 FS().as_str(ndx),        # qualName,
-                T.T_PUT_FUNCS[ndx],     # putter,
-                T.T_GET_FUNCS[ndx])     # getter,
+                T_PUT_FUNCS[ndx],     # putter,
+                T_GET_FUNCS[ndx])     # getter,
             self._register_basic_type(entry)
 
         c_types = C.CoreTypes()
@@ -166,9 +166,7 @@ class NodeReg(UniqueNameRegistry):
 
 
 # -- MERGE INTO ABOVE, POSSIBLY ABSTRACTING SOME OF IT --------------
-class XXX:
-    w
-Registry(object):
+class XXXRegistry(object):
 
     def __init__(self):
         self._entries = []
@@ -201,7 +199,7 @@ Registry(object):
             len_func,
             p_len_func)
         self._register(entry)       # _uses_ the next free regID
-        return entry._reg_id         # GEEP
+        return entry.reg_id
 
     def _register(self, entry):
         # creation of the entry has used the next free regID
@@ -339,11 +337,11 @@ class ProtoReg(UniqueNameRegistry):
         self._p_len_func = []
 
         # populate the above four lists from the nodeReg
-        for i in range(len(node_reg._putter)):
-            self._putter[i] = node_reg._putter[i]
-            self._getter[i] = node_reg._getter[i]
-            self._len_func[i] = node_reg._len_func[i]
-            self._p_len_func[i] = node_reg._p_len_func[i]
+        for i in range(len(node_reg.putter)):
+            self._putter[i] = node_reg.putter[i]
+            self._getter[i] = node_reg.getter[i]
+            self._len_func[i] = node_reg.len_func[i]
+            self._p_len_func[i] = node_reg.p_len_func[i]
 
     @property
     def node_reg(self): return self._node_reg
