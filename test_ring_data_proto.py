@@ -27,21 +27,21 @@ HOST_BY_PRIVATE_KEYE = {}
 
 
 class HostInfo(object):
-    __slots__ = ['_name', '_ipAddr', '_nodeID', '_pubKey',
-                 '_privateKey', ]
+    __slots__ = ['_name', '_ip_addr', '_node_id', '_pub_key',
+                 '_private_key', ]
 
-    def __init__(self, name=None, ipAddr=None, node_id=None,
+    def __init__(self, name=None, ip_addr=None, node_id=None,
                  pub_key=None, priv_key=None):
         self._name = name
-        self._ipAddr = ipAddr
-        self._nodeID = node_id
-        self._pubKey = pub_key
-        self._privateKey = priv_key
+        self._ip_addr = ip_addr
+        self._node_id = node_id
+        self._pub_key = pub_key
+        self._private_key = priv_key
 
     @classmethod
-    def createRandomHost(cls):
-        name, dottedQ, node_id, pub_key, priv_key = hostInfoValues()
-        return cls(name, dottedQ, node_id, pub_key, priv_key)
+    def create_random_host(cls):
+        name, dotted_q, node_id, pub_key, priv_key = host_info_values()
+        return cls(name, dotted_q, node_id, pub_key, priv_key)
 
 
 class RingData(object):
@@ -51,20 +51,20 @@ class RingData(object):
         # DEBUG
         # END
         self._hosts = []
-        for h in hosts:
-            self._hosts.append(h)
+        for host in hosts:
+            self._hosts.append(host)
 
     @classmethod
-    def createRandomRing(cls):
-        ring = ringDataValues()
+    def create_random_ring(cls):
+        ring = ring_data_values()
         return cls(ring)
 
 
-def ringDataValues():
+def ring_data_values():
     count = 2 + RNG.next_int16(4)    # so 2 to 5 hosts
     ring = []
     for nnn in range(count):
-        host = HostInfo.createRandomHost()
+        host = HostInfo.create_random_host()
         ring.append(host)
     # DEBUG
     print("RING_DATA_VALUES returning a list of %u hosts" % len(ring))
@@ -72,25 +72,25 @@ def ringDataValues():
     return ring
 
 
-def hostInfoValues():
+def host_info_values():
     max_count = 8
     nnn = 0
     while nnn < max_count:
         nnn = nnn + 1
         node = Node()  # by default uses SHA3 and generates RSA keys
-        priv_key = node.key.exportKey()
-        pub_key = node.pub_key.exportKey()
-        hexNodeID = binascii.b2a_hex(node.node_id)
+        priv_key = node.key.export_key()
+        pub_key = node.pub_key.export_key()
+        hex_node_id = binascii.b2a_hex(node.node_id)
 
 #       # DEBUG
 #       print "PRIVATE KEY: " + str(privateKey)
-#       print "PUBLIC KEY:  " + repr(pubKey)
+#       print "PUBLIC KEY:  " + repr(pub_key)
 #       # END
 
         name = RNG.next_file_name(8)
 
         addr = RNG.next_int32()
-        dottedQ = '%d.%d.%d.%d' % (
+        dotted_q = '%d.%d.%d.%d' % (
             (addr >> 24 & 0xff),
             (addr >> 16 & 0xff),
             (addr >> 8 & 0xff),
@@ -98,20 +98,20 @@ def hostInfoValues():
         # DEBUG
         print("name is      '%s'" % name)
         print("addr is      '%s'" % addr)
-        print("dottedQ is   '%s'" % dottedQ)
-        print("hexNodeID is '%s'\n" % hexNodeID)
+        print("dotted_q is   '%s'" % dotted_q)
+        print("hex_node_id is '%s'\n" % hex_node_id)
         # END
         if name in HOST_BY_NAME:
             continue
-        if dottedQ in HOST_BY_ADDR:
+        if dotted_q in HOST_BY_ADDR:
             continue
-        if hexNodeID in HOST_BY_NODE_ID:       # hex value
+        if hex_node_id in HOST_BY_NODE_ID:       # hex value
             continue
         # DEBUG
-        # print "PUB_KEY: %s" % pubKey.n
+        # print "PUB_KEY: %s" % pub_key.n
         # END
         if pub_key in HOST_BY_PUB_KEY:
-            print("pubKey is not unique")
+            print("pub_key is not unique")
             continue
         if priv_key in HOST_BY_PRIVATE_KEYE:
             print("privateKey is not unique")
@@ -119,13 +119,13 @@ def hostInfoValues():
 
         # we require that all of these fields be unique in the sample set
         HOST_BY_NAME[name] = name      # dumb, but life is short
-        HOST_BY_ADDR[dottedQ] = name
-        HOST_BY_NODE_ID[hexNodeID] = name
+        HOST_BY_ADDR[dotted_q] = name
+        HOST_BY_NODE_ID[hex_node_id] = name
         HOST_BY_PUB_KEY[pub_key] = name
         HOST_BY_PRIVATE_KEYE[priv_key] = name
 
-        # NOTE that nodeID is a binary value here
-        return (name, dottedQ, node.node_id, pub_key, priv_key)  # GEEP
+        # NOTE that node_id is a binary value here
+        return (name, dotted_q, node.node_id, pub_key, priv_key)  # GEEP
 
 
 class TestRingDataProto(unittest.TestCase):
@@ -171,7 +171,7 @@ class TestRingDataProto(unittest.TestCase):
         msg_spec = str_obj_model.msgs[0].msgs[0]
         self.assertEqual(msg_spec.f_name(0), 'hostName')
         self.assertEqual(msg_spec.field_type_name(0), 'lstring')
-        self.assertEqual(msg_spec.f_name(1), 'ipAddr')
+        self.assertEqual(msg_spec.f_name(1), 'ip_addr')
         self.assertEqual(msg_spec.field_type_name(1), 'lstring')
         self.assertEqual(msg_spec.f_name(2), 'node_id')
         self.assertEqual(msg_spec.field_type_name(2), 'fbytes32')
@@ -205,7 +205,7 @@ class TestRingDataProto(unittest.TestCase):
         self.assertEqual(id(Clz0), id(Clz1))
 
         # test that msg instances created from the same value lists differ
-        values = hostInfoValues()
+        values = host_info_values()
         inner_msg0 = Clz0(values)
         inner_msg1 = Clz0(values)
         # we don't cache instances, so these will differ
@@ -225,7 +225,7 @@ class TestRingDataProto(unittest.TestCase):
         self.assertEqual(id(Clz2), id(Clz3))
 
         # test that msg instances created from the same value lists differ
-        ring = ringDataValues()  # a list of random hosts
+        ring = ring_data_values()  # a list of random hosts
 
         # 'values' is a list of field values.  In this case, the single
         # value is itself a list, a list of HostInfo value lists.
@@ -243,7 +243,7 @@ class TestRingDataProto(unittest.TestCase):
         self.assertEqual(id(F0), id(F1))           # GEEP
 
     # ---------------------------------------------------------------
-    def testRingDataProtoSerialization(self):
+    def test_ring_data_proto_serialization(self):
         str_obj_model = self.make_str_obj_model()
         proto_name = str_obj_model.name
         outer_msg_spec = str_obj_model.msgs[0]
@@ -266,13 +266,13 @@ class TestRingDataProto(unittest.TestCase):
         ring = []
         for nnn in range(count):
             # should avoid dupes
-            values = hostInfoValues()
+            values = host_info_values()
             ring.append(InnerMsg(values))
 
-        outerMsg = OuterMsg([ring])     # a list whose member is a list
+        outer_msg = OuterMsg([ring])     # a list whose member is a list
 
         # serialize the object to the channel -----------------------
-        nnn = outerMsg.write_stand_alone(chan)
+        nnn = outer_msg.write_stand_alone(chan)
 
         old_position = chan.position
         chan.flip()
@@ -284,20 +284,20 @@ class TestRingDataProto(unittest.TestCase):
         self.assertIsNotNone(read_back)
 
         # verify that the messages are identical --------------------
-        self.assertTrue(outerMsg.__eq__(read_back))
+        self.assertTrue(outer_msg.__eq__(read_back))
         self.assertEqual(nnn, nn2)
 
         # produce another message from the same values --------------
-        outerMsg2 = OuterMsg([ring])
+        outer_msg2 = OuterMsg([ring])
         chan2 = Channel(BUFSIZE)
-        nnn = outerMsg2.write_stand_alone(chan2)
+        nnn = outer_msg2.write_stand_alone(chan2)
         chan2.flip()
         (copy2, nn3) = OuterMsg.read(chan2, str_obj_model)
-        self.assertTrue(outerMsg.__eq__(copy2))
-        self.assertTrue(outerMsg2.__eq__(copy2))                   # GEEP
+        self.assertTrue(outer_msg.__eq__(copy2))
+        self.assertTrue(outer_msg2.__eq__(copy2))                   # GEEP
 
     # ---------------------------------------------------------------
-    def roundTripRingDataInstanceToWireFormat(self, spec, ringHost):
+    def round_trip_ring_data_instance_to_wire_format(self, spec, ring_host):
 
         # invoke WireMsgSpecWriter
         # XXX STUB
@@ -308,17 +308,18 @@ class TestRingDataProto(unittest.TestCase):
         pass
 
     def test_round_trip_ring_data_instances_to_wire_format(self):
-        strSpec = StringIO(RING_DATA_PROTO_SPEC)
-        ppp = StringProtoSpecParser(strSpec)
-        ringDataSpec = ppp.parse()
+        str_spec = StringIO(RING_DATA_PROTO_SPEC)
+        ppp = StringProtoSpecParser(str_spec)
+        ring_data_spec = ppp.parse()
 
         count = 3 + RNG.next_int16(6)   # so 3..8 inclusive
 
         # make that many semi-random nodes, taking care to avoid duplicates,
         # and round-trip each
         for _ in range(count):
-            ring_host = HostInfo.createRandomHost()
-            self.roundTripRingDataInstanceToWireFormat(ringDataSpec, ring_host)
+            ring_host = HostInfo.create_random_host()
+            self.round_trip_ring_data_instance_to_wire_format(
+                ring_data_spec, ring_host)
 
 
 if __name__ == '__main__':

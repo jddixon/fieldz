@@ -22,7 +22,7 @@ class TestWireBuffer (unittest.TestCase):
 
     # actual unit tests #############################################
 
-    def testPow(self):
+    def test_pow(self):
         self.assertRaises(ValueError, next_power_of_two, -1)
         self.assertRaises(ValueError, next_power_of_two, 0)
         self.assertEqual(16, next_power_of_two(15))

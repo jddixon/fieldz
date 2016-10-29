@@ -266,7 +266,7 @@ class TestProtoSpec(unittest.TestCase):
 
 #       self.roundTripProtoSpecViaString(sOM)       # GEEP
 
-    def testNestedMsgs(self):
+    def test_nested_msgs(self):
         """ XXX so far this is just testNestedEnum XXX """
         data = StringIO(NESTED_MSGS_PROTO_SPEC)
         ppp = StringProtoSpecParser(data)   # data should be file-like

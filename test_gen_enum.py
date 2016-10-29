@@ -67,7 +67,7 @@ class TestGenEnum(unittest.TestCase):
         print("ABOUT TO CREATE SECOND INSTANCE")
         enum2 = GeneratedEnum(13, 97)
 
-    def testGeneratingClass(self):
+    def test_generating_class(self):
         class FCls(metaclass=MetaEnum,
                    aaa=3, bbb=7, ccc=11,
                    echo=echo, __setattr__=safer_setter):

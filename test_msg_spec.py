@@ -86,8 +86,8 @@ class TestMsgSpec(unittest.TestCase):
         self.assertEqual(7, enum.value('ghi'))
 
     # FOO
-    def doFieldTest(self, name, field_type, quantifier=M.Q_REQUIRED,
-                    field_nbr=0, default=None):
+    def do_field_test(self, name, field_type, quantifier=M.Q_REQUIRED,
+                      field_nbr=0, default=None):
         node_reg, proto_reg, msg_reg = self.make_registries(
             'org.xlattice.fieldz.test.fieldSpec')
 
@@ -107,12 +107,12 @@ class TestMsgSpec(unittest.TestCase):
         if default is not None:
             self.assertEqual(default, file.default)
 
-        expectedRepr = "%s %s%s @%d \n" % (
+        expected_repr = "%s %s%s @%d \n" % (
             name, file.field_type_name, M.q_name(quantifier), field_nbr)
         # DEFAULTS NOT SUPPORTED
-        self.assertEqual(expectedRepr, file.__repr__())
+        self.assertEqual(expected_repr, file.__repr__())
 
-    def testsQuantifiers(self):
+    def test_quantifiers(self):
         q_name = M.q_name
         self.assertEqual('', q_name(M.Q_REQUIRED))
         self.assertEqual('?', q_name(M.Q_OPTIONAL))
@@ -121,14 +121,14 @@ class TestMsgSpec(unittest.TestCase):
 
     def test_field_spec(self):
         # default is not implemented yet
-        self.doFieldTest('foo', FieldTypes.V_UINT32, M.Q_REQUIRED, 9)
-        self.doFieldTest('bar', FieldTypes.V_SINT32, M.Q_STAR, 17)
-        self.doFieldTest('node_id', FieldTypes.F_BYTES20, M.Q_OPTIONAL, 92)
-        self.doFieldTest('tix', FieldTypes.V_BOOL, M.Q_PLUS, 147)
+        self.do_field_test('foo', FieldTypes.V_UINT32, M.Q_REQUIRED, 9)
+        self.do_field_test('bar', FieldTypes.V_SINT32, M.Q_STAR, 17)
+        self.do_field_test('node_id', FieldTypes.F_BYTES20, M.Q_OPTIONAL, 92)
+        self.do_field_test('tix', FieldTypes.V_BOOL, M.Q_PLUS, 147)
 
     # GEEP
 
-    def roundTripMsgSpecViaString(self, match, protocol):
+    def round_trip_msg_spec_via_str(self, match, protocol):
         """
         Convert a MsgSpec object model to canonical string form,
         parse that to make a clone, and verify that the two are
@@ -215,10 +215,10 @@ class TestMsgSpec(unittest.TestCase):
             self.assertEqual(fields[i].FIELD_TYPE_NDX, field.FIELD_TYPE_NDX)
             i += 1
 
-        self.roundTripMsgSpecViaString(
+        self.round_trip_msg_spec_via_str(
             msg_spec, protocol)                 # BAZ
 
-    def testParseAndWriteMsgSpec(self):
+    def test_parse_and_write_msg_spec(self):
         data = StringIO(LOG_ENTRY_MSG_SPEC)
         ppp = StringMsgSpecParser(data)   # data should be file-like
         str_obj_model = ppp.parse()             # object model from string serialization
@@ -243,7 +243,7 @@ class TestMsgSpec(unittest.TestCase):
             str_obj_model.field_type_name(5),
             'lstring')          # BAR
 
-    def testMultiEnum(self):
+    def test_multi_enum(self):
         protocol = 'org.xlattice.fieldz.test.multiEnum'
 
         data = StringIO(MULTI_ENUM_MSG_SPEC)
@@ -287,7 +287,7 @@ class TestMsgSpec(unittest.TestCase):
         self.assertEqual('exc', e_pair.symbol)
         self.assertEqual(5, e_pair.value)
 
-        self.roundTripMsgSpecViaString(
+        self.round_trip_msg_spec_via_str(
             str_obj_model, protocol)             # GEEP
 
 if __name__ == '__main__':

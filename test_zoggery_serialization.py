@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# testZoggerySerialization.py
+# test_zoggery_serialization.py
 import time
 import unittest
 from io import StringIO
@@ -17,12 +17,12 @@ from fieldz.msg_impl import make_msg_class, make_field_class, MsgImpl
 from zoggery_proto_spec import ZOGGERY_PROTO_SPEC
 
 BUFSIZE = 16 * 1024
-rng = SimpleRNG(time.time())
+RNG = SimpleRNG(time.time())
 
 # TESTS -------------------------------------------------------------
 
 
-class TestZoggerySerialization (unittest.TestCase):
+class TestZoggerySerialization(unittest.TestCase):
 
     def setUp(self):
         data = StringIO(ZOGGERY_PROTO_SPEC)
@@ -38,18 +38,18 @@ class TestZoggerySerialization (unittest.TestCase):
         timestamp = int(time.time())
         node_id = [0] * 20
         key = [0] * 20
-        length = rng.next_int32()
+        length = RNG.next_int32()
         by_ = 'who is responsible'
         path = '/home/jdd/tarballs/something.tar.gz'
         # let's have some random bytes
-        rng.next_bytes(node_id)
-        rng.next_bytes(key)
+        RNG.next_bytes(node_id)
+        RNG.next_bytes(key)
         # NOTE that this is a list
         return [timestamp, node_id, key, length, by_, path]
 
     # actual unit tests #############################################
 
-    def testZoggerySerialization(self):
+    def test_zoggery_serialization(self):
         # XXX These comments are generally out of date.
 
         # Testing MsgSpec with simple fields.  Verify that getter,
