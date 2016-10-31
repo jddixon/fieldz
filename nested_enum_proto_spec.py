@@ -17,8 +17,8 @@ message nestedEnums
   d = 4
   e = 5
 
- whatever    vuInt32?
- cantImagine vsInt32+
+ whatever    vuint32?
+ cantImagine vsint32+
  # these symbols implemented as varints
  zzz         Baz                        # protoSpec level
  xxx         Foo                        # msgSpec level

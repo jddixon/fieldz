@@ -70,7 +70,7 @@ class TestVarint(unittest.TestCase):
         # the next test fails if I don't parenthesize the shift term or
         # convert >1 to /2
         big_number = 0x80000000000000000 + (self.rng.next_int64() > 1)
-        self.assertEqual(10, len(big_number))
+        self.assertEqual(10, len_(big_number))
 
         # MAKE SURE THIS WORKS WITH SIGNED NUMBERS
 

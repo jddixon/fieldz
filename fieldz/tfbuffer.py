@@ -92,7 +92,7 @@ class TFReader(TFBuffer):
         (self._p_type, self._field_nbr) = read_field_hdr(self)
 
         # getter has range check
-        field_type = self._field_type = self._msg_spec.FIELD_TYPE_NDX(
+        field_type = self._field_type = self._msg_spec.field_type_ndx(
             self._field_nbr)
 
         # gets through dispatch table -------------------------------
@@ -208,7 +208,7 @@ class TFWriter(TFBuffer):
     def put_next(self, field_nbr, value):
 
         # getter has range check
-        field_type = self._msg_spec.FIELD_TYPE_NDX(field_nbr)
+        field_type = self._msg_spec.field_type_ndx(field_nbr)
 
         # puts through dispatch table -------------------------------
         if 0 <= field_type and field_type <= ftypes.F_BYTES32:

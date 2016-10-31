@@ -10,93 +10,93 @@ protocol org.xlattice.fieldz.test.bigProto
 
 message bigTestMsg:
  # required fields, unnumbered
- vBoolReqField      vBool          # @0 implied
- vEnumReqField      vEnum          # @1 implied
- vuInt32ReqField    vuInt32        # and so forth
- vuInt64ReqField    vuInt64
- vsInt32ReqField    vsInt32
- vsInt64ReqField    vsInt64
- #vuInt32ReqField   vuInt32
- #vuInt64ReqField   vuInt64
- fsInt32ReqField    fsInt32
- fuInt32ReqField    fuInt32
- fFloatReqField     fFloat
- fsInt64ReqField    fsInt64
- fuInt64ReqField    fuInt64
- fDoubleReqField    fDouble
- lStringReqField    lString
- lBytesReqField     lBytes
- lMsgReqField       lMsg
- fBytes16ReqField   fBytes16
- fBytes20ReqField   fBytes20
- fBytes32ReqField   fBytes32
+ vBoolReqField      vbool          # @0 implied
+ vEnumReqField      venum          # @1 implied
+ vuInt32ReqField    vuint32        # and so forth
+ vuInt64ReqField    vuint64
+ vsInt32ReqField    vsint32
+ vsInt64ReqField    vsint64
+ #vuInt32ReqField   vuint32
+ #vuInt64ReqField   vuint64
+ fsInt32ReqField    fsint32
+ fuInt32ReqField    fuint32
+ fFloatReqField     ffloat
+ fsInt64ReqField    fsint64
+ fuInt64ReqField    fuint64
+ fDoubleReqField    fdouble
+ lStringReqField    lstring
+ lBytesReqField     lbytes
+ lMsgReqField       lmsg
+ fBytes16ReqField   fbytes16
+ fBytes20ReqField   fbytes20
+ fBytes32ReqField   fbytes32
 
  # optional fields, numbered
  # XXX FAILS (can't handle space(s) before quantifier)
- #vBoolOptField       vBool ?   @ 100
- vBoolOptField      vBool?    @100
- vEnumOptField      vEnum?    @101
- vuInt32OptField    vuInt32?  @102
- vuInt64OptField    vuInt64?  @103
- vsInt32OptField    vsInt32?  @104
- vsInt64OptField    vsInt64?  @105
- #vuInt32OptField   vuInt32?  @106
- #vuInt64OptField   vuInt64?  @107
- fsInt32OptField    fsInt32?  @108
- fuInt32OptField    fuInt32?  @109
- fFloatOptField     fFloat?   @110
- fsInt64OptField    fsInt64?  @111
- fuInt64OptField    fuInt64?  @112
- fDoubleOptField    fDouble?  @113
- lStringOptField    lString?  @114
- lBytesOptField     lBytes?   @115
- lMsgOptField       lMsg?     @116
- fBytes16OptField   fBytes16? @117
- fBytes20OptField   fBytes20? @118
- fBytes32OptField   fBytes32? @119
+ #vBoolOptField       vbool ?   @ 100
+ vBoolOptField      vbool?    @100
+ vEnumOptField      venum?    @101
+ vuInt32OptField    vuint32?  @102
+ vuInt64OptField    vuint64?  @103
+ vsInt32OptField    vsint32?  @104
+ vsInt64OptField    vsint64?  @105
+ #vuInt32OptField   vuint32?  @106
+ #vuInt64OptField   vuint64?  @107
+ fsInt32OptField    fsint32?  @108
+ fuInt32OptField    fuint32?  @109
+ fFloatOptField     ffloat?   @110
+ fsInt64OptField    fsint64?  @111
+ fuInt64OptField    fuint64?  @112
+ fDoubleOptField    fdouble?  @113
+ lStringOptField    lstring?  @114
+ lBytesOptField     lbytes?   @115
+ lMsgOptField       lmsg?     @116
+ fBytes16OptField   fbytes16? @117
+ fBytes20OptField   fbytes20? @118
+ fBytes32OptField   fbytes32? @119
 
  # optional/repeated (*) fields, numbered
- vBoolStarField     vBool*    @200
- vEnumStarField     vEnum*    @201
- vuInt32StarField   vuInt32*  @202
- vuInt64StarField   vuInt64*  @203
- vsInt32StarField   vsInt32*  @204
- vsInt64StarField   vsInt64*  @205
- #vuInt32StarField  vuInt32*  @206
- #vuInt64StarField  vuInt64*  @207
- fsInt32StarField   fsInt32*  @208
- fuInt32StarField   fuInt32*  @209
- fFloatStarField    fFloat*   @210
- fsInt64StarField   fsInt64*  @211
- fuInt64StarField   fuInt64*  @212
- fDoubleStarField   fDouble*  @213
- lStringStarField   lString*  @214
- lBytesStarField    lBytes*   @215
- lMsgStarField      lMsg*     @216
- fBytes16StarField  fBytes16* @217
- fBytes20StarField  fBytes20* @218
- fBytes32StarField  fBytes32* @219
+ vBoolStarField     vbool*    @200
+ vEnumStarField     venum*    @201
+ vuInt32StarField   vuint32*  @202
+ vuInt64StarField   vuint64*  @203
+ vsInt32StarField   vsint32*  @204
+ vsInt64StarField   vsint64*  @205
+ #vuInt32StarField  vuint32*  @206
+ #vuInt64StarField  vuint64*  @207
+ fsInt32StarField   fsint32*  @208
+ fuInt32StarField   fuint32*  @209
+ fFloatStarField    ffloat*   @210
+ fsInt64StarField   fsint64*  @211
+ fuInt64StarField   fuint64*  @212
+ fDoubleStarField   fdouble*  @213
+ lStringStarField   lstring*  @214
+ lBytesStarField    lbytes*   @215
+ lMsgStarField      lmsg*     @216
+ fBytes16StarField  fbytes16* @217
+ fBytes20StarField  fbytes20* @218
+ fBytes32StarField  fbytes32* @219
 
  # required/repeated (+) fields, numbered
- vBoolPlusField     vBool+    @300
- vEnumPlusField     vEnum+    @301
- vuInt32PlusField   vuInt32+  @302
- vuInt64PlusField   vuInt64+  @303
- vsInt32PlusField   vsInt32+  @304
- vsInt64PlusField   vsInt64+  @305
- #vuInt32PlusField  vuInt32+  @306
- #vuInt64PlusField  vuInt64+  @307
- fsInt32PlusField   fsInt32+  @308
- fuInt32PlusField   fuInt32+  @309
- fFloatPlusField    fFloat+   @310
- fsInt64PlusField   fsInt64+  @311
- fuInt64PlusField   fuInt64+  @312
- fDoublePlusField   fDouble+  @313
- lStringPlusField   lString+  @314
- lBytesPlusField    lBytes+   @315
- lMsgPlusField      lMsg+     @316
- fBytes16PlusField  fBytes16+ @317
- fBytes20PlusField  fBytes20+ @318
- fBytes32PlusField  fBytes32+ @319
+ vBoolPlusField     vbool+    @300
+ vEnumPlusField     venum+    @301
+ vuInt32PlusField   vuint32+  @302
+ vuInt64PlusField   vuint64+  @303
+ vsInt32PlusField   vsint32+  @304
+ vsInt64PlusField   vsint64+  @305
+ #vuInt32PlusField  vuint32+  @306
+ #vuInt64PlusField  vuint64+  @307
+ fsInt32PlusField   fsint32+  @308
+ fuInt32PlusField   fuint32+  @309
+ fFloatPlusField    ffloat+   @310
+ fsInt64PlusField   fsint64+  @311
+ fuInt64PlusField   fuint64+  @312
+ fDoublePlusField   fdouble+  @313
+ lStringPlusField   lstring+  @314
+ lBytesPlusField    lbytes+   @315
+ lMsgPlusField      lmsg+     @316
+ fBytes16PlusField  fbytes16+ @317
+ fBytes20PlusField  fbytes20+ @318
+ fBytes32PlusField  fbytes32+ @319
 
 """

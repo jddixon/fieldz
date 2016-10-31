@@ -1,5 +1,8 @@
 ~/dev/py/fieldz/CHANGES
 
+v0.10.26
+    2016-10-31
+        * 11 out of 22 tests succeed                                SLOC 7115
 v0.10.25
     2016-10-30
         * CoreTypes work, but should use metaclass                  SLOC 7093
@@ -348,6 +351,7 @@ v0.1.2
         * working varint, fixed len 32- and 64-bit, var len bytestring
             and associated tests
         * initial svn import
+
 
 
 

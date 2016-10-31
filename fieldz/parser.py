@@ -220,7 +220,9 @@ class StringSpecParser(object):
     # def expectField(self, nextFieldNbr, line, indent, step):
     def expect_field(self, msg_spec, line, indent, step):
         if not line.startswith(indent):
-            raise ParseError("wrong indent for field declaration: '%s'" % line)
+            raise ParserError(
+                "wrong indent for field declaration: '%s'" %
+                line)
 
         # DEBUG
         print("expectField: line = '%s'" % line)

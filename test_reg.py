@@ -24,16 +24,17 @@ class TestReg(unittest.TestCase):
 
     # actual unit tests #############################################
     def test_node_reg(self):
+        c_types = CoreTypes()
         test_reg = NodeReg()
 
         # bootstrap() has loaded fieldTypes and coreTypes
 #       print "DEBUG: FieldTypes.MAX_NDX is %d" % FieldTypes.MAX_NDX        # is 17
 #       print "DEBUG: C.maxNdx is %d" % C.maxNdx        # is  5
-#       print "DEBUG: test_reg.nextRegID is %d" % test_reg.nextRegID
+#       print "DEBUG: test_reg.nextRegID is %d test_reg.nextRegID
         self.assertEqual(
             FieldTypes.MAX_NDX +
             1 +
-            C.CoreTypes().max_ndx +
+            c_types.max_ndx +
             1,
             test_reg.next_reg_id)
 
@@ -48,12 +49,12 @@ class TestReg(unittest.TestCase):
             self.assertEqual(i, test_reg.name2reg_id(name))
 
         for i in range(FieldTypes.MAX_NDX + 1,
-                       FieldTypes.MAX_NDX + 1 + CoreTypes.max_ndx + 1):
+                       FieldTypes.MAX_NDX + 1 + c_types.max_ndx + 1):
             name = test_reg[i].qual_name
             # DEBUG
 #           print '%2u %s' % (i, name)
             # END
-            self.assertEqual(CoreTypes.as_str(
+            self.assertEqual(c_types.as_str(
                 i - (FieldTypes.MAX_NDX + 1)), name)
             self.assertEqual(i, test_reg.name2reg_id(name))
 
@@ -61,7 +62,7 @@ class TestReg(unittest.TestCase):
         self.assertEqual(
             FieldTypes.MAX_NDX +
             1 +
-            CoreTypes.max_ndx +
+            c_types.max_ndx +
             1,
             len(test_reg))
 

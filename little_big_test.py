@@ -8,26 +8,26 @@ protocol org.xlattice.fieldz.test.littleBigProto
 
 message bigTestMsg:
  # required fields, unnumbered
- vBoolReqField       vBool
- vEnumReqField       vEnum
- vuInt32ReqField     vuInt32
- vuInt64ReqField     vuInt64
- vsInt32ReqField     vsInt32
- vsInt64ReqField     vsInt64
- #vuInt32ReqField     vuInt32       # MAYBE NEVER
- #vuInt64ReqField     vuInt64       # --ditto--
- fsInt32ReqField     fsInt32
- fuInt32ReqField     fuInt32
- fFloatReqField      fFloat
- fsInt64ReqField     fsInt64
- fuInt64ReqField     fuInt64
- fDoubleReqField     fDouble
- lStringReqField     lString
- lBytesReqField      lBytes
- # lMsgReqField        lMsg         # NOT YET
- fBytes16ReqField    fBytes16
- fBytes20ReqField    fBytes20
- fBytes32ReqField    fBytes32
+ vBoolReqField       vbool
+ vEnumReqField       venum
+ vuInt32ReqField     vuint32
+ vuInt64ReqField     vuint64
+ vsInt32ReqField     vsint32
+ vsInt64ReqField     vsint64
+ #vuInt32ReqField     vuint32       # MAYBE NEVER
+ #vuInt64ReqField     vuint64       # --ditto--
+ fsInt32ReqField     fsint32
+ fuInt32ReqField     fuint32
+ fFloatReqField      ffloat
+ fsInt64ReqField     fsint64
+ fuInt64ReqField     fuint64
+ fDoubleReqField     fdouble
+ lStringReqField     lstring
+ lBytesReqField      lbytes
+ #lMsgReqField        lmsg         # NOT YET
+ fBytes16ReqField    fbytes16
+ fBytes20ReqField    fbytes20
+ fBytes32ReqField    fbytes32
 
 # Can't handle ANY optional (?), star (*), and plus (+) types.
 """

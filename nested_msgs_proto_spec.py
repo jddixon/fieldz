@@ -20,16 +20,16 @@ message nestedMsgs
  message A
   message B
    message C
-     cField1 vuInt32
-     cField2 vuInt32
+     cField1 vuint32
+     cField2 vuint32
    bField1   Baz
    bField2   Foo
    bField3   C
   aField1    Bar            # at parent msg level enum
   aField2    Baz            # the proto level enum
   aField3    B              # the embedded msg
- whatever    vuInt32?
- cantImagine vsInt32+
+ whatever    vuint32?
+ cantImagine vsint32+
  # these symbols implemented as varints
  zzz         Baz                        # protoSpec level
  xxx         Foo                        # msgSpec level
