@@ -637,6 +637,10 @@ class MsgSpec(SuperSpec):
         self.field_name_to_ndx = {}    # XXX value?
         self._field_ndx = 0     # zero-based index of field in MsgSpec
 
+    @property
+    def fields(self):
+        return self._fields
+
     def add_field(self, file):
         f_name = file.name
         if not isinstance(file, FieldSpec):

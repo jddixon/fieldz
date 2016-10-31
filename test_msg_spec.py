@@ -19,12 +19,12 @@ import fieldz.reg as R
 LOG_ENTRY_MSG_SPEC = u"""
 # protocol org.xlattice.zoggery
 message logEntry:
- timestamp   fuInt32
- nodeID      fBytes20
- key         fBytes20
- length      vuInt32
- by          lString
- path        lString
+ timestamp   fuint32
+ nodeID      fbytes20
+ key         fbytes20
+ length      vuint32
+ by          lstring
+ path        lstring
 """
 
 MULTI_ENUM_MSG_SPEC = u"""
@@ -39,8 +39,8 @@ message multiEnum
   d = 4
   e = 5
 
- whatever    vuInt32?
- cantImagine vsInt32+
+ whatever    vuint32?
+ cantImagine vsint32+
  # NEXT LINES FAIL
  xxx         Foo
  yyy         Bar
@@ -101,7 +101,7 @@ class TestMsgSpec(unittest.TestCase):
             default)
 
         self.assertEqual(name, file.name)
-        self.assertEqual(field_type, file.FIELD_TYPE_NDX)
+        self.assertEqual(field_type, file.field_type_ndx)
         self.assertEqual(quantifier, file.quantifier)
         self.assertEqual(field_nbr, file.field_nbr)
         if default is not None:
@@ -188,13 +188,13 @@ class TestMsgSpec(unittest.TestCase):
                 M.Q_REQUIRED,
                 1),
             M.FieldSpec(msg_reg, 'key', FieldTypes.F_BYTES20, M.Q_REQUIRED, 2),
-            M.FieldSpec(msg_reg, 'by_', FieldTypes.L_STRING, M.Q_REQUIRED, 3),
+            M.FieldSpec(msg_reg, 'by', FieldTypes.L_STRING, M.Q_REQUIRED, 3),
             M.FieldSpec(msg_reg, 'path', FieldTypes.L_STRING, M.Q_REQUIRED, 4),
         ]
         name = 'logEntry'
         msg_spec = M.MsgSpec(name, protocol, msg_reg)
         for file in fields:
-            msg_spec.addField(file)
+            msg_spec.add_field(file)
         msg_spec.add_enum(enum)
 
         self.assertEqual(name, msg_spec.name)
@@ -212,7 +212,7 @@ class TestMsgSpec(unittest.TestCase):
         i = 0
         for field in msg_spec:
             self.assertEqual(fields[i].name, field._name)
-            self.assertEqual(fields[i].FIELD_TYPE_NDX, field.FIELD_TYPE_NDX)
+            self.assertEqual(fields[i].field_type_ndx, field.field_type_ndx)
             i += 1
 
         self.round_trip_msg_spec_via_str(
@@ -230,13 +230,13 @@ class TestMsgSpec(unittest.TestCase):
         # XXX THIS SHOULD BE A LOOP, with no magic numbers
         self.assertEqual(str_obj_model.f_name(0), 'timestamp')
         self.assertEqual(str_obj_model.field_type_name(0), 'fuint32')
-        self.assertEqual(str_obj_model.f_name(1), 'node_id')
+        self.assertEqual(str_obj_model.f_name(1), 'nodeID')
         self.assertEqual(str_obj_model.field_type_name(1), 'fbytes20')
         self.assertEqual(str_obj_model.f_name(2), 'key')
         self.assertEqual(str_obj_model.field_type_name(2), 'fbytes20')
         self.assertEqual(str_obj_model.f_name(3), 'length')
         self.assertEqual(str_obj_model.field_type_name(3), 'vuint32')
-        self.assertEqual(str_obj_model.f_name(4), 'by_')
+        self.assertEqual(str_obj_model.f_name(4), 'by')
         self.assertEqual(str_obj_model.field_type_name(4), 'lstring')
         self.assertEqual(str_obj_model.f_name(5), 'path')
         self.assertEqual(

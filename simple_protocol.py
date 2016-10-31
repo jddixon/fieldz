@@ -22,29 +22,29 @@ enum ErrorCode
  OutOfRange  33      # EDOM, math arg out of domain of func
 
 message hello
- myNodeID    fBytes20
- myRSAPubKey lBytes? # if present, client's RSA public key
+ myNodeID    fbytes20
+ myRSAPubKey lbytes? # if present, client's RSA public key
 
 message logEntry
- timestamp   fuInt32
- key         fBytes20
- length      vuInt32
- nodeID      fBytes20
- src         lString         # arbitrary text, whodunnit
- path        lString         # UNIX-style
+ timestamp   fuint32
+ key         fbytes20
+ length      vuint32
+ nodeID      fbytes20
+ src         lstring         # arbitrary text, whodunnit
+ path        lstring         # UNIX-style
 
 message errorMsg
  code        ErrorCode
- text        lString
+ text        lstring
 
 message get
- key         fBytes20
+ key         fbytes20
 
 message put
- src         fBytes20?       # 20 byte nodeID: where the data came from
- dest        fBytes20?       # if present, means forward to this nodeID
- key         fBytes20        # SHA1 hash of content
- content     lBytes
+ src         fbytes20?       # 20 byte nodeID: where the data came from
+ dest        fbytes20?       # if present, means forward to this nodeID
+ key         fbytes20        # SHA1 hash of content
+ content     lbytes
 
 message ok
  code        OK              # the enum has only one possible value

@@ -59,7 +59,7 @@ class TestProtoSpec(unittest.TestCase):
 
     def test_maps(self):
         max_ndx = FieldTypes.MAX_NDX
-        max_name = FS().as_str(max_ndx)
+        max_name = FieldStr().as_str(max_ndx)
         self.assertEqual('fbytes32', max_name)
 
     def test_enum(self):
@@ -138,7 +138,7 @@ class TestProtoSpec(unittest.TestCase):
                 0),
             M.FieldSpec(
                 msg_reg,
-                'node_id',
+                'nodeID',
                 FieldTypes.F_BYTES20,
                 M.Q_REQUIRED,
                 1),
@@ -155,7 +155,7 @@ class TestProtoSpec(unittest.TestCase):
         msg_spec = M.MsgSpec(msg_name, proto_spec, msg_reg)
         self.assertEqual(msg_name, msg_spec.name)
         for file in fields:
-            msg_spec.addField(file)
+            msg_spec.add_field(file)
 
         proto_spec.add_msg(msg_spec)  # this was incorrectly commented out
         self.round_trip_poto_spec_via_string(proto_spec)             # GEEP
@@ -209,13 +209,13 @@ class TestProtoSpec(unittest.TestCase):
         # XXX THIS SHOULD BE A LOOP, with no magic numbers
         self.assertEqual(msg_spec.f_name(0), 'timestamp')
         self.assertEqual(msg_spec.field_type_name(0), 'fuint32')
-        self.assertEqual(msg_spec.f_name(1), 'node_id')
+        self.assertEqual(msg_spec.f_name(1), 'nodeID')
         self.assertEqual(msg_spec.field_type_name(1), 'fbytes20')
         self.assertEqual(msg_spec.f_name(2), 'key')
         self.assertEqual(msg_spec.field_type_name(2), 'fbytes20')
         self.assertEqual(msg_spec.f_name(3), 'length')
         self.assertEqual(msg_spec.field_type_name(3), 'vuint32')
-        self.assertEqual(msg_spec.f_name(4), 'by_')
+        self.assertEqual(msg_spec.f_name(4), 'by')
         self.assertEqual(msg_spec.field_type_name(4), 'lstring')
         self.assertEqual(msg_spec.f_name(5), 'path')
         self.assertEqual(msg_spec.field_type_name(5), 'lstring')      # GEEP

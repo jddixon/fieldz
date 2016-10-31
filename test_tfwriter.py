@@ -12,7 +12,7 @@ import fieldz.reg as R
 
 # from fieldz.msg_spec import *
 from fieldz.msg_spec import (
-    Q_REQUIRED  # , Q_OPTIONAL, Q_PLUS, Q_STAR,
+    Q_REQUIRED,  # Q_OPTIONAL, Q_PLUS, Q_STAR,
     FieldSpec, )
 # from fieldz.tfbuffer import *
 

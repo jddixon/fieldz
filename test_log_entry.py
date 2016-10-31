@@ -9,7 +9,7 @@ from fieldz.field_types import FieldTypes, FieldStr
 import fieldz.typed as T
 import fieldz.msg_spec as M
 import fieldz.reg as R
-# from fieldz.tfbuffer import *
+from fieldz.tfbuffer import TFReader, TFWriter
 
 BUFSIZE = 16 * 1024
 RNG = SimpleRNG(time.time())
@@ -32,7 +32,7 @@ FIELDS = [
 ]
 LE_MSG_SPEC = M.MsgSpec(NAME, PROTO_REG, PARENT)
 for file in FIELDS:
-    LE_MSG_SPEC.addField(file)
+    LE_MSG_SPEC.add_field(file)
 UPAX_PROTO_SPEC = M.ProtoSpec(PROTOCOL, PROTO_REG)
 UPAX_PROTO_SPEC.add_enum(ENUM)
 UPAX_PROTO_SPEC.add_msg(LE_MSG_SPEC)
@@ -62,7 +62,7 @@ class TestLogEntry(unittest.TestCase):
     def test_constructors(self):
         p_spec = UPAX_PROTO_SPEC
         self.assertEqual(PROTOCOL, p_spec.name)
-        self.assertEqual(enum, p_spec.enums[0])
+        self.assertEqual(ENUM, p_spec.enums[0])
         self.assertEqual(LE_MSG_SPEC, p_spec.msgs[0])
         self.assertEqual(0, len(p_spec.seqs))
 
