@@ -1,5 +1,8 @@
 ~/dev/py/fieldz/CHANGES
 
+v0.10.25
+    2016-10-30
+        * CoreTypes work, but should use metaclass                  SLOC 7093
 v0.10.24
     2016-10-29
         * rename vars per PEP 8, phase 2                            sLOC 7081
@@ -345,6 +348,7 @@ v0.1.2
         * working varint, fixed len 32- and 64-bit, var len bytestring
             and associated tests
         * initial svn import
+
 
 
 

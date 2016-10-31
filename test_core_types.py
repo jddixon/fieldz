@@ -1,31 +1,14 @@
 #!/usr/bin/env python3
-
 # testCoreTypes.py
-# import time
+
 import unittest
 from io import StringIO
 
 from fieldz.chan import Channel
 from fieldz.raw import(
-    # VARINT_TYPE,                            # PACKED_VARINT_TYPE,
-    #B32_TYPE, B64_TYPE,
     LEN_PLUS_TYPE,
-    # B128_TYPE, B160_TYPE, B256_TYPE,
-
-    # field_hdr,
     field_hdr_len,
     read_field_hdr,
-    # hdr_field_nbr, hdr_type,
-    # length_as_varint, write_varint_field,
-    #read_raw_varint, write_raw_varint,
-    # read_raw_b32,           # write_b32_field,
-    # read_raw_b64,           # write_b64_field,
-    # read_raw_len_plus,      # write_len_plus_field,
-    # read_raw_b128,          # write_b128_field,
-    # read_raw_b160,          # write_b160_field,
-    # read_raw_b256,          # write_b256_field,
-    # next_power_of_two,
-    # WireBuffer,
 )
 import fieldz.msg_spec as M
 from fieldz.core_types import CoreTypes
@@ -33,15 +16,15 @@ from fieldz.field_types import FieldTypes
 from fieldz.reg import NodeReg, ProtoReg, MsgReg
 from fieldz.parser import StringMsgSpecParser
 
-LOG_ENTRYMSG_SPEC = u"""
+LOG_ENTRY_MSG_SPEC = u"""
 # protocol org.xlattice.zoggery
 message logEntry:
- timestamp   fuInt32
- nodeID      fBytes20
- key         fBytes20
- length      vuInt32
- by          lString
- path        lString
+ timestamp   fuint32
+ nodeID      fbytes20
+ key         fbytes20
+ length      vuint32
+ by          lstring
+ path        lstring
 """
 
 
@@ -62,9 +45,14 @@ class TestCoreTypes(unittest.TestCase):
 
     # actual unit tests #############################################
     def test_the_enum(self):
-        self.assertEqual(5, CoreTypes.max_ndx)
-        self.assertEqual(0, CoreTypes.ENUM_PAIR_SPEC)
-        self.assertEqual(5, CoreTypes.PROTO_SPEC)
+        cTypes = CoreTypes()
+        self.assertEqual(cTypes.ENUM_PAIR_SPEC, 0)
+        self.assertEqual(cTypes.ENUM_SPEC, 1)
+        self.assertEqual(cTypes.FIELD_SPEC, 2)
+        self.assertEqual(cTypes.MSG_SPEC, 3)
+        self.assertEqual(cTypes.SEQ_SPEC, 4)
+        self.assertEqual(cTypes.PROTO_SPEC, 5)
+        self.assertEqual(cTypes.max_ndx, 5)
 
     def round_trip_to_wire_format(self, chan, nnn, c_type, val):
         node_reg, proto_reg, msg_reg = self.make_registries(
@@ -106,13 +94,14 @@ class TestCoreTypes(unittest.TestCase):
         #ret_val = getter(msgReg, chan)
         #   else # chan is absent
         #     fieldSpecGetter() missing 1 required  positional argument: 'chan'
+        # 2016-10-30 GOT FIRST FAILURE MODE
         ret_val = getter(msg_reg, chan)
 
         # gets the same error:ret_val = M.cGetFuncs[c_type](chan)
 
         r_pos = chan.position
         # DEBUG
-        print("  ROUND TRIP: val    = %s" % val)
+        print("  ROUND TRIP: val     = %s" % val)
         print("              ret_val = %s" % ret_val)
         # END
         self.assertEqual(val, ret_val)
@@ -120,6 +109,7 @@ class TestCoreTypes(unittest.TestCase):
     def test_round_tripping_core_types(self):
         buf_size = 16 * 1024
         chan = Channel(buf_size)
+        cTypes = CoreTypes()
 
         # -----------------------------------------------------------
         # XXX FAILS if msgReg arg added: WRONG NUMBER OF ARGS
@@ -127,7 +117,7 @@ class TestCoreTypes(unittest.TestCase):
         nnn = 0                           # 0-based field number
         string = M.EnumPairSpec('funnyFarm', 497)
         self.round_trip_to_wire_format(
-            chan, nnn, CoreTypes.ENUM_PAIR_SPEC, string)
+            chan, nnn, cTypes.ENUM_PAIR_SPEC, string)
 
         # -----------------------------------------------------------
         protocol = 'org.xlattice.upax'
@@ -140,7 +130,7 @@ class TestCoreTypes(unittest.TestCase):
         string = M.EnumSpec.create('thisEnum', pairs)
         self.assertEqual(3, len(string))
         # XXX FAILS if msgReg arg added: WRONG NUMBER OF ARGS
-#       self.round_trip_to_wire_format( chan, n, CoreTypes.ENUM_SPEC, s)
+        self.round_trip_to_wire_format(chan, nnn, cTypes.ENUM_SPEC, string)
 
         # -----------------------------------------------------------
         protocol = 'org.xlattice.upax'
@@ -152,25 +142,26 @@ class TestCoreTypes(unittest.TestCase):
             FieldTypes.V_SINT32,
             M.Q_OPTIONAL,
             37)
-        # XXX FAILS: invalid (optionlly dotted) name 'bytearray(b'jollyGood')
-        self.round_trip_to_wire_format(chan, nnn, CoreTypes.FIELD_SPEC, string)
+        self.round_trip_to_wire_format(chan, nnn, cTypes.FIELD_SPEC, string)
 
         # -----------------------------------------------------------
 
         # MsgSpec without enum
         protocol = 'org.xlattice.upax'
         node_reg, proto_reg, msg_reg = self.make_registries(protocol)
-        data = StringIO(LOG_ENTRYMSG_SPEC)
+        data = StringIO(LOG_ENTRY_MSG_SPEC)
         ppp = StringMsgSpecParser(data)
-        str_obj_model = ppp.parse()             # object model from string serialization
+
+        str_obj_model = ppp.parse()    # object model from string serialization
+
         self.assertIsNotNone(str_obj_model)
         self.assertTrue(isinstance(str_obj_model, M.MsgSpec))
 
         nnn = 0
-        # XXX FAILS if msgReg arg added: WRONG NUMBER OF ARGS
-        self.round_trip_to_wire_format(
-            chan, nnn, CoreTypes.MSG_SPEC, str_obj_model)
 
+        # XXX FAILS:
+        self.round_trip_to_wire_format(
+            chan, nnn, cTypes.MSG_SPEC, str_obj_model)
 
 if __name__ == '__main__':
     unittest.main()

@@ -13,6 +13,15 @@
     are not canonical
 -----------------------------------------------------------------
 
+2016-10-30
+    * In the implementation of CoreTypes, the class is a 
+        SimpleEnumWIthRepr.  This has a serious bug: the attributes
+        are at the instance level, not the class level, so if 
+        cTypes = CoreTypes(), we can say cTypes.PROTO_SPEC but 
+        not CoreTypes.PROTO_SPEC.  Fix me !!!
+    * Throughout the tests, opcodes are mixed upper and lower case;
+        need to be converted to all lower case
+
 2016-10-27
     * field/enum.py raises non-existent FieldTypeError
 
