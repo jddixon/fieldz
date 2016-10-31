@@ -250,7 +250,7 @@ class FieldSpec(object):
 #       if other.reg != self._reg:
 #           print "FIELD_SPEC REGES DIFFER"
 #           return False
-        if other.type != self._type:
+        if other.field_type_ndx != self._type:
             print("FIELD_SPEC TYPES DIFFER")
             return False
         if other.quantifier != self._quantifier:

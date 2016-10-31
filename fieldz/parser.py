@@ -6,7 +6,10 @@ import fieldz.msg_spec as M
 
 from fieldz.msg_spec import(
     Q_REQUIRED, Q_OPTIONAL, Q_PLUS, Q_STAR,
-    validate_simple_name, validate_dotted_name)
+    validate_simple_name, validate_dotted_name,
+    EnumPairSpec, EnumSpec, FieldSpec,
+    MsgSpec, ProtoSpec,  # SeqSpec,
+)
 
 __all__ = [
     'StringSpecParser',
@@ -302,7 +305,7 @@ class StringSpecParser(object):
             # END
 
         if field_type is None:
-            raise ParserError("can't identify type %s name in '%s'" % (
+            raise ParserError("can't identify type '%s' name in '%s'" % (
                 field_type, line))
 
         # -- field number -----------------------
@@ -316,7 +319,7 @@ class StringSpecParser(object):
         # -- default ----------------------------
         # XXX STUB - NOT IMPLEMENTED YET
 
-        msg_spec.addField(
+        msg_spec.add_field(
             FieldSpec(msg_spec.reg, f_name, field_type, quantifier, field_nbr))
 
     def expect_fields(self, msg_spec, line, indent='', step=' '):

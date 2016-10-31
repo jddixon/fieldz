@@ -96,6 +96,22 @@ class NodeReg(UniqueNameRegistry):
         # initialize the lists above
         self.bootstrap()
 
+    @property
+    def putter(self):
+        return self._putter
+
+    @property
+    def getter(self):
+        return self._getter
+
+    @property
+    def len_func(self):
+        return self._len_func
+
+    @property
+    def p_len_func(self):
+        return self._p_len_func
+
     def register(self, proto_spec):
         """
         We convert the protoSpec to canonical form, then hash that
