@@ -15,28 +15,28 @@
 #             # -------------------------------------------------------
 #             # NEXT PAIR HAVE BEEN DROPPED, perhaps foolishly; IF SE
 #             # ARE ADDED BACK IN, PUT THEM IN THEIR CORRECT ORDER
-#             #           ('V_INT32',    'vInt32'),  ('_V_INT64',    'vInt64'),
+#             #           ('V_INT32',    'vint32'),  ('_V_INT64',    'vint64'),
 #             # -------------------------------------------------------
-#             ('V_UINT32', 'vuInt32'),
-#             ('V_SINT32', 'vsInt32'),
-#             ('V_UINT64', 'vuInt64'),
-#             ('V_SINT64', 'vsInt64'),
+#             ('V_UINT32', 'vuint32'),
+#             ('V_SINT32', 'vsint32'),
+#             ('V_UINT64', 'vuint64'),
+#             ('V_SINT64', 'vsint64'),
 #             # IMPLEMENTED USING B32 -------------
-#             ('F_UINT32', 'fuInt32'),
-#             ('F_SINT32', 'fsInt32'),
-#             ('F_FLOAT', 'fFloat'),
+#             ('F_UINT32', 'fuint32'),
+#             ('F_SINT32', 'fsint32'),
+#             ('F_FLOAT', 'ffloat'),
 #             # IMPLEMENTED USING B64 -------------
-#             ('F_UINT64', 'fuInt64'),
-#             ('F_SINT64', 'fsInt64'),
-#             ('F_DOUBLE', 'fDouble'),
+#             ('F_UINT64', 'fuint64'),
+#             ('F_SINT64', 'fsint64'),
+#             ('F_DOUBLE', 'fdouble'),
 #             # IMPLEMENTED USING LENPLUS --------
-#             ('L_strFormING', 'lString'),
-#             ('L_BYTES', 'lBytes'),
-#             ('L_MSG', 'lMsg'),
+#             ('L_strFormING', 'lstring'),
+#             ('L_BYTES', 'lbytes'),
+#             ('L_MSG', 'lmsg'),
 #             # OTHER FIXED LENGTH BYTE SEQUENCES -
-#             ('F_BYTES16', 'fBytes16'),
-#             ('F_BYTES20', 'fBytes20'),
-#             ('F_BYTES32', 'fBytes32'),
+#             ('F_BYTES16', 'fbytes16'),
+#             ('F_BYTES20', 'fbytes20'),
+#             ('F_BYTES32', 'fbytes32'),
 #         ])
 
 from enum import IntEnum

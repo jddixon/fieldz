@@ -46,14 +46,19 @@ class StringSpecParser(object):
         self._reg = R.ProtoReg(node_reg)
 
     @property
-    def node_reg(self): return self._node_reg
+    def node_reg(self):
+        return self._node_reg
 
     @property
-    def reg(self): return self._reg
+    def reg(self):
+        return self._reg
 
     def get_line(self):
         while True:
             line = self._fd.readline()
+            # DEBUG
+            print("get_line: '%s'" % line)
+            # END
 
             # The first condition never fails if fd is a file-like object
             # (from StringIO)
@@ -94,19 +99,19 @@ class StringSpecParser(object):
     def expect_msg_spec(self, parent, line, indent='', step=' '):
         name = self.expect_msg_spec_name(line, indent, step)
         msg_reg = R.MsgReg(parent.reg)
-        print("EXPECT_MSG_SPEC: NAME = %s" % name)            # DEBUG
+        print("expect_msg_spec: NAME = %s" % name)            # DEBUG
         this_msg = MsgSpec(name, msg_reg, parent)
 
         line = self.get_line()
 
-        print("expectMsgSpec: COLLECTING ENUMS; line is '%s'" % line)
+        print("expect_msg_spec: COLLECTING ENUMS; line is '%s'" % line)
         line = self.accept_enum_specs(this_msg, line, indent + step, step)
 
         # accept any MsgSpecs at the next indent level
-        print("expectMsgSpec: COLLECTING NESTED MSGS; line is '%s'" % line)
+        print("expect_msg_spec: COLLECTING NESTED MSGS; line is '%s'" % line)
         line = self.acept_msg_specs(this_msg, line, indent + step, step)
 
-        print("expectMsgSpec: COLLECTING FIELDS; line is '%s'" % line)
+        print("expect_msg_spec: COLLECTING FIELDS; line is '%s'" % line)
         line = self.expect_fields(this_msg, line, indent + step, indent)
 
         parent.reg.add_msg(this_msg)  # NOT done in MsgSpec.__init__
@@ -120,7 +125,7 @@ class StringSpecParser(object):
         msgSpec
         """
         line = self.expect_msg_spec(parent, line, indent, step)
-        print("BACK FROM expectMsgSpec: line is '%s'" % line)
+        print("BACK FROM expect_msg_spec: line is '%s'" % line)
 
         # collect any other MsgSpec declarations present
         if line is not None and len(line.strip()) > 0:
@@ -135,13 +140,13 @@ class StringSpecParser(object):
         Must return the first line found which does not begin a
         msgSpec
         """
-        print("ENTERING acceptMsgSpecs: line is '%s'" % line)
+        print("ENTERING accept_msg_specs: line is '%s'" % line)
         msg_starter = indent + 'message'
         while line.startswith(msg_starter):
             line = self.expect_msg_spec(parent, line, indent, step)
             if line is None or len(line.strip()) == 0:
                 break
-        print("LEAVING acceptMsgSpecs: line is '%s'" % line)
+        print("LEAVING accept_msg_specs: line is '%s'" % line)
         return line
 
     # -- EnumPairSpec -----------------------------------------------
@@ -279,12 +284,12 @@ class StringSpecParser(object):
             field_type = f_types.ndx(type_name)
             # DEBUG
             print(
-                "LIST typeName is '%s', index is '%s'" %
+                "LIST type_name is '%s', index is '%s'" %
                 (type_name, field_type))
             # END
         except KeyError:
             # DEBUG
-            print("NOT IN LIST typeName '%s'" % type_name)
+            print("NOT IN LIST type_name '%s'" % type_name)
             # END
             field_type = None
 
@@ -293,7 +298,7 @@ class StringSpecParser(object):
             field_type = msg_spec.reg.name2reg_id(type_name)
             # DEBUG
             print(
-                "MSG typeName is '%s', index is '%s'" %
+                "MSG type_name is '%s', index is '%s'" %
                 (type_name, field_type))
             # END
 
@@ -302,13 +307,14 @@ class StringSpecParser(object):
             field_type = msg_spec.parent.reg.name2reg_id(type_name)
             # DEBUG
             print(
-                "PARENT typeName is '%s', index is '%s'" %
+                "PARENT type_name is '%s', index is '%s'" %
                 (type_name, field_type))
             # END
 
         if field_type is None:
-            raise ParserError("can't identify type '%s' name in '%s'" % (
-                field_type, line))
+            err_msg = "type_name = '%s'; can't determine field type in line: '%s'" % (
+                type_name, line)
+            raise ParserError(err_msg)
 
         # -- field number -----------------------
         field_nbr = -1
@@ -325,6 +331,9 @@ class StringSpecParser(object):
             FieldSpec(msg_spec.reg, f_name, field_type, quantifier, field_nbr))
 
     def expect_fields(self, msg_spec, line, indent='', step=' '):
+        # DEBUG
+        print("expect_fields: line is '%s'" % line)
+        # END
         # they get appended to fields; there must be at least one
         if line is None or line == '':
             raise ParserError('no fields found')
@@ -386,8 +395,8 @@ class StringMsgSpecParser(StringSpecParser):
 
         # DEBUG
         for reg_id in self.parent_reg._entries:  # .keys():
-            print("ENTRY: regID %u, name %s" % (reg_id,
-                                                self.parent_reg._entries[reg_id]))
+            print("ENTRY: regID %u, name %s" % (
+                reg_id, self.parent_reg.entries[reg_id]))
         # END
 
         ppp = self.parent
@@ -397,10 +406,10 @@ class StringMsgSpecParser(StringSpecParser):
         print("parse(): parent is a ", type(self.parent))
         if ppp is None:
             print("    parent field is None")
-        elif ppp._msgs is None:
-            print("    parent._msgs is None")                   # SEEN`
+        elif ppp.msgs is None:
+            print("    parent.msgs is None")                   # SEEN
         else:
-            print("    parent has %d msgs" % len(ppp._msgs))
+            print("    parent has %d msgs" % len(ppp.msgs))
         # END
 
         return ppp._msgs[0]

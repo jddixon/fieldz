@@ -3,7 +3,7 @@
 protocol org.xlattice.fieldz.core
 
 message FieldSpec
-    name        lString
-    type        vuInt32     # zero-based regID of field type or msgSpec
+    name        lstring
+    type        vuint32     # zero-based regID of field type or msgSpec
     quantifier  QEnum       # corresponds to one of {?,*,+} 
-    nbr         vuInt32     # zero-based field number
+    nbr         vuint32     # zero-based field number

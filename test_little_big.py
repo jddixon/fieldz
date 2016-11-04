@@ -91,19 +91,19 @@ class TestLittleBig(unittest.TestCase):
             self, proto_name, msg_name, field_spec, value):
         self.assertIsNotNone(field_spec)
         dotted_name = "%s.%s" % (proto_name, msg_name)
-        Cls = make_field_class(dotted_name, field_spec)
-        if '__dict__' in dir(Cls):
+        cls = make_field_class(dotted_name, field_spec)
+        if '__dict__' in dir(cls):
             print('\nGENERATED FieldImpl CLASS DICTIONARY')
-            for exc in list(Cls.__dict__.keys()):
-                print("%-20s %s" % (exc, Cls.__dict__[exc]))
+            for exc in list(cls.__dict__.keys()):
+                print("%-20s %s" % (exc, cls.__dict__[exc]))
 
-        self.assertIsNotNone(Cls)
-        file = Cls(value)
+        self.assertIsNotNone(cls)
+        file = cls(value)
         self.assertIsNotNone(file)
 
         # class attributes --------------------------------
         self.assertEqual(field_spec.name, file.name)
-        self.assertEqual(field_spec.FIELD_TYPE_NDX, file.field_type)
+        self.assertEqual(field_spec.field_type_ndx, file.field_type)
         self.assertEqual(field_spec.quantifier, file.quantifier)
         self.assertEqual(field_spec.field_nbr, file.field_nbr)
         self.assertIsNone(file.default)          # not an elegant test
@@ -139,32 +139,32 @@ class TestLittleBig(unittest.TestCase):
         msg_spec = self.str_obj_model.msgs[0]
         name = msg_spec.name
 
-        Clz0 = make_msg_class(self.str_obj_model, name)
+        cls0 = make_msg_class(self.str_obj_model, name)
         # DEBUG
-        print("Constructed Clz0 name is '%s'" % Clz0.name)
+        print("Constructed Clz0 name is '%s'" % cls0.name)
         # END
-        self.assertEqual(name, Clz0.name)
-        Clz1 = make_msg_class(self.str_obj_model, name)
-        self.assertEqual(name, Clz1.name)
+        self.assertEqual(name, cls0.name)
+        cls1 = make_msg_class(self.str_obj_model, name)
+        self.assertEqual(name, cls1.name)
 
         # END HACK ----------------------------------------
         # we cache classe, so the two should be the same
-        self.assertEqual(id(Clz0), id(Clz1))
+        self.assertEqual(id(cls0), id(cls1))
 
         # chan    = Channel(BUFSIZE)
         values = self.lil_big_msg_values()
-        lil_big_msg0 = Clz0(values)
-        lil_big_msg1 = Clz0(values)
+        lil_big_msg0 = cls0(values)
+        lil_big_msg1 = cls0(values)
         # we don't cache instances, so these will differ
         self.assertNotEqual(id(lil_big_msg0), id(lil_big_msg1))
 
         field_spec = msg_spec[0]
         dotted_name = "%s.%s" % (self.proto_name, msg_spec.name)
-        F0 = make_field_class(dotted_name, field_spec)
-        F1 = make_field_class(dotted_name, field_spec)
-        self.assertEqual(id(F0), id(F1))
+        f0cls = make_field_class(dotted_name, field_spec)
+        f1cls = make_field_class(dotted_name, field_spec)
+        self.assertEqual(id(f0cls), id(f1cls))
 
-    def testLittleBig(self):
+    def test_little_big(self):
         self.assertIsNotNone(self.str_obj_model)
         self.assertTrue(isinstance(self.str_obj_model, M.ProtoSpec))
         self.assertEqual('org.xlattice.fieldz.test.littleBigProto',
@@ -184,20 +184,22 @@ class TestLittleBig(unittest.TestCase):
         self.assertEqual(BUFSIZE, len(buf))
 
         # create the LittleBigMsg class ------------------------------
-        LittleBigMsg = make_msg_class(self.str_obj_model, msg_spec.name)
+        little_big_msg_cls = make_msg_class(self.str_obj_model, msg_spec.name)
 
         # -------------------------------------------------------------
         # XXX the following fails because field 2 is seen as a property
         # instead of a list
         if False:        # DEBUGGING
             print('\nLittleBigMsg CLASS DICTIONARY')
-            for (ndx, key) in enumerate(LittleBigMsg.__dict__.keys()):
-                print("%3u: %-20s %s" % (ndx, key, LittleBigMsg.__dict__[key]))
+            for (ndx, key) in enumerate(little_big_msg_cls.__dict__.keys()):
+                print(
+                    "%3u: %-20s %s" %
+                    (ndx, key, little_big_msg_cls.__dict__[key]))
         # -------------------------------------------------------------
 
         # create a message instance ---------------------------------
         values = self.lil_big_msg_values()            # quasi-random values
-        lil_big_msg = LittleBigMsg(values)
+        lil_big_msg = little_big_msg_cls(values)
 
         # __setattr__ in MetaMsg raises exception on any attempt
         # to add new attributes.  This works at the class level but
@@ -249,7 +251,7 @@ class TestLittleBig(unittest.TestCase):
         self.assertEqual(0, chan.position)
 
         # deserialize the channel, making a clone of the message ----
-        (read_back, nn2) = LittleBigMsg.read(
+        (read_back, nn2) = little_big_msg_cls.read(
             chan, self.str_obj_model)  # sOM is protoSpec
         self.assertIsNotNone(read_back)
         self.assertEqual(nnn, nn2)
@@ -259,11 +261,11 @@ class TestLittleBig(unittest.TestCase):
 
         print("\nDEBUG: PHASE B ######################################")
         # produce another message from the same values --------------
-        lil_big_msg2 = LittleBigMsg(values)
+        lil_big_msg2 = little_big_msg_cls(values)
         chan2 = Channel(BUFSIZE)
         nnn = lil_big_msg2.write_stand_alone(chan2)
         chan2.flip()
-        (copy2, nn3) = LittleBigMsg.read(chan2, self.str_obj_model)
+        (copy2, nn3) = little_big_msg_cls.read(chan2, self.str_obj_model)
         self.assertIsNotNone(copy2)
         self.assertEqual(nnn, nn3)
         self.assertTrue(lil_big_msg.__eq__(copy2))

@@ -41,16 +41,16 @@ message or any number of keepalives.
 
 ## Protocol Negotiation
 
-The switch protocol message is an fBytes20, interpreteted by the server
+The switch protocol message is an fbytes20, interpreteted by the server
 as the content hash of a protocol.   The server can reply with an OK, after
 which data packets are treated as messages in that protocol, or it can
 reply with a
 
-	GetProto fBytes20           # the hash
+	GetProto fbytes20           # the hash
 
 to which the client should reply
 
-	PUT fBytes20 lBytes         # the content hash, length, that many bytes
+	PUT fbytes20 lbytes         # the content hash, length, that many bytes
 
 If this is consistent (the length corresponds to the number of bytes sent
 and the the payload hashes to the expected value) the server replies OK
@@ -58,7 +58,7 @@ and protocol-based traffic starts.
 
 If the PUT message is inconsistent, the server will reply with an
 
-	ErrorMsg vuInt32 lString    # code, text
+	ErrorMsg vuint32 lstring    # code, text
 
 and close the connection.
 
@@ -69,15 +69,15 @@ At this level, further communications at this level consist of
 	client                      server
 
 	KeepAlive                   Ack
-	DataMsg lBytes              DataReply lBytes
-	SwitchProto fBytes20        OK | GetProto fBytes20
-	PutProto fBytes20 lBytes    OK | ErrMsag vuInt32 lString
-	ErrMsg vuInt32 lString      .
+	DataMsg lbytes              DataReply lbytes
+	SwitchProto fbytes20        OK | GetProto fbytes20
+	PutProto fbytes20 lbytes    OK | ErrMsag vuint32 lstring
+	ErrMsg vuint32 lstring      .
 
 This is the core protocol plus the DataMsg and DataReply messages
 with their opaque content.
 
-If the client sends SwitchProto NoProto, where NoProto is an fBytes20
+If the client sends SwitchProto NoProto, where NoProto is an fbytes20
 consisting of 20 zero bytes, there is no active prototocol, and a
 DataMsg or DataReply will cause an ErrMsg to be sent by the opposite
 and the channel to be closed.

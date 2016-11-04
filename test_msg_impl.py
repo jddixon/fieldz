@@ -22,10 +22,10 @@ from fieldz.msg_impl import make_msg_class, make_field_class, MsgImpl
 # PROTOCOLS ---------------------------------------------------------
 from little_big_test import LITTLE_BIG_PROTO_SPEC
 
-from simple_protocol import SIMPLE_PROTOCOL
-from zoggery_proto_spec import ZOGGERY_PROTO_SPEC
-from nested_enum_proto_spec import NESTED_ENUM_PROTO_SPEC
-from nested_msgs_proto_spec import NESTED_MSGS_PROTO_SPEC
+from fieldz.simple_protocol import SIMPLE_PROTOCOL
+from fieldz.zoggery_proto_spec import ZOGGERY_PROTO_SPEC
+from fieldz.nested_enum_proto_spec import NESTED_ENUM_PROTO_SPEC
+from fieldz.nested_msgs_proto_spec import NESTED_MSGS_PROTO_SPEC
 
 BUFSIZE = 16 * 1024
 RNG = SimpleRNG(time.time())
@@ -118,7 +118,7 @@ class TestMsgImpl(unittest.TestCase):
 
         # instance attributes -----------------------------
         self.assertEqual(field_spec.name, file.name)
-        self.assertEqual(field_spec.FIELD_TYPE_NDX, file.field_type)
+        self.assertEqual(field_spec.field_type_ndx, file.field_type)
         self.assertEqual(field_spec.quantifier, file.quantifier)
         self.assertEqual(field_spec.field_nbr, file.field_nbr)
         self.assertIsNone(file.default)          # not an elegant test
@@ -152,23 +152,23 @@ class TestMsgImpl(unittest.TestCase):
         self.assertTrue(isinstance(self.str_obj_model, M.ProtoSpec))
         msg_spec = self.str_obj_model.msgs[0]
         name = msg_spec.name
-        Clz0 = make_msg_class(self.str_obj_model, name)
-        Clz1 = make_msg_class(self.str_obj_model, name)
+        cls0 = make_msg_class(self.str_obj_model, name)
+        cls1 = make_msg_class(self.str_obj_model, name)
         # we cache classe, so the two should be the same
-        self.assertEqual(id(Clz0), id(Clz1))
+        self.assertEqual(id(cls0), id(cls1))
 
         # chan    = Channel(BUFSIZE)
         values = self.le_msg_values()
-        le_msg0 = Clz0(values)
-        le_msg1 = Clz0(values)
+        le_msg0 = cls0(values)
+        le_msg1 = cls0(values)
         # we don't cache instances, so these will differ
         self.assertNotEqual(id(le_msg0), id(le_msg1))
 
         field_spec = msg_spec[0]
         dotted_name = "%s.%s" % (self.proto_name, msg_spec.name)
-        F0 = make_field_class(dotted_name, field_spec)
-        F1 = make_field_class(dotted_name, field_spec)
-        self.assertEqual(id(F0), id(F1))           # GEEP
+        f0cls = make_field_class(dotted_name, field_spec)
+        f1cls = make_field_class(dotted_name, field_spec)
+        self.assertEqual(id(f0cls), id(f1cls))           # GEEP
 
     def test_msg_impl(self):
         self.assertIsNotNone(self.str_obj_model)
@@ -190,7 +190,7 @@ class TestMsgImpl(unittest.TestCase):
 
         # create the LogEntryMsg class ------------------------------
 
-        LogEntryMsg = make_msg_class(self.str_obj_model, msg_spec.name)
+        log_entry_msg_cls = make_msg_class(self.str_obj_model, msg_spec.name)
 
         # __setattr__ in MetaMsg raises exception on any attempt
         # to add new attributes
@@ -211,7 +211,7 @@ class TestMsgImpl(unittest.TestCase):
 
         # create a message instance ---------------------------------
         values = self.le_msg_values()            # quasi-random values
-        le_msg = LogEntryMsg(values)
+        le_msg = log_entry_msg_cls(values)
 
         # __setattr__ in MetaMsg raises exception on any attempt
         # to add new attributes.  This works at the class level but
@@ -289,11 +289,11 @@ class TestMsgImpl(unittest.TestCase):
         self.assertEqual(nnn, nn2)
 
         # produce another message from the same values --------------
-        le_msg2 = LogEntryMsg(values)
+        le_msg2 = log_entry_msg_cls(values)
         chan2 = Channel(BUFSIZE)
         nnn = le_msg2.write_stand_alone(chan2)
         chan2.flip()
-        (copy2, nn3) = LogEntryMsg.read(chan2, self.str_obj_model)
+        (copy2, nn3) = log_entry_msg_cls.read(chan2, self.str_obj_model)
         self.assertTrue(le_msg.__eq__(copy2))
         self.assertTrue(le_msg2.__eq__(copy2))
 

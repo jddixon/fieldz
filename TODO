@@ -13,6 +13,9 @@
     are not canonical
 -----------------------------------------------------------------
 
+2016-10-31
+    FieldTypes and FieldStr are certainly NOT SimpleEnumWithRepr
+
 2016-10-30
     * In the implementation of CoreTypes, the class is a 
         SimpleEnumWIthRepr.  This has a serious bug: the attributes
@@ -36,7 +39,7 @@
             L36 are never attachd to testMsgSpec defined L55 !!
 
 2016-08-13
-    * the language syntax as set out in README.md is inconsitent 
+    * the language syntax as set out in README.md is inconsistent 
         with that in the *.xlgo files and possibly with the 
         2012 implementation of the code.  
         - The three need to be reconciled

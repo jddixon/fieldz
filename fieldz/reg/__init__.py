@@ -278,22 +278,28 @@ class RegEntry(object):
         self._id = reg.next_reg_id             # MOVE ME XXX
 
     @property
-    def reg_id(self): return self._id
+    def reg_id(self):
+        return self._id
 
     @property
-    def qual_name(self): return self._qual_name
+    def qual_name(self):
+        return self._qual_name
 
     @property
-    def putter(self): return self._putter
+    def putter(self):
+        return self._putter
 
     @property
-    def getter(self): return self._getter
+    def getter(self):
+        return self._getter
 
     @property
-    def len_func(self): return self._len_func
+    def len_func(self):
+        return self._len_func
 
     @property
-    def p_len_func(self): return self._p_len_func               # GEEP
+    def p_len_func(self):
+        return self._p_len_func               # GEEP
 
 
 class FieldTypeEntry(RegEntry):
@@ -302,7 +308,8 @@ class FieldTypeEntry(RegEntry):
         super(FieldTypeEntry, self).__init__(reg, qual_name, putter, getter)
 
     @property
-    def r_canonical(self): return None
+    def r_canonical(self):
+        return None
 
 
 class CoreTypeEntry(RegEntry):
@@ -315,7 +322,8 @@ class CoreTypeEntry(RegEntry):
         # XXX STUB
 
     @property
-    def r_canonical(self): return None                         # FOO
+    def r_canonical(self):
+        return None                         # FOO
 
 # -- PROTOCOLS ------------------------------------------------------
 
@@ -360,7 +368,8 @@ class ProtoReg(UniqueNameRegistry):
             self._p_len_func[i] = node_reg.p_len_func[i]
 
     @property
-    def node_reg(self): return self._node_reg
+    def node_reg(self):
+        return self._node_reg
 
     def get_reg_id(self):
         """ get the next free regID from the parent """
@@ -392,7 +401,7 @@ class ProtoReg(UniqueNameRegistry):
         reg_id = self.get_reg_id()   # reserve the next free regID and increment
         # DEBUG
         print(
-            "    fielzd.reg.__init__.ProtoReg.addMsg: adding %d, '%s', to ProtoReg" % (
+            "    fielzd.reg.__init__.ProtoReg.add_msg: adding %d, '%s', to ProtoReg" % (
                 reg_id, name))
         # END
         entry = MsgEntry(name, reg_id, self, msg_spec)
@@ -419,16 +428,20 @@ class MsgEntry(object):
         self._msg_spec = msg_spec
 
     @property
-    def name(self): return self._name
+    def name(self):
+        return self._name
 
     @property
-    def reg_id(self): return self._reg_id
+    def reg_id(self):
+        return self._reg_id
 
     @property
-    def parent(self): return self._parent
+    def parent(self):
+        return self._parent
 
     @property
-    def msg_spec(self): return self._msg_spec
+    def msg_spec(self):
+        return self._msg_spec
 
 
 class MsgReg(object):
@@ -524,7 +537,7 @@ class MsgReg(object):
         reg_id = self.get_reg_id()   # reserve the next free regID and increment
         # DEBUG
         print(
-            "    fielzd.reg.__init__.MsgReg.addMsg: adding %d, '%s', to ProtoReg" % (
+            "    fieldz.reg.__init__.MsgReg.add_msg: adding %d, '%s', to ProtoReg" % (
                 reg_id, name))
         # END
         entry = MsgEntry(name, reg_id, self, msg_spec)   # third arg is reg
@@ -545,10 +558,12 @@ class EnumEntry(object):
         self._reg_id = reg_id
 
     @property
-    def name(self): return self._name
+    def name(self):
+        return self._name
 
     @property
-    def reg_id(self): return self._reg_id
+    def reg_id(self):
+        return self._reg_id
 
     # XXX JUST A HACK
 

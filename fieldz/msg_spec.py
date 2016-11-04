@@ -184,13 +184,15 @@ class EnumSpec(object):
         return self._sym2pair[string].value
 
     @property
-    def name(self): return self._name
+    def name(self):
+        return self._name
 
     # def pair(self, k):
     def __getitem__(self, k):
         return self._pairs[k]
 
-    def __len__(self): return len(self._pairs)
+    def __len__(self):
+        return len(self._pairs)
 
     def __eq__(self, other):
         # print "ENUM_SPEC COMPARISON"
@@ -641,26 +643,27 @@ class MsgSpec(SuperSpec):
     def fields(self):
         return self._fields
 
-    def add_field(self, file):
-        f_name = file.name
-        if not isinstance(file, FieldSpec):
+    def add_field(self, fld):
+        f_name = fld.name
+        if not isinstance(fld, FieldSpec):
             raise ValueError("'%s' is not a FieldSpec!" % f_name)
         if f_name in self.field_name_to_ndx:
             raise KeyError("field named %s already exists" % f_name)
-        if file.field_nbr < 0:
+        if fld.field_nbr < 0:
             self._last_field_nbr += 1
-            file.field_nbr = self._last_field_nbr
-        elif file.field_nbr <= self._last_field_nbr:
+            fld.field_nbr = self._last_field_nbr
+        elif fld.field_nbr <= self._last_field_nbr:
             raise ValueError(
                 "field number is %d not greater than last %d" % (
-                    file.field_nbr, self._last_field_nbr))
+                    fld.field_nbr, self._last_field_nbr))
         else:
-            self._last_field_nbr = file.field_nbr
-        self._fields.append(file)
+            self._last_field_nbr = fld.field_nbr
+        self._fields.append(fld)
         self.field_name_to_ndx[f_name] = self._field_ndx
         self._field_ndx += 1         # so this is a count of fields
 
-    def __len__(self): return len(self._fields)
+    def __len__(self):
+        return len(self._fields)
 
     def __getitem__(self, k):
         """ iterates over fields of the message """
@@ -750,7 +753,8 @@ class MsgSpec(SuperSpec):
 #                                          from fieldz.typed import *
 
 
-def not_impl(*arg): raise NotImplementedError
+def not_impl(*arg):
+    raise NotImplementedError
 
 C_TYPES = C.CoreTypes()
 

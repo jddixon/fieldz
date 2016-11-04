@@ -14,7 +14,7 @@ from fieldz.chan import Channel
 from fieldz.msg_impl import make_msg_class, make_field_class, MsgImpl
 
 # PROTOCOLS ---------------------------------------------------------
-from zoggery_proto_spec import ZOGGERY_PROTO_SPEC
+from fieldz / zoggery_proto_spec import ZOGGERY_PROTO_SPEC
 
 BUFSIZE = 16 * 1024
 RNG = SimpleRNG(time.time())
@@ -83,22 +83,22 @@ class TestZoggerySerialization(unittest.TestCase):
         self.assertEqual(BUFSIZE, len(buf))
 
         # create the LogEntryMsg class ------------------------------
-        LogEntryMsg = make_msg_class(self.str_obj_model, msg_name)
+        log_entry_msg_cls = make_msg_class(self.str_obj_model, msg_name)
 
         # DEBUG
-        print("testZoggery: LogEntryMsg is of type ", type(LogEntryMsg))
+        print("testZoggery: LogEntryMsg is of type ", type(log_entry_msg_cls))
         # END
 
         # create a message instance ---------------------------------
         values = self.le_msg_values()        # a list of quasi-random values
-        le_msg = LogEntryMsg(values)
+        le_msg = log_entry_msg_cls(values)
 
         # DEBUG
-        print("type of LogEntryMsg: ", type(LogEntryMsg))
+        print("type of LogEntryMsg: ", type(log_entry_msg_cls))
         print("type of leMsg:       ", type(le_msg))
         # END
 
-        self.assertTrue(isinstance(le_msg, LogEntryMsg))
+        self.assertTrue(isinstance(le_msg, log_entry_msg_cls))
 
         (timestamp, key, length, node_id, by_, path) = tuple(values)
 
@@ -153,11 +153,11 @@ class TestZoggerySerialization(unittest.TestCase):
         self.assertTrue(le_msg.__eq__(read_back))
 
         # produce another message from the same values --------------
-        le_msg2 = LogEntryMsg(values)
+        le_msg2 = log_entry_msg_cls(values)
         chan2 = Channel(BUFSIZE)
         nnn = le_msg2.write_stand_alone(chan2)
         chan2.flip()
-        (copy2, nn3) = LogEntryMsg.read(chan2, self.str_obj_model)
+        (copy2, nn3) = log_entry_msg_cls.read(chan2, self.str_obj_model)
         self.assertTrue(le_msg.__eq__(read_back))
         self.assertTrue(le_msg2.__eq__(copy2))
         self.assertEqual(nnn, nn3)
