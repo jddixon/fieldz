@@ -8,7 +8,7 @@ import unittest
 from io import StringIO
 
 from rnglib import SimpleRNG
-from ring_data_proto import RING_DATA_PROTO_SPEC
+from fieldz.ring_data_proto import RING_DATA_PROTO_SPEC
 
 from fieldz.parser import StringProtoSpecParser
 import fieldz.msg_spec as M
@@ -194,35 +194,35 @@ class TestRingDataProto(unittest.TestCase):
 
         outer_msg_spec = str_obj_model.msgs[0]
         inner_msg_spec = str_obj_model.msgs[0].msgs[0]
-        OuterMsg = make_msg_class(str_obj_model, outer_msg_spec.name)
+        outer_msg_cls = make_msg_class(str_obj_model, outer_msg_spec.name)
         # NOTE change in parent
-        InnerMsg = make_msg_class(outer_msg_spec, inner_msg_spec.name)
+        inner_msg_cls = make_msg_class(outer_msg_spec, inner_msg_spec.name)
 
         # TEST INNER MESSAGE ########################################
-        Clz0 = make_msg_class(outer_msg_spec, inner_msg_spec.name)
-        Clz1 = make_msg_class(outer_msg_spec, inner_msg_spec.name)
+        cls0 = make_msg_class(outer_msg_spec, inner_msg_spec.name)
+        cls1 = make_msg_class(outer_msg_spec, inner_msg_spec.name)
         # we cache classes, so the two should be the same
-        self.assertEqual(id(Clz0), id(Clz1))
+        self.assertEqual(id(cls0), id(cls1))
 
         # test that msg instances created from the same value lists differ
         values = host_info_values()
-        inner_msg0 = Clz0(values)
-        inner_msg1 = Clz0(values)
+        inner_msg0 = cls0(values)
+        inner_msg1 = cls0(values)
         # we don't cache instances, so these will differ
         self.assertNotEqual(id(inner_msg0), id(inner_msg1))
 
         # verify that field classes are cached
         field_spec = inner_msg_spec[0]
         dotted_name = '%s.%s' % (proto_name, inner_msg_spec.name)
-        F0 = make_field_class(dotted_name, field_spec)
-        F1 = make_field_class(dotted_name, field_spec)
-        self.assertEqual(id(F0), id(F1))           # GEEP
+        f0cls = make_field_class(dotted_name, field_spec)
+        f1cls = make_field_class(dotted_name, field_spec)
+        self.assertEqual(id(f0cls), id(f1cls))           # GEEP
 
         # TEST OUTER MESSAGE ########################################
-        Clz2 = make_msg_class(str_obj_model, outer_msg_spec.name)
-        Clz3 = make_msg_class(str_obj_model, outer_msg_spec.name)
+        cls2 = make_msg_class(str_obj_model, outer_msg_spec.name)
+        cls3 = make_msg_class(str_obj_model, outer_msg_spec.name)
         # we cache classe, so the two should be the same
-        self.assertEqual(id(Clz2), id(Clz3))
+        self.assertEqual(id(cls2), id(cls3))
 
         # test that msg instances created from the same value lists differ
         ring = ring_data_values()  # a list of random hosts
@@ -231,16 +231,16 @@ class TestRingDataProto(unittest.TestCase):
         # value is itself a list, a list of HostInfo value lists.
         values = [ring]            # a list whose only member is a list
 
-        outer_msg0 = Clz2(values)
-        outer_msg1 = Clz2(values)
+        outer_msg0 = cls2(values)
+        outer_msg1 = cls2(values)
         # we don't cache instances, so these will differ
         self.assertNotEqual(id(outer_msg0), id(outer_msg1))
 
         field_spec = outer_msg_spec[0]
         dotted_name = '%s.%s' % (proto_name, outer_msg_spec.name)
-        F0 = make_field_class(dotted_name, field_spec)
-        F1 = make_field_class(dotted_name, field_spec)
-        self.assertEqual(id(F0), id(F1))           # GEEP
+        f0cls = make_field_class(dotted_name, field_spec)
+        f1cls = make_field_class(dotted_name, field_spec)
+        self.assertEqual(id(f0cls), id(f1cls))           # GEEP
 
     # ---------------------------------------------------------------
     def test_ring_data_proto_serialization(self):
@@ -248,9 +248,9 @@ class TestRingDataProto(unittest.TestCase):
         proto_name = str_obj_model.name
         outer_msg_spec = str_obj_model.msgs[0]
         inner_msg_spec = str_obj_model.msgs[0].msgs[0]
-        OuterMsg = make_msg_class(str_obj_model, outer_msg_spec.name)
+        outer_msg_cls = make_msg_class(str_obj_model, outer_msg_spec.name)
         # NOTE change in parent
-        InnerMsg = make_msg_class(outer_msg_spec, inner_msg_spec.name)
+        inner_msg_cls = make_msg_class(outer_msg_spec, inner_msg_spec.name)
 
         # Create a channel ------------------------------------------
         # its buffer will be used for both serializing # the instance
@@ -267,9 +267,9 @@ class TestRingDataProto(unittest.TestCase):
         for nnn in range(count):
             # should avoid dupes
             values = host_info_values()
-            ring.append(InnerMsg(values))
+            ring.append(inner_msg_cls(values))
 
-        outer_msg = OuterMsg([ring])     # a list whose member is a list
+        outer_msg = outer_msg_cls([ring])     # a list whose member is a list
 
         # serialize the object to the channel -----------------------
         nnn = outer_msg.write_stand_alone(chan)
@@ -280,7 +280,7 @@ class TestRingDataProto(unittest.TestCase):
         self.assertEqual(0, chan.position)
 
         # deserialize the channel, making a clone of the message ----
-        (read_back, nn2) = OuterMsg.read(chan, str_obj_model)
+        (read_back, nn2) = outer_msg_cls.read(chan, str_obj_model)
         self.assertIsNotNone(read_back)
 
         # verify that the messages are identical --------------------
@@ -288,11 +288,11 @@ class TestRingDataProto(unittest.TestCase):
         self.assertEqual(nnn, nn2)
 
         # produce another message from the same values --------------
-        outer_msg2 = OuterMsg([ring])
+        outer_msg2 = outer_msg_cls([ring])
         chan2 = Channel(BUFSIZE)
         nnn = outer_msg2.write_stand_alone(chan2)
         chan2.flip()
-        (copy2, nn3) = OuterMsg.read(chan2, str_obj_model)
+        (copy2, nn3) = outer_msg_cls.read(chan2, str_obj_model)
         self.assertTrue(outer_msg.__eq__(copy2))
         self.assertTrue(outer_msg2.__eq__(copy2))                   # GEEP
 

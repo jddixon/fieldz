@@ -138,7 +138,7 @@ class TestFieldImpl(unittest.TestCase):
         # we verify that the properties work correctly
 
         self.assertEqual(field_spec.name, file._name)
-        self.assertEqual(field_spec.FIELD_TYPE_NDX, file.field_type)
+        self.assertEqual(field_spec.field_type_ndx, file.field_type)
         self.assertEqual(field_spec.quantifier, file.quantifier)
         self.assertEqual(field_spec.field_nbr, file.field_nbr)
         self.assertIsNone(file.default)          # not an elegant test
@@ -204,7 +204,7 @@ class TestFieldImpl(unittest.TestCase):
             default)
 
         self.assertEqual(name, file.name)
-        self.assertEqual(field_type, file.FIELD_TYPE_NDX)
+        self.assertEqual(field_type, file.field_type_ndx)
         self.assertEqual(quantifier, file.quantifier)
         self.assertEqual(field_nbr, file.field_nbr)
         if default is not None:

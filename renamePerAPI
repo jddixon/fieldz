@@ -1,6 +1,7 @@
 # fieldz/renamePerAPI
 
 sdRenameInFiles -v1rw                   \
+    -m ../rnglib/name-pairs-api         \
     -m ../xlattice_py/name-pairs-api    \
     -m ../nlhtree_py/name-pairs-api     \
     -m ../buildlist/name-pairs-api      \

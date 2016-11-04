@@ -4,31 +4,31 @@
 UPAX_PROTOSPEC = """
 # MESSAGE SECTION ###################################################
 message hello
- dunno      lString?
+ dunno      lstring?
 
 message error
- code       vu`Int32
- text       lString?
+ code       vuint32
+ text       lstring?
 
 message ack
- text       lString?
+ text       lstring?
 
 message logEntry
- timestamp  fuInt32         # 0: seconds from epoch
- key        fBytes20        # 1: content key
- length     vuInt32         # 2
- nodeID     fBytes20        # 3:
- src        lString         # 4: arbitrary contents; ASCII or unicode
- path       lString         # 5: POSIX path using / as separator
+ timestamp  fuint32         # 0: seconds from epoch
+ key        fbytes20        # 1: content key
+ length     vuint32         # 2
+ nodeID     fbytes20        # 3:
+ src        lstring         # 4: arbitrary contents; ASCII or unicode
+ path       lstring         # 5: POSIX path using / as separator
 
 message     keepAlive       # what I would prefer is just an empty message
- text       lString?
+ text       lstring?
 
 message ok                  # empty message better
- text       lString?
+ text       lstring?
 
 bye
- text       lString?
+ text       lstring?
 
 # These define what constitutes an acceptable upax message sequence
 seq

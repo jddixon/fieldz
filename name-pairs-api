@@ -1,6 +1,9 @@
 #     fieldz/name-pairs-api
 
 
+fieldTypes                          field_types
+msgImpl                             msg_impl
+msgSpec                             msg_spec
 sOM                                 str_obj_model
 
 # fieldzSpecc --------------------------------------------------------
@@ -113,7 +116,7 @@ _fieldNbr                   _field_nbr
 _fType                      _field_type
 #     SuperSpec
 addEnum                     add_enum
-addField                    add_field:w
+addField                    add_field
 
 addMsg                      add_msg
 getMsgSpec                  get_msg_spec
@@ -136,7 +139,7 @@ cPutFuncs                   C_PUT_FUNCS
 cGetFuncs                   C_GET_FUNCS
 cLenFuncs                   C_LEN_FUNCS
 cPLenFuncs                  C_P_LEN_FUNCS
-fTypeNdx                    FIELD_TYPE_NDX
+fTypeNdx                    F_TYPE_NDX
 
 lStringLen                  l_string_len
 lStringPut                  l_string_put

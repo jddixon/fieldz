@@ -22,10 +22,10 @@ import fieldz.reg as reg
 from fieldz.msg_impl import make_msg_class
 
 # PROTOCOLS ---------------------------------------------------------
-from simple_protocol import SIMPLE_PROTOCOL
-from zoggery_proto_spec import ZOGGERY_PROTO_SPEC
-from nested_enum_proto_spec import NESTED_ENUM_PROTO_SPEC
-from nested_msgs_proto_spec import NESTED_MSGS_PROTO_SPEC
+from fieldz.simple_protocol import SIMPLE_PROTOCOL
+from fieldz.zoggery_proto_spec import ZOGGERY_PROTO_SPEC
+from fieldz.nested_enum_proto_spec import NESTED_ENUM_PROTO_SPEC
+from fieldz.nested_msgs_proto_spec import NESTED_MSGS_PROTO_SPEC
 
 RNG = SimpleRNG(time.time())
 
@@ -138,7 +138,7 @@ class TestProtoSpec(unittest.TestCase):
                 0),
             M.FieldSpec(
                 msg_reg,
-                'nodeID',
+                'node_id',
                 FieldTypes.F_BYTES20,
                 M.Q_REQUIRED,
                 1),
@@ -327,23 +327,23 @@ class TestProtoSpec(unittest.TestCase):
         self.assertTrue(isinstance(self.str_obj_model, M.ProtoSpec))
         msg_spec = self.str_obj_model.msgs[0]
         name = msg_spec.name
-        Clz0 = make_msg_class(self.str_obj_model, name)
-        Clz1 = make_msg_class(self.str_obj_model, name)
+        cls0 = make_msg_class(self.str_obj_model, name)
+        cls1 = make_msg_class(self.str_obj_model, name)
         # we cache classe, so the two should be the same
-        self.assertEqual(id(Clz0), id(Clz1))
+        self.assertEqual(id(cls0), id(cls1))
 
         # chan = Channel(BUFSIZE)
         values = self.le_msg_values()
-        le_msg0 = Clz0(values)
-        le_msg1 = Clz0(values)
+        le_msg0 = cls0(values)
+        le_msg1 = cls0(values)
         # we don't cache instances, so these will differ
         self.assertNotEqual(id(le_msg0), id(le_msg1))
 
         field_spec = msg_spec[0]
         dotted_name = "%s.%s" % (self.proto_name, msg_spec.name)
-        F0 = make_field_class(dotted_name, field_spec)
-        F1 = make_field_class(dotted_name, field_spec)
-        self.assertEqual(id(F0), id(F1))
+        f0cls = make_field_class(dotted_name, field_spec)
+        f1cls = make_field_class(dotted_name, field_spec)
+        self.assertEqual(id(f0cls), id(f1cls))
 
 if __name__ == '__main__':
     unittest.main()

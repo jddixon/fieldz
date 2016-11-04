@@ -3,5 +3,5 @@
 protocol org.xlattice.fieldz.core
 
 message EnumPair
-    sym     lString
-    value   vuInt32
+    sym     lstring
+    value   vuint32

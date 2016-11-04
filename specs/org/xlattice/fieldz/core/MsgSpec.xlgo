@@ -3,6 +3,6 @@
 protocol org.xlattice.fieldz.core
 
 message MsgSpec
-    protocol    lString         # may be dotted
+    protocol    lstring         # may be dotted
     enum        EnumSpec*       # zero or more enums
     fields      FieldSpec+      # one or more fields

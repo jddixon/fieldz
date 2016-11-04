@@ -75,7 +75,7 @@ def my_field_classes(self):
     return self._fieldClasses
 
 # specific to fields ------------------------------------------------
-# FOR A GIVEN FIELD, THESE ARE CONSTANTS ASSIGNED BY makeFieldClass
+# FOR A GIVEN FIELD, THESE ARE CONSTANTS ASSIGNED BY make_field_class
 #
 #
 #def myFType(cls): return cls._fType
@@ -585,7 +585,7 @@ def _make_msg_class(parent, msg_spec):
     # END =======================================
 
     # DEBUG
-    print("\n_makeMsgClass returning something of type ", type(Msg))
+    print("\n_make_msg_class returning something of type ", type(Msg))
     # END
 
     #----------------------------

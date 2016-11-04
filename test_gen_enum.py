@@ -55,9 +55,11 @@ class GeneratedEnum(metaclass=MetaEnum):
 
 class TestGenEnum(unittest.TestCase):
 
-    def setUp(self): pass
+    def setUp(self):
+        pass
 
-    def tearDown(self): pass
+    def tearDown(self):
+        pass
 
     # utility functions #############################################
 

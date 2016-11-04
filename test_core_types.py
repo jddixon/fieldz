@@ -45,14 +45,14 @@ class TestCoreTypes(unittest.TestCase):
 
     # actual unit tests #############################################
     def test_the_enum(self):
-        cTypes = CoreTypes()
-        self.assertEqual(cTypes.ENUM_PAIR_SPEC, 0)
-        self.assertEqual(cTypes.ENUM_SPEC, 1)
-        self.assertEqual(cTypes.FIELD_SPEC, 2)
-        self.assertEqual(cTypes.MSG_SPEC, 3)
-        self.assertEqual(cTypes.SEQ_SPEC, 4)
-        self.assertEqual(cTypes.PROTO_SPEC, 5)
-        self.assertEqual(cTypes.max_ndx, 5)
+        c_types = CoreTypes()
+        self.assertEqual(c_types.ENUM_PAIR_SPEC, 0)
+        self.assertEqual(c_types.ENUM_SPEC, 1)
+        self.assertEqual(c_types.FIELD_SPEC, 2)
+        self.assertEqual(c_types.MSG_SPEC, 3)
+        self.assertEqual(c_types.SEQ_SPEC, 4)
+        self.assertEqual(c_types.PROTO_SPEC, 5)
+        self.assertEqual(c_types.max_ndx, 5)
 
     def round_trip_to_wire_format(self, chan, nnn, c_type, val):
         node_reg, proto_reg, msg_reg = self.make_registries(
@@ -109,7 +109,7 @@ class TestCoreTypes(unittest.TestCase):
     def test_round_tripping_core_types(self):
         buf_size = 16 * 1024
         chan = Channel(buf_size)
-        cTypes = CoreTypes()
+        c_types = CoreTypes()
 
         # -----------------------------------------------------------
         # XXX FAILS if msgReg arg added: WRONG NUMBER OF ARGS
@@ -117,7 +117,7 @@ class TestCoreTypes(unittest.TestCase):
         nnn = 0                           # 0-based field number
         string = M.EnumPairSpec('funnyFarm', 497)
         self.round_trip_to_wire_format(
-            chan, nnn, cTypes.ENUM_PAIR_SPEC, string)
+            chan, nnn, c_types.ENUM_PAIR_SPEC, string)
 
         # -----------------------------------------------------------
         protocol = 'org.xlattice.upax'
@@ -130,7 +130,7 @@ class TestCoreTypes(unittest.TestCase):
         string = M.EnumSpec.create('thisEnum', pairs)
         self.assertEqual(3, len(string))
         # XXX FAILS if msgReg arg added: WRONG NUMBER OF ARGS
-        self.round_trip_to_wire_format(chan, nnn, cTypes.ENUM_SPEC, string)
+        self.round_trip_to_wire_format(chan, nnn, c_types.ENUM_SPEC, string)
 
         # -----------------------------------------------------------
         protocol = 'org.xlattice.upax'
@@ -142,7 +142,7 @@ class TestCoreTypes(unittest.TestCase):
             FieldTypes.V_SINT32,
             M.Q_OPTIONAL,
             37)
-        self.round_trip_to_wire_format(chan, nnn, cTypes.FIELD_SPEC, string)
+        self.round_trip_to_wire_format(chan, nnn, c_types.FIELD_SPEC, string)
 
         # -----------------------------------------------------------
 
@@ -161,7 +161,7 @@ class TestCoreTypes(unittest.TestCase):
 
         # XXX FAILS:
         self.round_trip_to_wire_format(
-            chan, nnn, cTypes.MSG_SPEC, str_obj_model)
+            chan, nnn, c_types.MSG_SPEC, str_obj_model)
 
 if __name__ == '__main__':
     unittest.main()
