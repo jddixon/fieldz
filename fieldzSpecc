@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # ~/dev/py/fieldz/fieldzSpecc
 
@@ -60,7 +60,7 @@ def do_whatevr(args):
                 print("don't recognize    '%s'" % path_to_file)
 
 #           hash        = u.fileSHA1(pathToFile)
-#           if noChanges:
+#           if no_changes:
 #               if verbose:     print 'would add %s %s' % (hash, pathToFile)
 #           else:
 #               s.put (pathToFile, hash, src)   # GEEP
@@ -90,32 +90,32 @@ def main():
     parser.add_argument('-e', '--ec2Host', action='store_true',
                         help='set if machine is in EC2')
 
-    parser.add_argument('-i', '--inDir', default='specs',
+    parser.add_argument('-i', '--in_dir', default='specs',
                         help='path to input directory, default = specs/')
 
-    parser.add_argument('-j', '--justShow', action='store_true',
+    parser.add_argument('-j', '--just_show', action='store_true',
                         help='show args and exit')
 
-    parser.add_argument('-L', '--logDir', default='logs',
+    parser.add_argument('-L', '--log_dir', default='logs',
                         help='path to log directory, default = logs/')
 
-    parser.add_argument('-t', '--showTimestamp', action='store_true',
+    parser.add_argument('-t', '--show_timestamp', action='store_true',
                         help='show run timestamp')
 
     # just the base name (usually Upax or Upax0) we will fix this up below
-    parser.add_argument('-u', '--uDir', default='Upax',
+    parser.add_argument('-u', '--u_dir', default='Upax',
                         help='base name of  U/ directory, default to Upax')
 
     parser.add_argument('-T', '--testing', action='store_true',
-                        help='test run - write to ./uDir')
+                        help='test run - write to ./u_dir')
 
-    parser.add_argument('-V', '--showVersion', action='store_true',
+    parser.add_argument('-V', '--show_version', action='store_true',
                         help='show version number and date')
 
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='talk a lot')
 
-    parser.add_argument('-z', '--noChanges', action='store_true',
+    parser.add_argument('-z', '--no_changes', action='store_true',
                         help="don't actually write anything to disk")
 
     args = parser.parse_args()      # a Namespace object
@@ -123,7 +123,7 @@ def main():
     # -- fixups -----------------------------------------------------
     args.pgm_name_and_version = pgm_name_and_version
     if args.testing:
-        # args.inDir = 'testIn'
+        # args.in_dir = 'testIn'
         pass
     args.timestamp = timestamp
 
@@ -157,15 +157,15 @@ def main():
         print()                               # there's a comma up there
 
     if args.just_show or args.verbose:
-        print('inDir            = ' + str(args.in_dir))
-        print('justShow         = ' + str(args.just_show))
-        print('logDir           = ' + str(args.log_dir))
-        print('noChanges        = ' + str(args.no_changes))
-        print('showTimestamp    = ' + str(args.show_timestamp))
-        print('showVersion      = ' + str(args.show_version))
+        print('in_dir           = ' + str(args.in_dir))
+        print('just_show        = ' + str(args.just_show))
+        print('log_dir          = ' + str(args.log_dir))
+        print('no_changes       = ' + str(args.no_changes))
+        print('show_timestamp   = ' + str(args.show_timestamp))
+        print('show_version     = ' + str(args.show_version))
         print('testing          = ' + str(args.testing))
         print('timestamp        = ' + str(args.timestamp))
-        print('uDir             = ' + str(args.u_dir))
+        print('u_dir            = ' + str(args.u_dir))
         print('verbose          = ' + str(args.verbose))
 
     if not args.just_show:

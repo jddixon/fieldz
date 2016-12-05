@@ -14,7 +14,7 @@ from fieldz.chan import Channel
 from fieldz.msg_impl import make_msg_class, make_field_class, MsgImpl
 
 # PROTOCOLS ---------------------------------------------------------
-from fieldz / zoggery_proto_spec import ZOGGERY_PROTO_SPEC
+from fieldz.zoggery_proto_spec import ZOGGERY_PROTO_SPEC
 
 BUFSIZE = 16 * 1024
 RNG = SimpleRNG(time.time())
@@ -102,6 +102,11 @@ class TestZoggerySerialization(unittest.TestCase):
 
         (timestamp, key, length, node_id, by_, path) = tuple(values)
 
+        # F A I L S:
+        #   msg_spec.name is 'logEntry'
+        #   le_msg._name is  '[148639516, [227, 217, ...[230 chars].gz']
+            :
+                q
         self.assertEqual(msg_spec.name, le_msg._name)
         # we don't have any nested enums or messages
 

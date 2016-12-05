@@ -1,7 +1,8 @@
 # ~/dev/py/fieldz/fieldz/chan.py
 
-__all__ = ['Channel',
-           ]
+""" Channel for transmitting and receiving binary data. """
+
+__all__ = ['Channel', ]
 
 # XXX COMPARE WITH Java ByteBuffer
 
@@ -9,6 +10,7 @@ __all__ = ['Channel',
 
 
 class Channel(object):
+    """ Channel for transmitting and receiving binary data. """
 
     __slots__ = ['_buffer', '_capacity', '_limit', '_position', ]
 
@@ -35,14 +37,22 @@ class Channel(object):
 
     @property
     def buffer(self):
+        """ Return the internal buffer associated with the Channel. """
         return self._buffer
 
     @property
     def position(self):
+        """ Return the current position on the Channel. """
         return self._position
 
     @position.setter
     def position(self, offset):
+        """
+        Set the current position on the Channel.
+
+        Raise an exception of the position is out of range.
+        """
+
         if offset < 0:
             raise ValueError(
                 "position cannot be negative but is '%s'" %
@@ -53,10 +63,12 @@ class Channel(object):
 
     @property
     def limit(self):
+        """ Return the current limit on the Channel. """
         return self._limit
 
     @limit.setter
     def limit(self, offset):
+        """ Set the limit on the Channel. """
         if offset < 0:
             raise ValueError('limit cannot be set to a negative')
         if offset < self._position:
@@ -68,6 +80,7 @@ class Channel(object):
 
     @property
     def capacity(self):
+        """ Return the capacity of the Channel, the length of its buffer. """
         return len(self._buffer)
 
     def copy(self):
@@ -78,9 +91,14 @@ class Channel(object):
         return Channel(len(self._buffer), self._buffer)
 
     def flip(self):
+        """
+        Flip the channel, making its current position the limit and
+        setting its position to zero.
+        """
         self._limit = self._position
         self._position = 0
 
     def clear(self):
+        """ Clear the Channel, setting limit and position to zero."""
         self._limit = 0
         self.position = 0

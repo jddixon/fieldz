@@ -6,12 +6,9 @@ import unittest
 from io import StringIO
 
 from rnglib import SimpleRNG
-# from fieldz.msg_spec import *
+from fieldz import reg
 from fieldz.msg_spec import Q_REQUIRED  # , Q_OPTIONAL, Q_PLUS, Q_STAR
 from fieldz.parser import StringProtoSpecParser
-
-import fieldz.enum_spec as QQQ
-import fieldz.reg as R
 
 from big_test import BIG_TEST
 
@@ -34,9 +31,6 @@ class TestBigTest(unittest.TestCase):
         equal.
         """
         canonical_spec = match.__repr__()
-        # DEBUG
-        #print("CANONICAL SPEC:\n" + canonicalSpec)
-        # END
         ppp = StringProtoSpecParser(StringIO(canonical_spec))
         cloned_spec = ppp.parse()
         # crude tests of __eq__ AKA ==
@@ -51,9 +45,9 @@ class TestBigTest(unittest.TestCase):
         self.assertTrue(cloned_spec == match)
 
     def test_compiler(self):
-        node_reg = R.NodeReg()
+        node_reg = reg.NodeReg()
         protocol = 'org.xlattice.fieldz.test.bigProto'
-        proto_reg = R.ProtoReg(protocol, node_reg)
+        proto_reg = reg.ProtoReg(protocol, node_reg)
 
         data = StringIO(BIG_TEST)
         self.assertIsNotNone(data)
@@ -80,7 +74,7 @@ class TestBigTest(unittest.TestCase):
 
         pass
 
-    # XXX IN EFFECT COMMENTED OUT XXX
+    # XXX EFFECTIVELY COMMENTED OUT XXX
     def x_test_round_trip_big_test_instances_to_wire_format(self):
         # str_spec = StringIO(BIG_TEST)
         str_spec = StringIO(BIG_TEST)

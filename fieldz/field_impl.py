@@ -1,10 +1,15 @@
 # ~/dev/py/fieldz/fieldz/fieldImpl.py
 
+"""
+Code for building Field classes.
+"""
+
 import sys   # for debugging
 
-from fieldz.msg_spec import FieldSpec
+# from fieldz.msg_spec import FieldSpec
 
-# XXX THIS IS UNSAFE!!! XXX
+# IS THIS UNSAFE???
+
 FIELD_CLS_BY_Q_NAME = {}        # PROTO_NAME . MSG_NAME . FIELD_NAME => class
 
 # -------------------------------------------------------------------
@@ -138,7 +143,7 @@ def make_field_class(dotted_msg_name, field_spec):
     # This needs to be elaborated as appropriate to deal with the
     # 18 or so field types.
 
-    _field_nbr = property(my_field_nbr)
+    # _field_nbr = property(my_field_nbr)
     _quantifier = property(my_quantitier)
     _value = property(my_value_getter, my_value_setter)
 

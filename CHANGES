@@ -1,8 +1,11 @@
 ~/dev/py/fieldz/CHANGES
 
+v0.10.29
+    2016-12-04
+        * more pylinting                                            SLOC 7207
 v0.10.28
     2016-11-04
-        * 14 out of 22 tests succeed (8 FAILED)                     SLCO 7147
+        * 14 out of 22 tests succeed (8 FAILED)                     SLOC 7147
 v0.10.27
     2016-10-31
         * INSTALLED BUT NOT PUSHED                                  SLOC 7120
@@ -50,7 +53,7 @@ v0.10.13
         * fixed MsgSpec.__init__() bugs                             SLOC 6539
 v0.10.12
     2016-06-21
-        * add ghpDoc/{css,img}/                                     SLCO 6333
+        * add ghpDoc/{css,img}/                                     SLOC 6333
 v0.10.11
     2016-05-19
         * add bkp2U, updadte .dvcz                                  SLOC 5772
@@ -146,7 +149,7 @@ v0.5.3
         * renamed {putTo,getFrom}Chan {ge,pu}tter
     2012-11-20
         * testRingDataProto.testCaching works for outerMsg          SLOC 4448
-        * stubbed elaboration of testReg.py                         SLCO 4488
+        * stubbed elaboration of testReg.py                         SLOC 4488
     2012-11-19
         * testRingDataProto.testCaching works for innerMsg          SLOC 4439
 v0.5.2
@@ -357,6 +360,7 @@ v0.1.2
         * working varint, fixed len 32- and 64-bit, var len bytestring
             and associated tests
         * initial svn import
+
 
 
 

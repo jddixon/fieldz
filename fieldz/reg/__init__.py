@@ -31,6 +31,10 @@ class UniqueNameRegistry(object):
         self._next_reg_id = 0
 
     @property
+    def entries(self):
+        return self._entries
+
+    @property
     def next_reg_id(self):
         return self._next_reg_id
 

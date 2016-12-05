@@ -4,7 +4,7 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/fieldz
   
-  bl_list_gen \
+  bl_listgen \
     -d ../fieldz \
     -1L  \
     -u $DVCZ_UDIR \

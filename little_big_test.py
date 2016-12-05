@@ -1,10 +1,12 @@
 # ~/dev/py/fieldz/littleBigTest.py
 
+"""
+This has been hacked down from bigTest.py by eliminating field types
+that we can't handle yet.
+"""
+
 LITTLE_BIG_PROTO_SPEC = """
 protocol org.xlattice.fieldz.test.littleBigProto
-
-# This has been hacked down from bigTest.py by eliminating field types
-# that we can't handle yet.
 
 message bigTestMsg:
  # required fields, unnumbered
