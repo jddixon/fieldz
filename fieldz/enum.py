@@ -1,4 +1,10 @@
-# fieldz/core.py
+# fieldz/enum.py
+
+"""
+Enumeration types.
+
+These were specified for Python 2.7, and ARE NOT SUITABLE for Python 3.
+"""
 
 __all__ = ['SimpleEnum', 'SimpleEnumWithRepr', ]
 
@@ -27,9 +33,9 @@ class SimpleEnum(object):
     """
 
     def __init__(self, symbols):
-        for ndx in range(len(symbols)):
+        for ndx, symbol in enumerate(symbols):
             # XXX we could enforce capitalization here
-            self.__dict__[symbols[ndx]] = ndx
+            self.__dict__[symbol] = ndx
         self._max_ndx_ = len(symbols)
 
     def __setattr__(self, sym, value):
@@ -80,6 +86,8 @@ class SimpleEnumWithRepr(object):
         self._max_type_ = self.__dict__[pairs[-1][0]]
 
     def as_str(self, ndx):
+        """ Return the string form of the Nth enumerate. """
+
         if ndx is None or ndx < 0 or self._max_type_ < ndx:
             raise ValueError('symbol index out of range: %s' % str(ndx))
         return self._str_form[ndx]
@@ -97,4 +105,5 @@ class SimpleEnumWithRepr(object):
 
     @property
     def max_ndx(self):
+        """ Return the maximum index assigned to an enumerate. """
         return self._max_type_

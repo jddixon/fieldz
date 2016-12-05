@@ -1,12 +1,14 @@
 # ~/dev/py/fieldz/bigTest.py
 
+"""
+This should exercise all combinations of the 20 field types, with
+the four quantifiers.  The first category (required fields) have no
+explicit field numbers.  In the other categories field numbers are
+specified.
+"""
+
 BIG_TEST = u"""
 protocol org.xlattice.fieldz.test.bigProto
-
-# This should exercise all combinations of the 20 field types, with
-# the four quantifiers.  The first category (required fields) have no
-# explicit field numbers.  In the other categories field numbers are
-# specified.
 
 message bigTestMsg:
  # required fields, unnumbered

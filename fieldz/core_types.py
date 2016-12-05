@@ -1,5 +1,7 @@
 # corez/coreTypes.py
 
+""" The enumeration of specification types. """
+
 #import sys
 from fieldz.enum import SimpleEnumWithRepr
 

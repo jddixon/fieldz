@@ -7,7 +7,7 @@ from io import StringIO
 
 from rnglib import SimpleRNG
 
-# XXX FAILS to import write if named 'putter':
+# XXX DOES NOT import write if named 'putter':
 from fieldz.msg_impl import make_msg_class,\
     make_field_class
 

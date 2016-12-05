@@ -1,5 +1,7 @@
 # fieldz/fieldTypes.py
 
+""" Define symbols representing types of binary fields. """
+
 # import sys
 
 # from fieldz.enum import SimpleEnumWithRepr
@@ -41,10 +43,14 @@
 
 from enum import IntEnum
 
-# XXX supposedly these should be 1-based
-
 
 class FieldTypes(IntEnum):
+    """
+    Enumeration representing types of binary fields.
+
+    SHOULD THESE BE 1-BASED?
+    """
+
     V_BOOL = 0
     V_ENUM = 1
     V_INT32 = 2
@@ -64,12 +70,12 @@ class FieldTypes(IntEnum):
     L_MSG = 16
     F_BYTES16 = 17
     F_BYTES20 = 18
-    # XXX next two must be identical
     F_BYTES32 = 19
     MAX_NDX = 19
 
 
 class FieldStr(object):
+    """ Strings naming types of binary fields. """
 
     _str_form = [
         'vbool',
@@ -93,18 +99,22 @@ class FieldStr(object):
         'fbytes20',
         'fbytes32',
     ]
+    _str2ndx = {}
+    for _type in FieldTypes:
+        _str2ndx[_str_form[_type]] = _type
 
     @classmethod
     def as_str(cls, ndx):
+        """ Given the index of a field type, return its string form. """
         return FieldStr._str_form[ndx]
 
     def __init__(self):
-        self._str2ndx = {}
-        for _type in FieldTypes:
-            self._str2ndx[FieldStr._str_form[_type]] = _type
+        pass
 
-    def ndx(self, string):
-        return self._str2ndx[string]
+    @classmethod
+    def ndx(cls, string):
+        """ Given the string form of a field type, return its index. """
+        return FieldStr._str2ndx[string]
 
 
 # sys.modules[__name__] = FieldTypes

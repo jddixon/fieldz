@@ -162,6 +162,10 @@ class EnumSpec(object):
             self._pairs.append(pair)
             self._sym2pair[sym] = pair
 
+    @property
+    def pairs(self):
+        return self._pairs
+
     @classmethod
     def create(cls, name, pairs):
         """pairs are 2-tuples, (symbol, value), where value is uInt16 """
@@ -887,7 +891,7 @@ def enum_spec_putter(chan, val, nnn):
         enum_pair_spec_putter(chan, pair, 1)   # field 1 instances
 
 
-def enum_spec_getter(chan):
+def enum_spec_getter(dummy_reg, chan):
     # we have already read the header containing the field number
     # read the byte count, the length of the spec
     byte_count = read_raw_varint(chan)
@@ -908,7 +912,7 @@ def enum_spec_getter(chan):
             # XXX This is a a peek: pos only gets advanced if OK
             print("EXPECTED FIELD 1, FOUND %s" % hdr_field_nbr(hdr))
             break
-        exc = enum_pair_spec_getter(chan0)
+        exc = enum_pair_spec_getter(dummy_reg, chan)
         pairs.append(exc)
 
     # create EnumSpec instance, which gets returned
