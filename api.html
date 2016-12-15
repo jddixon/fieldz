@@ -9,6 +9,103 @@
 </head>
 <body>
 <div class="content">
+<h1 class="libTop">API</h1>
+
+<p>2012-09-21</p>
+
+<p>I have just finished sketching out a crude data model, one populated
+by</p>
+
+<ul>
+<li>protocols, which are lists of enums and messages plus some sequencing
+rules</li>
+<li>enums, which map simple symbols (strings containing no delimiters,
+no dots, and no slashes) to integer values; in the current
+implementation the values may not be negative</li>
+<li>messages, where a message is a container for locally defined enums and
+nested messages, plus a list of sequencing rules</li>
+<li>fields, which are named and numbered, contain a value, and specify an
+encoding/decoding scheme; there are currently 18 such schemes, one
+allowing methods to be nested.  In addition fields have a quantifier
+which specifies whether the field must contain a single value (the
+default), or may or may not be present (&#39;?&#39;), or may be present
+zero or more times (&#39;*&#39;), or may be present one or more times (&#39;+&#39;).</li>
+</ul>
+
+<p>In the current implementation fields must appear in the serialized message
+in increasing order.  That is, when serializing the message the field with
+the lowest field number is written first and then the field number of each
+field written is greater than or equal to that of the preceding field.
+It can be assumed that where field quantifiers permit multiple instances
+the instances of the same field number are written in the order in which
+they were appended to the message.</p>
+
+<p>In today&#39;s code, the message class is dynamically generated, subclassing
+MsgImpl.  In the simplest case we generate something like LogEntryMsg,
+which has 5 required fields: timestamp, nodeID, key, by, and path.  The
+first is an unsigned 32-bit integer which should default to int(time.time()).
+The second and third are 20-byte binary values.  The fourth and fifth are
+strings; &#39;by&#39; describes the source of the entry and &#39;path&#39; tells you where
+the data being logged was found.  If the data was a document, the path will
+be its location in the file system, key its SHA1 content hash (SHA3 when
+that is available), and nodeID identifies which node delivered the data
+to this node.  &#39;by&#39; might be a person&#39;s name or the name and version number
+of the software creating the data.</p>
+
+<p>In this case if leMsg is an instance of LogEntryMsg it would be convenient
+for leMsg to have a method like</p>
+
+<pre><code>leMsg.set(timestamp, nodeID, key, by, path)
+</code></pre>
+
+<p>Under the hood this would if necessary create an instance of each field of
+the message, then assign the method parameters to each in turn.</p>
+
+<p>Of course this should better be</p>
+
+<pre><code>LogEntryMsg = MsgFactory(&#39;org.xlattice.upax&#39;, &#39;LogEntryMsg&#39;)
+leMsg = LogEntryMsg(timestamp, nodeID, key, by, path)
+leMsg.put(chan)
+</code></pre>
+
+<p>The last command would write the data to the channel.  The reverse
+operation, deserialization, would be done using</p>
+
+<pre><code>LogEntryMsg = MsgFactory(&#39;org.xlattice.upax&#39;, &#39;LogEntryMsg&#39;)
+leMsg = LogEntryMsg.get(chan)
+</code></pre>
+
+<p>or</p>
+
+<pre><code>(timestamp, nodeID, key, by, path) = LogEntryMsg.getValues(chan)
+</code></pre>
+
+<p>If some fields are optional, we can specify which fields are to be
+initialized using keywords like</p>
+
+<pre><code>leMsg = LogEntryMsg(timestamp=int(time.time()), nodeID=nodeID,
+                    key=key, by=by, path=path)
+</code></pre>
+
+<p>Where fields are or may be multi-valued, we allow the user to supply
+possibly empty lists as parameters.</p>
+
+<p>In this approach it is never necessary to explicitly mention enums
+or nested messages.  These are specified in the protocol spec file
+either at the top level or within a message specification.</p>
+
+<p>DEFICIENCIES:</p>
+
+<ol>
+<li><p>For the system to be robust, a protocol should be referenced
+by its content hash.</p></li>
+<li><p>In the current implementation the parameters to makeMsgClass are
+the protocol name and a reference to the MsgSpec.  This is quite
+insecure.  It can be improved by using the protocol name to access
+a file under ./specs and then just passing the message name.  Add an
+L mapping the protocol name to a hash value and then using that hash
+value to retrieve the protocol from Upax and we are done.</p></li>
+</ol>
   <div class="f">
     <hr />
     <div class="license">
