@@ -21,9 +21,7 @@ setup(name='fieldz',
       py_modules=[],
       #
       # a package has its own directory with an __init__.py in it
-      packages=['fieldz',
-                'fieldz/compiler',      # a mistake ? XXX
-                'fieldz/reg', ],
+      packages=['fieldz', 'wireops', ],
       #
       # scripts should have a globally unique name; they might be in a
       #   scripts/ subdir; SQuote the script name
