@@ -1,5 +1,8 @@
 ~/dev/py/fieldz/CHANGES
 
+v0.10.30
+    2016-12-14
+        * preparing to split off wireops as separate repo           SLOC 6911
 v0.10.29
     2016-12-04
         * more pylinting                                            SLOC 7207
@@ -360,6 +363,7 @@ v0.1.2
         * working varint, fixed len 32- and 64-bit, var len bytestring
             and associated tests
         * initial svn import
+
 
 
 
