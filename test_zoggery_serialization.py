@@ -9,9 +9,10 @@ from rnglib import SimpleRNG
 
 from fieldz.parser import StringProtoSpecParser
 import fieldz.msg_spec as M
-import fieldz.typed as T
-from fieldz.chan import Channel
 from fieldz.msg_impl import make_msg_class, make_field_class, MsgImpl
+
+import wireops.typed as T
+from wireops.chan import Channel
 
 # PROTOCOLS ---------------------------------------------------------
 from fieldz.zoggery_proto_spec import ZOGGERY_PROTO_SPEC
@@ -105,8 +106,6 @@ class TestZoggerySerialization(unittest.TestCase):
         # F A I L S:
         #   msg_spec.name is 'logEntry'
         #   le_msg._name is  '[148639516, [227, 217, ...[230 chars].gz']
-            :
-                q
         self.assertEqual(msg_spec.name, le_msg._name)
         # we don't have any nested enums or messages
 

@@ -8,11 +8,11 @@ __all__ = ['RegEntry',                      # abstract type
            'MsgEntry', 'EnumEntry',         # either of these
            ]
 
-from fieldz.msg_spec import validate_dotted_name
-from fieldz.typed import T_GET_FUNCS, T_PUT_FUNCS
-from fieldz.field_types import FieldTypes as F, FieldStr as FS
+from wireops.typed import T_GET_FUNCS, T_PUT_FUNCS
+from wireops.field_types import FieldTypes as F, FieldStr as FS
 import fieldz.core_types as C
 import fieldz.msg_spec as M
+from fieldz.msg_spec import validate_dotted_name
 
 # BEGIN NEW CLASSES =================================================
 

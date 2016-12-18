@@ -13,6 +13,9 @@
     are not canonical
 -----------------------------------------------------------------
 
+2016-12-17
+    * low-level functions collected in wireops, split off as separate   * DONE
+        project: wireops                                                * DONE
 2016-11-05
     * FOCUS: test_big_test.py                                           * DONE
     * FOCUS: test_core_types.py

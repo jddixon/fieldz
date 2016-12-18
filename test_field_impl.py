@@ -9,16 +9,16 @@ from io import StringIO
 from rnglib import SimpleRNG
 
 #from fieldz.parser import StringProtoSpecParser
-from fieldz.field_types import FieldTypes
 import fieldz.msg_spec as M
-#import fieldz.typed as T
 import fieldz.reg as R
 
 from fieldz.field_impl import make_field_class
 
-#from fieldz.chan import Channel
 #from fieldz.msg_impl import makeMsgClass, makeFieldClass, MsgImpl
-from fieldz.raw import write_field_hdr, write_raw_varint, LEN_PLUS_TYPE
+#from wireops.chan import Channel
+#import wireops.typed as T
+from wireops.raw import write_field_hdr, write_raw_varint, LEN_PLUS_TYPE
+from wireops.field_types import FieldTypes
 
 PROTOCOL_UNDER_TEST = 'org.xlattice.fieldz.test.fieldSpec'
 MSG_UNDER_TEST = 'myTestMsg'

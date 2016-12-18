@@ -5,11 +5,12 @@ import time
 import unittest
 
 from rnglib import SimpleRNG
-from fieldz.field_types import FieldTypes, FieldStr
-import fieldz.typed as T
 import fieldz.msg_spec as M
 import fieldz.reg as R
 from fieldz.tfbuffer import TFReader, TFWriter
+
+from wireops.field_types import FieldTypes, FieldStr
+import wireops.typed as T
 
 BUFSIZE = 16 * 1024
 RNG = SimpleRNG(time.time())

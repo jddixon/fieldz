@@ -12,10 +12,11 @@ from fieldz.ring_data_proto import RING_DATA_PROTO_SPEC
 
 from fieldz.parser import StringProtoSpecParser
 import fieldz.msg_spec as M
-import fieldz.typed as T
 from xlattice.node import Node
-from fieldz.chan import Channel
 from fieldz.msg_impl import make_msg_class, make_field_class
+
+import wireops.typed as T
+from wireops.chan import Channel
 
 RNG = SimpleRNG(int(time.time()))
 BUFSIZE = 16 * 1024

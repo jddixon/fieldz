@@ -8,11 +8,12 @@ from io import StringIO
 from rnglib import SimpleRNG
 
 from fieldz.parser import StringProtoSpecParser
-# import fieldz.field_types as F
 import fieldz.msg_spec as M
-# import fieldz.typed as T
-from fieldz.chan import Channel
 from fieldz.msg_impl import make_msg_class, make_field_class, MsgImpl
+
+# import wireops.field_types as F
+# import wireops.typed as T
+from wireops.chan import Channel
 
 
 #################################################################

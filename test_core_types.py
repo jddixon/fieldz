@@ -4,17 +4,17 @@
 import unittest
 from io import StringIO
 
-from fieldz.chan import Channel
-from fieldz.raw import(
+from wireops.chan import Channel
+from wireops.raw import(
     LEN_PLUS_TYPE,
     field_hdr_len,
     read_field_hdr,
 )
 import fieldz.msg_spec as M
 from fieldz.core_types import CoreTypes
-from fieldz.field_types import FieldTypes
 from fieldz.reg import NodeReg, ProtoReg, MsgReg
 from fieldz.parser import StringMsgSpecParser
+from wireops.field_types import FieldTypes
 
 LOG_ENTRY_MSG_SPEC = u"""
 # protocol org.xlattice.zoggery
