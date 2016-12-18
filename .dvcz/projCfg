@@ -2,8 +2,8 @@
 project:fieldz
 package:fieldz
 mainlang:py
-version:0.10.20
-versionDate:2016-08-24
+version:0.10.30
+versionDate:2016-12-14
 :?dirs?:
 dir:std:ghpDoc
 dir:std:dist
@@ -11,6 +11,7 @@ dir:std:.dvcz
 dir:pkg:fieldz
 dir:local:specs
 dir:local:logs
+dir:local:wireops
 dir:tmp:uDir
 dir:clr:build
 :?files?:
@@ -62,10 +63,7 @@ py:global:fieldzSpecc
 py:test:test_big_test.py
 py:test:test_core_types.py
 py:test:test_field_impl.py
-py:test:test_field_types.py
-py:test:test_fixed_len.py
 py:test:test_gen_enum.py
-py:test:test_len_plus.py
 py:test:test_little_big.py
 py:test:test_log_entry.py
 py:test:test_msg_impl.py
@@ -76,8 +74,11 @@ py:test:test_ring_data_proto.py
 py:test:test_simple_enum.py
 py:test:test_solo.py
 py:test:test_tfwriter.py
-py:test:test_typed_fields.py
-py:test:test_varint.py
-py:test:test_wired_buffer.py
-py:test:test_zigzag.py
 py:test:test_zoggery_serialization.py
+dunno:local:name-pairs-api
+dunno:local:name-pairs-hack
+dunno:local:name-pairs-hack-first-try
+dunno:local:name-pairs-local
+dunno:local:renameLocal
+dunno:local:renamePerAPI
+dunno:local:renamePerHack

@@ -1,6 +1,6 @@
 # fieldz/fieldz/parser.py
 
-from fieldz.field_types import FieldStr
+from wireops.field_types import FieldStr
 import fieldz.reg as R
 import fieldz.msg_spec as M
 

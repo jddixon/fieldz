@@ -3,16 +3,16 @@
 # import sys      # for debugging
 
 
-from fieldz.field_types import FieldTypes
+from wireops.field_types import FieldTypes
+
+from wireops.raw import (length_as_varint, field_hdr_len, read_field_hdr,
+                         write_raw_varint, read_raw_varint,
+                         write_field_hdr, LEN_PLUS_TYPE)
+
+from wireops.typed import T_GET_FUNCS, T_LEN_FUNCS, T_PUT_FUNCS
+
 from fieldz.field_impl import FieldImpl, MetaField, make_field_class
-
-from fieldz.raw import (length_as_varint, field_hdr_len, read_field_hdr,
-                        write_raw_varint, read_raw_varint,
-                        write_field_hdr, LEN_PLUS_TYPE)
-
-from fieldz.typed import T_GET_FUNCS, T_LEN_FUNCS, T_PUT_FUNCS
 from fieldz.msg_spec import Q_REQUIRED, Q_OPTIONAL, Q_PLUS, Q_STAR
-
 import fieldz.reg as R
 
 __all__ = ['make_msg_class', 'make_field_class',

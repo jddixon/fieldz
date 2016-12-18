@@ -7,7 +7,7 @@ import unittest
 from rnglib import SimpleRNG
 from fieldz.reg import NodeReg
 from fieldz.core_types import CoreTypes
-from fieldz.field_types import FieldTypes, FieldStr
+from wireops.field_types import FieldTypes, FieldStr
 
 # TESTS --------------------------------------------------------------
 

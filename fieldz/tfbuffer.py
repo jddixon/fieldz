@@ -3,11 +3,10 @@
 import ctypes
 import sys
 
-import fieldz.chan
 from fieldz.msg_spec import MsgSpec
 
-# from fieldz.raw import *
-from fieldz.raw import(
+import wireops.chan
+from wireops.raw import(
     # VARINT_TYPE,                            # PACKED_VARINT_TYPE,
     B32_TYPE, B64_TYPE, LEN_PLUS_TYPE,
     B128_TYPE, B160_TYPE, B256_TYPE,
@@ -27,9 +26,8 @@ from fieldz.raw import(
     # WireBuffer,
 )
 
-from fieldz.typed import T_PUT_FUNCS, T_GET_FUNCS  # , T_LEN_FUNCS
-
-from fieldz.field_types import FieldTypes as ftypes, FieldStr as fstr
+from wireops.typed import T_PUT_FUNCS, T_GET_FUNCS  # , T_LEN_FUNCS
+from wireops.field_types import FieldTypes as ftypes, FieldStr as fstr
 
 __all__ = [\
     # value uncertain
@@ -39,7 +37,7 @@ __all__ = [\
 # -- CLASSES --------------------------------------------------------
 
 
-class TFBuffer(fieldz.chan.Channel):
+class TFBuffer(wireops.chan.Channel):
 
     def __init__(self, msg_spec, nnn=1024, buffer=None):
         super(TFBuffer, self).__init__(nnn, buffer)

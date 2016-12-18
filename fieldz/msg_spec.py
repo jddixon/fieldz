@@ -3,7 +3,7 @@
 import re
 #import sys
 
-from fieldz.raw import(
+from wireops.raw import(
     # VARINT_TYPE,                            # PACKED_VARINT_TYPE,
     #B32_TYPE, B64_TYPE,
     LEN_PLUS_TYPE,
@@ -24,9 +24,9 @@ from fieldz.raw import(
     # next_power_of_two,
     # WireBuffer,
 )
-from fieldz.typed import T_GET_FUNCS, T_LEN_FUNCS, T_PUT_FUNCS
+from wireops.typed import T_GET_FUNCS, T_LEN_FUNCS, T_PUT_FUNCS
 
-from fieldz.field_types import FieldTypes, FieldStr
+from wireops.field_types import FieldTypes, FieldStr
 import fieldz.core_types as C
 
 __all__ = [\

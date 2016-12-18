@@ -6,15 +6,12 @@ import unittest
 
 from rnglib import SimpleRNG
 
-from fieldz.field_types import FieldStr
-from fieldz.msg_spec import MsgSpec, ProtoSpec
 import fieldz.reg as R
 
-# from fieldz.msg_spec import *
-from fieldz.msg_spec import (
-    Q_REQUIRED,  # Q_OPTIONAL, Q_PLUS, Q_STAR,
-    FieldSpec, )
+from fieldz.msg_spec import(FieldSpec, MsgSpec, ProtoSpec,
+                            Q_REQUIRED)  # , Q_OPTIONAL, Q_PLUS, Q_STAR)
 from fieldz.tfbuffer import TFBuffer, TFReader, TFWriter
+from wireops.field_types import FieldStr
 
 # scratch variables
 B128 = bytearray(16)

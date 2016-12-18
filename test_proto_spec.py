@@ -14,10 +14,10 @@ from rnglib import SimpleRNG
 
 from fieldz.field_impl import make_field_class         # added 2016-08-02
 from fieldz.parser import StringProtoSpecParser
-from fieldz.field_types import FieldTypes, FieldStr
 import fieldz.msg_spec as M
-import fieldz.typed as T
 import fieldz.reg as reg
+import wireops.typed as T
+from wireops.field_types import FieldTypes, FieldStr
 
 from fieldz.msg_impl import make_msg_class
 
