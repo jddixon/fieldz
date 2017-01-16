@@ -9,8 +9,7 @@
 </head>
 <body>
 <div class="content">
-<h1>
-<a id="user-content-goals" class="anchor" href="#goals" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Goals</h1>
+<h1 class="libTop">Goals</h1>
 
 <p>2012-08-17</p>
 
@@ -21,7 +20,7 @@ into a fixed-length buffer (presumably N*4096) and then put on the wire as
 soon as available - block by block.  Reading from the wire will follow
 a similar pattern.  In either case, whether writing or reading large files,
 a data packet will typically have a packed, variegated header followed by a
-long 'lenPlus', a varint len followed by that many raw bytes.</p>
+long &#39;lenPlus&#39;, a varint len followed by that many raw bytes.</p>
 
 <p>Obvious possibility: replace the data from the file with a content key.
 The notion might be that there is always at least one U associated with
@@ -31,8 +30,8 @@ every connection.  U transfers on the wire look like</p>
 PUTI + dest + key + len + byte[len]
 </code></pre>
 
-<p>where PUT means 'write to the machine at the far end of the
-connection' and PUTI means write to node 'dest' through the
+<p>where PUT means &#39;write to the machine at the far end of the
+connection&#39; and PUTI means write to node &#39;dest&#39; through the
 machine at the far end of the connection.</p>
 
 <p>key and dest may be 160 or 256 bit values (SHA1 or SHA3 digests) or they
@@ -47,10 +46,10 @@ index into a cache of such values.</p>
 GETI + src  + key
 </code></pre>
 
-<p>Here 'key' is resolved at the far end; if we knew its length and value,
+<p>Here &#39;key&#39; is resolved at the far end; if we knew its length and value,
 it would be in our cache and we would not be asking for it.  Similarly
-where the operation is PUT or PUTI 'key' must represent a datum in U,
-so the sender necessarily knows len and the value, what's in the byte array.</p>
+where the operation is PUT or PUTI &#39;key&#39; must represent a datum in U,
+so the sender necessarily knows len and the value, what&#39;s in the byte array.</p>
 
 <p>Why are these considerations at the fieldz level?  For the same reason
 that varints are.  A varint is (usually) an economical way to represent
@@ -58,11 +57,11 @@ a value on the wire.  The fieldz package uses a set of rules to convert
 between the varint encoding and raw uint values.  The proposal is to add
 content keys to the set of encoding tools available at the fieldz level.</p>
 
-<p>In the PUTI example above, 'dest' is either a varint or a nodeID.  If
-it is a varint, the receiver either has it in its cache or it doesn't.
-If it doesn't, the receiver can ask for its binding, what it represents.
+<p>In the PUTI example above, &#39;dest&#39; is either a varint or a nodeID.  If
+it is a varint, the receiver either has it in its cache or it doesn&#39;t.
+If it doesn&#39;t, the receiver can ask for its binding, what it represents.
 Otherwise the value it binds to is a key, the nodeID of the destination.
-In the proposed scheme, this can be used to fetch the destination's
+In the proposed scheme, this can be used to fetch the destination&#39;s
 public key from a local U.  That is</p>
 
 <pre><code>varint -&gt; cache index -&gt; nodeID -&gt; public key

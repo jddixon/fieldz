@@ -9,8 +9,7 @@
 </head>
 <body>
 <div class="content">
-<h1>
-<a id="user-content-api" class="anchor" href="#api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>API</h1>
+<h1 class="libTop">API</h1>
 
 <p>2012-09-21</p>
 
@@ -29,8 +28,8 @@ nested messages, plus a list of sequencing rules</li>
 encoding/decoding scheme; there are currently 18 such schemes, one
 allowing methods to be nested.  In addition fields have a quantifier
 which specifies whether the field must contain a single value (the
-default), or may or may not be present ('?'), or may be present
-zero or more times ('*'), or may be present one or more times ('+').</li>
+default), or may or may not be present (&#39;?&#39;), or may be present
+zero or more times (&#39;*&#39;), or may be present one or more times (&#39;+&#39;).</li>
 </ul>
 
 <p>In the current implementation fields must appear in the serialized message
@@ -41,16 +40,16 @@ It can be assumed that where field quantifiers permit multiple instances
 the instances of the same field number are written in the order in which
 they were appended to the message.</p>
 
-<p>In today's code, the message class is dynamically generated, subclassing
+<p>In today&#39;s code, the message class is dynamically generated, subclassing
 MsgImpl.  In the simplest case we generate something like LogEntryMsg,
 which has 5 required fields: timestamp, nodeID, key, by, and path.  The
 first is an unsigned 32-bit integer which should default to int(time.time()).
 The second and third are 20-byte binary values.  The fourth and fifth are
-strings; 'by' describes the source of the entry and 'path' tells you where
+strings; &#39;by&#39; describes the source of the entry and &#39;path&#39; tells you where
 the data being logged was found.  If the data was a document, the path will
 be its location in the file system, key its SHA1 content hash (SHA3 when
 that is available), and nodeID identifies which node delivered the data
-to this node.  'by' might be a person's name or the name and version number
+to this node.  &#39;by&#39; might be a person&#39;s name or the name and version number
 of the software creating the data.</p>
 
 <p>In this case if leMsg is an instance of LogEntryMsg it would be convenient
@@ -64,7 +63,7 @@ the message, then assign the method parameters to each in turn.</p>
 
 <p>Of course this should better be</p>
 
-<pre><code>LogEntryMsg = MsgFactory('org.xlattice.upax', 'LogEntryMsg')
+<pre><code>LogEntryMsg = MsgFactory(&#39;org.xlattice.upax&#39;, &#39;LogEntryMsg&#39;)
 leMsg = LogEntryMsg(timestamp, nodeID, key, by, path)
 leMsg.put(chan)
 </code></pre>
@@ -72,7 +71,7 @@ leMsg.put(chan)
 <p>The last command would write the data to the channel.  The reverse
 operation, deserialization, would be done using</p>
 
-<pre><code>LogEntryMsg = MsgFactory('org.xlattice.upax', 'LogEntryMsg')
+<pre><code>LogEntryMsg = MsgFactory(&#39;org.xlattice.upax&#39;, &#39;LogEntryMsg&#39;)
 leMsg = LogEntryMsg.get(chan)
 </code></pre>
 
