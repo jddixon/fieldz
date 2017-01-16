@@ -1,3 +1,0 @@
-# ~/dev/py/fieldz/testForOK
-./$1 >& junk
-grep <junk OK

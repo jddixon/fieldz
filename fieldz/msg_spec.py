@@ -29,15 +29,20 @@ from wireops.typed import T_GET_FUNCS, T_LEN_FUNCS, T_PUT_FUNCS
 from wireops.field_types import FieldTypes, FieldStr
 import fieldz.core_types as C
 
-__all__ = [\
+__all__ = [
+
+    # XXX CONSIDER THESE DEPRECATED ---------------------------------
     # constants, so to speak: quantifiers
     'Q_REQUIRED',   # no quantifier, so one and only one such field
     'Q_OPTIONAL',   # ?: either zero or one instance of the field
     'Q_STAR',       # *: zero or more instances of the field allowed
     'Q_PLUS',       # +: one or more instances of the field
     'Q_NAMES',      # list of the four above
+    'q_name',
+    # END DEPRECATED ------------------------------------------------
+
     # methods
-    'q_name', 'validate_simple_name', 'validate_dotted_name',
+    'validate_simple_name', 'validate_dotted_name',
 
     # class-level
     'C_PUT_FUNCS', 'C_GET_FUNCS', 'C_LEN_FUNCS',
