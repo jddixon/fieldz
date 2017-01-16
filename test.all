@@ -6,6 +6,7 @@ then
   
   ./test_big_test.py
   ./test_core_types.py
+  ./test_enums.py
   ./test_field_impl.py
   ./test_gen_enum.py
   ./test_little_big.py
@@ -15,7 +16,6 @@ then
   ./test_proto_spec.py
   ./test_reg.py
   ./test_ring_data_proto.py
-  ./test_simple_enum.py
   ./test_solo.py
   ./test_tfwriter.py
   ./test_zoggery_serialization.py

@@ -2,11 +2,35 @@
 
 """
 Enumeration types.
+"""
+
+from enum import IntEnum
+import warnings
+
+
+__all__ = ['Quants', 'SimpleEnum', 'SimpleEnumWithRepr', ]
+
+
+class Quants:
+    REQUIRED = 0    # ''
+    OPTIONAL = 1    # '?'
+    STAR = 2        # '*'
+    PLUS = 3        # '+'
+
+    _syms = ['', '?', '*', '+', ]
+
+    @classmethod
+    def sym(cls, ndx):
+        return cls._syms[ndx]
+
+
+# DEPRECATED ========================================================
+
+"""
+Enumeration types.
 
 These were specified for Python 2.7, and ARE NOT SUITABLE for Python 3.
 """
-
-__all__ = ['SimpleEnum', 'SimpleEnumWithRepr', ]
 
 # DOESN'T WORK.
 # def singleton(cls):
@@ -33,6 +57,7 @@ class SimpleEnum(object):
     """
 
     def __init__(self, symbols):
+        warnings.warn("SimpleEnum", DeprecationWarning)
         for ndx, symbol in enumerate(symbols):
             # XXX we could enforce capitalization here
             self.__dict__[symbol] = ndx
@@ -40,6 +65,7 @@ class SimpleEnum(object):
 
     def __setattr__(self, sym, value):
         """ instance variables may be set but never reset """
+        warnings.warn("SimpleEnum.__setattr__", DeprecationWarning)
         if sym not in self.__dict__:
             self.__dict__[sym] = value
         else:
@@ -49,6 +75,7 @@ class SimpleEnum(object):
     @property
     def max_ndx(self):
         """ return the highest index number currently in use """
+        warnings.warn("SimpleEnum.max_ndx", DeprecationWarning)
         return self._max_ndx_
 
 # -------------------------------------------------------------------
@@ -59,6 +86,7 @@ class SimpleEnumWithRepr(object):
 
     def __setattr__(self, sym, value):
         """ instance variables may be set but never reset """
+        warnings.warn("SimpleEnumWithRepr", DeprecationWarning)
         if sym not in self.__dict__:
             super().__setattr__(sym, value)
         else:
@@ -71,10 +99,11 @@ class SimpleEnumWithRepr(object):
         this is capitalized.  The second string represents its name, its
         string representation in the programming context.  If the subclass
         passing the list of pairs was Q and the third pair (zero-based)
-        was ('PLUS', '+'), then Q.PLUS would have the constant value 3 and
-        its representation, Q.name(Q.PLUS), would be '+'.
+        was ('PLUS', '+'), then Quants.PLUS would have the constant value 3 and
+        its representation, Quants.name(Quants.PLUS), would be '+'.
         """
 
+        warnings.warn("SimpleEnumWithRepr", DeprecationWarning)
         self._str_form = []            # list of string representations
         self._str2ndx = {}             # maps string strForm to ints
         for ndx, pair in enumerate(pairs):
@@ -88,6 +117,7 @@ class SimpleEnumWithRepr(object):
     def as_str(self, ndx):
         """ Return the string form of the Nth enumerate. """
 
+        warnings.warn("SimpleEnumWithRepr:as_str", DeprecationWarning)
         if ndx is None or ndx < 0 or self._max_type_ < ndx:
             raise ValueError('symbol index out of range: %s' % str(ndx))
         return self._str_form[ndx]
@@ -106,4 +136,7 @@ class SimpleEnumWithRepr(object):
     @property
     def max_ndx(self):
         """ Return the maximum index assigned to an enumerate. """
+        warnings.warn("SimpleEnumWithRepr:max_ndx", DeprecationWarning)
         return self._max_type_
+
+# END DEPRECATED ====================================================

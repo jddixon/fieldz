@@ -1,5 +1,8 @@
 ~/dev/py/fieldz/CHANGES
 
+v0.11.1
+    2017-01-15
+        * introduced simpler Quants enum, dropped redundant code    SLOC 5579
 v0.11.0
     2016-12-17
         * dropped wireops                                           SLOC 5550
@@ -366,6 +369,7 @@ v0.1.2
         * working varint, fixed len 32- and 64-bit, var len bytestring
             and associated tests
         * initial svn import
+
 
 
 

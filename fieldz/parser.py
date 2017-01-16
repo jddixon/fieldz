@@ -1,8 +1,7 @@
 # fieldz/fieldz/parser.py
 
 from wireops.field_types import FieldStr
-import fieldz.reg as R
-import fieldz.msg_spec as M
+from fieldz import reg as R, msg_spec as M
 
 from fieldz.msg_spec import(
     Q_REQUIRED, Q_OPTIONAL, Q_PLUS, Q_STAR,
