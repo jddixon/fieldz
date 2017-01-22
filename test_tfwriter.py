@@ -6,7 +6,7 @@ import unittest
 
 from rnglib import SimpleRNG
 
-import fieldz.reg as R
+from fieldz import reg
 
 from fieldz.msg_spec import(FieldSpec, MsgSpec, ProtoSpec,
                             Q_REQUIRED)  # , Q_OPTIONAL, Q_PLUS, Q_STAR)
@@ -21,9 +21,9 @@ B256 = bytearray(32)
 # msgSpec -----------------------------------------------------------
 PROTOCOL = 'org.xlattice.upax'
 NAME = 'TEST_MSG_SPEC'
-NODE_REG = R.NodeReg()
-PROTO_REG = R.ProtoReg(PROTOCOL, NODE_REG)
-MSG_REG = R.MsgReg(PROTO_REG)
+NODE_REG = reg.NodeReg()
+PROTO_REG = reg.ProtoReg(PROTOCOL, NODE_REG)
+MSG_REG = reg.MsgReg(PROTO_REG)
 PARENT = ProtoSpec(PROTOCOL, PROTO_REG)
 
 # no enum is used
@@ -200,7 +200,7 @@ class TestTFWriter(unittest.TestCase):
 
         # encoded as varint len followed by byte[len] ===============
         # field 10: _L_STRING
-        string = self.rng.next_file_NAME(16)
+        string = self.rng.next_file_name(16)
         idx = self.do_round_trip_field(
             tf_writer, tf_reader, idx, 'lstring', string)
 

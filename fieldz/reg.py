@@ -1,4 +1,4 @@
-# ~/dev/py/fieldz/reg/__init__.py
+# ~/dev/py/fieldz/reg.py
 
 __all__ = ['RegEntry',                      # abstract type
            'FieldTypeEntry',                # msgSpec constituents
@@ -10,9 +10,10 @@ __all__ = ['RegEntry',                      # abstract type
 
 from wireops.typed import T_GET_FUNCS, T_PUT_FUNCS
 from wireops.field_types import FieldTypes as F, FieldStr as FS
+
+from fieldz import FieldzError
 import fieldz.core_types as C
 import fieldz.msg_spec as M
-from fieldz.msg_spec import validate_dotted_name
 
 # BEGIN NEW CLASSES =================================================
 
@@ -122,7 +123,7 @@ class NodeReg(UniqueNameRegistry):
         to get the content key that uniquely identifies the protocol.
         """
         if proto_spec is None:
-            raise ValueError('protoSpec cannot be None')
+            raise FieldzError('protoSpec cannot be None')
 
         # reduce the spec to canonical form
         canonical = None                # XXX STUB
@@ -255,15 +256,15 @@ class RegEntry(object):
                  len_func=None, p_len_func=None):
         # XXX CURRENTLY NOT USED
         if reg is None:
-            raise ValueError('reg may not be None')
+            raise FieldzError('reg may not be None')
         # END NOT USED
 
         if qual_name is None:
-            raise ValueError('qualName may not be None')
+            raise FieldzError('qualName may not be None')
         if putter is None:
-            raise ValueError('putter may not be None')
+            raise FieldzError('putter may not be None')
         if getter is None:
-            raise ValueError('getter may not be None')
+            raise FieldzError('getter may not be None')
         # lenFunc and pLenFunc may be None
 
         M.validate_dotted_name(qual_name)
@@ -456,7 +457,7 @@ class MsgReg(object):
 
     def __init__(self, parent_reg):
         if parent_reg is None:
-            raise ValueError('parentReg must not be None')
+            raise FieldzError('parentReg must not be None')
         self._parent_reg = parent_reg  # where to look if we can't resolve a name
 
         # The registry exists to allow us to distinguish these types
@@ -494,7 +495,7 @@ class MsgReg(object):
 #   # XXX WRONG: what's added can be either a MsgSpec or an EnumSpec
 #   def append(self, enum):
 #       if enum is None:
-#           raise ValueError('cannot add null enum')
+#           raise FieldzError('cannot add null enum')
 #       name = enum.name
 #       if name in self._name2RegID:
 #           raise KeyError("we already have an enum '%s'" % name)

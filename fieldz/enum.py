@@ -4,25 +4,36 @@
 Enumeration types.
 """
 
-from enum import IntEnum
+from enum import Enum
 import warnings
 
+from fieldz import FieldzError
 
-__all__ = ['Quants', 'SimpleEnum', 'SimpleEnumWithRepr', ]
+
+__all__ = ['CoreTypes', 'Quants',
+           # DEPRECATED -----------------------------------
+           'SimpleEnum', 'SimpleEnumWithRepr', ]
+# END DEPRECATED ------------------------------
 
 
-class Quants:
-    REQUIRED = 0    # ''
-    OPTIONAL = 1    # '?'
-    STAR = 2        # '*'
-    PLUS = 3        # '+'
+class CoreTypes(Enum):
+    """ Fieldz specification types. """
 
-    _syms = ['', '?', '*', '+', ]
+    ENUM_PAIR_SPEC = 'EnumPairSpec'
+    ENUM_SPEC = 'EnumSpec'
+    FIELD_SPEC = 'FieldSpec'
+    MSG_SPEC = 'MsgSpec'
+    SEQ_SPEC = 'SeqSpec'
+    PROTO_SPEC = 'ProtoSpec'
 
-    @classmethod
-    def sym(cls, ndx):
-        return cls._syms[ndx]
 
+class Quants(Enum):
+    """ Quantifiers, specifying how many members may be present. """
+
+    REQUIRED = ''
+    OPTIONAL = '?'
+    STAR = '*'
+    PLUS = '+'
 
 # DEPRECATED ========================================================
 
@@ -119,7 +130,7 @@ class SimpleEnumWithRepr(object):
 
         warnings.warn("SimpleEnumWithRepr:as_str", DeprecationWarning)
         if ndx is None or ndx < 0 or self._max_type_ < ndx:
-            raise ValueError('symbol index out of range: %s' % str(ndx))
+            raise FieldzError('symbol index out of range: %s' % str(ndx))
         return self._str_form[ndx]
 
 #   def ndx(self, string):

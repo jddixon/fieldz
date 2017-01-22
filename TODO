@@ -13,6 +13,17 @@
     are not canonical
 -----------------------------------------------------------------
 
+2017-01-21
+    * XXX test_reg.py: CoreTypes is now a standard enum, c_types needs
+        to be dropped everywhere 
+
+2017-01-17
+    * DROP fieldz/enum.py :: SimpleEnum and SimpleEnmWithRepr 
+        (both deprecated) at version 0.13 (now v0.11.2)
+
+2017-01-15
+    * put msg_spec.Q_{REQUIRED,OPTIONAL,STAR,PLUS} in an enum
+
 2016-12-17
     * low-level functions collected in wireops, split off as separate   * DONE
         project: wireops                                                * DONE

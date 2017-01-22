@@ -8,9 +8,9 @@ from io import StringIO
 
 from rnglib import SimpleRNG
 
+from fieldz import reg
 #from fieldz.parser import StringProtoSpecParser
 import fieldz.msg_spec as M
-import fieldz.reg as R
 
 from fieldz.field_impl import make_field_class
 
@@ -20,7 +20,7 @@ from fieldz.field_impl import make_field_class
 from wireops.raw import write_field_hdr, write_raw_varint, LEN_PLUS_TYPE
 from wireops.field_types import FieldTypes
 
-PROTOCOL_UNDER_TEST = 'org.xlattice.fieldz.test.fieldSpec'
+PROTOCOL_UNDER_TEST = 'org.xlattice.fieldz.test.field_spec'
 MSG_UNDER_TEST = 'myTestMsg'
 
 BUFSIZE = 16 * 1024
@@ -43,9 +43,9 @@ class TestFieldImpl(unittest.TestCase):
     # utility functions #############################################
 
     def make_registries(self, protocol):
-        node_reg = R.NodeReg()
-        proto_reg = R.ProtoReg(protocol, node_reg)
-        msg_reg = R.MsgReg(proto_reg)
+        node_reg = reg.NodeReg()
+        proto_reg = reg.ProtoReg(protocol, node_reg)
+        msg_reg = reg.MsgReg(proto_reg)
         return (node_reg, proto_reg, msg_reg)
 
     def le_msg_values(self):

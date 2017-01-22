@@ -102,13 +102,19 @@ class TestLittleBig(unittest.TestCase):
         self.assertIsNotNone(file)
 
         # class attributes --------------------------------
+        # pylint:disable=no-member
         self.assertEqual(field_spec.name, file.name)
+        # pylint:disable=no-member
         self.assertEqual(field_spec.field_type_ndx, file.field_type)
+        # pylint:disable=no-member
         self.assertEqual(field_spec.quantifier, file.quantifier)
+        # pylint:disable=no-member
         self.assertEqual(field_spec.field_nbr, file.field_nbr)
+        # pylint:disable=no-member
         self.assertIsNone(file.default)          # not an elegant test
 
         # instance attribute ------------------------------
+        # pylint:disable=no-member
         self.assertEqual(value, file.value)
 
         # with slots enabled, this is never seen ----------
@@ -141,10 +147,13 @@ class TestLittleBig(unittest.TestCase):
 
         cls0 = make_msg_class(self.str_obj_model, name)
         # DEBUG
+        # pylint:disable=no-member
         print("Constructed Clz0 name is '%s'" % cls0.name)
         # END
+        # pylint:disable=no-member
         self.assertEqual(name, cls0.name)
         cls1 = make_msg_class(self.str_obj_model, name)
+        # pylint:disable=no-member
         self.assertEqual(name, cls1.name)
 
         # END HACK ----------------------------------------
@@ -232,9 +241,12 @@ class TestLittleBig(unittest.TestCase):
 
         self.assertEqual(msg_spec.name, lil_big_msg.name)
         # we don't have any nested enums or messages
+        # pylint:disable=no-member
         self.assertEqual(0, len(lil_big_msg.enums))
+        # pylint:disable=no-member
         self.assertEqual(0, len(lil_big_msg.msgs))
 
+        # pylint:disable=no-member
         self.assertEqual(17, len(lil_big_msg.field_classes))
         # number of fields in instance
         self.assertEqual(17, len(lil_big_msg))

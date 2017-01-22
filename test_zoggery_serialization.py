@@ -113,12 +113,15 @@ class TestZoggerySerialization(unittest.TestCase):
         # self.assertEqual(0, len(leMsg.enums))
 
         # DEBUG
+        # pylint:disable=no-member
         print("leMsg.enums: ", le_msg.enums)
         # END
 
         # self.assertEqual(0, len(leMsg.msgs))
 
+        # pylint:disable=no-member
         self.assertEqual(6, len(le_msg.field_classes))
+        # pylint:disable=no-member
         self.assertEqual(6, len(le_msg))        # number of fields in instance
         for i in range(len(le_msg)):
             # DEBUG
@@ -131,11 +134,19 @@ class TestZoggerySerialization(unittest.TestCase):
 
         # verify fields are accessible in the object ----------------
         (timestamp, node_id, key, length, by_, path) = tuple(values)
+
+        # pylint can't handle metaclasses
+        # pylint:disable=no-member
         self.assertEqual(timestamp, le_msg.timestamp)
+        # pylint:disable=no-member
         self.assertEqual(node_id, le_msg.node_id)
+        # pylint:disable=no-member
         self.assertEqual(key, le_msg.key)
+        # pylint:disable=no-member
         self.assertEqual(length, le_msg.length)
+        # pylint:disable=no-member
         self.assertEqual(by_, le_msg.by_)
+        # pylint:disable=no-member
         self.assertEqual(path, le_msg.path)
 
         # serialize the object to the channel -----------------------
@@ -152,7 +163,7 @@ class TestZoggerySerialization(unittest.TestCase):
         print("ACTUAL LENGTH OF SERIALIZED OBJECT: %u" % actual)
 
         # deserialize the channel, making a clone of the message ----
-        (read_back, nn2) = MsgImpl.read(chan, self.str_obj_model)
+        (read_back, _) = MsgImpl.read(chan, self.str_obj_model)
         self.assertIsNotNone(read_back)
         self.assertTrue(le_msg.__eq__(read_back))
 

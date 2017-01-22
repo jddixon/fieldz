@@ -89,7 +89,7 @@ class TestMsgSpec(unittest.TestCase):
     def do_field_test(self, name, field_type, quantifier=M.Q_REQUIRED,
                       field_nbr=0, default=None):
         node_reg, proto_reg, msg_reg = self.make_registries(
-            'org.xlattice.fieldz.test.fieldSpec')
+            'org.xlattice.fieldz.test.field_spec')
 
         # XXX Defaults are ignore for now.
         file = M.FieldSpec(
