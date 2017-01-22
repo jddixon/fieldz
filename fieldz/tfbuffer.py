@@ -3,8 +3,6 @@
 import ctypes
 import sys
 
-from fieldz.msg_spec import MsgSpec
-
 import wireops.chan
 from wireops.raw import(
     # VARINT_TYPE,                            # PACKED_VARINT_TYPE,
@@ -29,6 +27,9 @@ from wireops.raw import(
 from wireops.typed import T_PUT_FUNCS, T_GET_FUNCS  # , T_LEN_FUNCS
 from wireops.field_types import FieldTypes as ftypes, FieldStr as fstr
 
+from fieldz import FieldzError
+from fieldz.msg_spec import MsgSpec
+
 __all__ = [\
     # value uncertain
     'TFBuffer', 'TFReader', 'TFWriter',
@@ -42,15 +43,15 @@ class TFBuffer(wireops.chan.Channel):
     def __init__(self, msg_spec, nnn=1024, buffer=None):
         super(TFBuffer, self).__init__(nnn, buffer)
         if msg_spec is None:
-            raise ValueError('no msgSpec')
+            raise FieldzError('no msgSpec')
         if not isinstance(msg_spec, MsgSpec):
-            raise ValueError('object is not a MsgSpec')
+            raise FieldzError('object is not a MsgSpec')
         self._msg_spec = msg_spec
 
     @classmethod
     def create(cls, msg_spec, nnn):
         if nnn <= 0:
-            raise ValueError("buffer size must be a positive number")
+            raise FieldzError("buffer size must be a positive number")
         buffer = bytearray(nnn)
         return cls(msg_spec, nnn, buffer)
 

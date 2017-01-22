@@ -1,11 +1,19 @@
 ~/dev/py/fieldz/CHANGES
 
+v0.11.2
+    2017-01-21
+        * Quants and CoreTypes now standard enums                   SLOC 5646
+    2017-01-16
+        * renamed fieldz/reg/__init__.py fieldz/reg.py because of
+            a weirdness in the python interpreter: it sometimes 
+            cannot find a subdirectory when importing a
+            constituent module. 
 v0.11.1
     2017-01-15
         * introduced simpler Quants enum, dropped redundant code    SLOC 5579
 v0.11.0
     2016-12-17
-        * dropped wireops                                           SLOC 5550
+        * wireops now separate repo                                 SLOC 5550
 v0.10.30
     2016-12-14
         * preparing to split off wireops as separate repo           SLOC 6911
@@ -369,6 +377,8 @@ v0.1.2
         * working varint, fixed len 32- and 64-bit, var len bytestring
             and associated tests
         * initial svn import
+
+
 
 
 

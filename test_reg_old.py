@@ -6,7 +6,7 @@ import unittest
 
 from rnglib import SimpleRNG
 from fieldz.reg import NodeReg
-from fieldz.enum import CoreTypes   # MAJOR CHANGE
+from fieldz.core_types import CoreTypes
 from wireops.field_types import FieldTypes, FieldStr
 
 # TESTS --------------------------------------------------------------
@@ -14,11 +14,17 @@ from wireops.field_types import FieldTypes, FieldStr
 
 class TestReg(unittest.TestCase):
 
+    def setUp(self):
+        self.rng = SimpleRNG(time.time())
+
+    def tearDown(self):
+        pass
+
+    # utility functions #############################################
+
+    # actual unit tests #############################################
     def test_node_reg(self):
-
-        # XXX MAJOR CHANGE - CoreTypes is now a standard Python3 enum
-        # c_types = CoreTypes()
-
+        c_types = CoreTypes()
         test_reg = NodeReg()
 
         # bootstrap() has loaded fieldTypes and coreTypes

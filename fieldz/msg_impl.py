@@ -11,13 +11,11 @@ from wireops.raw import (length_as_varint, field_hdr_len, read_field_hdr,
 
 from wireops.typed import T_GET_FUNCS, T_LEN_FUNCS, T_PUT_FUNCS
 
+from fieldz import FieldzError
 from fieldz.field_impl import FieldImpl, MetaField, make_field_class
 from fieldz.msg_spec import Q_REQUIRED, Q_OPTIONAL, Q_PLUS, Q_STAR
-import fieldz.reg as R
 
-__all__ = ['make_msg_class', 'make_field_class',
-           'write', 'impl_len',
-           ]
+__all__ = ['make_msg_class', 'make_field_class', 'write', 'impl_len', ]
 
 # SERIALIZATION METHODS ---------------------------------------------
 # This interface should be compatible with registry {put,get,len}Func but
@@ -72,7 +70,7 @@ def my_msgs(self):
 
 
 def my_field_classes(self):
-    return self._fieldClasses
+    return self._field_classes
 
 # specific to fields ------------------------------------------------
 # FOR A GIVEN FIELD, THESE ARE CONSTANTS ASSIGNED BY make_field_class
@@ -174,12 +172,12 @@ class MsgImpl(object):
     def __len__(self):
         # 2016-08-02
         # return len(self._fields)
-        return len(self._fieldClasses)
+        return len(self._field_classes)
 
     def __getitem__(self, nnn):
         # 2016-08-02, same fix
         # return self._fields[n]
-        return self._fieldClasses[nnn]
+        return self._field_classes[nnn]
 
     # -- INSTANCE SERIALIZATION -------------------------------------
 
@@ -288,7 +286,7 @@ class MsgImpl(object):
         values = []                     # ???
 
         # XXX THIS IS NOT GOING TO WORK, BECAUSE WE NEED TO PEEK XXX
-        for f_class in cls._fieldClasses:
+        for f_class in cls._field_classes:
 
             field_type = f_class._field_type       # a number
             f_quant = f_class._quantifier
@@ -454,7 +452,7 @@ class MetaMsg(type):
 #       cls._fieldsByName   = {}
 #       values = args[0]
 #       for idx, val in enumerate(values):
-#           this_field = cls._fieldClasses[idx](val)
+#           this_field = cls._field_classes[idx](val)
 #           cls._fields.append(this_field)
 #           cls._fieldsByName[thisField.name] = thisField
 #           setattr(cls, this_field.name, val)
@@ -530,11 +528,11 @@ def make_msg_class(parent, name):
 def _make_msg_class(parent, msg_spec):
     """ construct a MsgClass given a MsgSpec """
     if parent is None:
-        raise ValueError('parent must be specified')
+        raise FieldzError('parent must be specified')
     proto_name = parent.name
 
     if msg_spec is None:
-        raise ValueError('msgSpec be specified')
+        raise FieldzError('msgSpec be specified')
 
     # XXX single-dot name and so NO NESTED MSG_CLASSes
     qual_name = '%s.%s' % (proto_name, msg_spec.name)

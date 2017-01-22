@@ -60,16 +60,13 @@ class TestCoreTypes(unittest.TestCase):
 
         # DEBUG
         print("roundTrioWireFormat: n = %d, c_type = %d" % (nnn, c_type))
+        print("  val is a ", type(val))
         # END
         chan.clear()                            # I guess :-)
 
         buf = chan.buffer
         putter = M.C_PUT_FUNCS[c_type]
         getter = M.C_GET_FUNCS[c_type]
-        # DEBUG
-        print("  PUTTER: %s" % putter)
-        print("  GETTER: %s" % getter)
-        # END
         len_func = M.C_LEN_FUNCS[c_type]
         p_len_func = M.C_P_LEN_FUNCS[c_type]
         # comment of unknown value/validity:  # BUT c_type must be >18!
@@ -93,7 +90,7 @@ class TestCoreTypes(unittest.TestCase):
         #     enumPairSpecGetter() takes 1 positional argument but 2 were given
         #ret_val = getter(msgReg, chan)
         #   else # chan is absent
-        #     fieldSpecGetter() missing 1 required  positional argument: 'chan'
+        #     field_spec_getter() missing 1 required positional argument: 'chan'
         # 2016-10-30 GOT FIRST FAILURE MODE
         ret_val = getter(msg_reg, chan)
 

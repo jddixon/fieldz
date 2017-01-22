@@ -4,30 +4,21 @@ import re
 #import sys
 
 from wireops.raw import(
-    # VARINT_TYPE,                            # PACKED_VARINT_TYPE,
-    #B32_TYPE, B64_TYPE,
     LEN_PLUS_TYPE,
-    #B128_TYPE, B160_TYPE, B256_TYPE,
 
     field_hdr,
     field_hdr_len,
-    # read_field_hdr,
-    hdr_field_nbr,  # hdr_type,
-    length_as_varint,  # write_varint_field,
+    hdr_field_nbr,
+    length_as_varint,
     read_raw_varint, write_raw_varint,
-    # read_raw_b32,           # write_b32_field,
-    # read_raw_b64,           # write_b64_field,
-    read_raw_len_plus,      # write_len_plus_field,
-    # read_raw_b128,          # write_b128_field,
-    # read_raw_b160,          # write_b160_field,
-    # read_raw_b256,          # write_b256_field,
-    # next_power_of_two,
-    # WireBuffer,
+    read_raw_len_plus,
 )
 from wireops.typed import T_GET_FUNCS, T_LEN_FUNCS, T_PUT_FUNCS
-
 from wireops.field_types import FieldTypes, FieldStr
+
+from fieldz import FieldzError
 import fieldz.core_types as C
+from fieldz.enum import Quants
 
 __all__ = [
 
@@ -72,7 +63,7 @@ Q_NAMES = ['', '?', '*', '+', ]
 
 def q_name(nnn):
     if nnn < 0 or nnn >= len(Q_NAMES):
-        raise ValueError('does not map to a valid quantifier: %s' % str(nnn))
+        raise FieldzError('does not map to a valid quantifier: %s' % str(nnn))
     return Q_NAMES[nnn]
 
 # base names, forming part of a larger pattern
@@ -154,16 +145,16 @@ class EnumSpec(object):
         validate_dotted_name(name)
         self._name = name
         if pairs is None:
-            raise ValueError('null list of enum pairs')
+            raise FieldzError('null list of enum pairs')
         if len(pairs) == 0:
-            raise ValueError('empty list of enum pairs')
+            raise FieldzError('empty list of enum pairs')
         self._pairs = []
         self._sym2pair = {}
         for pair in pairs:
             sym = pair.symbol
             val = pair.value
             if sym in self._sym2pair:
-                raise ValueError("already in EnumSpec: '%s'" % sym)
+                raise FieldzError("already in EnumSpec: '%s'" % sym)
             self._pairs.append(pair)
             self._sym2pair[sym] = pair
 
@@ -176,9 +167,9 @@ class EnumSpec(object):
         """pairs are 2-tuples, (symbol, value), where value is uInt16 """
         validate_dotted_name(name)
         if pairs is None:
-            raise ValueError('null list of enum pairs')
+            raise FieldzError('null list of enum pairs')
         if len(pairs) == 0:
-            raise ValueError('empty list of enum pairs')
+            raise FieldzError('empty list of enum pairs')
 
         _pairs = []
         for pair in pairs:
@@ -282,12 +273,12 @@ class FieldSpec(object):
     def __init__(self, reg, name, field_type, quantifier=Q_REQUIRED,
                  field_nbr=-1, default=None):
         if reg is None:
-            raise ValueError('reg must be specified')
+            raise FieldzError('reg must be specified')
         self._reg = reg
 
         # -- name ---------------------------------------------------
         if name is None or len(name) == 0:
-            raise ValueError('no field name specified')
+            raise FieldzError('no field name specified')
 
         # DEBUG
         # print("FieldSpec.__init__: name '%s' is of type %s" % (
@@ -298,13 +289,13 @@ class FieldSpec(object):
 
         # -- fType --------------------------------------------------
         if field_type < 0 or field_type > FieldTypes.MAX_NDX:
-            raise ValueError("invalid fType '%s'" % str(field_type))
+            raise FieldzError("invalid fType '%s'" % str(field_type))
         self._type = field_type
 
         # -- quantifier ---------------------------------------------
         # XXX BAD RANGE CHECK ??
         if quantifier < 0 or quantifier > Q_PLUS:
-            raise ValueError("invalid quantifier '%s'" % str(quantifier))
+            raise FieldzError("invalid quantifier '%s'" % str(quantifier))
         self._quantifier = quantifier
 
         # -- fieldNbr -----------------------------------------------
@@ -352,7 +343,7 @@ class FieldSpec(object):
     def field_nbr(self, value):
         varint_ = int(value)
         if varint_ < 0:
-            raise ValueError('field number may not be negative')
+            raise FieldzError('field number may not be negative')
         self._field_nbr = varint_
 
     @property
@@ -420,12 +411,12 @@ class SuperSpec(object):
 
     def __init__(self, name, reg, parent=None):
         if name is None:
-            raise ValueError('missing protocol name')
+            raise FieldzError('missing protocol name')
         validate_dotted_name(name)
         self._name = name
 
         if reg is None:
-            raise ValueError('proto reg must be specified')
+            raise FieldzError('proto reg must be specified')
         self._my_reg = reg
 
         self._parent = parent
@@ -634,7 +625,7 @@ class MsgSpec(SuperSpec):
     # XXX 2016-06-24 inverted order of last two paramaters
     def __init__(self, name, reg, parent):
         # if parent is None:
-        #    raise ValueError('parent must be specified')
+        #    raise FieldzError('parent must be specified')
         name = str(name)
         validate_simple_name(name)
         super(MsgSpec, self).__init__(name, reg, parent)
@@ -655,14 +646,14 @@ class MsgSpec(SuperSpec):
     def add_field(self, fld):
         f_name = fld.name
         if not isinstance(fld, FieldSpec):
-            raise ValueError("'%s' is not a FieldSpec!" % f_name)
+            raise FieldzError("'%s' is not a FieldSpec!" % f_name)
         if f_name in self.field_name_to_ndx:
             raise KeyError("field named %s already exists" % f_name)
         if fld.field_nbr < 0:
             self._last_field_nbr += 1
             fld.field_nbr = self._last_field_nbr
         elif fld.field_nbr <= self._last_field_nbr:
-            raise ValueError(
+            raise FieldzError(
                 "field number is %d not greater than last %d" % (
                     fld.field_nbr, self._last_field_nbr))
         else:
@@ -680,17 +671,17 @@ class MsgSpec(SuperSpec):
 
     def f_name(self, i):
         if self.__len__() == 0:
-            raise ValueError("INTERNAL ERROR: message has no fields")
+            raise FieldzError("INTERNAL ERROR: message has no fields")
         if i < 0 or i >= self.__len__():
-            raise ValueError('field number %d out of range' % i)
+            raise FieldzError('field number %d out of range' % i)
         return self._fields[i].name
 
     def field_type_name(self, i):
         # field numbers are zero-based
         if self.__len__() == 0:
-            raise ValueError("INTERNAL ERROR: message has no fields")
+            raise FieldzError("INTERNAL ERROR: message has no fields")
         if i < 0 or i >= self.__len__():
-            raise ValueError('field number %d out of range' % i)
+            raise FieldzError('field number %d out of range' % i)
         # XXX WRONG-ish: fType MUST be numeric; this should return
         # the string equivalent; HOWEVER, if the type is lMsg, we
         # want to return the message name ... XXX
@@ -699,9 +690,9 @@ class MsgSpec(SuperSpec):
     def field_type_ndx(self, i):
         # field numbers are zero-based
         if self.__len__() == 0:
-            raise ValueError("INTERNAL ERROR: message has no fields")
+            raise FieldzError("INTERNAL ERROR: message has no fields")
         if i < 0 or i >= self.__len__():
-            raise ValueError('field number %d out of range' % i)
+            raise FieldzError('field number %d out of range' % i)
 
         # XXX WRONG-ish: fType MUST be numeric; this should return
         # the string equivalent; HOWEVER, if the type is lMsg, we
@@ -711,9 +702,9 @@ class MsgSpec(SuperSpec):
     def field_default(self, i):
         # field numbers are zero-based
         if self.__len__() == 0:
-            raise ValueError("INTERNAL ERROR: message has no fields")
+            raise FieldzError("INTERNAL ERROR: message has no fields")
         if i < 0 or i >= self.__len__():
-            raise ValueError('field number %d out of range' % i)
+            raise FieldzError('field number %d out of range' % i)
         return self._fields[i].default
 
     # -- serialization ----------------------------------------------
@@ -933,7 +924,7 @@ C_GET_FUNCS[C_TYPES.ENUM_SPEC] = enum_spec_getter
 
 
 def field_spec_len(val, nnn):
-    # val is guaranteed to be a well-formed fieldSpec object
+    # val is guaranteed to be a well-formed field_spec object
     # fields are '_name', '_type', '_quantifier', '_fieldNbr', '_default'
 
     count = L_STRING_LEN(val.name, 0)      # field 0 contribution
@@ -947,7 +938,7 @@ def field_spec_len(val, nnn):
 
 
 def field_spec_prefixed_len(val, nnn):
-    # val is guaranteed to be a well-formed fieldSpec object
+    # val is guaranteed to be a well-formed field_spec object
     len_ = length_as_varint(field_hdr_len(nnn, LEN_PLUS_TYPE))
     count = field_spec_len(val, nnn)
     return len_ + length_as_varint(count) + count

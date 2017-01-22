@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-
 # test_solo.py
+
+""" test_solo is XXX A STUB. """
+
 import time
 import unittest
 
 from rnglib import SimpleRNG
-import fieldz.enum_spec as QQQ
 from fieldz.reg import NodeReg
 
 SOLO = """
@@ -18,8 +19,8 @@ message SoloMsg
 
 class TestSolo(unittest.TestCase):
     """
-    Send the definition of the msgSpec Solo down a channel followed
-    by a single instance of the msgSpec.
+    Send the definition of the msg_spec Solo down a channel followed
+    by a single instance of the msg_spec.
     """
 
     def setUp(self):
@@ -52,7 +53,7 @@ class TestSolo(unittest.TestCase):
         # Verify that this has automatically created a ProtoSpec instance
         # for org.xlattice.fieldz.test
 
-        # Write soloSpec, the SoloMsg msgSpec, to the buffer (this is a
+        # Write soloSpec, the SoloMsg msg_spec, to the buffer (this is a
         # class definition).
 
         # Create an instance of SoloMsg, set its val field to 97,
@@ -72,9 +73,9 @@ class TestSolo(unittest.TestCase):
 
         # Read the next message from the TFReader and deserialize it.
 
-        # Verify that this was a msgSpec for SoloMsg
+        # Verify that this was a msg_spec for SoloMsg
 
-        # Add the msgSpec to the reader's registry.
+        # Add the msg_spec to the reader's registry.
 
         # Read the next message from the TFReader and deserialize it.
 

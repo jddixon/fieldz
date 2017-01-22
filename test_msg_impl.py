@@ -118,13 +118,19 @@ class TestMsgImpl(unittest.TestCase):
         self.assertIsNotNone(file)
 
         # instance attributes -----------------------------
+        # pylint:disable=no-member
         self.assertEqual(field_spec.name, file.name)
+        # pylint:disable=no-member
         self.assertEqual(field_spec.field_type_ndx, file.field_type)
+        # pylint:disable=no-member
         self.assertEqual(field_spec.quantifier, file.quantifier)
+        # pylint:disable=no-member
         self.assertEqual(field_spec.field_nbr, file.field_nbr)
+        # pylint:disable=no-member
         self.assertIsNone(file.default)          # not an elegant test
 
         # instance attribute ------------------------------
+        # pylint:disable=no-member
         self.assertEqual(value, file.value)
 
         # with slots enabled, this is never seen ----------

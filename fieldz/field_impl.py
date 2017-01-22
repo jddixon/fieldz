@@ -6,6 +6,8 @@ Code for building Field classes.
 
 import sys   # for debugging
 
+from fieldz import FieldzError
+
 # from fieldz.msg_spec import FieldSpec
 
 # IS THIS UNSAFE???
@@ -85,12 +87,17 @@ class FieldImpl(object):
             return False
         if self is other:
             return True
+        # pylint doesn't handle metaclasses well
+        # pylint:disable=no-member
         if self._name != other.name:
             return False
+        # pylint:disable=no-member
         if self._field_type != other.field_type:
             return False
+        # pylint:disable=no-member
         if self._quantifier != other.quantifier:
             return False
+        # pylint:disable=no-member
         if self._field_nbr != other.field_nbr:
             return False
         # ignore defaults for now
@@ -100,7 +107,7 @@ class FieldImpl(object):
 class MetaField(type):
 
     @classmethod
-    def __prepare__(meta, name, bases, **kwargs):
+    def __prepare__(mcs, name, bases, **kwargs):
         """
         Allows us to pass arguments which become class attributes.
         """
@@ -129,9 +136,9 @@ class MetaField(type):
 
 def make_field_class(dotted_msg_name, field_spec):
     if dotted_msg_name is None:
-        raise ValueError('null message name')
+        raise FieldzError('null message name')
     if field_spec is None:
-        raise ValueError('null field spec')
+        raise FieldzError('null field spec')
     qual_name = '%s.%s' % (dotted_msg_name, field_spec.name)
     # DEBUG
     print('MAKE_FIELD_CLASS for %s' % qual_name)
@@ -139,7 +146,7 @@ def make_field_class(dotted_msg_name, field_spec):
     if qual_name in FIELD_CLS_BY_Q_NAME:
         return FIELD_CLS_BY_Q_NAME[qual_name]
 
-    # We want an attribute and a property for each fieldSpec attr.
+    # We want an attribute and a property for each field_spec attr.
     # This needs to be elaborated as appropriate to deal with the
     # 18 or so field types.
 
@@ -148,17 +155,17 @@ def make_field_class(dotted_msg_name, field_spec):
     _value = property(my_value_getter, my_value_setter)
 
 #   class M(metaclass=MetaField,
-#       _name=fieldSpec.name,
+#       _name=field_spec.name,
 #       # PROBLEM: THIS IS A SECOND USE OF THE ATTRIBUTE 'name'
 #       # name=property(myName),
 #       dummy2=0,
-#       _fType=fieldSpec.fTypeNdx,
+#       _fType=field_spec.fTypeNdx,
 #       fType=property(myFType),
-#       _quantifier=fieldSpec.quantifier,
+#       _quantifier=field_spec.quantifier,
 #       quantifier=_quantifier,
-#       _fieldNbr=fieldSpec.fieldNbr,
+#       _fieldNbr=field_spec.fieldNbr,
 #       fieldNbr=_field_nbr,
-#       _default=fieldSpec.default,
+#       _default=field_spec.default,
 #       default=property(myDefault),
 #       value=_value,
 #       dummy=0):

@@ -1,7 +1,7 @@
 # fieldz/fieldz/parser.py
 
 from wireops.field_types import FieldStr
-from fieldz import reg as R, msg_spec as M
+from fieldz import FieldzError, reg, msg_spec as M
 
 from fieldz.msg_spec import(
     Q_REQUIRED, Q_OPTIONAL, Q_PLUS, Q_STAR,
@@ -40,9 +40,9 @@ class StringSpecParser(object):
         # XXX should die if fd not open
         self._fd = fd
         if node_reg is None:
-            node_reg = R.NodeReg()
+            node_reg = reg.NodeReg()
         self._node_reg = node_reg
-        self._reg = R.ProtoReg(node_reg)
+        self._reg = reg.ProtoReg(node_reg)
 
     @property
     def node_reg(self):
@@ -97,7 +97,7 @@ class StringSpecParser(object):
 
     def expect_msg_spec(self, parent, line, indent='', step=' '):
         name = self.expect_msg_spec_name(line, indent, step)
-        msg_reg = R.MsgReg(parent.reg)
+        msg_reg = reg.MsgReg(parent.reg)
         print("expect_msg_spec: NAME = %s" % name)            # DEBUG
         this_msg = MsgSpec(name, msg_reg, parent)
 
@@ -321,7 +321,7 @@ class StringSpecParser(object):
             if words[2].startswith('@'):
                 field_nbr = int(words[2][1:])    # could use some validation
 #               if fieldNbr < nextFieldNbr:
-#                   raise ValueError('field number <= last field number')
+#                   raise FieldzError('field number <= last field number')
 
         # -- default ----------------------------
         # XXX STUB - NOT IMPLEMENTED YET
@@ -381,7 +381,7 @@ class StringMsgSpecParser(StringSpecParser):
         protocol = 'org.xlattice.fieldz.test'
 
         # these are dummies
-        self.parent_reg = R.ProtoReg(protocol, self._node_reg)
+        self.parent_reg = reg.ProtoReg(protocol, self._node_reg)
         self.parent = M.ProtoSpec(protocol, self.parent_reg)
 
     def parse(self):
@@ -389,7 +389,7 @@ class StringMsgSpecParser(StringSpecParser):
         print("entering StringMsgSpecParser.parse()")
         # END
         line = self.get_line()
-        msg_reg = R.MsgReg(self.parent_reg)
+        msg_reg = reg.MsgReg(self.parent_reg)
         line = self.expect_msg_spec(self.parent, line)
 
         # DEBUG
@@ -513,11 +513,11 @@ class WireMsgSpecWriter(object):
 
     def __init__(self, m_spec, wb):
         if m_spec is None:
-            raise ValueError('no MsgSpec identified')
+            raise FieldzError('no MsgSpec identified')
         self._msg_spec = m_spec
 
         if wb is None:
-            raise ValueError('no WireBuffer specified')
+            raise FieldzError('no WireBuffer specified')
         self._wb = wb
 
     def write(self):

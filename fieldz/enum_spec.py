@@ -1,6 +1,10 @@
 # fieldz/enumSpec.py
 
-""" Enumeration of quantifiers. """
+"""
+Enumeration of quantifiers.
+
+XXX This is replaced by Quants, a simple enumeration in fieldz/enum.py
+"""
 
 import sys
 
