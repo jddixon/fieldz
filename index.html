@@ -1,1 +1,224 @@
-dummy index
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>fieldz</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="css/main.css" />
+  <link rel="stylesheet" type="text/css" href="css/normalize.css" />
+  <link rel="stylesheet" type="text/css" href="css/ghp.css" />
+</head>
+<body>
+<div class="content">
+<h1>
+<a id="user-content-fieldz" class="anchor" href="#fieldz" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>fieldz</h1>
+
+<p><strong>fieldz</strong> is a Python3 implementation of a protocol meant to be
+generally compatible with Google's
+<a href="https://developers.google.com/protocol-buffers">Protocol Buffers</a>.</p>
+
+<h2>
+<a id="user-content-field-types" class="anchor" href="#field-types" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Field Types</h2>
+
+<p>There are currently 20 defined field types.  These fall into several
+categories distinguished by the first one or two characters of the
+type name:</p>
+
+<ul>
+<li>
+<code>f</code> for fixed-length</li>
+<li>
+<code>fs</code> for fixed-length, signed</li>
+<li>
+<code>fu</code> for fixed-length, unsigned</li>
+<li>
+<code>v</code> for variable-length</li>
+<li>
+<code>vs</code> for variable-length, signed</li>
+<li>
+<code>vu</code> for variable-length, unsigned</li>
+<li>
+<code>l</code> for length-encoded, meaning that the field begins with its
+length encoded as a variable length integer, a <strong>varint</strong>
+</li>
+</ul>
+
+<p>Varints are used to efficiently store integer values in the smallest
+possible number of bytes.</p>
+
+<p>The actual field types are</p>
+
+<ul>
+<li>
+<code>vBool</code>, a boolean</li>
+<li>
+<code>vEnum</code>, an enum</li>
+<li>
+<code>vInt32</code>, a 32-bit integer</li>
+<li>
+<code>vInt64</code>, a 64-bit integer</li>
+<li>
+<code>vuInt32</code>, a 32-bit unsigned integer</li>
+<li>
+<code>vsInt32</code>, a 32-bit signed integer</li>
+<li>
+<code>vuInt64</code>, a 64-bit unsigned integer</li>
+<li>
+<code>vsInt64</code>, a 64-bit signed integer</li>
+<li>
+<code>fuInt32</code>, an unsigned 32-bit floating point value</li>
+<li>
+<code>fsInt32</code>, a signed 32-bit floating point value</li>
+<li>
+<code>fFloat</code>, a floating point number, a 32-bit value</li>
+<li>
+<code>fuInt64</code>, a fixed length unsigned integer</li>
+<li>
+<code>fsInt64</code>, a fixed lenth signed integer</li>
+<li>
+<code>fDouble</code>, a fixed length double, a 64-bit value</li>
+<li>
+<code>lString</code>, a varint L followed by a UTF-encoded string of that length</li>
+<li>
+<code>lBytes</code>, a varint L followed by L bytes</li>
+<li>
+<code>lMsg</code>, a varint L followed by a message declaration of that length</li>
+<li>
+<code>fBytes16</code>, a field of 16 bytes</li>
+<li>
+<code>fBytes20</code>, a string of 20 bytes, such as an SHA1 hash</li>
+<li>
+<code>fBytes32</code>, a string of 32 bytes, such as an SHA256 hash</li>
+</ul>
+
+<h2>
+<a id="user-content-acceptable-names" class="anchor" href="#acceptable-names" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Acceptable Names</h2>
+
+<p>Acceptable field, message, and enum names consist of an alphabetic character
+(which may be an underscore, '_')
+followed by zero or more alphabetic characters, underscores, or digits.</p>
+
+<p>So the following are acceptable names:</p>
+
+<ul>
+<li><code>_abc123</code></li>
+</ul>
+
+<p>but the following are not acceptable:</p>
+
+<ul>
+<li>
+<code>5_abc123</code> (begins with a digit)</li>
+<li>
+<code>$abc123</code>  (contains a dollar sign)</li>
+<li>
+<code>a.b</code>      (contains a dot)</li>
+</ul>
+
+<h2>
+<a id="user-content-acceptable-protocol-names" class="anchor" href="#acceptable-protocol-names" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Acceptable Protocol Names</h2>
+
+<p>Acceptable protocol names are like field and message names except that
+they may be <strong>dotted</strong>.  That is, an acceptable protocol name consists of
+one or more otherwise acceptable names; where there is more than one such
+component name, the component names are separated by single dots ('.').
+So any
+name which is an acceptable message or field name is also an acceptable
+protocol name.</p>
+
+<p>Examples of acceptable protocol names:</p>
+
+<ul>
+<li><code>a</code></li>
+<li><code>a_b.cd.ef</code></li>
+</ul>
+
+<p>Invalid protocol names:</p>
+
+<ul>
+<li>
+<code>a..b</code> (sequence of more than one dot)</li>
+<li>
+<code>.ab</code>  (leading dot)</li>
+<li>
+<code>ab.</code>  (trailing dot)</li>
+</ul>
+
+<h2>
+<a id="user-content-message-declarations" class="anchor" href="#message-declarations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Message Declarations</h2>
+
+<p>A message declaration describes the possibly recursive structure of a
+message to be passed over the wire or stored compressed on disk.</p>
+
+<p>A typical message looks like:</p>
+
+<pre><code>message logEntry {
+     timestamp  fuInt32
+     nodeID     fBytes20
+     key        fBytes20
+     length     vuInt32
+     by         lString
+     path       lString
+}
+</code></pre>
+
+<p>Message names consist of an alphabetic character (which may be an underscore,
+'_')
+followed by zero or more alphabetic characters, underscores, or digits.  The
+name must be followed in the declaration line by a colon (':').</p>
+
+<p>Field declarations are usually indented below the <code>message</code>
+line.</p>
+
+<p>This particular message is called <code>logEntry</code>.  The message has six fields
+but no constituent messages enums</p>
+
+<h2>
+<a id="user-content-protocol-declaration" class="anchor" href="#protocol-declaration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Protocol Declaration</h2>
+
+<p>A protocol declaration consists of a header line like</p>
+
+<pre><code>protocol org.xlattice.zoggery
+</code></pre>
+
+<p>followed by zero or more enum and/or message declarations.</p>
+
+<h2>
+<a id="user-content-implementation-notes" class="anchor" href="#implementation-notes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Implementation Notes</h2>
+
+<ul>
+<li> <a href="https://jddixon.github.io/fieldz//api.html">api</a>
+</li>
+<li> <a href="https://jddixon.github.io/fieldz//channels.html">channels</a>
+</li>
+<li> <a href="https://jddixon.github.io/fieldz//goals.html">goals</a>
+</li>
+</ul>
+
+<h2>
+<a id="user-content-project-status" class="anchor" href="#project-status" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Project Status</h2>
+
+<p>Pre-alpha.  Code and unit tests exist, but some tests fail.</p>
+
+<h2>Licensing</h2>
+<p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />The material on this github.io website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</p>
+<p>Project software is licensed under an MIT license.
+Follow the SOFTWARE LICENSE link below for more information on project software licensing.</p>  <div class="f">
+    <hr />
+    <div class="license">
+      <p><a href="LICENSE-MIT.html">SOFTWARE LICENSE</a></p>
+    </div>
+    <div class="project">
+      github <a href="https://github.com/jddixon/fieldz">      <img src="img/GitHub-Mark-32px.png" 
+        alt="link to project"  
+        style="display: inline-block; margin-left: 0 auto; margin-right: 0 auto">
+       </a> project
+    </div>
+    <div class="logo" >
+      <a href="https://jddixon.github.io/xlattice/">
+      <img src="img/xlattice-2014.jpg" alt="the XLattice Project" style="float: right;" >
+      </a>
+    </div>
+  </div>
+</div>
+</body>
+</html>
