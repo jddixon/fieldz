@@ -86,7 +86,7 @@ class TestMsgSpec(unittest.TestCase):
         self.assertEqual(7, enum.value('ghi'))
 
     # FOO
-    def do_field_test(self, name, field_type, quantifier=M.Q_REQUIRED,
+    def do_field_test(self, name, field_type, quantifier=Quants.REQUIRED,
                       field_nbr=0, default=None):
         node_reg, proto_reg, msg_reg = self.make_registries(
             'org.xlattice.fieldz.test.field_spec')
@@ -114,17 +114,21 @@ class TestMsgSpec(unittest.TestCase):
 
     def test_quantifiers(self):
         q_name = M.q_name
-        self.assertEqual('', q_name(M.Q_REQUIRED))
-        self.assertEqual('?', q_name(M.Q_OPTIONAL))
-        self.assertEqual('*', q_name(M.Q_STAR))
-        self.assertEqual('+', q_name(M.Q_PLUS))
+        self.assertEqual('', q_name(Quants.REQUIRED))
+        self.assertEqual('?', q_name(Quants.OPTIONAL))
+        self.assertEqual('*', q_name(Quants.STAR))
+        self.assertEqual('+', q_name(Quants.PLUS))
 
     def test_field_spec(self):
         # default is not implemented yet
-        self.do_field_test('foo', FieldTypes.V_UINT32, M.Q_REQUIRED, 9)
-        self.do_field_test('bar', FieldTypes.V_SINT32, M.Q_STAR, 17)
-        self.do_field_test('node_id', FieldTypes.F_BYTES20, M.Q_OPTIONAL, 92)
-        self.do_field_test('tix', FieldTypes.V_BOOL, M.Q_PLUS, 147)
+        self.do_field_test('foo', FieldTypes.V_UINT32, Quants.REQUIRED, 9)
+        self.do_field_test('bar', FieldTypes.V_SINT32, Quants.STAR, 17)
+        self.do_field_test(
+            'node_id',
+            FieldTypes.F_BYTES20,
+            Quants.OPTIONAL,
+            92)
+        self.do_field_test('tix', FieldTypes.V_BOOL, Quants.PLUS, 147)
 
     # GEEP
 
@@ -179,17 +183,32 @@ class TestMsgSpec(unittest.TestCase):
                 msg_reg,
                 'timestamp',
                 FieldTypes.F_UINT32,
-                M.Q_REQUIRED,
+                Quants.REQUIRED,
                 0),
             M.FieldSpec(
                 msg_reg,
                 'node_id',
                 FieldTypes.F_BYTES20,
-                M.Q_REQUIRED,
+                Quants.REQUIRED,
                 1),
-            M.FieldSpec(msg_reg, 'key', FieldTypes.F_BYTES20, M.Q_REQUIRED, 2),
-            M.FieldSpec(msg_reg, 'by', FieldTypes.L_STRING, M.Q_REQUIRED, 3),
-            M.FieldSpec(msg_reg, 'path', FieldTypes.L_STRING, M.Q_REQUIRED, 4),
+            M.FieldSpec(
+                msg_reg,
+                'key',
+                FieldTypes.F_BYTES20,
+                Quants.REQUIRED,
+                2),
+            M.FieldSpec(
+                msg_reg,
+                'by',
+                FieldTypes.L_STRING,
+                Quants.REQUIRED,
+                3),
+            M.FieldSpec(
+                msg_reg,
+                'path',
+                FieldTypes.L_STRING,
+                Quants.REQUIRED,
+                4),
         ]
         name = 'logEntry'
         msg_spec = M.MsgSpec(name, protocol, msg_reg)

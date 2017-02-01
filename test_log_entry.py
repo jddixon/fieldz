@@ -5,6 +5,7 @@ import time
 import unittest
 
 from rnglib import SimpleRNG
+from fieldz.enum import Quants
 import fieldz.msg_spec as M
 import fieldz.reg as R
 from fieldz.tfbuffer import TFReader, TFWriter
@@ -24,12 +25,12 @@ MSG_REG = R.MsgReg(PROTO_REG)
 NAME = 'logEntry'
 ENUM = M.EnumSpec.create('foo', [('not', 0), ('being', 1), ('used', 2), ])
 FIELDS = [
-    M.FieldSpec(MSG_REG, 'timestamp', FieldTypes.F_UINT32, M.Q_REQUIRED, 0),
-    M.FieldSpec(MSG_REG, 'node_id', FieldTypes.F_BYTES20, M.Q_REQUIRED, 1),
-    M.FieldSpec(MSG_REG, 'key', FieldTypes.F_BYTES20, M.Q_REQUIRED, 2),
-    M.FieldSpec(MSG_REG, 'length', FieldTypes.V_UINT32, M.Q_REQUIRED, 3),
-    M.FieldSpec(MSG_REG, 'by_', FieldTypes.L_STRING, M.Q_REQUIRED, 4),
-    M.FieldSpec(MSG_REG, 'path', FieldTypes.L_STRING, M.Q_REQUIRED, 5),
+    M.FieldSpec(MSG_REG, 'timestamp', FieldTypes.F_UINT32, Quants.REQUIRED, 0),
+    M.FieldSpec(MSG_REG, 'node_id', FieldTypes.F_BYTES20, Quants.REQUIRED, 1),
+    M.FieldSpec(MSG_REG, 'key', FieldTypes.F_BYTES20, Quants.REQUIRED, 2),
+    M.FieldSpec(MSG_REG, 'length', FieldTypes.V_UINT32, Quants.REQUIRED, 3),
+    M.FieldSpec(MSG_REG, 'by_', FieldTypes.L_STRING, Quants.REQUIRED, 4),
+    M.FieldSpec(MSG_REG, 'path', FieldTypes.L_STRING, Quants.REQUIRED, 5),
 ]
 LE_MSG_SPEC = M.MsgSpec(NAME, PROTO_REG, PARENT)
 for file in FIELDS:

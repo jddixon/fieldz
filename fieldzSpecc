@@ -8,7 +8,8 @@ import sys
 import time
 from argparse import ArgumentParser
 
-import u
+from optionz import dump_options
+from xlattice import u
 import upax
 from fieldz import __version__, __version_date__
 
@@ -157,16 +158,7 @@ def main():
         print()                               # there's a comma up there
 
     if args.just_show or args.verbose:
-        print('in_dir           = ' + str(args.in_dir))
-        print('just_show        = ' + str(args.just_show))
-        print('log_dir          = ' + str(args.log_dir))
-        print('no_changes       = ' + str(args.no_changes))
-        print('show_timestamp   = ' + str(args.show_timestamp))
-        print('show_version     = ' + str(args.show_version))
-        print('testing          = ' + str(args.testing))
-        print('timestamp        = ' + str(args.timestamp))
-        print('u_dir            = ' + str(args.u_dir))
-        print('verbose          = ' + str(args.verbose))
+        print(dump_options(args))
 
     if not args.just_show:
         lock = u.ULock(args.u_dir)

@@ -8,6 +8,7 @@ import unittest
 from io import StringIO
 
 from rnglib import SimpleRNG
+from fieldz.enum import Quants
 from fieldz.ring_data_proto import RING_DATA_PROTO_SPEC
 
 from fieldz.parser import StringProtoSpecParser
@@ -166,7 +167,7 @@ class TestRingDataProto(unittest.TestCase):
         field = msg_spec[0]
         self.assertEqual(field._name, 'hosts')
         self.assertEqual(field.field_type_name, 'hostInfo')
-        self.assertEqual(field.quantifier, M.Q_PLUS)
+        self.assertEqual(field.quantifier, Quants.PLUS)
 
         # INNER MESSAGE SPEC ----------------------------------------
         msg_spec = str_obj_model.msgs[0].msgs[0]

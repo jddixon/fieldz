@@ -3,34 +3,22 @@
 import re
 #import sys
 
+from wireops.enum import PrimTypes          # for LEN_PLUS
 from wireops.raw import(
-    LEN_PLUS_TYPE,
-
-    field_hdr,
+    field_hdr_val,
     field_hdr_len,
     hdr_field_nbr,
     length_as_varint,
     read_raw_varint, write_raw_varint,
     read_raw_len_plus,
 )
-from wireops.typed import T_GET_FUNCS, T_LEN_FUNCS, T_PUT_FUNCS
 from wireops.field_types import FieldTypes, FieldStr
+from wireops.typed import T_GET_FUNCS, T_LEN_FUNCS, T_PUT_FUNCS
 
 from fieldz import FieldzError
-import fieldz.core_types as C
-from fieldz.enum import Quants
+from fieldz.enum import Quants, CoreTypes
 
 __all__ = [
-
-    # XXX CONSIDER THESE DEPRECATED ---------------------------------
-    # constants, so to speak: quantifiers
-    'Q_REQUIRED',   # no quantifier, so one and only one such field
-    'Q_OPTIONAL',   # ?: either zero or one instance of the field
-    'Q_STAR',       # *: zero or more instances of the field allowed
-    'Q_PLUS',       # +: one or more instances of the field
-    'Q_NAMES',      # list of the four above
-    'q_name',
-    # END DEPRECATED ------------------------------------------------
 
     # methods
     'validate_simple_name', 'validate_dotted_name',
@@ -52,19 +40,6 @@ __all__ = [
     'MsgSpec', 'ProtoSpec',
     'SeqSpec',
 ]
-
-Q_REQUIRED = 0
-Q_OPTIONAL = 1
-Q_STAR = 2
-Q_PLUS = 3
-
-Q_NAMES = ['', '?', '*', '+', ]
-
-
-def q_name(nnn):
-    if nnn < 0 or nnn >= len(Q_NAMES):
-        raise FieldzError('does not map to a valid quantifier: %s' % str(nnn))
-    return Q_NAMES[nnn]
 
 # base names, forming part of a larger pattern
 _VALID_NAME_PAT = "[a-zA-Z_][a-zA-Z_0-9]*"
@@ -270,7 +245,7 @@ class FieldSpec(object):
 
         return True
 
-    def __init__(self, reg, name, field_type, quantifier=Q_REQUIRED,
+    def __init__(self, reg, name, field_type, quantifier=Quants.REQUIRED,
                  field_nbr=-1, default=None):
         if reg is None:
             raise FieldzError('reg must be specified')
@@ -293,9 +268,7 @@ class FieldSpec(object):
         self._type = field_type
 
         # -- quantifier ---------------------------------------------
-        # XXX BAD RANGE CHECK ??
-        if quantifier < 0 or quantifier > Q_PLUS:
-            raise FieldzError("invalid quantifier '%s'" % str(quantifier))
+        # XXX RANGE CHECK ??
         self._quantifier = quantifier
 
         # -- fieldNbr -----------------------------------------------
@@ -333,7 +306,6 @@ class FieldSpec(object):
     @property
     def quantifier(self):
         return self._quantifier
-    #def quantifier(self):   return Q_NAMES[self._quantifier]
 
     @property
     def field_nbr(self):
@@ -355,8 +327,8 @@ class FieldSpec(object):
         string.append('%s%s ' % (indent, self._name))
 
         t_name = self.field_type_name
-        if self._quantifier != Q_REQUIRED:
-            t_name += q_name(self._quantifier)
+        if self._quantifier != Quants.REQUIRED:
+            t_name += self._quantifier.sym
         string.append('%s ' % t_name)               # at least one space
 
         if self._field_nbr is not None:
@@ -756,12 +728,12 @@ class MsgSpec(SuperSpec):
 def not_impl(*arg):
     raise NotImplementedError
 
-C_TYPES = C.CoreTypes()
+NBR_CORE_TYPES = len(CoreTypes)
 
-C_PUT_FUNCS = [not_impl] * (C_TYPES.max_ndx + 1)
-C_GET_FUNCS = [not_impl] * (C_TYPES.max_ndx + 1)
-C_LEN_FUNCS = [not_impl] * (C_TYPES.max_ndx + 1)
-C_P_LEN_FUNCS = [not_impl] * (C_TYPES.max_ndx + 1)
+C_PUT_FUNCS = [not_impl] * NBR_CORE_TYPES
+C_GET_FUNCS = [not_impl] * NBR_CORE_TYPES
+C_LEN_FUNCS = [not_impl] * NBR_CORE_TYPES
+C_P_LEN_FUNCS = [not_impl] * NBR_CORE_TYPES
 
 # PUTTERS, GETTERS, LEN FUNCS ---------------------------------------
 
@@ -795,7 +767,7 @@ def enum_pair_spec_prefixed_len(val, nnn):
     So it is the total length of the header plus the length of the encoded
     byte count plus the length of the encoded enumPairSpec.
     """
-    len_ = length_as_varint(field_hdr_len(nnn, LEN_PLUS_TYPE))
+    len_ = length_as_varint(field_hdr_len(nnn, PrimTypes.LEN_PLUS))
     byte_count = enum_pair_spec_len(val, nnn)
     return len_ + length_as_varint(byte_count) + byte_count
 
@@ -804,7 +776,7 @@ def enum_pair_spec_prefixed_len(val, nnn):
 
 def enum_pair_spec_putter(chan, val, nnn):
     # write the field header
-    write_raw_varint(chan, field_hdr(nnn, LEN_PLUS_TYPE))
+    write_raw_varint(chan, field_hdr_val(nnn, PrimTypes.LEN_PLUS))
 
     # write the byte count
     count = enum_pair_spec_len(val, nnn)
@@ -841,10 +813,10 @@ def enum_pair_spec_getter(dummy_reg, chan):
     obj = EnumPairSpec(sym, val)
     return obj
 
-C_LEN_FUNCS[C_TYPES.ENUM_PAIR_SPEC] = enum_pair_spec_len
-C_P_LEN_FUNCS[C_TYPES.ENUM_PAIR_SPEC] = enum_pair_spec_prefixed_len
-C_PUT_FUNCS[C_TYPES.ENUM_PAIR_SPEC] = enum_pair_spec_putter
-C_GET_FUNCS[C_TYPES.ENUM_PAIR_SPEC] = enum_pair_spec_getter
+C_LEN_FUNCS[CoreTypes.ENUM_PAIR_SPEC] = enum_pair_spec_len
+C_P_LEN_FUNCS[CoreTypes.ENUM_PAIR_SPEC] = enum_pair_spec_prefixed_len
+C_PUT_FUNCS[CoreTypes.ENUM_PAIR_SPEC] = enum_pair_spec_putter
+C_GET_FUNCS[CoreTypes.ENUM_PAIR_SPEC] = enum_pair_spec_getter
 
 # ---------------------------------------------------------
 
@@ -864,14 +836,14 @@ def enum_spec_prefixed_len(val, nnn):
 
     # we are going to write the header, then a byte count, then the enum
     # name, then one or more EnumPairSpecs
-    len_ = length_as_varint(field_hdr_len(nnn, LEN_PLUS_TYPE))
+    len_ = length_as_varint(field_hdr_len(nnn, PrimTypes.LEN_PLUS))
     count = enum_spec_len(val, nnn)
     return len_ + length_as_varint(count) + count
 
 
 def enum_spec_putter(chan, val, nnn):
     # write the field header
-    write_raw_varint(chan, field_hdr(nnn, LEN_PLUS_TYPE))
+    write_raw_varint(chan, field_hdr_val(nnn, PrimTypes.LEN_PLUS))
 #   print "AFTER WRITING HEADER pos = %u" %  pos
 
     # write the byte count
@@ -915,10 +887,10 @@ def enum_spec_getter(dummy_reg, chan):
     val = EnumSpec(name, pairs)
     return val
 
-C_LEN_FUNCS[C_TYPES.ENUM_SPEC] = enum_spec_len
-C_P_LEN_FUNCS[C_TYPES.ENUM_SPEC] = enum_spec_prefixed_len
-C_PUT_FUNCS[C_TYPES.ENUM_SPEC] = enum_spec_putter
-C_GET_FUNCS[C_TYPES.ENUM_SPEC] = enum_spec_getter
+C_LEN_FUNCS[CoreTypes.ENUM_SPEC] = enum_spec_len
+C_P_LEN_FUNCS[CoreTypes.ENUM_SPEC] = enum_spec_prefixed_len
+C_PUT_FUNCS[CoreTypes.ENUM_SPEC] = enum_spec_putter
+C_GET_FUNCS[CoreTypes.ENUM_SPEC] = enum_spec_getter
 
 # ---------------------------------------------------------
 
@@ -939,7 +911,7 @@ def field_spec_len(val, nnn):
 
 def field_spec_prefixed_len(val, nnn):
     # val is guaranteed to be a well-formed field_spec object
-    len_ = length_as_varint(field_hdr_len(nnn, LEN_PLUS_TYPE))
+    len_ = length_as_varint(field_hdr_len(nnn, PrimTypes.LEN_PLUS))
     count = field_spec_len(val, nnn)
     return len_ + length_as_varint(count) + count
 
@@ -948,7 +920,7 @@ def field_spec_putter(chan, val, nnn):
     # fields are '_name', '_type', '_quantifier', '_fieldNbr', '_default'
 
     # write the field header
-    write_raw_varint(chan, field_hdr(nnn, LEN_PLUS_TYPE))
+    write_raw_varint(chan, field_hdr_val(nnn, PrimTypes.LEN_PLUS))
 #   print "FIELD SPEC: AFTER WRITING HEADER pos = %u" %  pos
 
     # write the byte count
@@ -1007,10 +979,10 @@ def field_spec_getter(msg_reg, chan):
 
     return val
 
-C_LEN_FUNCS[C_TYPES.FIELD_SPEC] = field_spec_len
-C_P_LEN_FUNCS[C_TYPES.FIELD_SPEC] = field_spec_prefixed_len
-C_PUT_FUNCS[C_TYPES.FIELD_SPEC] = field_spec_putter
-C_GET_FUNCS[C_TYPES.FIELD_SPEC] = field_spec_getter
+C_LEN_FUNCS[CoreTypes.FIELD_SPEC] = field_spec_len
+C_P_LEN_FUNCS[CoreTypes.FIELD_SPEC] = field_spec_prefixed_len
+C_PUT_FUNCS[CoreTypes.FIELD_SPEC] = field_spec_putter
+C_GET_FUNCS[CoreTypes.FIELD_SPEC] = field_spec_getter
 
 # ---------------------------------------------------------
 # XXX use of 'n' parameter ?
@@ -1032,7 +1004,7 @@ def msg_spec_len(val, nnn):
 
 def msg_spec_prefixed_len(val, nnn):
     # val is guaranteed to be a well-formed msgSpec object
-    len_ = length_as_varint(field_hdr_len(nnn, LEN_PLUS_TYPE))
+    len_ = length_as_varint(field_hdr_len(nnn, PrimTypes.LEN_PLUS))
     count = msg_spec_len(val, nnn)
     return len_ + length_as_varint(count) + count
 
@@ -1041,7 +1013,7 @@ def msg_spec_putter(chan, val, nnn):
     # fields are  protocol, name, fields, enum=None
 
     # write the field header
-    write_raw_varint(chan, field_hdr(nnn, LEN_PLUS_TYPE))
+    write_raw_varint(chan, field_hdr_val(nnn, PrimTypes.LEN_PLUS))
     print("MSG SPEC: AFTER WRITING HEADER pos = %u" % chan.position)
 
     # write the byte count
@@ -1104,10 +1076,10 @@ def msg_spec_getter(msg_reg, chan):
     val = MsgSpec(name, msg_reg, dummy_parent)
     return val
 
-C_LEN_FUNCS[C_TYPES.MSG_SPEC] = msg_spec_len
-C_P_LEN_FUNCS[C_TYPES.MSG_SPEC] = msg_spec_prefixed_len
-C_PUT_FUNCS[C_TYPES.MSG_SPEC] = msg_spec_putter
-C_GET_FUNCS[C_TYPES.MSG_SPEC] = msg_spec_getter
+C_LEN_FUNCS[CoreTypes.MSG_SPEC] = msg_spec_len
+C_P_LEN_FUNCS[CoreTypes.MSG_SPEC] = msg_spec_prefixed_len
+C_PUT_FUNCS[CoreTypes.MSG_SPEC] = msg_spec_putter
+C_GET_FUNCS[CoreTypes.MSG_SPEC] = msg_spec_getter
 
 # ---------------------------------------------------------
 
@@ -1131,10 +1103,10 @@ def seq_spec_getter(dummy_reg, chan):
     # STUB
     return val
 
-C_LEN_FUNCS[C_TYPES.SEQ_SPEC] = seq_spec_len
-C_P_LEN_FUNCS[C_TYPES.SEQ_SPEC] = seq_spec_prefixed_len
-C_PUT_FUNCS[C_TYPES.SEQ_SPEC] = seq_spec_putter
-C_GET_FUNCS[C_TYPES.SEQ_SPEC] = seq_spec_getter
+C_LEN_FUNCS[CoreTypes.SEQ_SPEC] = seq_spec_len
+C_P_LEN_FUNCS[CoreTypes.SEQ_SPEC] = seq_spec_prefixed_len
+C_PUT_FUNCS[CoreTypes.SEQ_SPEC] = seq_spec_putter
+C_GET_FUNCS[CoreTypes.SEQ_SPEC] = seq_spec_getter
 
 # ---------------------------------------------------------
 
@@ -1158,7 +1130,7 @@ def proto_spec_getter(chan):
     # STUB
     return val              # END DISPATCH TABLES
 
-C_LEN_FUNCS[C_TYPES.PROTO_SPEC] = proto_spec_len
-C_P_LEN_FUNCS[C_TYPES.PROTO_SPEC] = proto_spec_prefixed_len
-C_PUT_FUNCS[C_TYPES.PROTO_SPEC] = proto_spec_putter
-C_GET_FUNCS[C_TYPES.PROTO_SPEC] = proto_spec_getter
+C_LEN_FUNCS[CoreTypes.PROTO_SPEC] = proto_spec_len
+C_P_LEN_FUNCS[CoreTypes.PROTO_SPEC] = proto_spec_prefixed_len
+C_PUT_FUNCS[CoreTypes.PROTO_SPEC] = proto_spec_putter
+C_GET_FUNCS[CoreTypes.PROTO_SPEC] = proto_spec_getter

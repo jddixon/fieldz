@@ -6,6 +6,7 @@ import time
 import unittest
 from io import StringIO
 
+from fieldz.enum import Quants
 from rnglib import SimpleRNG
 
 from fieldz import reg
@@ -17,8 +18,9 @@ from fieldz.field_impl import make_field_class
 #from fieldz.msg_impl import makeMsgClass, makeFieldClass, MsgImpl
 #from wireops.chan import Channel
 #import wireops.typed as T
-from wireops.raw import write_field_hdr, write_raw_varint, LEN_PLUS_TYPE
-from wireops.field_types import FieldTypes
+
+from wireops.enum import PrimTypes, FieldTypes
+from wireops.raw import write_field_hdr, write_raw_varint
 
 PROTOCOL_UNDER_TEST = 'org.xlattice.fieldz.test.field_spec'
 MSG_UNDER_TEST = 'myTestMsg'
@@ -176,7 +178,7 @@ class TestFieldImpl(unittest.TestCase):
             if tstamp == FieldTypes.L_MSG:
                 continue
 
-            # default quantifier is Q_REQ_, default is None
+            # default quantifier is Quants.REQUIRED, default is None
 
             field_name = 'field%d' % tstamp
             field_spec = M.FieldSpec(
@@ -188,7 +190,7 @@ class TestFieldImpl(unittest.TestCase):
 
     # TEST FIELD SPEC -----------------------------------------------
 
-    def do_field_spec_test(self, name, field_type, quantifier=M.Q_REQUIRED,
+    def do_field_spec_test(self, name, field_type, quantifier=Quants.REQUIRED,
                            field_nbr=0, default=None):
 
         node_reg, proto_reg, msg_reg = self.make_registries(
@@ -211,27 +213,20 @@ class TestFieldImpl(unittest.TestCase):
             self.assertEqual(default, file.default)
 
         expected_repr = "%s %s%s @%d \n" % (
-            name, file.field_type_name, M.q_name(quantifier), field_nbr)
+            name, file.field_type_name, quantifier.sym, field_nbr)
         # DEFAULTS NOT SUPPORTED
         self.assertEqual(expected_repr, file.__repr__())
 
-    def test_quantifiers(self):
-        q_name = M.q_name
-        self.assertEqual('', q_name(M.Q_REQUIRED))
-        self.assertEqual('?', q_name(M.Q_OPTIONAL))
-        self.assertEqual('*', q_name(M.Q_STAR))
-        self.assertEqual('+', q_name(M.Q_PLUS))
-
     def test_field_spec(self):
         # default is not implemented yet
-        self.do_field_spec_test('foo', FieldTypes.V_UINT32, M.Q_REQUIRED, 9)
-        self.do_field_spec_test('bar', FieldTypes.V_SINT32, M.Q_STAR, 17)
+        self.do_field_spec_test('foo', FieldTypes.V_UINT32, Quants.REQUIRED, 9)
+        self.do_field_spec_test('bar', FieldTypes.V_SINT32, Quants.STAR, 17)
         self.do_field_spec_test(
             'node_id',
             FieldTypes.F_BYTES20,
-            M.Q_OPTIONAL,
+            Quants.OPTIONAL,
             92)
-        self.do_field_spec_test('tix', FieldTypes.V_BOOL, M.Q_PLUS, 147)
+        self.do_field_spec_test('tix', FieldTypes.V_BOOL, Quants.PLUS, 147)
 
 
 if __name__ == '__main__':

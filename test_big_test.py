@@ -7,7 +7,6 @@ from io import StringIO
 
 from rnglib import SimpleRNG
 from fieldz import reg
-from fieldz.msg_spec import Q_REQUIRED  # , Q_OPTIONAL, Q_PLUS, Q_STAR
 from fieldz.parser import StringProtoSpecParser
 
 from big_test import BIG_TEST

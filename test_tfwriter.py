@@ -6,12 +6,12 @@ import unittest
 
 from rnglib import SimpleRNG
 
-from fieldz import reg
+from wireops.enum import FieldTypes
 
-from fieldz.msg_spec import(FieldSpec, MsgSpec, ProtoSpec,
-                            Q_REQUIRED)  # , Q_OPTIONAL, Q_PLUS, Q_STAR)
+from fieldz import reg
+from fieldz.enum import Quants
+from fieldz.msg_spec import FieldSpec, MsgSpec, ProtoSpec
 from fieldz.tfbuffer import TFBuffer, TFReader, TFWriter
-from wireops.field_types import FieldStr
 
 # scratch variables
 B128 = bytearray(16)
@@ -30,29 +30,79 @@ PARENT = ProtoSpec(PROTOCOL, PROTO_REG)
 
 # XXX MISSING reg; BUT DO WE REALLY WANT FIELD NAMES IN THE REGISTRY?
 
-NDX = FieldStr().ndx
-
 FIELDS = [
 
-    FieldSpec(MSG_REG, 'i32', NDX('vuint32'), Q_REQUIRED, 0),
-    FieldSpec(MSG_REG, 'i32bis', NDX('vuint32'), Q_REQUIRED, 1),
-    FieldSpec(MSG_REG, 'i64', NDX('vuint64'), Q_REQUIRED, 2),
-    FieldSpec(MSG_REG, 'si32', NDX('vsint32'), Q_REQUIRED, 3),
-    FieldSpec(MSG_REG, 'si32bis', NDX('vsint32'), Q_REQUIRED, 4),
-    FieldSpec(MSG_REG, 'si64', NDX('vsint64'), Q_REQUIRED, 5),
-    FieldSpec(MSG_REG, 'vuint32', NDX('vuint32'), Q_REQUIRED, 6),
-    FieldSpec(MSG_REG, 'vuint64', NDX('vuint64'), Q_REQUIRED, 7),
+    FieldSpec(MSG_REG, 'i32', FieldTypes.V_UINT32.value, Quants.REQUIRED, 0),
+    FieldSpec(
+        MSG_REG,
+        'i32bis',
+        FieldTypes.V_UINT32.value,
+        Quants.REQUIRED,
+        1),
+    FieldSpec(MSG_REG, 'i64', FieldTypes.V_UINT64.value, Quants.REQUIRED, 2),
+    FieldSpec(MSG_REG, 'si32', FieldTypes.V_SINT32.value, Quants.REQUIRED, 3),
+    FieldSpec(
+        MSG_REG,
+        'si32bis',
+        FieldTypes.V_SINT32.value,
+        Quants.REQUIRED,
+        4),
+    FieldSpec(MSG_REG, 'si64', FieldTypes.V_SINT64.value, Quants.REQUIRED, 5),
+    FieldSpec(
+        MSG_REG,
+        'vuint32',
+        FieldTypes.V_UINT32.value,
+        Quants.REQUIRED,
+        6),
+    FieldSpec(
+        MSG_REG,
+        'vuint64',
+        FieldTypes.V_UINT64.value,
+        Quants.REQUIRED,
+        7),
     # take care with gaps from here
-    FieldSpec(MSG_REG, 'fint32', NDX('vuint32'), Q_REQUIRED, 8),
-    FieldSpec(MSG_REG, 'fint64', NDX('vuint64'), Q_REQUIRED, 9),
-    FieldSpec(MSG_REG, 'lstr', NDX('lstring'), Q_REQUIRED, 10),
-    FieldSpec(MSG_REG, 'lbytes', NDX('lbytes'), Q_REQUIRED, 11),
-    FieldSpec(MSG_REG, 'lbytes16', NDX('fbytes16'), Q_REQUIRED, 12),
-    FieldSpec(MSG_REG, 'lbytes20', NDX('fbytes20'), Q_REQUIRED, 13),
-    FieldSpec(MSG_REG, 'lbytes32', NDX('fbytes32'), Q_REQUIRED, 14),
+    FieldSpec(
+        MSG_REG,
+        'fint32',
+        FieldTypes.V_UINT32.value,
+        Quants.REQUIRED,
+        8),
+    FieldSpec(
+        MSG_REG,
+        'fint64',
+        FieldTypes.V_UINT64.value,
+        Quants.REQUIRED,
+        9),
+    FieldSpec(MSG_REG, 'lstr', FieldTypes.L_STRING.value, Quants.REQUIRED, 10),
+    FieldSpec(
+        MSG_REG,
+        'lbytes',
+        FieldTypes.L_BYTES.value,
+        Quants.REQUIRED,
+        11),
+    FieldSpec(
+        MSG_REG,
+        'lbytes16',
+        FieldTypes.F_BYTES16.value,
+        Quants.REQUIRED,
+        12),
+    FieldSpec(
+        MSG_REG,
+        'lbytes20',
+        FieldTypes.F_BYTES20.value,
+        Quants.REQUIRED,
+        13),
+    FieldSpec(
+        MSG_REG,
+        'lbytes32',
+        FieldTypes.F_BYTES32.value,
+        Quants.REQUIRED,
+        14),
 ]
-# XXX contains no fields
+
 TEST_MSG_SPEC = MsgSpec(NAME, PROTO_REG, PARENT)
+for field in FIELDS:
+    TEST_MSG_SPEC.add_field(field)
 
 BUFSIZE = 1024
 
@@ -119,16 +169,27 @@ class TestTFWriter(unittest.TestCase):
         self.assertEqual(BUFSIZE, tf_writer.capacity)
 
     def do_round_trip_field(self, writer, reader, idx, field_type, value):
-        writer.put_next(idx, value)
-#       # DEBUG
-#       tfBuf   = writer.buffer
-#       print "after put buffer is " ,
-#       self.dumpBuffer(tfBuf)
-#       # END
+
+        #############################################################
+        # THIS IS WRONG: header is determined by idx and field_type, then
+        # this is followed by value.
+        #############################################################
+
+        writer.put_next(idx, value)                                 # LINE 128
+        # DEBUG
+        tf_buf = writer.buffer
+        print("after put buffer is ", end='')
+        self.dump_buffer(tf_buf)
+        # END
         reader.get_next()
         self.assertEqual(idx, reader.field_nbr)
-        # XXX THIS SHOULD WORK:
-        # self.assertEqual( fType, reader.fType    )
+        # field_type is the string value
+        # DEBUG
+        print("field_type is a ", field_type.sym)
+        print("reader.field_type is a ", reader.field_type.sym)
+
+        # END
+        self.assertEqual(field_type, reader.field_type)
         self.assertEqual(value, reader.value)
         return idx + 1
 
@@ -141,13 +202,14 @@ class TestTFWriter(unittest.TestCase):
         idx = 0                           # 0-based field number
 
         # field types encoded as varints (8) ========================
-        # These are tested in greater detail in testVarint.py; the
-        # tests here are to exercise their use in a heterogeneous
+        # These are tested in greater detail in wireops/test_varint.py;
+        # the tests here are to exercise their use in a heterogeneous
         # buffer
 
         # field 0: _V_UINT32
         idx = self.do_round_trip_field(
-            tf_writer, tf_reader, idx, 'vuint32', 0x1f)
+            tf_writer, tf_reader, idx,
+            FieldTypes.V_UINT32, 0x1f)         # LINE 162
         self.assertEqual(1, idx)         # DEBUG XXX
 
         # field 1: _V_UINT32

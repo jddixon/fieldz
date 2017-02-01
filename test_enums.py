@@ -14,17 +14,23 @@ class TestEnums (unittest.TestCase):
     def test_core_types(self):
         self.assertEqual(len(CoreTypes), 6)
         # trivial checks
-        self.assertEqual(CoreTypes.ENUM_PAIR_SPEC.value, 'EnumPairSpec')
-        self.assertEqual(CoreTypes.PROTO_SPEC.value, 'ProtoSpec')
+        self.assertEqual(CoreTypes.ENUM_PAIR_SPEC.sym, 'EnumPairSpec')
+        self.assertEqual(CoreTypes.PROTO_SPEC.sym, 'ProtoSpec')
+
+        self.assertEqual(len(CoreTypes), 6)
+
+        for _ in CoreTypes:
+            self.assertEqual(CoreTypes.from_sym(_.sym), _)
 
     def test_quants(self):
         self.assertEqual(len(Quants), 4)
 
-        self.assertEqual(Quants.REQUIRED.value, '')
-        self.assertEqual(Quants.OPTIONAL.value, '?')
-        self.assertEqual(Quants.STAR.value, '*')
-        self.assertEqual(Quants.PLUS.value, '+')
+        self.assertEqual(Quants.REQUIRED.sym, '')
+        self.assertEqual(Quants.OPTIONAL.sym, '?')
+        self.assertEqual(Quants.STAR.sym, '*')
+        self.assertEqual(Quants.PLUS.sym, '+')
 
+        self.assertEqual(len(Quants), 4)
 
 if __name__ == '__main__':
     unittest.main()

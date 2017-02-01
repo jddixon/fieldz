@@ -9,10 +9,11 @@ __all__ = ['RegEntry',                      # abstract type
            ]
 
 from wireops.typed import T_GET_FUNCS, T_PUT_FUNCS
-from wireops.field_types import FieldTypes as F, FieldStr as FS
+from wireops.enum import FieldTypes
 
 from fieldz import FieldzError
-import fieldz.core_types as C
+from fieldz.enum import CoreTypes
+
 import fieldz.msg_spec as M
 
 # BEGIN NEW CLASSES =================================================
@@ -166,23 +167,23 @@ class NodeReg(UniqueNameRegistry):
         # core classes
 
         # -- add fieldTypes -----------------------------------------
-        for ndx in range(F.MAX_NDX + 1):
+        for ftype in FieldTypes:
+            ndx = ftype.value
             entry = FieldTypeEntry(
-                self,               # reg
-                FS().as_str(ndx),        # qualName,
-                T_PUT_FUNCS[ndx],     # putter,
-                T_GET_FUNCS[ndx])     # getter,
+                self,                   # reg
+                ftype.sym,              # qualName,
+                T_PUT_FUNCS[ndx],       # putter,
+                T_GET_FUNCS[ndx])       # getter,
             self._register_basic_type(entry)
 
-        c_types = C.CoreTypes()
-        for ndx in range(c_types.max_ndx + 1):
+        for ndx, coretype in enumerate(CoreTypes):
             entry = CoreTypeEntry(
-                self,               # reg
-                c_types.as_str(ndx),    # qualName,
+                self,                   # reg
+                coretype.sym,           # qualName,
                 M.C_PUT_FUNCS[ndx],     # putter,
                 M.C_GET_FUNCS[ndx],     # getter,
                 M.C_LEN_FUNCS[ndx],     # getter,
-                M.C_P_LEN_FUNCS[ndx])    # getter,
+                M.C_P_LEN_FUNCS[ndx])   # getter,
             self._register_basic_type(entry)
 
 
