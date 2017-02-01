@@ -4,7 +4,7 @@
 Enumeration types.
 """
 
-from enum import Enum
+from enum import Enum, IntEnum
 import warnings
 
 from fieldz import FieldzError
@@ -16,24 +16,54 @@ __all__ = ['CoreTypes', 'Quants',
 # END DEPRECATED ------------------------------
 
 
-class CoreTypes(Enum):
-    """ Fieldz specification types. """
+# CORE TYPES ========================================================
 
-    ENUM_PAIR_SPEC = 'EnumPairSpec'
-    ENUM_SPEC = 'EnumSpec'
-    FIELD_SPEC = 'FieldSpec'
-    MSG_SPEC = 'MsgSpec'
-    SEQ_SPEC = 'SeqSpec'
-    PROTO_SPEC = 'ProtoSpec'
+CoreTypes = IntEnum('CoreTypes', [
+    'ENUM_PAIR_SPEC', 'ENUM_SPEC', 'FIELD_SPEC',
+    'MSG_SPEC', 'SEQ_SPEC', 'PROTO_SPEC', ],
+    start=0)
+
+_CT_SYMBOLS = [
+    'EnumPairSpec', 'EnumSpec', 'FieldSpec',
+    'MsgSpec', 'SeqSpec', 'ProtoSpec', ]
 
 
-class Quants(Enum):
-    """ Quantifiers, specifying how many members may be present. """
+@property
+def _ct_sym(self):
+    """ Return the symbol associated with this member. """
+    return _CT_SYMBOLS[self.value]
 
-    REQUIRED = ''
-    OPTIONAL = '?'
-    STAR = '*'
-    PLUS = '+'
+CoreTypes.sym = _ct_sym       # add the method to the class
+
+_CT_NDX = {}
+for _ in CoreTypes:
+    """ Map the field type's symbol back to the member """
+    _CT_NDX[_.sym] = _
+
+
+@classmethod
+def _from_sym(cls, symbol):
+    """ Given a symbol, return the corresponding member. """
+    return _CT_NDX[symbol]
+
+CoreTypes.from_sym = _from_sym
+
+# QUANTIFIERS =======================================================
+
+# Quantifiers, specifying how many members may be present.
+Quants = IntEnum('Quants', [
+                 'REQUIRED', 'OPTIONAL', 'STAR', 'PLUS', ],
+                 start=0)
+
+_Q_SYMBOLS = ['', '?', '*', '+', ]
+
+
+@property
+def _q_sym(self):
+    """ Return the symbol associated with this smember. """
+    return _Q_SYMBOLS[self.value]
+
+Quants.sym = _q_sym
 
 # DEPRECATED ========================================================
 

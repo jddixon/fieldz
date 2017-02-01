@@ -2,9 +2,8 @@
 
 from wireops.field_types import FieldStr
 from fieldz import FieldzError, reg, msg_spec as M
-
+from fieldz.enum import Quants
 from fieldz.msg_spec import(
-    Q_REQUIRED, Q_OPTIONAL, Q_PLUS, Q_STAR,
     validate_simple_name, validate_dotted_name,
     EnumPairSpec, EnumSpec, FieldSpec,
     MsgSpec, ProtoSpec,  # SeqSpec,
@@ -255,17 +254,17 @@ class StringSpecParser(object):
         validate_simple_name(f_name)
 
         # -- quantifier -------------------------
-        qqq = words[1][-1]
-        if qqq == '?' or qqq == '*' or qqq == '+':
+        quant = words[1][-1]
+        if quant == '?' or quant == '*' or quant == '+':
             words[1] = words[1][:-1]
-            if qqq == '?':
-                quantifier = Q_OPTIONAL
-            elif qqq == '*':
-                quantifier = Q_STAR
+            if quant == '?':
+                quantifier = Quants.OPTIONAL
+            elif quant == '*':
+                quantifier = Quants.STAR
             else:
-                quantifier = Q_PLUS
+                quantifier = Quants.PLUS
         else:
-            quantifier = Q_REQUIRED
+            quantifier = Quants.REQUIRED
 
         # -- field type --------------------------
         type_name = words[1]
@@ -273,8 +272,8 @@ class StringSpecParser(object):
         field_type = None
 
         # DEBUG ###
-        print("             field '%s' type '%s' quant %d" % (
-            f_name, type_name, quantifier))
+        print("             field '%s' type '%s' quant %d (%s)" % (
+            f_name, type_name, quantifier.value, quantifier.sym))
         # END #####
 
         # first check against list of names of field types

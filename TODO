@@ -13,6 +13,14 @@
     are not canonical
 -----------------------------------------------------------------
 
+2017-01-31
+    * need CoreTypes.from_sym and test in test_enums.py
+    * systematic error: test_tfwriter.py L 123
+
+2017-01-26
+    * _many_ references to LEN_PLUS_TYPE; need to be to 
+        wireopa.PrimTypes.LEN_PLUS
+
 2017-01-21
     * XXX test_reg.py: CoreTypes is now a standard enum, c_types needs
         to be dropped everywhere 

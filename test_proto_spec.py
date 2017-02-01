@@ -78,7 +78,7 @@ class TestProtoSpec(unittest.TestCase):
         self.assertEqual(7, enum.value('ghi'))
 
 #   # GEEP
-#   def doFieldTest(self, msgReg, name, fType, quantifier=M.Q_REQUIRED,
+#   def doFieldTest(self, msgReg, name, fType, quantifier=Quants.REQUIRED,
 #                   fieldNbr=0, default=None):
 #       # XXX Defaults are ignore for now.
 #       f = M.FieldSpec(msgReg, name, fType, quantifier, fieldNbr, default)
@@ -97,10 +97,10 @@ class TestProtoSpec(unittest.TestCase):
 
 #   def testsQuantifiers(self):
 #       qName = M.qName
-#       self.assertEqual('', qName(M.Q_REQUIRED))
-#       self.assertEqual('?', qName(M.Q_OPTIONAL))
-#       self.assertEqual('*', qName(M.Q_STAR))
-#       self.assertEqual('+', qName(M.Q_PLUS))
+#       self.assertEqual('', qName(Quants.REQUIRED))
+#       self.assertEqual('?', qName(Quants.OPTIONAL))
+#       self.assertEqual('*', qName(Quants.STAR))
+#       self.assertEqual('+', qName(Quants.PLUS))
 
 #   def testFieldSpec(self):
 #       protoName = 'org.xlattice.upax'
@@ -109,10 +109,10 @@ class TestProtoSpec(unittest.TestCase):
 #       msgReg = reg.MsgReg(protoReg)
 
 #       # default is not implemented yet
-#       self.doFieldTest(msgReg, 'foo', FieldTypes._V_UINT32, M.Q_REQUIRED, 9)
-#       self.doFieldTest(msgReg, 'bar', FieldTypes._V_SINT32, M.Q_STAR, 17)
-#       self.doFieldTest(msgReg, 'nodeID', FieldTypes._F_BYTES20, M.Q_OPTIONAL, 92)
-#       self.doFieldTest(msgReg, 'tix', FieldTypes._V_BOOL, M.Q_PLUS, 147)
+#       self.doFieldTest(msgReg, 'foo', FieldTypes._V_UINT32, Quants.REQUIRED, 9)
+#       self.doFieldTest(msgReg, 'bar', FieldTypes._V_SINT32, Quants.STAR, 17)
+#       self.doFieldTest(msgReg, 'nodeID', FieldTypes._F_BYTES20, Quants.OPTIONAL, 92)
+#       self.doFieldTest(msgReg, 'tix', FieldTypes._V_BOOL, Quants.PLUS, 147)
 #   # FOO
 
     def test_proto_spec(self):
@@ -134,23 +134,38 @@ class TestProtoSpec(unittest.TestCase):
                 msg_reg,
                 'timestamp',
                 FieldTypes.F_UINT32,
-                M.Q_REQUIRED,
+                Quants.REQUIRED,
                 0),
             M.FieldSpec(
                 msg_reg,
                 'node_id',
                 FieldTypes.F_BYTES20,
-                M.Q_REQUIRED,
+                Quants.REQUIRED,
                 1),
-            M.FieldSpec(msg_reg, 'key', FieldTypes.F_BYTES20, M.Q_REQUIRED, 2),
+            M.FieldSpec(
+                msg_reg,
+                'key',
+                FieldTypes.F_BYTES20,
+                Quants.REQUIRED,
+                2),
             M.FieldSpec(
                 msg_reg,
                 'length',
                 FieldTypes.V_UINT32,
-                M.Q_REQUIRED,
+                Quants.REQUIRED,
                 3),
-            M.FieldSpec(msg_reg, 'by_', FieldTypes.L_STRING, M.Q_REQUIRED, 4),
-            M.FieldSpec(msg_reg, 'path', FieldTypes.L_STRING, M.Q_REQUIRED, 5),
+            M.FieldSpec(
+                msg_reg,
+                'by_',
+                FieldTypes.L_STRING,
+                Quants.REQUIRED,
+                4),
+            M.FieldSpec(
+                msg_reg,
+                'path',
+                FieldTypes.L_STRING,
+                Quants.REQUIRED,
+                5),
         ]
         msg_spec = M.MsgSpec(msg_name, proto_spec, msg_reg)
         self.assertEqual(msg_name, msg_spec.name)

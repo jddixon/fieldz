@@ -6,7 +6,7 @@ import unittest
 
 from rnglib import SimpleRNG
 from fieldz.reg import NodeReg
-from fieldz.enum import CoreTypes   # MAJOR CHANGE
+from fieldz.enum import CoreTypes
 from wireops.field_types import FieldTypes, FieldStr
 
 # TESTS --------------------------------------------------------------
@@ -16,20 +16,22 @@ class TestReg(unittest.TestCase):
 
     def test_node_reg(self):
 
-        # XXX MAJOR CHANGE - CoreTypes is now a standard Python3 enum
-        # c_types = CoreTypes()
-
         test_reg = NodeReg()
 
+        nbr_coretypes = len(CoreTypes)
+        self.assertEqual(nbr_coretypes, 6)
+        nbr_fieldtypes = len(FieldTypes)
+        # self.assertEqual(nbr_fieldtypes, 18)  # FAILS, IS 20 ???
         # bootstrap() has loaded fieldTypes and coreTypes
-#       print "DEBUG: FieldTypes.MAX_NDX is %d" % FieldTypes.MAX_NDX        # is 17
-#       print "DEBUG: C.maxNdx is %d" % C.maxNdx        # is  5
-#       print "DEBUG: test_reg.nextRegID is %d test_reg.nextRegID
+        # DEBUG
+#       print("FieldTypes.MAX_NDX is %d" % FieldTypes.MAX_NDX)        # is 17
+        print("test_node_reg: nbr_coretypes is %d" % nbr_coretypes)
+        print(
+            "test_node_reg: test_reg.next_reg_id is %d test_reg.next_reg_id" %
+            test_reg.next_reg_id)
+        # END
         self.assertEqual(
-            FieldTypes.MAX_NDX +
-            1 +
-            c_types.max_ndx +
-            1,
+            len(FieldTypes) + nbr_coretypes,
             test_reg.next_reg_id)
 
         # verify that all fieldTypes are defined in the registry, each
@@ -42,26 +44,21 @@ class TestReg(unittest.TestCase):
             self.assertEqual(FieldStr.as_str(i), name)
             self.assertEqual(i, test_reg.name2reg_id(name))
 
-        for i in range(FieldTypes.MAX_NDX + 1,
-                       FieldTypes.MAX_NDX + 1 + c_types.max_ndx + 1):
+        for ndx, coretype in enumerate(CoreTypes):
+            i = ndx + FieldTypes.MAX_NDX + 1
             name = test_reg[i].qual_name
             # DEBUG
-#           print '%2u %s' % (i, name)
+            print('%2u %s' % (i, name))
             # END
-            self.assertEqual(c_types.as_str(
-                i - (FieldTypes.MAX_NDX + 1)), name)
-            self.assertEqual(i, test_reg.name2reg_id(name))
+            self.assertEqual(coretype.value, name)
+            self.assertEqual(test_reg.name2reg_id(name), i)
 
         # F and C range from 0 to maxNdx
         self.assertEqual(
-            FieldTypes.MAX_NDX +
-            1 +
-            c_types.max_ndx +
-            1,
-            len(test_reg))
+            FieldTypes.MAX_NDX + 1 + nbr_coretypes, len(test_reg))
 
 #       print "DEBUG: len(test_reg) is %u" % len(test_reg)
-#       print "DEBUG: nextRegID is %u"    % test_reg.nextRegID
+#       print "DEBUG: next_reg_id is %u"    % test_reg.next_reg_id
 
         self.assertEqual(len(test_reg), test_reg.next_reg_id)
 

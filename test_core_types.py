@@ -5,18 +5,18 @@ import unittest
 from io import StringIO
 
 from wireops.chan import Channel
+from wireops.enum import PrimTypes
 from wireops.raw import(
-    LEN_PLUS_TYPE,
     field_hdr_len,
     read_field_hdr,
 )
 import fieldz.msg_spec as M
-from fieldz.core_types import CoreTypes
+from fieldz.enum import CoreTypes
 from fieldz.reg import NodeReg, ProtoReg, MsgReg
 from fieldz.parser import StringMsgSpecParser
 from wireops.field_types import FieldTypes
 
-LOG_ENTRY_MSG_SPEC = u"""
+LOG_ENTRY_MSG_SPEC = """
 # protocol org.xlattice.zoggery
 message logEntry:
  timestamp   fuint32
@@ -36,6 +36,17 @@ class TestCoreTypes(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def test_new_coretypes_enum(self):
+        """
+        Test CoreTypes as redefined 2017-01-30.
+
+        CoreTypes is now an IntEnum with sym() and from_sym() methods.
+        """
+        for ndx, _ in enumerate(CoreTypes):
+            self.assertEqual(_.value, ndx)
+            self.assertEqual(CoreTypes.from_sym(_.sym), _)
+        self.assertEqual(len(CoreTypes), CoreTypes.PROTO_SPEC + 1)
+
     # utility functions #############################################
     def make_registries(self, protocol):
         node_reg = NodeReg()
@@ -45,44 +56,47 @@ class TestCoreTypes(unittest.TestCase):
 
     # actual unit tests #############################################
     def test_the_enum(self):
-        c_types = CoreTypes()
-        self.assertEqual(c_types.ENUM_PAIR_SPEC, 0)
-        self.assertEqual(c_types.ENUM_SPEC, 1)
-        self.assertEqual(c_types.FIELD_SPEC, 2)
-        self.assertEqual(c_types.MSG_SPEC, 3)
-        self.assertEqual(c_types.SEQ_SPEC, 4)
-        self.assertEqual(c_types.PROTO_SPEC, 5)
-        self.assertEqual(c_types.max_ndx, 5)
+        self.assertEqual(CoreTypes.ENUM_PAIR_SPEC.sym, 'EnumPairSpec')
+        self.assertEqual(CoreTypes.ENUM_SPEC.sym, 'EnumSpec')
+        self.assertEqual(CoreTypes.FIELD_SPEC.sym, 'FieldSpec')
+        self.assertEqual(CoreTypes.MSG_SPEC.sym, 'MsgSpec')
+        self.assertEqual(CoreTypes.SEQ_SPEC.sym, 'SeqSpec')
+        self.assertEqual(CoreTypes.PROTO_SPEC.sym, 'ProtoSpec')
+        self.assertEqual(len(CoreTypes), 6)
 
-    def round_trip_to_wire_format(self, chan, nnn, c_type, val):
+    def round_trip_to_wire_format(self, chan, field_nbr, c_type, val):
         node_reg, proto_reg, msg_reg = self.make_registries(
             'org.xlattice.fieldz.test.roundTrip')
 
         # DEBUG
-        print("roundTrioWireFormat: n = %d, c_type = %d" % (nnn, c_type))
+        print("roundTrioWireFormat: n = %d, c_type = %d (%s)" % (
+            field_nbr, c_type.value, c_type.sym))
         print("  val is a ", type(val))
-        # END
+        print("     symbol '%s' value '%s'" % (val.symbol, val.value))
+        # END    ********************** <--- !!!
         chan.clear()                            # I guess :-)
 
         buf = chan.buffer
-        putter = M.C_PUT_FUNCS[c_type]
-        getter = M.C_GET_FUNCS[c_type]
-        len_func = M.C_LEN_FUNCS[c_type]
-        p_len_func = M.C_P_LEN_FUNCS[c_type]
-        # comment of unknown value/validity:  # BUT c_type must be >18!
-        len_ = field_hdr_len(nnn, c_type)
+        putter = M.C_PUT_FUNCS[c_type.value]
+        getter = M.C_GET_FUNCS[c_type.value]
+        len_func = M.C_LEN_FUNCS[c_type.value]
+        p_len_func = M.C_P_LEN_FUNCS[c_type.value]
+        # comment of unknown value/validity:  # BUT c_type.value must be >18!
+
+        # XXX THIS IS SIMPLY WRONG: field_hdr_len expects a FieldType
+        len_ = field_hdr_len(field_nbr, c_type)
 
         r_pos = 0  # read
-        expected_pos = p_len_func(val, nnn)
+        expected_pos = p_len_func(val, field_nbr)
 
         putter(chan, val, 0)  # writing field 0
         chan.flip()
         w_pos = chan.limit
 
-        (p_type, nnn) = read_field_hdr(chan)
+        (p_type, field_nbr) = read_field_hdr(chan)
         actual_hdr_len = chan.position
-        self.assertEqual(LEN_PLUS_TYPE, p_type)
-        self.assertEqual(0, nnn)    # field number
+        self.assertEqual(PrimTypes.LEN_PLUS, p_type)
+        self.assertEqual(0, field_nbr)    # field number
         self.assertEqual(len_, actual_hdr_len)
 
         # FAILS:
@@ -94,7 +108,7 @@ class TestCoreTypes(unittest.TestCase):
         # 2016-10-30 GOT FIRST FAILURE MODE
         ret_val = getter(msg_reg, chan)
 
-        # gets the same error:ret_val = M.cGetFuncs[c_type](chan)
+        # gets the same error:ret_val = M.cGetFuncs[c_type.value](chan)
 
         r_pos = chan.position
         # DEBUG
@@ -106,40 +120,41 @@ class TestCoreTypes(unittest.TestCase):
     def test_round_tripping_core_types(self):
         buf_size = 16 * 1024
         chan = Channel(buf_size)
-        c_types = CoreTypes()
 
         # -----------------------------------------------------------
         # XXX FAILS if msgReg arg added: WRONG NUMBER OF ARGS
         # XXX n=0 is wired into round_trip_to_wire_format XXX
-        nnn = 0                           # 0-based field number
-        string = M.EnumPairSpec('funnyFarm', 497)
+        field_nbr = 0                           # 0-based field number
+        ser = M.EnumPairSpec('funnyFarm', 497)
         self.round_trip_to_wire_format(
-            chan, nnn, c_types.ENUM_PAIR_SPEC, string)
+            chan, field_nbr, CoreTypes.ENUM_PAIR_SPEC, ser)
 
         # -----------------------------------------------------------
         protocol = 'org.xlattice.upax'
         node_reg, proto_reg, msg_reg = self.make_registries(protocol)
-        nnn = 0                          # 0-based field number
+        field_nbr = 0                          # 0-based field number
         pairs = [('funnyFarm', 497),
                  ('myOpia', 53),
                  ('frogHeaven', 919),
                  ]
-        string = M.EnumSpec.create('thisEnum', pairs)
-        self.assertEqual(3, len(string))
+        ser = M.EnumSpec.create('thisEnum', pairs)
+        self.assertEqual(3, len(ser))
         # XXX FAILS if msgReg arg added: WRONG NUMBER OF ARGS
-        self.round_trip_to_wire_format(chan, nnn, c_types.ENUM_SPEC, string)
+        self.round_trip_to_wire_format(
+            chan, field_nbr, CoreTypes.ENUM_SPEC, ser)
 
         # -----------------------------------------------------------
         protocol = 'org.xlattice.upax'
         node_reg, proto_reg, msg_reg = self.make_registries(protocol)
-        nnn = 0                          # 0-based field number
-        string = M.FieldSpec(
+        field_nbr = 0                          # 0-based field number
+        ser = M.FieldSpec(
             msg_reg,
             'jollyGood',
             FieldTypes.V_SINT32,
-            M.Q_OPTIONAL,
+            Quants.OPTIONAL,
             37)
-        self.round_trip_to_wire_format(chan, nnn, c_types.FIELD_SPEC, string)
+        self.round_trip_to_wire_format(
+            chan, field_nbr, CoreTypes.FIELD_SPEC, ser)
 
         # -----------------------------------------------------------
 
@@ -154,11 +169,11 @@ class TestCoreTypes(unittest.TestCase):
         self.assertIsNotNone(str_obj_model)
         self.assertTrue(isinstance(str_obj_model, M.MsgSpec))
 
-        nnn = 0
+        field_nbr = 0
 
         # XXX FAILS:
         self.round_trip_to_wire_format(
-            chan, nnn, c_types.MSG_SPEC, str_obj_model)
+            chan, field_nbr, CoreTypes.MSG_SPEC, str_obj_model)
 
 if __name__ == '__main__':
     unittest.main()

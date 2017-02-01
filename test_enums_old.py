@@ -6,7 +6,6 @@ import time
 import unittest
 
 from rnglib import SimpleRNG
-from fieldz.enum import Quants
 
 # DEPRECATED --------------------------------------------------------
 from fieldz.enum import SimpleEnumWithRepr
@@ -43,12 +42,6 @@ class TestEnums(unittest.TestCase):
 
     # END DEPRECATED ------------------------------------------------
 
-    def test_quants(self):
-        """ Verify that the sym() function works as expected. """
-        self.assertEqual(Quants.sym(Quants.REQUIRED), '')
-        self.assertEqual(Quants.sym(Quants.OPTIONAL), '?')
-        self.assertEqual(Quants.sym(Quants.STAR), '*')
-        self.assertEqual(Quants.sym(Quants.PLUS), '+')
 
 if __name__ == '__main__':
     unittest.main()

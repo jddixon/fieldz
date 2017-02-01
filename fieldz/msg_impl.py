@@ -3,17 +3,17 @@
 # import sys      # for debugging
 
 
-from wireops.field_types import FieldTypes
+from wireops.enum import FieldTypes, PrimTypes
 
 from wireops.raw import (length_as_varint, field_hdr_len, read_field_hdr,
                          write_raw_varint, read_raw_varint,
-                         write_field_hdr, LEN_PLUS_TYPE)
+                         write_field_hdr)
 
 from wireops.typed import T_GET_FUNCS, T_LEN_FUNCS, T_PUT_FUNCS
 
 from fieldz import FieldzError
+from fieldz.enum import Quants
 from fieldz.field_impl import FieldImpl, MetaField, make_field_class
-from fieldz.msg_spec import Q_REQUIRED, Q_OPTIONAL, Q_PLUS, Q_STAR
 
 __all__ = ['make_msg_class', 'make_field_class', 'write', 'impl_len', ]
 
@@ -200,7 +200,10 @@ class MsgImpl(object):
         """
         n is the msg's field number OR regID
         """
-        write_field_hdr(chan, nnn, LEN_PLUS_TYPE)   # write the field header
+        write_field_hdr(
+            chan,
+            nnn,
+            PrimTypes.LEN_PLUS)   # write the field header
         msg_len = self._wire_len()         # then the unprefixed length
         write_raw_varint(chan, msg_len)
 
@@ -223,7 +226,7 @@ class MsgImpl(object):
             value = field.value
             default = field.default
 
-            if f_quant == Q_REQUIRED or f_quant == Q_OPTIONAL:
+            if f_quant == Quants.REQUIRED or f_quant == Quants.OPTIONAL:
                 if field_type > 23:
                     # DEBUG
                     reg = self.msg_spec.reg
@@ -241,7 +244,7 @@ class MsgImpl(object):
                         f_nbr, field_type, display_val))
                     # END
                     T_PUT_FUNCS[field_type](chan, value, f_nbr)
-            elif f_quant == Q_PLUS or f_quant == Q_STAR:
+            elif f_quant == Quants.PLUS or f_quant == Quants.STAR:
                 v_list = value
                 for varint_ in v_list:
                     # WORKING HERE
@@ -302,7 +305,7 @@ class MsgImpl(object):
             if field_nbr != nbr:
                 raise RuntimeError(" EXPECTED FIELD_NBR %d, GOT %d" % (
                     field_nbr, nbr))
-            if f_quant == Q_REQUIRED or f_quant == Q_OPTIONAL:
+            if f_quant == Quants.REQUIRED or f_quant == Quants.OPTIONAL:
                 if field_type > 23:
                     reg = cls.msg_spec.reg
                     # BEGIN JUNK ------------------------------------
@@ -326,7 +329,7 @@ class MsgImpl(object):
                 _check_position(chan, end)
                 values.append(value)
 
-            elif f_quant == Q_PLUS or f_quant == Q_STAR:
+            elif f_quant == Quants.PLUS or f_quant == Quants.STAR:
                 v_list = []              # we are reading a list of values
 
                 # WORKING HERE
@@ -338,7 +341,8 @@ class MsgImpl(object):
             len(fields), chan.position))
         # END
 
-        # XXX BLOWS UP: can't handle Q_PLUS or Q_STAR (about line 407)
+        # XXX BLOWS UP: can't handle Quants.PLUS or Quants.STAR (about line
+        # 407)
         return (cls(values), nnn)                                 # GEEP
 
     # -- INSTANCE SERIALIZED LENGTH -----------------------
@@ -358,8 +362,8 @@ class MsgImpl(object):
 
             # XXX What follows doesn't quite make sense.  If a REQUIRED
             # message is missing, we simply won't find it.  Likewise
-            # for Q_STAR
-            if f_quant == Q_REQUIRED or f_quant == Q_OPTIONAL:
+            # for Quants.STAR
+            if f_quant == Quants.REQUIRED or f_quant == Quants.OPTIONAL:
                 contrib = T_LEN_FUNCS[field_type](value, f_nbr)
 
                 # DEBUG
@@ -373,9 +377,9 @@ class MsgImpl(object):
                 # END
                 msg_len += contrib
 
-            elif f_quant == Q_PLUS or f_quant == Q_STAR:
+            elif f_quant == Quants.PLUS or f_quant == Quants.STAR:
                 # value will be a non-empty list; handle each individual
-                # member like Q_REQUIRED
+                # member like Quants.REQUIRED
                 v_list = value
                 for varint_ in v_list:
                     # HACKING ABOUT
@@ -396,7 +400,7 @@ class MsgImpl(object):
                         # -----------------------------------------------
                         # XXX FAILS with list index error, fType == 24 XXX
                         # -----------------------------------------------
-                        print("DEBUG FIELD '%s' Q_PLUS MEMBER TYPE IS %s" % (
+                        print("DEBUG FIELD '%s' Quants.PLUS MEMBER TYPE IS %s" % (
                             f_name, field_type))
                         contrib = T_LEN_FUNCS[field_type](varint_, f_nbr)
 
@@ -420,7 +424,7 @@ class MsgImpl(object):
         header, where n is the field number of a nested message or the
         regID if the message is not nested.
         """
-        len_ = length_as_varint(field_hdr_len(nnn, LEN_PLUS_TYPE))
+        len_ = length_as_varint(field_hdr_len(nnn, PrimTypes.LEN_PLUS))
         count = self._wire_len()
         return len_ + length_as_varint(count) + count
 
