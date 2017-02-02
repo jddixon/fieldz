@@ -5,13 +5,13 @@ import time
 import unittest
 
 from rnglib import SimpleRNG
+from wireops.enum import FieldTypes
+import wireops.typed as T
+
 from fieldz.enum import Quants
 import fieldz.msg_spec as M
 import fieldz.reg as R
 from fieldz.tfbuffer import TFReader, TFWriter
-
-from wireops.field_types import FieldTypes, FieldStr
-import wireops.typed as T
 
 BUFSIZE = 16 * 1024
 RNG = SimpleRNG(time.time())
@@ -104,35 +104,35 @@ class TestLogEntry(unittest.TestCase):
 
         reader.get_next()
         self.assertEqual(0, reader.field_nbr)
-        self.assertEqual('fuint32', FieldStr.as_str(reader.field_type))
+        self.assertEqual('fuint32', reader.field_type.sym)
         self.assertEqual(tstamp, reader.value)
         self.assertEqual(5, reader.position)
 
         reader.get_next()
         self.assertEqual(1, reader.field_nbr)
-        self.assertEqual('fbytes20', FieldStr.as_str(reader.field_type))
+        self.assertEqual('fbytes20', reader.field_type.sym)
         self.assertEqual(node_id, reader.value)
         self.assertEqual(26, reader.position)
 
         reader.get_next()
         self.assertEqual(2, reader.field_nbr)
-        self.assertEqual('fbytes20', FieldStr.as_str(reader.field_type))
+        self.assertEqual('fbytes20', reader.field_type.sym)
         self.assertEqual(key, reader.value)
         self.assertEqual(47, reader.position)
 
         reader.get_next()
         self.assertEqual(3, reader.field_nbr)
-        self.assertEqual('vuint32', FieldStr.as_str(reader.field_type))
+        self.assertEqual('vuint32', reader.field_type.sym)
         self.assertEqual(length, reader.value)
 
         reader.get_next()
         self.assertEqual(4, reader.field_nbr)
-        self.assertEqual('lstring', FieldStr.as_str(reader.field_type))
+        self.assertEqual('lstring', reader.field_type.sym)
         self.assertEqual(by_, reader.value)
 
         reader.get_next()
         self.assertEqual(5, reader.field_nbr)
-        self.assertEqual('lstring', FieldStr.as_str(reader.field_type))
+        self.assertEqual('lstring', reader.field_type.sym)
         self.assertEqual(path, reader.value)
 
 if __name__ == '__main__':

@@ -12,13 +12,14 @@ from io import StringIO
 
 from rnglib import SimpleRNG
 
+import wireops.typed as T
+from wireops.enum import FieldTypes
+
 from fieldz import reg
+from fieldz.enum import Quants
 from fieldz.field_impl import make_field_class         # added 2016-08-02
 from fieldz.parser import StringProtoSpecParser
 import fieldz.msg_spec as M
-import wireops.typed as T
-from wireops.field_types import FieldTypes, FieldStr
-
 from fieldz.msg_impl import make_msg_class
 
 # PROTOCOLS ---------------------------------------------------------
@@ -58,9 +59,9 @@ class TestProtoSpec(unittest.TestCase):
     # actual unit tests #############################################
 
     def test_maps(self):
-        max_ndx = FieldTypes.MAX_NDX
-        max_name = FieldStr().as_str(max_ndx)
-        self.assertEqual('fbytes32', max_name)
+        last_ndx = len(FieldTypes) - 1
+        last_name = FieldTypes(last_ndx).sym
+        self.assertEqual('fbytes32', last_name)
 
     def test_enum(self):
         """
@@ -260,23 +261,23 @@ class TestProtoSpec(unittest.TestCase):
         self.assertEqual(3, len(bar_enum))
 
         a_pair = foo_enum[0]
-        self.assertEqual('aVal', a_pair.symbol)
+        self.assertEqual('a', a_pair.symbol)
         self.assertEqual(1, a_pair.value)
 
         b_pair = foo_enum[1]
-        self.assertEqual('b_val', b_pair.symbol)
+        self.assertEqual('b', b_pair.symbol)
         self.assertEqual(2, b_pair.value)
 
         c_pair = bar_enum[0]
-        self.assertEqual('cVal', c_pair.symbol)
+        self.assertEqual('c', c_pair.symbol)
         self.assertEqual(3, c_pair.value)
 
         d_pair = bar_enum[1]
-        self.assertEqual('dVal', d_pair.symbol)
+        self.assertEqual('d', d_pair.symbol)
         self.assertEqual(4, d_pair.value)
 
         e_pair = bar_enum[2]
-        self.assertEqual('exc', e_pair.symbol)
+        self.assertEqual('e', e_pair.symbol)
         self.assertEqual(5, e_pair.value)
 
 #       self.roundTripProtoSpecViaString(sOM)       # GEEP
@@ -307,23 +308,23 @@ class TestProtoSpec(unittest.TestCase):
         self.assertEqual(3, len(bar_enum))
 
         a_pair = foo_enum[0]
-        self.assertEqual('aVal', a_pair.symbol)
+        self.assertEqual('a', a_pair.symbol)
         self.assertEqual(1, a_pair.value)
 
         b_pair = foo_enum[1]
-        self.assertEqual('b_val', b_pair.symbol)
+        self.assertEqual('b', b_pair.symbol)
         self.assertEqual(2, b_pair.value)
 
         c_pair = bar_enum[0]
-        self.assertEqual('cVal', c_pair.symbol)
+        self.assertEqual('c', c_pair.symbol)
         self.assertEqual(3, c_pair.value)
 
         d_pair = bar_enum[1]
-        self.assertEqual('dVal', d_pair.symbol)
+        self.assertEqual('d', d_pair.symbol)
         self.assertEqual(4, d_pair.value)
 
         e_pair = bar_enum[2]
-        self.assertEqual('exc', e_pair.symbol)
+        self.assertEqual('e', e_pair.symbol)
         self.assertEqual(5, e_pair.value)
 
         self.round_trip_poto_spec_via_string(str_obj_model)

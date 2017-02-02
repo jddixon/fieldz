@@ -3,7 +3,7 @@
 import re
 #import sys
 
-from wireops.enum import PrimTypes          # for LEN_PLUS
+from wireops.enum import FieldTypes, PrimTypes
 from wireops.raw import(
     field_hdr_val,
     field_hdr_len,
@@ -12,7 +12,6 @@ from wireops.raw import(
     read_raw_varint, write_raw_varint,
     read_raw_len_plus,
 )
-from wireops.field_types import FieldTypes, FieldStr
 from wireops.typed import T_GET_FUNCS, T_LEN_FUNCS, T_PUT_FUNCS
 
 from fieldz import FieldzError
@@ -211,8 +210,8 @@ class EnumSpec(object):
 
 
 class FieldSpec(object):
-    __slots__ = ['_reg',
-                 '_name', '_type', '_quantifier', '_field_nbr', '_default', ]
+    __slots__ = ['_reg', '_name', '_field_type', '_quantifier', '_field_nbr',
+                 '_default', ]
 
     def __eq__(self, other):
         if other is None or not isinstance(other, FieldSpec):
@@ -227,7 +226,7 @@ class FieldSpec(object):
 #       if other.reg != self._reg:
 #           print "FIELD_SPEC REGES DIFFER"
 #           return False
-        if other.field_type_ndx != self._type:
+        if other.field_type != self._field_type:
             print("FIELD_SPEC TYPES DIFFER")
             return False
         if other.quantifier != self._quantifier:
@@ -263,10 +262,13 @@ class FieldSpec(object):
         self._name = name
 
         # -- fType --------------------------------------------------
-        if field_type < 0 or field_type > FieldTypes.MAX_NDX:
-            raise FieldzError("invalid fType '%s'" % str(field_type))
-        self._type = field_type
+        # XXX DROPPED RANGE CHECK HERE
+        self._field_type = field_type
 
+        # DEBUG
+        print("FieldSpec.__init__: field_type is a ",
+              field_type)
+        # END
         # -- quantifier ---------------------------------------------
         # XXX RANGE CHECK ??
         self._quantifier = quantifier
@@ -287,21 +289,30 @@ class FieldSpec(object):
     def name(self):
         return self._name
 
-    # XXX return a string value
+    @property
+    def field_type(self):
+        """
+        Added 2017-02-01; makes next two properties redundant.
+        """
+        return self._field_type
+
     @property
     def field_type_name(self):
-        if self._type >= 0 and self._type <= FieldTypes.MAX_NDX:
-            return FieldStr.as_str(self._type)
-        reg_id = self._reg.reg_id2name(self._type)
+        """ return a string value. """
+        try:
+            reg_id = self._field_type.sym
+        except KeyError:
+            # XX THIS MAKES NO SENSE
+            reg_id = self._reg.reg_id2name(self._field_type)
         if reg_id is None:
             # XXX parent must search upwards if not found
-            reg_id = self._reg.parent.reg_id2name(self._type)
+            reg_id = self._reg.parent.reg_id2name(self._field_type)
         return reg_id
 
     # XXX return a number
     @property
     def field_type_ndx(self):
-        return self._type
+        return self._field_type.value
 
     @property
     def quantifier(self):
@@ -420,19 +431,19 @@ class SuperSpec(object):
     def msgs(self):
         return self._msgs
 
-    def add_enum(self, exc):
+    def add_enum(self, enm):
         # should validate AND check for uniqueness
 
         # DEBUG
-        name = exc.name
+        name = enm.name
         print("ADDING ENUM %s TO SUPER_SPEC" % name)
         # END
 
         # WORKING HERE
-        self._enums.append(exc)
+        self._enums.append(enm)
 
-    def add_msg(self, match):
-        name = match.name
+    def add_msg(self, msg):
+        name = msg.name
         # XXX This forbids shadowing of the name in the parent but
         #     not further up the tree
         if name in self._msgs_by_name or (self.parent is not None
@@ -440,8 +451,8 @@ class SuperSpec(object):
             raise RuntimeError("name '%s' is already in use" % name)
         print("ADDING MSG %d '%s' TO PROTO SPEC LIST" %
               (self._next_msg, name))         # DEBUG
-        self._msgs.append(match)
-        self._msgs_by_name[name] = match                             # FOO
+        self._msgs.append(msg)
+        self._msgs_by_name[name] = msg                             # FOO
         self._msg_name_ndx[name] = self._next_msg
         self._next_msg += 1
 
@@ -659,17 +670,23 @@ class MsgSpec(SuperSpec):
         # want to return the message name ... XXX
         return self._fields[i].field_type_name
 
-    def field_type_ndx(self, i):
+    def field_type_from_nbr(self, nbr):
+        # XXX WAS field_type_ndx
         # field numbers are zero-based
         if self.__len__() == 0:
             raise FieldzError("INTERNAL ERROR: message has no fields")
-        if i < 0 or i >= self.__len__():
-            raise FieldzError('field number %d out of range' % i)
+        if nbr < 0 or nbr >= self.__len__():
+            raise FieldzError('field number %d out of range' % nbr)
 
         # XXX WRONG-ish: fType MUST be numeric; this should return
         # the string equivalent; HOWEVER, if the type is lMsg, we
         # want to return the message name ... XXX
-        return self._fields[i].field_type_ndx
+
+        # DEBUG -- THIS RETURNS 'int'
+        print("field_type_from_nbr: field_type is a ",
+              type(self._fields[nbr].field_type))
+        # END
+        return self._fields[nbr].field_type                     # L 680
 
     def field_default(self, i):
         # field numbers are zero-based

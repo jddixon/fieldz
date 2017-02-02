@@ -1,6 +1,6 @@
 # fieldz/fieldz/parser.py
 
-from wireops.field_types import FieldStr
+from wireops.enum import FieldTypes
 from fieldz import FieldzError, reg, msg_spec as M
 from fieldz.enum import Quants
 from fieldz.msg_spec import(
@@ -277,9 +277,8 @@ class StringSpecParser(object):
         # END #####
 
         # first check against list of names of field types
-        f_types = FieldStr()
         try:
-            field_type = f_types.ndx(type_name)
+            field_type = FieldTypes.from_sym(type_name)
             # DEBUG
             print(
                 "LIST type_name is '%s', index is '%s'" %

@@ -18,7 +18,6 @@ from wireops.raw import(
 )
 
 from wireops.typed import T_PUT_FUNCS, T_GET_FUNCS  # , T_LEN_FUNCS
-from wireops.field_types import FieldTypes as ftypes, FieldStr as fstr
 
 from fieldz import FieldzError
 from fieldz.msg_spec import MsgSpec
@@ -85,7 +84,7 @@ class TFReader(TFBuffer):
 
         # getter has range check
         field_type = self._field_type = FieldTypes(
-            self._msg_spec.field_type_ndx(self._field_nbr))
+            self._msg_spec.field_type_from_nbr(self._field_nbr))
 
         # DEBUG
         print("TFReader.get_next: field_type is %s (%d)" % (
@@ -93,14 +92,15 @@ class TFReader(TFBuffer):
         # END
 
         # gets through dispatch table -------------------------------
-        if field_type >= 0 and field_type <= ftypes.V_SINT64:
+        # XXX IMPROPER USE OF KNOWLEDGE OF ORDER OF MEMBERS
+        if field_type.value >= 0 and field_type.value <= FieldTypes.V_SINT64:
             self._value = T_GET_FUNCS[field_type](self)
             return
 
         # we use the field type to verify that have have read the right
         # primitive type
 #       # - implemented using varints -------------------------------
-#       if self._fType <= ftypes._V_UINT64:
+#       if self._fType <= FieldTypes._V_UINT64:
 #           if self._pType != VARINT_TYPE:
 #               raise RuntimeError("pType is %u but should be %u" % (
 #                                       self._pType, VARINT_TYPE))
@@ -109,57 +109,57 @@ class TFReader(TFBuffer):
 #           # DEBUG
 #           print "getNext: readRawVarint returns value = 0x%x" % self._value
 #           # END
-#           if self._fType == ftypes._V_SINT32:
+#           if self._fType == FieldTypes._V_SINT32:
 #               self._value = decodeSint32(self._value)
 #               # DEBUG
 #               print "    after decode self._value is 0x%x" % self._value
 #               #
-#           elif self._fType == ftypes._V_SINT64:
+#           elif self._fType == FieldTypes._V_SINT64:
 #               self._value = decodeSint64(self._value)
 
 #           #END VARINT_GET
 
         # implemented using B32 -------------------------------------
-        if self._field_type <= ftypes.F_FLOAT:
+        if self._field_type <= FieldTypes.F_FLOAT:
             self._p_type = PrimTypes.B32              # DEBUG
             varint_ = read_raw_b32(self)
-            if self._field_type == ftypes.F_UINT32:
+            if self._field_type == FieldTypes.F_UINT32:
                 self._value = ctypes.c_uint32(varint_).value
-            elif self._field_type == ftypes.F_SINT32:
+            elif self._field_type == FieldTypes.F_SINT32:
                 self._value = ctypes.c_int32(varint_).value
             else:
                 raise NotImplementedError('B32 handling for float')
 
         # implemented using B64 -------------------------------------
-        elif self._field_type <= ftypes.F_DOUBLE:
+        elif self._field_type <= FieldTypes.F_DOUBLE:
             self._p_type = PrimTypes.B64              # DEBUG
             (varint_, self._position) = read_raw_b64(self)
-            if self._field_type == ftypes.F_UINT64:
+            if self._field_type == FieldTypes.F_UINT64:
                 self._value = ctypes.c_uint64(varint_).value
-            elif self._field_type == ftypes.F_SINT64:
+            elif self._field_type == FieldTypes.F_SINT64:
                 self._value = ctypes.c_int64(varint_).value
             else:
                 raise NotImplementedError('B64 handling for double')
 
         # implemented using LEN_PLUS --------------------------------
-        elif self._field_type <= ftypes.L_MSG:
+        elif self._field_type <= FieldTypes.L_MSG:
             self._p_type = PrimTypes.LEN_PLUS         # DEBUG
             varint_ = read_raw_len_plus(self)
-            if self._field_type == ftypes.L_STRING:
+            if self._field_type == FieldTypes.L_STRING:
                 self._value = varint_.decode('utf-8')
-            elif self._field_type == ftypes.L_BYTES:
+            elif self._field_type == FieldTypes.L_BYTES:
                 self._value = varint_
             else:
                 raise NotImplementedError('LEN_PLUS handled as L_MSG')
 
         # implemented using B128, B160, B256 ------------------------
-        elif self._field_type == ftypes.F_BYTES16:
+        elif self._field_type == FieldTypes.F_BYTES16:
             self._p_type = PrimTypes.B128             # DEBUG
             self._value = read_raw_b128(self)
-        elif self._field_type == ftypes.F_BYTES20:
+        elif self._field_type == FieldTypes.F_BYTES20:
             self._p_type = PrimTypes.B160             # DEBUG
             self._value = read_raw_b160(self)
-        elif self._field_type == ftypes.F_BYTES32:
+        elif self._field_type == FieldTypes.F_BYTES32:
             self._p_type = PrimTypes.B256             # DEBUG
             self._value = read_raw_b256(self)
 
@@ -208,30 +208,31 @@ class TFWriter(TFBuffer):
         print("TFWriter.put_next: field_nbr %d" % field_nbr)
         # END
         # getter has range check
-        field_type = self._msg_spec.field_type_ndx(field_nbr)       # LINE 203
+        field_type = self._msg_spec.field_type_from_nbr(field_nbr)  # LINE 210
 
         # puts through dispatch table -------------------------------
-        if 0 <= field_type and field_type <= ftypes.F_BYTES32:
-            # DEBUG
-            print(
-                "putNext: field type is %s (%d)" %
-                (field_type.sym, field_type.value))
-            sys.stdout.flush()
-            # END
-            T_PUT_FUNCS[field_type](self, value, field_nbr)
-            # DEBUG
-            if field_type < ftypes.L_STRING:
-                print("putNext through dispatch table:\n"
-                      "         field   %u\n"
-                      "         fType   %u,  %s\n"
-                      "         value   %d (0x%x)\n"
-                      "         offset  %u" % (
-                          field_nbr, field_type.sym, field_type.value,
-                          value, value, self._position))
-            # END
-            return
-        else:
-            print("unknown/unimplemented field type %s" % str(field_type))
+        # XXX REMOVED RANGE CHECK
+        # DEBUG
+        print(
+            "putNext: field type is %s (%d)" %
+            (field_type.sym, field_type.value))
 
-        # -- NOW VESTIGIAL ------------------------------------------
-        varint_ = None
+        if isinstance(value, int):
+            print("    value is %d" % value)
+        else:
+            print("    value is %s" % value)
+        print("    position is %u" % self._position)
+        sys.stdout.flush()
+        # END
+        T_PUT_FUNCS[field_type](self, value, field_nbr)
+
+        return
+
+        # DEBUG ### IMPROPER USE OF KNOWLEDGE OF ORDER OF FIELD NUMBERS
+        if field_type.value < FieldTypes.L_STRING.value:
+            print("putNext through dispatch table:\n         field   %u\n         fType   %u,  %s\n         value   %d (0x%x)\n         offset  %u" % (
+                field_nbr, field_type.sym, field_type.value,
+                value, value,
+                self._position))
+        # END
+        return

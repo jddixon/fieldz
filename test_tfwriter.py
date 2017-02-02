@@ -32,70 +32,70 @@ PARENT = ProtoSpec(PROTOCOL, PROTO_REG)
 
 FIELDS = [
 
-    FieldSpec(MSG_REG, 'i32', FieldTypes.V_UINT32.value, Quants.REQUIRED, 0),
+    FieldSpec(MSG_REG, 'i32', FieldTypes.V_UINT32, Quants.REQUIRED, 0),
     FieldSpec(
         MSG_REG,
         'i32bis',
-        FieldTypes.V_UINT32.value,
+        FieldTypes.V_UINT32,
         Quants.REQUIRED,
         1),
-    FieldSpec(MSG_REG, 'i64', FieldTypes.V_UINT64.value, Quants.REQUIRED, 2),
-    FieldSpec(MSG_REG, 'si32', FieldTypes.V_SINT32.value, Quants.REQUIRED, 3),
+    FieldSpec(MSG_REG, 'i64', FieldTypes.V_UINT64, Quants.REQUIRED, 2),
+    FieldSpec(MSG_REG, 'si32', FieldTypes.V_SINT32, Quants.REQUIRED, 3),
     FieldSpec(
         MSG_REG,
         'si32bis',
-        FieldTypes.V_SINT32.value,
+        FieldTypes.V_SINT32,
         Quants.REQUIRED,
         4),
-    FieldSpec(MSG_REG, 'si64', FieldTypes.V_SINT64.value, Quants.REQUIRED, 5),
+    FieldSpec(MSG_REG, 'si64', FieldTypes.V_SINT64, Quants.REQUIRED, 5),
     FieldSpec(
         MSG_REG,
         'vuint32',
-        FieldTypes.V_UINT32.value,
+        FieldTypes.V_UINT32,
         Quants.REQUIRED,
         6),
     FieldSpec(
         MSG_REG,
         'vuint64',
-        FieldTypes.V_UINT64.value,
+        FieldTypes.V_UINT64,
         Quants.REQUIRED,
         7),
     # take care with gaps from here
     FieldSpec(
         MSG_REG,
         'fint32',
-        FieldTypes.V_UINT32.value,
+        FieldTypes.V_UINT32,
         Quants.REQUIRED,
         8),
     FieldSpec(
         MSG_REG,
         'fint64',
-        FieldTypes.V_UINT64.value,
+        FieldTypes.V_UINT64,
         Quants.REQUIRED,
         9),
-    FieldSpec(MSG_REG, 'lstr', FieldTypes.L_STRING.value, Quants.REQUIRED, 10),
+    FieldSpec(MSG_REG, 'lstr', FieldTypes.L_STRING, Quants.REQUIRED, 10),
     FieldSpec(
         MSG_REG,
         'lbytes',
-        FieldTypes.L_BYTES.value,
+        FieldTypes.L_BYTES,
         Quants.REQUIRED,
         11),
     FieldSpec(
         MSG_REG,
         'lbytes16',
-        FieldTypes.F_BYTES16.value,
+        FieldTypes.F_BYTES16,
         Quants.REQUIRED,
         12),
     FieldSpec(
         MSG_REG,
         'lbytes20',
-        FieldTypes.F_BYTES20.value,
+        FieldTypes.F_BYTES20,
         Quants.REQUIRED,
         13),
     FieldSpec(
         MSG_REG,
         'lbytes32',
-        FieldTypes.F_BYTES32.value,
+        FieldTypes.F_BYTES32,
         Quants.REQUIRED,
         14),
 ]
@@ -168,30 +168,30 @@ class TestTFWriter(unittest.TestCase):
         self.assertEqual(0, tf_writer.position)
         self.assertEqual(BUFSIZE, tf_writer.capacity)
 
-    def do_round_trip_field(self, writer, reader, idx, field_type, value):
+    def do_round_trip_field(self, writer, reader, fnbr, field_type, value):
 
         #############################################################
-        # THIS IS WRONG: header is determined by idx and field_type, then
+        # THIS IS WRONG: header is determined by fnbr and field_type, then
         # this is followed by value.
         #############################################################
 
-        writer.put_next(idx, value)                                 # LINE 128
+        writer.put_next(fnbr, value)                                 # LINE 178
         # DEBUG
         tf_buf = writer.buffer
         print("after put buffer is ", end='')
         self.dump_buffer(tf_buf)
         # END
         reader.get_next()
-        self.assertEqual(idx, reader.field_nbr)
-        # field_type is the string value
+        self.assertEqual(fnbr, reader.field_nbr)
+        # field_type should be an enum member
         # DEBUG
-        print("field_type is a ", field_type.sym)
-        print("reader.field_type is a ", reader.field_type.sym)
+        print("field_type is a ", type(field_type))
+        print("reader.field_type is a ", type(reader.field_type))
 
         # END
         self.assertEqual(field_type, reader.field_type)
         self.assertEqual(value, reader.value)
-        return idx + 1
+        return fnbr + 1
 
     def test_writing_and_reading(self):
         BUFSIZE = 16 * 1024
@@ -199,7 +199,7 @@ class TestTFWriter(unittest.TestCase):
         tf_buf = tf_writer.buffer       # we share the buffer
         tf_reader = TFReader(TEST_MSG_SPEC, BUFSIZE, tf_buf)
 
-        idx = 0                           # 0-based field number
+        fnbr = 0                           # 0-based field number
 
         # field types encoded as varints (8) ========================
         # These are tested in greater detail in wireops/test_varint.py;
@@ -207,38 +207,46 @@ class TestTFWriter(unittest.TestCase):
         # buffer
 
         # field 0: _V_UINT32
-        idx = self.do_round_trip_field(
-            tf_writer, tf_reader, idx,
-            FieldTypes.V_UINT32, 0x1f)         # LINE 162
-        self.assertEqual(1, idx)         # DEBUG XXX
+        fnbr = self.do_round_trip_field(
+            tf_writer, tf_reader, fnbr,
+            FieldTypes.V_UINT32, 0x1f)                      # LINE 212
+        self.assertEqual(1, fnbr)                           # DEBUG XXX
 
         # field 1: _V_UINT32
-        idx = self.do_round_trip_field(
-            tf_writer, tf_reader, idx, 'vuint32', 0x172f3e4d)
+        fnbr = self.do_round_trip_field(
+            tf_writer, tf_reader, fnbr,
+            FieldTypes.V_UINT32, 0x172f3e4d)
 
         # field 2:  _V_UINT64
-        idx = self.do_round_trip_field(
-            tf_writer, tf_reader, idx, 'vuint64', 0x12345678abcdef3e)
+        fnbr = self.do_round_trip_field(
+            tf_writer, tf_reader, fnbr,
+            FieldTypes.V_UINT64, 0x12345678abcdef3e)
 
         # field 3: vsInt32
-        idx = self.do_round_trip_field(
-            tf_writer, tf_reader, idx, 'vsint32', 192)
+        fnbr = self.do_round_trip_field(
+            tf_writer, tf_reader, fnbr,
+            FieldTypes.V_SINT32, 192)
 
         # field 4: vsInt32
         # _V_SINT32 (zig-zag encoded, optimal for small values near zero)
-        idx = self.do_round_trip_field(
-            tf_writer, tf_reader, idx, 'vsint32', -192)
+        fnbr = self.do_round_trip_field(
+            tf_writer, tf_reader, fnbr,
+            FieldTypes.V_SINT32, -192)
 
         # field 5: _V_SINT64
-        idx = self.do_round_trip_field(
-            tf_writer, tf_reader, idx, 'vsint64', -193)  # GEEP
+        fnbr = self.do_round_trip_field(
+            tf_writer, tf_reader, fnbr,
+            FieldTypes.V_SINT64, -193)  # GEEP
 
         # field 6: _V_UINT32
-        idx = self.do_round_trip_field(
-            tf_writer, tf_reader, idx, 'vuint32', 0x172f3e4d)
+        fnbr = self.do_round_trip_field(
+            tf_writer, tf_reader, fnbr,
+            FieldTypes.V_UINT32, 0x172f3e4d)
+
         # field 7: _V_UINT64
-        idx = self.do_round_trip_field(
-            tf_writer, tf_reader, idx, 'vuint64', 0xffffffff172f3e4d)
+        fnbr = self.do_round_trip_field(
+            tf_writer, tf_reader, fnbr,
+            FieldTypes.V_UINT64, 0xffffffff172f3e4d)
 
         # _V_BOOL
         # XXX NOT IMPLEMENTED, NOT TESTED
@@ -248,29 +256,39 @@ class TestTFWriter(unittest.TestCase):
 
         # encoded as fixed length 32 bit fields =====================
         # field 8: _F_INT32
-        idx = self.do_round_trip_field(tf_writer, tf_reader, idx, 'fint32',
-                                       0x172f3e4d)
+        # fnbr = self.do_round_trip_field(
+        #    tf_writer, tf_reader, fnbr,
+        #    FieldTypes.F_INT32, 0x172f3e4d)
+
         # _F_FLOAT
         # XXX STUB XXX not implemented
 
         # encoded as fixed length 64 bit fields =====================
         # field 9: _F_INT64
-        idx = self.do_round_trip_field(tf_writer, tf_reader, idx, 'fint64',
-                                       0xffffffff172f3e4d)
+        # fnbr = self.do_round_trip_field(
+        #    tf_writer, tf_reader, fnbr,
+        #    FieldTypes.F_INT64, 0xffffffff172f3e4d)
+
         # _F_DOUBLE
         # XXX STUB XXX not implemented
+
+        # DEBUG #######################
+        return
+        # END #########################
 
         # encoded as varint len followed by byte[len] ===============
         # field 10: _L_STRING
         string = self.rng.next_file_name(16)
-        idx = self.do_round_trip_field(
-            tf_writer, tf_reader, idx, 'lstring', string)
+        fnbr = self.do_round_trip_field(
+            tf_writer, tf_reader, fnbr,
+            FieldTypes.L_STRING, string)
 
         # field 11: _L_BYTES
         b_val = bytearray(8 + self.rng.next_int16(16))
         self.rng.next_bytes(b_val)
-        idx = self.do_round_trip_field(
-            tf_writer, tf_reader, idx, 'lbytes', b_val)
+        fnbr = self.do_round_trip_field(
+            tf_writer, tf_reader, fnbr,
+            FieldTypes.L_BYTES, b_val)
 
         # _L_MSG
         # XXX STUB XXX not implemented
@@ -278,19 +296,22 @@ class TestTFWriter(unittest.TestCase):
         # fixed length byte sequences, byte[N} ======================
         # field 12: _F_BYTES16
         self.rng.next_bytes(B128)
-        idx = self.do_round_trip_field(
-            tf_writer, tf_reader, idx, 'fbytes16', B128)
+        fnbr = self.do_round_trip_field(
+            tf_writer, tf_reader, fnbr,
+            FieldTypes.F_BYTES16, B128)
 
         # field 13: _F_BYTES20
         self.rng.next_bytes(B160)
-        idx = self.do_round_trip_field(
-            tf_writer, tf_reader, idx, 'fbytes20', B160)
+        fnbr = self.do_round_trip_field(
+            tf_writer, tf_reader, fnbr,
+            FieldTypes.F_BYTES20, B160)
 
         # may want to introduce eg fNodeID20 and fSha1Key types
         # field 14: _F_BYTES32
         self.rng.next_bytes(B256)
-        idx = self.do_round_trip_field(
-            tf_writer, tf_reader, idx, 'fbytes32', B256)
+        fnbr = self.do_round_trip_field(
+            tf_writer, tf_reader, fnbr,
+            FieldTypes.F_BYTES32, B256)
 
         # may want to introduce eg fSha3Key type, allowing semantic checks
 
