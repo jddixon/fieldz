@@ -5,7 +5,7 @@ import unittest
 from io import StringIO
 
 from wireops.chan import Channel
-from wireops.enum import PrimTypes
+from wireops.enum import FieldTypes, PrimTypes
 from wireops.raw import(
     field_hdr_len,
     read_field_hdr,
@@ -14,7 +14,6 @@ import fieldz.msg_spec as M
 from fieldz.enum import CoreTypes
 from fieldz.reg import NodeReg, ProtoReg, MsgReg
 from fieldz.parser import StringMsgSpecParser
-from wireops.field_types import FieldTypes
 
 LOG_ENTRY_MSG_SPEC = """
 # protocol org.xlattice.zoggery
@@ -69,7 +68,7 @@ class TestCoreTypes(unittest.TestCase):
             'org.xlattice.fieldz.test.roundTrip')
 
         # DEBUG
-        print("roundTrioWireFormat: n = %d, c_type = %d (%s)" % (
+        print("roundTripWireFormat: n = %d, c_type = %d (%s)" % (
             field_nbr, c_type.value, c_type.sym))
         print("  val is a ", type(val))
         print("     symbol '%s' value '%s'" % (val.symbol, val.value))

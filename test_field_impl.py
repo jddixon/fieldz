@@ -171,22 +171,22 @@ class TestFieldImpl(unittest.TestCase):
         # There are 18 values corresponding to the 18 field types;
         # _L_MSG should be skipped
 
-        for tstamp in range(FieldTypes.F_BYTES32 + 1):
+        for ftype in FieldTypes:
             # DEBUG
-            print("testFieldImpl: t = %d" % tstamp)
+            print("testFieldImpl: ftype = %s (%d)" % (ftype.sym, ftype.value))
             # END
-            if tstamp == FieldTypes.L_MSG:
+            if ftype == FieldTypes.L_MSG:
                 continue
 
             # default quantifier is Quants.REQUIRED, default is None
 
-            field_name = 'field%d' % tstamp
+            field_name = 'field%d' % ftype.value
             field_spec = M.FieldSpec(
-                msg_reg, field_name, tstamp, field_nbr=tstamp + 100)
+                msg_reg, field_name, ftype, field_nbr=ftype.value + 100)
 
             self.check_field_impl_against_spec(
                 PROTOCOL_UNDER_TEST, MSG_UNDER_TEST,
-                field_spec, values[tstamp])
+                field_spec, values[ftype.value])
 
     # TEST FIELD SPEC -----------------------------------------------
 

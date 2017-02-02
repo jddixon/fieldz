@@ -8,13 +8,12 @@ from io import StringIO
 
 from rnglib import SimpleRNG
 
+from wireops.enum import FieldTypes
+import wireops.typed as T
 
 from fieldz.parser import StringMsgSpecParser
 import fieldz.msg_spec as M
 import fieldz.reg as R
-
-from wireops.field_types import FieldTypes, FieldStr
-import wireops.typed as T
 
 LOG_ENTRY_MSG_SPEC = u"""
 # protocol org.xlattice.zoggery

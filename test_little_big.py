@@ -98,32 +98,32 @@ class TestLittleBig(unittest.TestCase):
                 print("%-20s %s" % (exc, cls.__dict__[exc]))
 
         self.assertIsNotNone(cls)
-        file = cls(value)
-        self.assertIsNotNone(file)
+        datum = cls(value)
+        self.assertIsNotNone(datum)
 
         # class attributes --------------------------------
         # pylint:disable=no-member
-        self.assertEqual(field_spec.name, file.name)
+        self.assertEqual(field_spec.name, datum.name)                # L 106
         # pylint:disable=no-member
-        self.assertEqual(field_spec.field_type_ndx, file.field_type)
+        self.assertEqual(field_spec.field_type_ndx, datum.field_type)
         # pylint:disable=no-member
-        self.assertEqual(field_spec.quantifier, file.quantifier)
+        self.assertEqual(field_spec.quantifier, datum.quantifier)
         # pylint:disable=no-member
-        self.assertEqual(field_spec.field_nbr, file.field_nbr)
+        self.assertEqual(field_spec.field_nbr, datum.field_nbr)
         # pylint:disable=no-member
-        self.assertIsNone(file.default)          # not an elegant test
+        self.assertIsNone(datum.default)          # not an elegant test
 
         # instance attribute ------------------------------
         # pylint:disable=no-member
-        self.assertEqual(value, file.value)
+        self.assertEqual(value, datum.value)
 
         # with slots enabled, this is never seen ----------
         # because __dict__ is not in the list of valid
         # attributes for f
-        if '__dict__' in dir(file):
+        if '__dict__' in dir(datum):
             print('\nGENERATED FieldImpl INSTANCE DICTIONARY')
-            for item in list(file.__dict__.keys()):
-                print("%-20s %s" % (item, file.__dict__[item]))     # GEEP
+            for item in list(datum.__dict__.keys()):
+                print("%-20s %s" % (item, datum.__dict__[item]))     # GEEP
 
     def test_field_impl(self):
         msg_spec = self.str_obj_model.msgs[0]
