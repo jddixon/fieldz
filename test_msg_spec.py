@@ -11,6 +11,7 @@ from rnglib import SimpleRNG
 from wireops.enum import FieldTypes
 import wireops.typed as T
 
+from fieldz.enum import Quants
 from fieldz.parser import StringMsgSpecParser
 import fieldz.msg_spec as M
 import fieldz.reg as R
@@ -65,8 +66,8 @@ class TestMsgSpec(unittest.TestCase):
     # actual unit tests #############################################
 
     def test_maps(self):
-        max_ndx = FieldTypes.MAX_NDX
-        max_name = FieldStr.as_str(max_ndx)
+        max_ndx = len(FieldTypes) - 1
+        max_name = FieldTypes(max_ndx).sym
         self.assertEqual('fbytes32', max_name)
 
     def test_enum(self):
@@ -91,7 +92,7 @@ class TestMsgSpec(unittest.TestCase):
             'org.xlattice.fieldz.test.field_spec')
 
         # XXX Defaults are ignore for now.
-        file = M.FieldSpec(
+        fld = M.FieldSpec(
             msg_reg,
             name,
             field_type,
@@ -99,17 +100,17 @@ class TestMsgSpec(unittest.TestCase):
             field_nbr,
             default)
 
-        self.assertEqual(name, file.name)
-        self.assertEqual(field_type, file.field_type_ndx)
-        self.assertEqual(quantifier, file.quantifier)
-        self.assertEqual(field_nbr, file.field_nbr)
+        self.assertEqual(name, fld.name)
+        self.assertEqual(field_type, fld.field_type)
+        self.assertEqual(quantifier, fld.quantifier)
+        self.assertEqual(field_nbr, fld.field_nbr)
         if default is not None:
-            self.assertEqual(default, file.default)
+            self.assertEqual(default, fld.default)
 
         expected_repr = "%s %s%s @%d \n" % (
-            name, file.field_type_name, M.q_name(quantifier), field_nbr)
+            name, fld.field_type_name, M.q_name(quantifier), field_nbr)
         # DEFAULTS NOT SUPPORTED
-        self.assertEqual(expected_repr, file.__repr__())
+        self.assertEqual(expected_repr, fld.__repr__())
 
     def test_quantifiers(self):
         q_name = M.q_name
@@ -210,9 +211,9 @@ class TestMsgSpec(unittest.TestCase):
                 4),
         ]
         name = 'logEntry'
-        msg_spec = M.MsgSpec(name, protocol, msg_reg)
-        for file in fields:
-            msg_spec.add_field(file)
+        msg_spec = M.MsgSpec(name, msg_reg, protocol)
+        for fld in fields:
+            msg_spec.add_field(fld)
         msg_spec.add_enum(enum)
 
         self.assertEqual(name, msg_spec.name)
@@ -230,7 +231,7 @@ class TestMsgSpec(unittest.TestCase):
         i = 0
         for field in msg_spec:
             self.assertEqual(fields[i].name, field._name)
-            self.assertEqual(fields[i].field_type_ndx, field.field_type_ndx)
+            self.assertEqual(fields[i].field_type, field.field_type)
             i += 1
 
         self.round_trip_msg_spec_via_str(
@@ -286,23 +287,23 @@ class TestMsgSpec(unittest.TestCase):
         self.assertEqual(3, len(bar_enum))
 
         a_pair = foo_enum[0]
-        self.assertEqual('aVal', a_pair.symbol)
+        self.assertEqual('a', a_pair.symbol)
         self.assertEqual(1, a_pair.value)
 
         b_pair = foo_enum[1]
-        self.assertEqual('b_val', b_pair.symbol)
+        self.assertEqual('b', b_pair.symbol)
         self.assertEqual(2, b_pair.value)
 
         c_pair = bar_enum[0]
-        self.assertEqual('cVal', c_pair.symbol)
+        self.assertEqual('c', c_pair.symbol)
         self.assertEqual(3, c_pair.value)
 
         d_pair = bar_enum[1]
-        self.assertEqual('dVal', d_pair.symbol)
+        self.assertEqual('d', d_pair.symbol)
         self.assertEqual(4, d_pair.value)
 
         e_pair = bar_enum[2]
-        self.assertEqual('exc', e_pair.symbol)
+        self.assertEqual('e', e_pair.symbol)
         self.assertEqual(5, e_pair.value)
 
         self.round_trip_msg_spec_via_str(

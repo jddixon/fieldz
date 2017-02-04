@@ -13,25 +13,29 @@
     are not canonical
 -----------------------------------------------------------------
 
+2017-02-02
+    * test_tfwriter.py succeeds because tests on data types other
+        than varints are commented out: get them working
+
 2017-01-31
     * need CoreTypes.from_sym and test in test_enums.py
     * systematic error: test_tfwriter.py L 123
 
 2017-01-26
-    * _many_ references to LEN_PLUS_TYPE; need to be to 
-        wireopa.PrimTypes.LEN_PLUS
+    * _many_ references to LEN_PLUS_TYPE; need to be to                 * FIXED
+        wireopa.PrimTypes.LEN_PLUS                                      * FIXED
 
 2017-01-21
-    * XXX test_reg.py: CoreTypes is now a standard enum, c_types needs
-        to be dropped everywhere 
+    * XXX test_reg.py: CoreTypes is now a standard enum, c_types needs  * DONE
+        to be dropped everywhere                                        * DONE
 
 2017-01-17
     * DROP fieldz/enum.py :: SimpleEnum and SimpleEnmWithRepr 
         (both deprecated) at version 0.13 (now v0.11.2)
 
 2017-01-15
-    * put msg_spec.Q_{REQUIRED,OPTIONAL,STAR,PLUS} in an enum
-
+    * put msg_spec.Q_{REQUIRED,OPTIONAL,STAR,PLUS} in an enum           * NO...
+        - NO: same as Quants, so make all of these Quants members       * DONE
 2016-12-17
     * low-level functions collected in wireops, split off as separate   * DONE
         project: wireops                                                * DONE

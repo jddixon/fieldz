@@ -168,7 +168,7 @@ class TestProtoSpec(unittest.TestCase):
                 Quants.REQUIRED,
                 5),
         ]
-        msg_spec = M.MsgSpec(msg_name, proto_spec, msg_reg)
+        msg_spec = M.MsgSpec(msg_name, msg_reg, proto_spec)
         self.assertEqual(msg_name, msg_spec.name)
         for file in fields:
             msg_spec.add_field(file)

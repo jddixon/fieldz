@@ -491,8 +491,8 @@ class MetaMsg(type):
 # ===================================================================
 
 # EXPERIMENT: IMPLEMENTATION OF MESSAGE CLASS __init__
-
 # DROPPING THIS FOR NOW
+# UN-DROPPED 2017-03-03
 
 
 def msg_initter(cls, *args, **attrs):
@@ -512,7 +512,7 @@ def msg_initter(cls, *args, **attrs):
 
     # END
 
-    # XXX if msgInitter is dropped from the dictionary, I get an error at
+    # XXX if msg_initter is dropped from the dictionary, I get an error at
     # line 249 in __call__,
     #  return type.__call__(cls, *args, **kwargs)
     #  TypeError: object.__new__() takes no parameters
@@ -525,6 +525,9 @@ MSG_CLS_BY_Q_NAME = {}    # PROTO_NAME . MSG_NAME => class
 
 def make_msg_class(parent, name):
     """ construct a MsgClass given a msg name known to the parent """
+    # DEBUG
+    print("\nMAKE_MSG_CLASS: parent '%s', name '%s'" % (parent, name))
+    # END
     msg_spec = parent.get_msg_spec(name)
     return _make_msg_class(parent, msg_spec)
 
@@ -542,9 +545,13 @@ def _make_msg_class(parent, msg_spec):
     qual_name = '%s.%s' % (proto_name, msg_spec.name)
 
     # DEBUG
-    print('MAKE_MSG_CLASS for %s' % qual_name)
+    print('_MAKE_MSG_CLASS for %s' % qual_name)
     # END
     if qual_name in MSG_CLS_BY_Q_NAME:
+        # XXX BUT CACHING HAS BEEN DISABLED
+        # DEBUG
+        print("    USING CACHED CLASS for %s\n" % qual_name)
+        # END
         return MSG_CLS_BY_Q_NAME[qual_name]
 
     # build list of field classes -----------------------------------
@@ -565,8 +572,13 @@ def _make_msg_class(parent, msg_spec):
     _enums = []
     _msgs = []
 
+    # DEBUG
+    print("    _MAKE_MSG_CLASS: _name is %s" % msg_spec.name)
+    # END DEBUG
+
     class Msg(MsgImpl, metaclass=MetaMsg,
-              # __init__ = msgInitter,
+              # uncommented the next line 2017-02-03
+              __init__=msg_initter,
               # 'name' already in use?
               _name=msg_spec.name,
               enums=property(my_enums),
@@ -587,12 +599,13 @@ def _make_msg_class(parent, msg_spec):
     # END =======================================
 
     # DEBUG
-    print("\n_make_msg_class returning something of type ", type(Msg))
+    print("\n_make_msg_class returning something of type %s\n" % type(Msg))
     # END
 
     #----------------------------
     # possibly some more fiddling ...
     #----------------------------
 
-    MSG_CLS_BY_Q_NAME[qual_name] = Msg
+    # XXX DISABLING CACHINE
+    # MSG_CLS_BY_Q_NAME[qual_name] = Msg
     return Msg
