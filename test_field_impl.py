@@ -119,44 +119,48 @@ class TestFieldImpl(unittest.TestCase):
 
     # actual unit tests #############################################
 
-    def check_field_impl_against_spec(self,
-                                      proto_name, msg_name,   # not actually tested
-                                      field_spec, value):    # significant for tests
-
+    def check_field_impl_against_spec(
+            # msg_name not actually tested
+            self, proto_name, msg_name, field_spec, value):    # significant
         self.assertIsNotNone(field_spec)
+        # DEBUG
+        print("check_field_impl_against_spec: field_spec is a ",
+              type(field_spec))
+        # END
         dotted_name = "%s.%s" % (proto_name, msg_name)
         cls = make_field_class(dotted_name, field_spec)         # a class
         if '__dict__' in dir(cls):
             print('\nGENERATED FieldImpl CLASS DICTIONARY')
-            for exc in list(cls.__dict__.keys()):
-                print("  %-20s %s" % (exc, cls.__dict__[exc]))
+            for key in list(cls.__dict__.keys()):
+                print("  %-20s %s" % (key, cls.__dict__[key]))
 
         self.assertIsNotNone(cls)
-        file = cls(value)                                      # an instance
-        self.assertIsNotNone(file)
-        self.assertTrue(isinstance(file, cls))
+        fld = cls(value)                                      # an instance
+        self.assertIsNotNone(fld)
+        self.assertTrue(isinstance(fld, cls))
 
         # instance attributes -----------------------------
         # we verify that the properties work correctly
 
-        self.assertEqual(field_spec.name, file._name)
-        self.assertEqual(field_spec.field_type_ndx, file.field_type)
-        self.assertEqual(field_spec.quantifier, file.quantifier)
-        self.assertEqual(field_spec.field_nbr, file.field_nbr)
-        self.assertIsNone(file.default)          # not an elegant test
+        # pylint: disable=no-member
+        self.assertEqual(field_spec.name, fld._name)
+        self.assertEqual(field_spec.field_type, fld.field_type)
+        self.assertEqual(field_spec.quantifier, fld.quantifier)
+        self.assertEqual(field_spec.field_nbr, fld.field_nbr)
+        self.assertIsNone(fld.default)          # not an elegant test
 
         # instance attribute ------------------------------
         # we can read back the value assigned to the instance
 
-        self.assertEqual(value, file.value)
+        self.assertEqual(value, fld.value)
 
         # with slots enabled, this is never seen ----------
         # because __dict__ is not in the list of valid
         # attributes for f
-        if '__dict__' in dir(file):
+        if '__dict__' in dir(fld):
             print('\nGENERATED FieldImpl INSTANCE DICTIONARY')
-            for item in list(file.__dict__.keys()):
-                print("%-20s %s" % (item, file.__dict__[item]))
+            for item in list(fld.__dict__.keys()):
+                print("%-20s %s" % (item, fld.__dict__[item]))
 
     def test_field_impl(self):
 
@@ -171,10 +175,12 @@ class TestFieldImpl(unittest.TestCase):
         # There are 18 values corresponding to the 18 field types;
         # _L_MSG should be skipped
 
+        # pylint: disable=not-an-iterable
         for ftype in FieldTypes:
             # DEBUG
             print("testFieldImpl: ftype = %s (%d)" % (ftype.sym, ftype.value))
             # END
+            # pylint: disable=no-member
             if ftype == FieldTypes.L_MSG:
                 continue
 
@@ -190,6 +196,7 @@ class TestFieldImpl(unittest.TestCase):
 
     # TEST FIELD SPEC -----------------------------------------------
 
+    # pylint: disable=no-member
     def do_field_spec_test(self, name, field_type, quantifier=Quants.REQUIRED,
                            field_nbr=0, default=None):
 
@@ -197,7 +204,7 @@ class TestFieldImpl(unittest.TestCase):
             PROTOCOL_UNDER_TEST)
 
         # XXX Defaults are ignored for now.
-        file = M.FieldSpec(
+        fld = M.FieldSpec(
             msg_reg,
             name,
             field_type,
@@ -205,20 +212,21 @@ class TestFieldImpl(unittest.TestCase):
             field_nbr,
             default)
 
-        self.assertEqual(name, file.name)
-        self.assertEqual(field_type, file.field_type_ndx)
-        self.assertEqual(quantifier, file.quantifier)
-        self.assertEqual(field_nbr, file.field_nbr)
+        self.assertEqual(name, fld.name)
+        self.assertEqual(field_type, fld.field_type)
+        self.assertEqual(quantifier, fld.quantifier)
+        self.assertEqual(field_nbr, fld.field_nbr)
         if default is not None:
-            self.assertEqual(default, file.default)
+            self.assertEqual(default, fld.default)
 
         expected_repr = "%s %s%s @%d \n" % (
-            name, file.field_type_name, quantifier.sym, field_nbr)
+            name, fld.field_type_name, quantifier.sym, field_nbr)
         # DEFAULTS NOT SUPPORTED
-        self.assertEqual(expected_repr, file.__repr__())
+        self.assertEqual(expected_repr, fld.__repr__())
 
     def test_field_spec(self):
         # default is not implemented yet
+        # pylint: disable=no-member
         self.do_field_spec_test('foo', FieldTypes.V_UINT32, Quants.REQUIRED, 9)
         self.do_field_spec_test('bar', FieldTypes.V_SINT32, Quants.STAR, 17)
         self.do_field_spec_test(

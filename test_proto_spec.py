@@ -60,6 +60,7 @@ class TestProtoSpec(unittest.TestCase):
 
     def test_maps(self):
         last_ndx = len(FieldTypes) - 1
+        # pylint: disable=not-callable
         last_name = FieldTypes(last_ndx).sym
         self.assertEqual('fbytes32', last_name)
 
@@ -131,6 +132,7 @@ class TestProtoSpec(unittest.TestCase):
         enum = M.EnumSpec.create('Joe', [
             ('oh', 92), ('hello', 47), ('there', 322), ])
         fields = [
+            # pylint: disable=no-member
             M.FieldSpec(
                 msg_reg,
                 'timestamp',
@@ -168,7 +170,7 @@ class TestProtoSpec(unittest.TestCase):
                 Quants.REQUIRED,
                 5),
         ]
-        msg_spec = M.MsgSpec(msg_name, proto_spec, msg_reg)
+        msg_spec = M.MsgSpec(msg_name, msg_reg, proto_spec)
         self.assertEqual(msg_name, msg_spec.name)
         for file in fields:
             msg_spec.add_field(file)

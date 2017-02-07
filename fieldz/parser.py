@@ -12,17 +12,17 @@ from fieldz.msg_spec import(
 __all__ = [
     'StringSpecParser',
     'StringMsgSpecParser',
-    'ParserError',
+    'ParseError',
 ]
 
 MAX_INDENT = 16
 
 
-class ParserError(RuntimeError):
+class ParseError(RuntimeError):
     pass
 
 
-class QuantificationError(ParserError):
+class QuantificationError(ParseError):
     pass
 
 
@@ -73,7 +73,7 @@ class StringSpecParser(object):
 
     def expect_token_count(self, tokens, whatever, nnn):
         if len(tokens) != nnn:
-            raise ParserError(
+            raise ParseError(
                 "too many tokens in %s '%s'" %
                 (whatever, tokens))
 
@@ -82,7 +82,7 @@ class StringSpecParser(object):
         """ on a line beginning 'message ' """
         starter = indent + 'message '
         if not line or not line.startswith(starter):
-            raise ParserError("badly formatted message name line '%s'" % line)
+            raise ParseError("badly formatted message name line '%s'" % line)
 
         line = line[len(starter):]
         words = line.split()
@@ -161,7 +161,7 @@ class StringSpecParser(object):
         # syntax is simply A = N
         parts = line.partition('=')
         if (parts[1] is None):
-            raise ParserError("expected = in enum pair: '%s'" % line)
+            raise ParseError("expected = in enum pair: '%s'" % line)
         sym = parts[0].strip()
         val = parts[2].strip()
         return EnumPairSpec(sym, val)
@@ -175,14 +175,14 @@ class StringSpecParser(object):
         # s should begin with one or more spaces, followed by one
         # simple name
         if string[0] != ' ':
-            raise ParserError("can't find enum name in '%s'" % line)
+            raise ParseError("can't find enum name in '%s'" % line)
         name = string.strip()
         validate_simple_name(name)
         pairs = []
         line = self.get_line()          # we require at least one pair
         pair = self.accept_enum_pair(line, indent + step, step)
         if pair is None:
-            raise ParserError("expected enum pair, found '%s'" % line)
+            raise ParseError("expected enum pair, found '%s'" % line)
         pairs.append(pair)
 
         # we have one pair, let's see if there are any more
@@ -223,7 +223,7 @@ class StringSpecParser(object):
     # def expectField(self, nextFieldNbr, line, indent, step):
     def expect_field(self, msg_spec, line, indent, step):
         if not line.startswith(indent):
-            raise ParserError(
+            raise ParseError(
                 "wrong indent for field declaration: '%s'" %
                 line)
 
@@ -245,9 +245,9 @@ class StringSpecParser(object):
         # END
 
         if word_count < 2:
-            raise ParserError("too few tokens in field def '%s'" % line)
+            raise ParseError("too few tokens in field def '%s'" % line)
         if word_count > 5:
-            raise ParserError("too many tokens in field def '%s'" % line)
+            raise ParseError("too many tokens in field def '%s'" % line)
 
         # -- field name -------------------------
         f_name = words[0]
@@ -258,12 +258,16 @@ class StringSpecParser(object):
         if quant == '?' or quant == '*' or quant == '+':
             words[1] = words[1][:-1]
             if quant == '?':
+                # pylint: disable=no-member
                 quantifier = Quants.OPTIONAL
             elif quant == '*':
+                # pylint: disable=no-member
                 quantifier = Quants.STAR
             else:
+                # pylint: disable=no-member
                 quantifier = Quants.PLUS
         else:
+            # pylint: disable=no-member
             quantifier = Quants.REQUIRED
 
         # -- field type --------------------------
@@ -311,7 +315,7 @@ class StringSpecParser(object):
         if field_type is None:
             err_msg = "type_name = '%s'; can't determine field type in line: '%s'" % (
                 type_name, line)
-            raise ParserError(err_msg)
+            raise ParseError(err_msg)
 
         # -- field number -----------------------
         field_nbr = -1
@@ -333,7 +337,7 @@ class StringSpecParser(object):
         # END
         # they get appended to fields; there must be at least one
         if line is None or line == '':
-            raise ParserError('no fields found')
+            raise ParseError('no fields found')
 
         # get the required first field declaration
         print("BRANCH TO expectField(0)")
@@ -431,17 +435,17 @@ class StringProtoSpecParser(StringSpecParser):
     def expect_proto_name(self, indent='', step=' '):
         line = self.get_line()
         if indent != '' and not line.startswith(indent):
-            raise ParseException("missing indent on protocol line '%s'" % line)
+            raise ParseError("missing indent on protocol line '%s'" % line)
 
         # from here we ignore any indentation
         words = line.split()
         self.expect_token_count(words, 'protocol', 2)
         if words[0] == 'protocol':
+            print("DEBUG: protocol is '%s'" % str(self._protocol))
             validate_dotted_name(words[1])
             return words[1]
-            print("DEBUG: protocol is '%s'" % str(self._protocol))
         else:
-            raise ParserError("expected protocol line, found '%s'" % line)
+            raise ParseError("expected protocol line, found '%s'" % line)
 
     # -- seqSpecs ---------------------------------------------------
     def accept_seq_specs(self, proto_spec, line, indent='', step=' '):

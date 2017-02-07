@@ -25,6 +25,7 @@ MSG_REG = R.MsgReg(PROTO_REG)
 NAME = 'logEntry'
 ENUM = M.EnumSpec.create('foo', [('not', 0), ('being', 1), ('used', 2), ])
 FIELDS = [
+    # pylint: disable=no-member
     M.FieldSpec(MSG_REG, 'timestamp', FieldTypes.F_UINT32, Quants.REQUIRED, 0),
     M.FieldSpec(MSG_REG, 'node_id', FieldTypes.F_BYTES20, Quants.REQUIRED, 1),
     M.FieldSpec(MSG_REG, 'key', FieldTypes.F_BYTES20, Quants.REQUIRED, 2),

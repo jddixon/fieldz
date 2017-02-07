@@ -244,7 +244,9 @@ class FieldSpec(object):
 
         return True
 
-    def __init__(self, reg, name, field_type, quantifier=Quants.REQUIRED,
+    def __init__(self, reg, name, field_type,
+                 # pylint: disable=no-member
+                 quantifier=Quants.REQUIRED,
                  field_nbr=-1, default=None):
         if reg is None:
             raise FieldzError('reg must be specified')
@@ -296,6 +298,9 @@ class FieldSpec(object):
         """
         return self._field_type
 
+    # REDUNDANT #####################################################
+    # XXX THIS IS MORE COMPLEX: it searches up if no field by this
+    #     name is found.
     @property
     def field_type_name(self):
         """ return a string value. """
@@ -310,9 +315,10 @@ class FieldSpec(object):
         return reg_id
 
     # XXX return a number
-    @property
-    def field_type_ndx(self):
-        return self._field_type.value
+#   @property
+#   def field_type_ndx(self):
+#       return self._field_type.value
+    # END REDUNDANT #################################################
 
     @property
     def quantifier(self):
@@ -338,6 +344,7 @@ class FieldSpec(object):
         string.append('%s%s ' % (indent, self._name))
 
         t_name = self.field_type_name
+        # pylint: disable=no-member
         if self._quantifier != Quants.REQUIRED:
             t_name += self._quantifier.sym
         string.append('%s ' % t_name)               # at least one space
@@ -602,8 +609,7 @@ class MsgSpec(SuperSpec):
     __slots__ = ['_fields',
                  '_last_field_nbr',           # must increase monotonically
                  'field_name_to_ndx',
-                 '_field_ndx',                    # zero-based field index
-                 ]
+                 '_field_ndx', ]              # zero-based field index
 
     # XXX 2016-06-24 inverted order of last two paramaters
     def __init__(self, name, reg, parent):
@@ -668,7 +674,7 @@ class MsgSpec(SuperSpec):
         # XXX WRONG-ish: fType MUST be numeric; this should return
         # the string equivalent; HOWEVER, if the type is lMsg, we
         # want to return the message name ... XXX
-        return self._fields[i].field_type_name
+        return self._fields[i].field_type.sym
 
     def field_type_from_nbr(self, nbr):
         # XXX WAS field_type_ndx
@@ -754,6 +760,7 @@ C_P_LEN_FUNCS = [not_impl] * NBR_CORE_TYPES
 
 # PUTTERS, GETTERS, LEN FUNCS ---------------------------------------
 
+# pylint: disable=no-member
 L_STRING_LEN = T_LEN_FUNCS[FieldTypes.L_STRING]
 L_STRING_PUT = T_PUT_FUNCS[FieldTypes.L_STRING]
 VUINT32_LEN = T_LEN_FUNCS[FieldTypes.V_UINT32]
@@ -830,6 +837,7 @@ def enum_pair_spec_getter(dummy_reg, chan):
     obj = EnumPairSpec(sym, val)
     return obj
 
+# pylint: disable=no-member
 C_LEN_FUNCS[CoreTypes.ENUM_PAIR_SPEC] = enum_pair_spec_len
 C_P_LEN_FUNCS[CoreTypes.ENUM_PAIR_SPEC] = enum_pair_spec_prefixed_len
 C_PUT_FUNCS[CoreTypes.ENUM_PAIR_SPEC] = enum_pair_spec_putter
@@ -904,6 +912,7 @@ def enum_spec_getter(dummy_reg, chan):
     val = EnumSpec(name, pairs)
     return val
 
+# pylint: disable=no-member
 C_LEN_FUNCS[CoreTypes.ENUM_SPEC] = enum_spec_len
 C_P_LEN_FUNCS[CoreTypes.ENUM_SPEC] = enum_spec_prefixed_len
 C_PUT_FUNCS[CoreTypes.ENUM_SPEC] = enum_spec_putter
@@ -917,7 +926,7 @@ def field_spec_len(val, nnn):
     # fields are '_name', '_type', '_quantifier', '_fieldNbr', '_default'
 
     count = L_STRING_LEN(val.name, 0)      # field 0 contribution
-    count += VENUM_LEN(val.field_type_ndx, 1)
+    count += VENUM_LEN(val.field_type.value, 1)
     count += VENUM_LEN(val.quantifier, 2)
     count += VUINT32_LEN(val.field_nbr, 3)
     if val.default is not None:
@@ -949,7 +958,7 @@ def field_spec_putter(chan, val, nnn):
     L_STRING_PUT(chan, val.name, 0)             # field 0
 
     # write the type
-    VENUM_PUT(chan, val.field_type_ndx, 1)
+    VENUM_PUT(chan, val.field_type.value, 1)
 
     # write the quantifier
     VENUM_PUT(chan, val.quantifier, 2)
@@ -996,6 +1005,7 @@ def field_spec_getter(msg_reg, chan):
 
     return val
 
+# pylint: disable=no-member
 C_LEN_FUNCS[CoreTypes.FIELD_SPEC] = field_spec_len
 C_P_LEN_FUNCS[CoreTypes.FIELD_SPEC] = field_spec_prefixed_len
 C_PUT_FUNCS[CoreTypes.FIELD_SPEC] = field_spec_putter
@@ -1120,6 +1130,7 @@ def seq_spec_getter(dummy_reg, chan):
     # STUB
     return val
 
+# pylint: disable=no-member
 C_LEN_FUNCS[CoreTypes.SEQ_SPEC] = seq_spec_len
 C_P_LEN_FUNCS[CoreTypes.SEQ_SPEC] = seq_spec_prefixed_len
 C_PUT_FUNCS[CoreTypes.SEQ_SPEC] = seq_spec_putter
@@ -1147,6 +1158,7 @@ def proto_spec_getter(chan):
     # STUB
     return val              # END DISPATCH TABLES
 
+# pylint: disable=no-member
 C_LEN_FUNCS[CoreTypes.PROTO_SPEC] = proto_spec_len
 C_P_LEN_FUNCS[CoreTypes.PROTO_SPEC] = proto_spec_prefixed_len
 C_PUT_FUNCS[CoreTypes.PROTO_SPEC] = proto_spec_putter

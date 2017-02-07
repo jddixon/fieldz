@@ -174,7 +174,7 @@ def make_field_class(dotted_msg_name, field_spec):
     class Field(FieldImpl, metaclass=MetaField,
                 # 'name' is already in use
                 _name=field_spec.name,
-                field_type=field_spec.field_type_ndx,
+                field_type=field_spec.field_type,   # an enum member
                 quantifier=field_spec.quantifier,
                 field_nbr=field_spec.field_nbr,
                 default=field_spec.default,
