@@ -67,6 +67,7 @@ class TestMsgSpec(unittest.TestCase):
 
     def test_maps(self):
         max_ndx = len(FieldTypes) - 1
+        # pylint: disable=not-callable
         max_name = FieldTypes(max_ndx).sym
         self.assertEqual('fbytes32', max_name)
 
@@ -85,8 +86,9 @@ class TestMsgSpec(unittest.TestCase):
         self.assertEqual(5, enum.value('def'))
         self.assertEqual(7, enum.value('ghi'))
 
-    # FOO
-    def do_field_test(self, name, field_type, quantifier=Quants.REQUIRED,
+    def do_field_test(self, name, field_type,
+                      # pylint: disable=no-member
+                      quantifier=Quants.REQUIRED,
                       field_nbr=0, default=None):
         node_reg, proto_reg, msg_reg = self.make_registries(
             'org.xlattice.fieldz.test.field_spec')
@@ -114,6 +116,7 @@ class TestMsgSpec(unittest.TestCase):
 
     def test_quantifiers(self):
         q_name = M.q_name
+        # pylint: disable=no-member
         self.assertEqual('', q_name(Quants.REQUIRED))
         self.assertEqual('?', q_name(Quants.OPTIONAL))
         self.assertEqual('*', q_name(Quants.STAR))
@@ -121,6 +124,7 @@ class TestMsgSpec(unittest.TestCase):
 
     def test_field_spec(self):
         # default is not implemented yet
+        # pylint: disable=no-member
         self.do_field_test('foo', FieldTypes.V_UINT32, Quants.REQUIRED, 9)
         self.do_field_test('bar', FieldTypes.V_SINT32, Quants.STAR, 17)
         self.do_field_test(
@@ -179,6 +183,7 @@ class TestMsgSpec(unittest.TestCase):
         enum = M.EnumSpec.create('Joe', [
             ('oh', 92), ('hello', 47), ('there', 322), ])
         fields = [
+            # pylint: disable=no-member
             M.FieldSpec(
                 msg_reg,
                 'timestamp',

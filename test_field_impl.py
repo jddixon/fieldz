@@ -142,6 +142,7 @@ class TestFieldImpl(unittest.TestCase):
         # instance attributes -----------------------------
         # we verify that the properties work correctly
 
+        # pylint: disable=no-member
         self.assertEqual(field_spec.name, fld._name)
         self.assertEqual(field_spec.field_type, fld.field_type)
         self.assertEqual(field_spec.quantifier, fld.quantifier)
@@ -174,10 +175,12 @@ class TestFieldImpl(unittest.TestCase):
         # There are 18 values corresponding to the 18 field types;
         # _L_MSG should be skipped
 
+        # pylint: disable=not-an-iterable
         for ftype in FieldTypes:
             # DEBUG
             print("testFieldImpl: ftype = %s (%d)" % (ftype.sym, ftype.value))
             # END
+            # pylint: disable=no-member
             if ftype == FieldTypes.L_MSG:
                 continue
 
@@ -193,6 +196,7 @@ class TestFieldImpl(unittest.TestCase):
 
     # TEST FIELD SPEC -----------------------------------------------
 
+    # pylint: disable=no-member
     def do_field_spec_test(self, name, field_type, quantifier=Quants.REQUIRED,
                            field_nbr=0, default=None):
 
@@ -222,6 +226,7 @@ class TestFieldImpl(unittest.TestCase):
 
     def test_field_spec(self):
         # default is not implemented yet
+        # pylint: disable=no-member
         self.do_field_spec_test('foo', FieldTypes.V_UINT32, Quants.REQUIRED, 9)
         self.do_field_spec_test('bar', FieldTypes.V_SINT32, Quants.STAR, 17)
         self.do_field_spec_test(

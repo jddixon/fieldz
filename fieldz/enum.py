@@ -18,10 +18,10 @@ __all__ = ['CoreTypes', 'Quants',
 
 # CORE TYPES ========================================================
 
+# pylint: disable=invalid-name
 CoreTypes = IntEnum('CoreTypes', [
     'ENUM_PAIR_SPEC', 'ENUM_SPEC', 'FIELD_SPEC',
-    'MSG_SPEC', 'SEQ_SPEC', 'PROTO_SPEC', ],
-    start=0)
+    'MSG_SPEC', 'SEQ_SPEC', 'PROTO_SPEC', ], start=0)
 
 _CT_SYMBOLS = [
     'EnumPairSpec', 'EnumSpec', 'FieldSpec',
@@ -36,12 +36,14 @@ def _ct_sym(self):
 CoreTypes.sym = _ct_sym       # add the method to the class
 
 _CT_NDX = {}
+# pylint: disable=not-an-iterable
 for _ in CoreTypes:
     """ Map the field type's symbol back to the member """
     _CT_NDX[_.sym] = _
 
 
 @classmethod
+# pylint: disable=unused-argument
 def _from_sym(cls, symbol):
     """ Given a symbol, return the corresponding member. """
     return _CT_NDX[symbol]
@@ -51,9 +53,8 @@ CoreTypes.from_sym = _from_sym
 # QUANTIFIERS =======================================================
 
 # Quantifiers, specifying how many members may be present.
-Quants = IntEnum('Quants', [
-                 'REQUIRED', 'OPTIONAL', 'STAR', 'PLUS', ],
-                 start=0)
+# pylint: disable=invalid-name
+Quants = IntEnum('Quants', ['REQUIRED', 'OPTIONAL', 'STAR', 'PLUS'], start=0)
 
 _Q_SYMBOLS = ['', '?', '*', '+', ]
 

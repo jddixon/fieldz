@@ -245,11 +245,11 @@ class TestMsgImpl(unittest.TestCase):
                     "ERROR: attempt to assign new instance attribute succeeded")
             except AttributeError as a_exc:
                 # DEBUG
-                print("ATTR ERROR ATTEMPTING TO SET leMsg.foo: " + str(a_exc))
+                print("ATTR ERROR ATTEMPTING TO SET le_ms.foo: " + str(a_exc))
                 # END
                 # pass
 
-        # leMsg._name is a property
+        # le_ms._name is a property
         self.assertIsNotNone(le_msg._name)
 
         # DEBUG
@@ -259,7 +259,7 @@ class TestMsgImpl(unittest.TestCase):
         # TEST TEMPORARILY DISABLED
         if False:
             try:
-                leMsg._name = 'boo'
+                le_ms._name = 'boo'
                 self.fail("ERROR: attempt to change message name succeeded")
             except AttributeError:
                 pass
@@ -272,8 +272,8 @@ class TestMsgImpl(unittest.TestCase):
         self.assertEqual(6, len(le_msg.field_classes))
         self.assertEqual(6, len(le_msg))        # number of fields in instance
         # TEST TEMPORARILY DISABLED
-#        for i in range(len(leMsg)):
-#            self.assertEqual(values[i], leMsg[i].value)
+#        for i in range(len(le_ms)):
+#            self.assertEqual(values[i], le_ms[i].value)
 
         ################################
         # XXX FIELDS ARE NOT AS EXPECTED

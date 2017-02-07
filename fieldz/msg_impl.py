@@ -5,9 +5,9 @@
 
 from wireops.enum import FieldTypes, PrimTypes
 
-from wireops.raw import (length_as_varint, field_hdr_len, read_field_hdr,
-                         write_raw_varint, read_raw_varint,
-                         write_field_hdr)
+from wireops.raw import(length_as_varint, field_hdr_len, read_field_hdr,
+                        write_raw_varint, read_raw_varint,
+                        write_field_hdr)
 
 from wireops.typed import T_GET_FUNCS, T_LEN_FUNCS, T_PUT_FUNCS
 
@@ -40,6 +40,8 @@ def _check_position(chan, end):
 # -------------------------------------------------------------------
 # CODE FRAGMENTS: METHODS USED AS COMPONENTS IN BUILDING CLASSES
 # -------------------------------------------------------------------
+
+# pylint: disable=unused-argument
 
 
 def write(self):
@@ -112,17 +114,18 @@ class MsgImpl(object):
     """
 
     # DISABLE __slots__ until better understood
-#   __slots__ = ['_fields',       # list of field instances
-#                #                 '_fieldsByName',  # that list indexed by Name
+#   __slots__ = ['_field_classes', # list of field instances
+#                #                 '_fields_by_name',  # that list indexed by Name
 #                '_enums',         # nested enums
 #                '_msgs',          # nested messages
 #                ]
 
-    def __init__(self, name, fields=None, enums=None, msgs=None):
+    def __init__(self, name, field_classes=None, enums=None, msgs=None):
         self._name = name
-        self._fields = fields
+        self._field_classes = field_classes
         self._enums = enums
         self._msgs = msgs
+        self._parent_spec = None
 
     def __eq__(self, other):
         if other is None:
@@ -135,13 +138,13 @@ class MsgImpl(object):
 #       print "MESSAGE NAMES THE SAME"              # DEBUG
 
         # -- compare fields -------------------------------
-        if self._fields is None or other.fields is None:
+        if self._field_classes is None or other.field_classes is None:
             return False
 #       print "SAME NUMBER OF FIELDS"               # DEBUG
-        if len(self._fields) != len(other.fields):
+        if len(self._field_classes) != len(other.field_classes):
             return False
-        for i in range(len(self._fields)):
-            if self._fields[i] != other.fields[i]:
+        for i in range(len(self._field_classes)):
+            if self._field_classes[i] != other.field_classes[i]:
                 # DEBUG
                 print("MESSAGE FIELDS %d DIFFER" % i)
                 # END
@@ -170,8 +173,6 @@ class MsgImpl(object):
         return True
 
     def __len__(self):
-        # 2016-08-02
-        # return len(self._fields)
         return len(self._field_classes)
 
     def __getitem__(self, nnn):
@@ -188,7 +189,7 @@ class MsgImpl(object):
         channel.  Returns the message index as a convenience in testing.
         """
         name = self._name
-        ndx = self.parent_spec.msg_name_index(name)
+        ndx = self._parent_spec.msg_name_index(name)
         # DEBUG
         print("WRITE_STAND_ALONE: MSG %s INDEX IS %d" % (name, ndx))
         # END
@@ -213,7 +214,7 @@ class MsgImpl(object):
 
         # XXX This only makes sense for simple messages all of whose
         # fields are required and so have only a single instance
-        for field in self._fields:      # these are instances with a value attr
+        for field in self._field_classes:      # these are instances with a value attr
 
             # CLASS-LEVEL SLOTS are '_name', '_fType', '_quantifier',
             #                       '_fieldNbr', '_default',]
@@ -226,6 +227,7 @@ class MsgImpl(object):
             value = field.value
             default = field.default
 
+            # pylint: disable=no-member
             if f_quant == Quants.REQUIRED or f_quant == Quants.OPTIONAL:
                 if field_type > 23:
                     # DEBUG
@@ -261,7 +263,7 @@ class MsgImpl(object):
             else:
                 raise RuntimeError(
                     "field '%s' has unknown quantifier '%s'" % (
-                        f_name, Q_NAMES[f_quant]))  # GEEP
+                        f_name, f_quant))  # GEEP
 #       # DEBUG
 #       print "AFTER WRITING ENTIRE MESSAGE OFFSET IS %d" % chan.position
 #       # END
@@ -285,7 +287,7 @@ class MsgImpl(object):
         end = chan.position + msg_len
         cls = _make_msg_class(parent_spec, msg_spec)      # generated class
 
-        fields = []                     # ???
+        field_classes = []                     # ???
         values = []                     # ???
 
         # XXX THIS IS NOT GOING TO WORK, BECAUSE WE NEED TO PEEK XXX
@@ -305,6 +307,7 @@ class MsgImpl(object):
             if field_nbr != nbr:
                 raise RuntimeError(" EXPECTED FIELD_NBR %d, GOT %d" % (
                     field_nbr, nbr))
+            # pylint: disable=no-member
             if f_quant == Quants.REQUIRED or f_quant == Quants.OPTIONAL:
                 if field_type > 23:
                     reg = cls.msg_spec.reg
@@ -338,7 +341,7 @@ class MsgImpl(object):
                 raise RuntimeError("unknown quantifier, index '%u'" % f_quant)
         # DEBUG
         print("AFTER COLLECTING %u FIELDS, OFFSET IS %u" % (
-            len(fields), chan.position))
+            len(field_classes), chan.position))
         # END
 
         # XXX BLOWS UP: can't handle Quants.PLUS or Quants.STAR (about line
@@ -353,7 +356,7 @@ class MsgImpl(object):
         """
         msg_len = 0
         nnn = 0  # DEBUG
-        for field in self._fields:
+        for field in self._field_classes:
             f_name = field.name
             f_nbr = field.field_nbr
             f_quant = field.quantifier          # NEXT HURDLE
@@ -363,6 +366,8 @@ class MsgImpl(object):
             # XXX What follows doesn't quite make sense.  If a REQUIRED
             # message is missing, we simply won't find it.  Likewise
             # for Quants.STAR
+
+            # pylint: disable=no-member
             if f_quant == Quants.REQUIRED or f_quant == Quants.OPTIONAL:
                 contrib = T_LEN_FUNCS[field_type](value, f_nbr)
 
@@ -384,6 +389,7 @@ class MsgImpl(object):
                 for varint_ in v_list:
                     # HACKING ABOUT
                     if field_type > 23:
+                        # pylint: disable=no-member
                         reg = self.msg_spec.reg
                         # DEBUG
                         print("    LEN: FIELD TYPE IS %s" %
@@ -414,7 +420,7 @@ class MsgImpl(object):
             else:
                 raise RuntimeError(
                     "field '%s' has unknown quantifier '%s'" % (
-                        f_name, Q_NAMES[f_quant]))  # GEEP
+                        f_name, f_quant))
 
         return msg_len
 
@@ -452,22 +458,22 @@ class MetaMsg(type):
         #############################################################
         # BEING IGNORED - belongs in a maker class
         #############################################################
-#       cls._fields = []
-#       cls._fieldsByName   = {}
+#       cls._field_classes = []
+#       cls._field_classes_by_name   = {}
 #       values = args[0]
 #       for idx, val in enumerate(values):
 #           this_field = cls._field_classes[idx](val)
-#           cls._fields.append(this_field)
-#           cls._fieldsByName[thisField.name] = thisField
+#           cls._field_classes.append(this_field)
+#           cls._field_classes_by_name[thisField.name] = thisField
 #           setattr(cls, this_field.name, val)
 
 #           # DEBUG
 #           print "META_MSG.__call__: idx   = %u" % idx
-#           print "                   name  = %s" % cls._fields[idx].name
-#           print "                   value = %s" % cls._fields[idx].value
+#           print "                   name  = %s" % cls._field_classes[idx].name
+#           print "                   value = %s" % cls._field_classes[idx].value
 #           # END
 
-#       print "  THERE ARE %u FIELDS SET" % len(cls._fields)    # DEBUG
+#       print "  THERE ARE %u FIELDS SET" % len(cls._field_classes)    # DEBUG
 
 #       return super().__init__(name, bases, namespace)
 

@@ -5,8 +5,7 @@ __all__ = ['RegEntry',                      # abstract type
            'CoreTypeEntry',                 # ill-conceived?
            'NodeReg', 'ProtoEntry',
            'ProtoReg', 'MsgReg',            # either may contain ...
-           'MsgEntry', 'EnumEntry',         # either of these
-           ]
+           'MsgEntry', 'EnumEntry', ]       # either of these
 
 from wireops.typed import T_GET_FUNCS, T_PUT_FUNCS
 from wireops.enum import FieldTypes
@@ -167,6 +166,7 @@ class NodeReg(UniqueNameRegistry):
         # core classes
 
         # -- add fieldTypes -----------------------------------------
+        # pylint: disable=not-an-iterable
         for ftype in FieldTypes:
             ndx = ftype.value
             entry = FieldTypeEntry(
@@ -176,6 +176,7 @@ class NodeReg(UniqueNameRegistry):
                 T_GET_FUNCS[ndx])       # getter,
             self._register_basic_type(entry)
 
+        # pylint: disable=not-an-iterable
         for ndx, coretype in enumerate(CoreTypes):
             entry = CoreTypeEntry(
                 self,                   # reg

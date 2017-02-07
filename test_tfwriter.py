@@ -32,6 +32,7 @@ PARENT = ProtoSpec(PROTOCOL, PROTO_REG)
 
 FIELDS = [
 
+    # pylint: disable=no-member
     FieldSpec(MSG_REG, 'i32', FieldTypes.V_UINT32, Quants.REQUIRED, 0),
     FieldSpec(
         MSG_REG,
@@ -206,6 +207,7 @@ class TestTFWriter(unittest.TestCase):
         # the tests here are to exercise their use in a heterogeneous
         # buffer
 
+        # pylint: disable=no-member
         # field 0: _V_UINT32
         fnbr = self.do_round_trip_field(
             tf_writer, tf_reader, fnbr,

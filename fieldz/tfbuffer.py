@@ -83,6 +83,7 @@ class TFReader(TFBuffer):
         (self._p_type, self._field_nbr) = read_field_hdr(self)
 
         # getter has range check
+        # pylint: disable=not-callable
         field_type = self._field_type = FieldTypes(
             self._msg_spec.field_type_from_nbr(self._field_nbr))
 
@@ -93,6 +94,7 @@ class TFReader(TFBuffer):
 
         # gets through dispatch table -------------------------------
         # XXX IMPROPER USE OF KNOWLEDGE OF ORDER OF MEMBERS
+        # pylint: disable=no-member
         if field_type.value >= 0 and field_type.value <= FieldTypes.V_SINT64:
             self._value = T_GET_FUNCS[field_type](self)
             return
@@ -145,6 +147,7 @@ class TFReader(TFBuffer):
         elif self._field_type <= FieldTypes.L_MSG:
             self._p_type = PrimTypes.LEN_PLUS         # DEBUG
             varint_ = read_raw_len_plus(self)
+            # pylint: disable=no-member
             if self._field_type == FieldTypes.L_STRING:
                 self._value = varint_.decode('utf-8')
             elif self._field_type == FieldTypes.L_BYTES:
@@ -229,6 +232,7 @@ class TFWriter(TFBuffer):
         return
 
         # DEBUG ### IMPROPER USE OF KNOWLEDGE OF ORDER OF FIELD NUMBERS
+        # pylint: disable=no-member
         if field_type.value < FieldTypes.L_STRING.value:
             print("putNext through dispatch table:\n         field   %u\n         fType   %u,  %s\n         value   %d (0x%x)\n         offset  %u" % (
                 field_nbr, field_type.sym, field_type.value,

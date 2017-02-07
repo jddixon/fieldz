@@ -44,8 +44,8 @@ class MetaEnum(type):
 
 class GeneratedEnum(metaclass=MetaEnum):
 
-    def __init__(self, aVal, b_val):
-        print("GeneratedEnum object: aaa = %s, bbb = %s" % (aVal, b_val))
+    def __init__(self, aaa, bbb):
+        print("GeneratedEnum object: aaa = %s, bbb = %s" % (aaa, bbb))
 
     def foo_(self, whatever):
         print("foo_ called with param %s" % str(whatever))
@@ -77,6 +77,8 @@ class TestGenEnum(unittest.TestCase):
         f_inst = FCls()
 
         # the keywords passed result in instance attributes
+        # pylint can't cope with dynamic classes
+        # pylint: disable=no-member
         self.assertEqual(3, f_inst.aaa)
         self.assertEqual(7, f_inst.bbb)
         self.assertEqual(11, f_inst.ccc)

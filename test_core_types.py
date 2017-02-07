@@ -44,6 +44,7 @@ class TestCoreTypes(unittest.TestCase):
         for ndx, _ in enumerate(CoreTypes):
             self.assertEqual(_.value, ndx)
             self.assertEqual(CoreTypes.from_sym(_.sym), _)
+        # pylint: disable=no-member
         self.assertEqual(len(CoreTypes), CoreTypes.PROTO_SPEC + 1)
 
     # utility functions #############################################
@@ -55,6 +56,7 @@ class TestCoreTypes(unittest.TestCase):
 
     # actual unit tests #############################################
     def test_the_enum(self):
+        # pylint: disable=no-member
         self.assertEqual(CoreTypes.ENUM_PAIR_SPEC.sym, 'EnumPairSpec')
         self.assertEqual(CoreTypes.ENUM_SPEC.sym, 'EnumSpec')
         self.assertEqual(CoreTypes.FIELD_SPEC.sym, 'FieldSpec')
@@ -124,6 +126,7 @@ class TestCoreTypes(unittest.TestCase):
         field_nbr = 0                           # 0-based field number
         ser = M.EnumPairSpec('funnyFarm', 497)
         self.round_trip_to_wire_format(
+            # pylint: disable=no-member
             chan, field_nbr, CoreTypes.ENUM_PAIR_SPEC, ser)
 
         # -----------------------------------------------------------
@@ -132,11 +135,11 @@ class TestCoreTypes(unittest.TestCase):
         field_nbr = 0                          # 0-based field number
         pairs = [('funnyFarm', 497),
                  ('myOpia', 53),
-                 ('frogHeaven', 919),
-                 ]
+                 ('frogHeaven', 919), ]
         ser = M.EnumSpec.create('thisEnum', pairs)
         self.assertEqual(3, len(ser))
 #       self.round_trip_to_wire_format(
+        # pylint: disable=no-member
 #           chan, field_nbr, CoreTypes.ENUM_SPEC, ser)
 
         # -----------------------------------------------------------
@@ -146,10 +149,12 @@ class TestCoreTypes(unittest.TestCase):
         ser = M.FieldSpec(
             msg_reg,
             'jollyGood',
+            # pylint: disable=no-member
             FieldTypes.V_SINT32,
             Quants.OPTIONAL,
             37)
         self.round_trip_to_wire_format(
+            # pylint: disable=no-member
             chan, field_nbr, CoreTypes.FIELD_SPEC, ser)
 
         # -----------------------------------------------------------
@@ -169,6 +174,7 @@ class TestCoreTypes(unittest.TestCase):
 
         # XXX FAILS:
         self.round_trip_to_wire_format(
+            # pylint: disable=no-member
             chan, field_nbr, CoreTypes.MSG_SPEC, str_obj_model)
 
 if __name__ == '__main__':

@@ -60,6 +60,7 @@ class TestProtoSpec(unittest.TestCase):
 
     def test_maps(self):
         last_ndx = len(FieldTypes) - 1
+        # pylint: disable=not-callable
         last_name = FieldTypes(last_ndx).sym
         self.assertEqual('fbytes32', last_name)
 
@@ -131,6 +132,7 @@ class TestProtoSpec(unittest.TestCase):
         enum = M.EnumSpec.create('Joe', [
             ('oh', 92), ('hello', 47), ('there', 322), ])
         fields = [
+            # pylint: disable=no-member
             M.FieldSpec(
                 msg_reg,
                 'timestamp',

@@ -1,18 +1,13 @@
 pylint setup.py big_test.py little_big_test.py fieldzSpecc  \
-    fieldz/chan.py                  \
     fieldz/compiler/__init__.py     \
-    fieldz/core_types.py            \
     fieldz/enum.py                  \
     fieldz/enum_spec.py             \
     fieldz/field_impl.py            \
-    fieldz/field_types.py           \
     fieldz/msg_impl.py              \
     fieldz/msg_spec.py              \
     fieldz/parser.py                \
-    fieldz/raw.py                   \
     fieldz/reg.py                   \
     fieldz/tfbuffer.py              \
-    fieldz/typed.py                 \
     fieldz/__init__.py              \
     test*.py
 
