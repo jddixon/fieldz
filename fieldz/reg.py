@@ -214,7 +214,7 @@ class XXXRegistry(object):
         # XXX STUB - add some validation
 
         # THIS IS NOW JUST WRONG:
-        entry = _DefinedRegEntry(
+        entry = RegEntry(           # _DefinedRegEntry(
             q_name,
             r_canonical,
             putter,

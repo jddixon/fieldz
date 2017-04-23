@@ -1,4 +1,4 @@
------BEGIN RSA PUBLIC KEY-----
+-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAl9xsFHvzEsi3G8q8dUOM
 3v4WLJefw8Kv0hHBGFPFQF1WRPldwPGNdVKql8zcO52KO4hzFNHNSBCGgH8cbtAk
 mLWB78ackABFJzhY9TEbPkLnoMXJHAXQpZK/JAudSixuAZIXYtIyBWfgLaHjurAT
@@ -6,23 +6,22 @@ mLWB78ackABFJzhY9TEbPkLnoMXJHAXQpZK/JAudSixuAZIXYtIyBWfgLaHjurAT
 Giaje1YAJPNVBt3dlOA5lhBp4GpSYBskJ9UR2Zyt3lgAGK3dEwxYETLMh9VWEV8i
 k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
------END RSA PUBLIC KEY-----
-fieldz v0.11.6
-2017-02-07 02:12:40
+-----END PUBLIC KEY-----
+fieldz v0.11.7
+2017-04-23 00:27:00
 # BEGIN CONTENT #
 fieldz
  .dvcz
-  builds 1126d937593609a60f0665375446f629cf435dad
-  copyright 40a152c0598a7da436fc48b2286fb14b4f2e9101
-  lastBuildList 298cfc98edbcdb5bc7e04665bd7a35f3ee77efdd
+  builds c5c67d07bdace16a90839077e001259b1b71cab7
+  copyright 081f1eacc7bee6ce9cf06ffc957c1472faf9c994
+  lastBuildList ede27d2a3009c35a8c5b5d23a1b7255e9bd781de
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
   projCfg ca22f03c05408d36052b6dfc5d2c647d04f408cb
   projCfg.local 0142f4306975f49ac67004e6645282a1e08bb72b
-  version cbb37c36d5f5d7d88291b3bdaeaa9389f07b2338
- .gitignore 6e8689d0cb3f90dbc0c4df00e9c51c996a95f0b6
+  version f9b8a23bf5ab487d2f3ebfd6359b20d57dfa17af
+ .gitignore 53f201e3ccf4867cf004da764d93d7e697c9d441
  .gitignore.local 2158f4703c1b312acf3b4432191b365240f80504
- :170 3beec95807f3513d0827877dd5ab3b25c240397b
- CHANGES 066b1d88cfe34ab3f62c278e195a895ed918b562
+ CHANGES 64275e712a22598578df8187554c090ba4206968
  LICENSE-MIT.md 7ff8ae89c5e4489f22b3a360a03225241877bc8d
  MANIFEST.in 74987bca31b2b4393987e3dc229bd99f305ada4a
  README dd38f01255fb5fb84d2acdb800476c2f7fbd562e
@@ -35,104 +34,27 @@ fieldz
  bkp2U bc1e6db4e5cd712f074fbc6a625af8a68f3ecd50
  checkCoverage b6d173d863e67a316caf621c84f21e4cdfa9ff0b
  countem 8a064697d05bba0bc70119643cad311f8c12ec9a
- dist
-  fieldz-0.1.0.tar.gz 503a3ddf0cf2e47dab0630e88f9c9caeba35e6da
-  fieldz-0.1.1.tar.gz 0789e512855e771048951d7f8ba3d8e07eb6117c
-  fieldz-0.1.2.tar.gz 7261cccf1a5761c383e7554d56cfbd7ed45df71c
-  fieldz-0.1.3.tar.gz f8e734d9e1d37925889612de139c4cf827d0ebc6
-  fieldz-0.1.4.tar.gz 86237e1c627b0268831e92c596dcc4ffe5cc94f7
-  fieldz-0.1.5.tar.gz 71a8db7e4809fb8af9876793f32909647bd3b2f3
-  fieldz-0.1.6.tar.gz ddb7bf298b9ded548fad779ce74e359c86a5eb27
-  fieldz-0.1.7.tar.gz 1807851c0abeb5645247a4d61b6aa395b165be27
-  fieldz-0.10.0.tar.gz e0607540426a7417ae1dc02859d342568d56738d
-  fieldz-0.10.1.tar.gz 7cb11fdaa1d02f355c8e547c233b17474c4cc841
-  fieldz-0.10.10.tar.gz 6dffaab2d6ef4e598a60b142bd264613aafe3af5
-  fieldz-0.10.11.tar.gz e27d095ccc337cfb24b5888f05ab656312a9a023
-  fieldz-0.10.12.tar.gz 8fcb4cef1b3460e1cff909d7968b3f14c982d6f6
-  fieldz-0.10.13.tar.gz aa8bb88c991ed3190a8de9ddb07f49d32d6836c9
-  fieldz-0.10.14.tar.gz 5156b55bd6e4859075b62eae535df112bd8c939a
-  fieldz-0.10.15.tar.gz c33bdf2dde08613ec7ff0a1cf047babb42733eb6
-  fieldz-0.10.16.tar.gz 03a2f6c93aa2f5536977509b02bb92c10a2c0fcb
-  fieldz-0.10.17.tar.gz addc8eeb5656942992d8ba39f5ad95f4753fb589
-  fieldz-0.10.18.tar.gz 0742067e4ac0e450d0a279ab7e40f966da05bd1e
-  fieldz-0.10.19.tar.gz 05a02819a0699dc4bba0550a6a9c434e89e3d040
-  fieldz-0.10.2.tar.gz 3f69d13ccb81501a72d94b505cf4c0e929326f50
-  fieldz-0.10.20.tar.gz 07762e8aebaa8b27c1a56c95d3a542cda09d986f
-  fieldz-0.10.21.tar.gz f179598db9209ccc5659b841781525e7e2d9bd44
-  fieldz-0.10.22.tar.gz b18f6973e6fb7f86c95962e4bd0af3a27c659b61
-  fieldz-0.10.23.tar.gz 80621550f64a7068d6dd7a8140357caf50ec241a
-  fieldz-0.10.24.tar.gz 41cd27bf077dd7e01bbbeebea4c103659de2d3b2
-  fieldz-0.10.25.tar.gz 093f88307893231b8284fb74e6edf189c17b66c5
-  fieldz-0.10.26.tar.gz b80f9815245bb04e283332929e6f39440594501a
-  fieldz-0.10.27.tar.gz 0a76c748cbf1bcb25dbdbc627f4d2a83cafab9e8
-  fieldz-0.10.28.tar.gz e161ab9bdebcdb3905f8f4fd680188cdbd7c3999
-  fieldz-0.10.29.tar.gz 7cb60ef2282264a0eadff92861adca15e35fd108
-  fieldz-0.10.3.tar.gz b589ec23180dfbbb36a438fdbb93d8404e4eb423
-  fieldz-0.10.30.tar.gz 62876946d809a3d20b70f423b0452c543d0af353
-  fieldz-0.10.4.tar.gz 4040e9227e442c3500c86b8d3d17e2e5cb87b351
-  fieldz-0.10.5.tar.gz 6d3a89e4c9cdf5a564efc5c2f04b463de2c958e7
-  fieldz-0.10.6.tar.gz 2c078d8968bd37347855b90ecf14dc207f2d6d2e
-  fieldz-0.10.7.tar.gz e985b60704c71ec1357bf89e5c0ef65504dd953e
-  fieldz-0.10.8.tar.gz f02d8a7f9d244c672753afdf52c88c5a5a977f17
-  fieldz-0.10.9.tar.gz f72654a00c1533a47ff048bcfe46e7747f4e592a
-  fieldz-0.11.0.tar.gz e3aaecdad317b290ad7c79538bcaf55872e15efb
-  fieldz-0.11.1.tar.gz 3dadc91b27aaf42c2d21cf78c3ba1e5b8dfa8585
-  fieldz-0.11.2.tar.gz b4b1e4d8060ba16b068ad535ab93f516b0da95a2
-  fieldz-0.11.3.tar.gz a4fec1318f85da9ef4208d16e835935f2f0f3ca4
-  fieldz-0.11.4.tar.gz ca7edb5b47abb5a5290fdc3709fa49f3b242337a
-  fieldz-0.11.5.tar.gz 177dddd4ef536225c5da6960f66fe92e7cff620e
-  fieldz-0.11.6.tar.gz b8b574c474d3ef2136e75037e86502750ec9072e
-  fieldz-0.2.0.tar.gz 9201022a2e98764b0b6c3d8a7a7a512a30ec1a58
-  fieldz-0.2.1.tar.gz fed5d8276ab0640864a1562b9ca3a42dcb0be861
-  fieldz-0.2.2.tar.gz e4d61e2d5bcb7220a38342b4c233d887bc3393a4
-  fieldz-0.2.3.tar.gz 19e588d947b55d100cfb315d7c29d289a7ba4a9b
-  fieldz-0.2.4.tar.gz 2aa2c282a3f4e74fe1c01857203c08349904cca1
-  fieldz-0.3.0.tar.gz af8b0e1155bbdcf901b2ebceb93e1dadeb0497e5
-  fieldz-0.3.1.tar.gz 06fb5177f38e01b16e43d0c827e15ef648767f81
-  fieldz-0.3.2.tar.gz ee9dbad7d1d8b29ecec953ad56d1667882cb098f
-  fieldz-0.3.3.tar.gz 1822e593aaadcc916c4acde3ab99a972840ce24c
-  fieldz-0.3.4.tar.gz dd52e945e9cdc98de03642326bd569e0c51d65f0
-  fieldz-0.3.5.tar.gz bbb9903cd8126ec66f5124a4e82bff7143f85ba9
-  fieldz-0.3.6.tar.gz 93e7cf62432c527711007c0cd160c472d3831725
-  fieldz-0.4.0.tar.gz ab418832490f3b3c209040c937462ffc15d9f222
-  fieldz-0.4.1.tar.gz b7b98b95c3be354a10f7e5025417b202c65bd8da
-  fieldz-0.4.2.tar.gz 8830cf058748461b922f7e7e784be97e7196179e
-  fieldz-0.4.3.tar.gz f651ddab699393727b7e06cd6048524693b8697f
-  fieldz-0.4.4.tar.gz 843760c750db3ce023976a08e393c1159eae0163
-  fieldz-0.5.0.tar.gz d1e42de3b1de4b6b782aca99d3f8effb4a541874
-  fieldz-0.5.1.tar.gz f665bbaf8dd31b47cfcbefcadd3b84f629e8d554
-  fieldz-0.5.2.tar.gz 8d1c751766e176288bce6b1dea73844ef40bffd0
-  fieldz-0.5.3.tar.gz 4457a876e2f0e1e9381c3023fc309c82f092c2a9
-  fieldz-0.5.4.tar.gz d6046ffa462aefcbd80bdbbe83172ea5735b1059
-  fieldz-0.5.5.tar.gz 7d98acc3a6646b017b457bb59b6d3265d2d6fbb3
-  fieldz-0.6.0.tar.gz cd4dc6f8925a68aca17db1e794e2ef65382afb19
-  fieldz-0.6.1.tar.gz 32a592dcf068039dc4e03a0374343915ba5c5678
-  fieldz-0.7.0.tar.gz 94c6a6ddbceb652432cc9a518e0863af677c9e5a
-  fieldz-0.8.0.tar.gz b4c1eaacec632a1f62fda7ede86237504373d2e1
-  fieldz-0.9.0.tar.gz 86cf163b13e7641020d184098242d7a499da4a00
-  fieldz-0.9.1.tar.gz 97b2b2e8bb471c422a154b06ec46cddbbd8a43fe
-  fieldz-0.9.2.tar.gz 84c30f21b7d6869b36305a734fd031188af75b5e
  doPyLint f5b9ba56e0702a1cb88ab1ce41988670aee07893
  example.msgSpec 3bbbd43c538632af960b0f779cf505a56a411d34
  fieldz
-  __init__.py 619b6c906207ec419e4ebf56e7b697ae792ec5ae
+  __init__.py 60f20e3e9bf7b5c064a26be1d2d2c26770aa9987
   compiler
    __init__.py 9e9bf1e500053199b135d1447d216cd9146b7e21
-  enum.py 32159214fc9e8c72328639221230effca7924e8b
-  enum_spec.py 77ebd2ed8eea2bce5de17ce58ae86ffe74420c90
+  enum.py 89610aa020b388b4d01bfcfd34003c54c275d66b
+  enum_spec.py e9a22c30275a86d56b03c66ff435686e94ef92fe
   field_impl.py f2a6653c9212248e93f1921475e5421ab944ba92
-  msg_impl.py 840655c585481f879e184002b8909e46feec74df
-  msg_spec.py 6979afe3e0ef67f6622b5eee4ee576f439075f73
+  msg_impl.py 58d076301158b27ec9e8be53ec920838b210af6b
+  msg_spec.py 945fa345d5efe3b249455fc2e982a407bff5f274
   nested_enum_proto_spec.py aa3d337dad1386cecba963f69fba569e1ead2e05
   nested_msgs_proto_spec.py e350f3c253c5822762e93c619527e6a770fcb411
   parser.py 9b7d438f441d1f6bfb9804a4ccf449c02ae148f1
-  reg.py d5610d4b16dc19850779f362a19925e82ab63b8d
+  reg.py be75ad4b1881538e0fd4c6ea7a8ffd6400cc2be5
   ring_data_proto.py 9783e1cb6f3956da8070c1fdac376cd4ebadee04
   simple_protocol.py 8b190e201a024bbb4375eeb2770206999846cdfe
   tfbuffer.py b7aabe723eb292accde6f82911a1ab989cd7a9b3
   upax_proto_spec.py bc613467488680f5af8a8bdd83b79f88948f285e
   zoggery_proto_spec.py b61528698c3ee766978cb39ec39cab0a988e7079
- fieldzSpecc f965c19194528b4791fadb231eb542707725742b
+ fieldzSpecc 17f94b0d5fde7bb6c1d25841d6b89c17f1e53f0d
  ghpDoc
   api.md 56cf4bafbcfc9f739f8e011837c1164122898c9b
   css
@@ -180,25 +102,25 @@ fieldz
  styleit e5072dc995e149620b3c5911bbd22725e6b837c5
  test.all e0ca9566c872c155ca4c85ba178cacc9df264dd9
  test_big_test.py 264b643bd18590e85d7f4cc5329f412179bb2293
- test_core_types.py 17dd4b0f7ea8e9e0248e3106daf684c07eb0f044
- test_enums.py 3b3a202ffcf2a0d001c5236803cf053330ac8914
+ test_core_types.py ab714ed8ecbf5cfefc511ae2c2130cf20f202998
+ test_enums.py 01e78aea3249c0ce7c1bad381d434800ded42761
  test_field_impl.py 939308db4cf1983e3071e1e3be7df972bc90129c
- test_gen_enum.py 88748944d6a4dfa1a8f794b58dc12ae6354e74ca
- test_little_big.py 6cfc83557e0aae61c6b99f85bd6cb6f34b7280d1
- test_log_entry.py aa38c5d5e980c61bc04ac9584814a48725068414
- test_msg_impl.py b4bc71cc775bbbaf4a32f03e2185c9cfd791be10
- test_msg_spec.py d37b0bed2fff07b70bd6c9b67c41a26988ba2274
- test_proto_spec.py cf27753ddf6143bf7643aae2bfc05b9f9701ebb7
+ test_gen_enum.py 4dccd14c9086fda37e70f8edde7dad60689b1596
+ test_little_big.py d824376b1f0a5e299fc9dfcbcc6f0ebd204a9abe
+ test_log_entry.py 47f630acc65143fd1cd147122ab4aa51ce84fd0f
+ test_msg_impl.py fabb8dc758cf770b8d2ac8577b5f832e7065cd2b
+ test_msg_spec.py 258509da216c05776f4f2039a4c81f263b3ab5a7
+ test_proto_spec.py 0ac732b611c832b71f53b858276e786339a5f5f9
  test_reg.py a4e440207a512c62d3dce2f3184be4c83ffb6f44
  test_ring_data_proto.py 28f4b3e1dccc23169fe62e20286645bfd98ea7cc
- test_solo.py 516b4c5334b8c031c9f8b2e1c678dec24db2fbea
- test_tfwriter.py a80ceb620dda6319aa1409e34973c66ab06419d6
+ test_solo.py a312643dc690e0af7e0d97563130960830e01df1
+ test_tfwriter.py 00dddfcd5f8076b55e74b05bfbcec491ed6d9e86
  test_util.xxx_IS_ONE_LEVEL_UP da39a3ee5e6b4b0d3255bfef95601890afd80709
- test_zoggery_serialization.py 0945a2c3ddf6e6abb164a8449b536233c5eee326
+ test_zoggery_serialization.py 7f40b12178e9310cc09cecc09929f7720a28fe11
  unittest.xlgo b32fc02997775604f2764ed874f4eda72af603e5
  unittest_import.xlgo ed4db9bf1426640784982404685736cf937cead6
  upax_proto_spec.py bc613467488680f5af8a8bdd83b79f88948f285e
  zoggery_proto_spec.py b61528698c3ee766978cb39ec39cab0a988e7079
 # END CONTENT #
 
-PmY4ykTQrRg1CRtvjbGGJaV6VPIIW3dnYTRIa3NH57qIxqwoui9bpk7XKuDI3oaFfuuBfcyBL4VI1r8ReCsmrKlZ9rk0lv85sIxpwy5OX4+ChMTlMdFs2GFSsRhaqzV81rBqxb7fITB288wJ1ractsoUgoYmQ/H4fmdiEI50+ZTFcoHMKiHB0TCPUKFDz0X3VaSDdsX4L/+uBDwdLMW++sM46Y2aCXEV6ygICPHrDJsUNGdZIGMIrD+G4jSp8Y4NqAQMVzHjIbi3nZPL5lmXWKFxwscSsX7Jtf2Jma6jvDjZCyMSrcT5BDGmMYUftnaJSrAsVn7yOvNVlSr2CwfSRA==
+flSTdkvsmmymeAIjh/AxEYR0pMDHsvDEkK9YmgP1O1ouTZvgQ/2rU3teqTtMPZ0idsbl4urFhWt84ZT5Bx8+pAP8/xJKEleSrE14wOUuUSZOdnw+SyFI1GK7yNDNEDsJYhGFxbgPS5MGeNYCcUlTg8h/6ybw/sm6rePQ/a/ZkRw8D4xr+WPndXp2wnTnCsmWOTbkTgvjDxWRMp+WMU34HHnYbKCemdE681mJXcwpJFhdXJwDjXzLJr2CsUvsXAPS+meKVjja2Ywe1hOY1a8D7n2bGEhcSOMaO/4T7W5zbRoc5O+YsrI7aAkHMjs0dZiCC+7P2uC4QnbRBZkH5Wii5A==

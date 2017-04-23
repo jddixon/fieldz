@@ -107,5 +107,6 @@ class TestGenEnum(unittest.TestCase):
             # success: caught attempt to set new symbol
             pass
 
+
 if __name__ == '__main__':
     unittest.main()

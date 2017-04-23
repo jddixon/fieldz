@@ -317,5 +317,6 @@ class TestTFWriter(unittest.TestCase):
 
         # may want to introduce eg fSha3Key type, allowing semantic checks
 
+
 if __name__ == '__main__':
     unittest.main()

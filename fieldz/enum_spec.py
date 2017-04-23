@@ -20,5 +20,6 @@ class QEnum(SimpleEnum):
     def __init__(self):
         super(QEnum, self).__init__(['REQUIRED', 'OPTIONAL', 'STAR', 'PLUS'])
 
+
 # This allows us to import a reference to the class instance.
 sys.modules[__name__] = QEnum()

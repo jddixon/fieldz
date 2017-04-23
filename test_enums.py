@@ -35,5 +35,6 @@ class TestEnums(unittest.TestCase):
 
         self.assertEqual(len(Quants), 4)
 
+
 if __name__ == '__main__':
     unittest.main()

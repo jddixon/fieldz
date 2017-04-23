@@ -54,6 +54,7 @@ def validate_simple_name(string):
     if match is None:
         raise RuntimeError("invalid simple name '%s'" % string)
 
+
 # both protocol names and field names can be qualified
 _VALID_DOTTED_NAME_PAT = _VALID_NAME_PAT + r'(\.' + _VALID_NAME_PAT + r')*$'
 _VALID_DOTTED_NAME_RE = re.compile(_VALID_DOTTED_NAME_PAT)
@@ -751,6 +752,7 @@ class MsgSpec(SuperSpec):
 def not_impl(*arg):
     raise NotImplementedError
 
+
 NBR_CORE_TYPES = len(CoreTypes)
 
 C_PUT_FUNCS = [not_impl] * NBR_CORE_TYPES
@@ -837,6 +839,7 @@ def enum_pair_spec_getter(dummy_reg, chan):
     obj = EnumPairSpec(sym, val)
     return obj
 
+
 # pylint: disable=no-member
 C_LEN_FUNCS[CoreTypes.ENUM_PAIR_SPEC] = enum_pair_spec_len
 C_P_LEN_FUNCS[CoreTypes.ENUM_PAIR_SPEC] = enum_pair_spec_prefixed_len
@@ -911,6 +914,7 @@ def enum_spec_getter(dummy_reg, chan):
     # create EnumSpec instance, which gets returned
     val = EnumSpec(name, pairs)
     return val
+
 
 # pylint: disable=no-member
 C_LEN_FUNCS[CoreTypes.ENUM_SPEC] = enum_spec_len
@@ -1004,6 +1008,7 @@ def field_spec_getter(msg_reg, chan):
     val = FieldSpec(msg_reg, name, field_type, quant, f_nbr, default)
 
     return val
+
 
 # pylint: disable=no-member
 C_LEN_FUNCS[CoreTypes.FIELD_SPEC] = field_spec_len
@@ -1103,6 +1108,7 @@ def msg_spec_getter(msg_reg, chan):
     val = MsgSpec(name, msg_reg, dummy_parent)
     return val
 
+
 C_LEN_FUNCS[CoreTypes.MSG_SPEC] = msg_spec_len
 C_P_LEN_FUNCS[CoreTypes.MSG_SPEC] = msg_spec_prefixed_len
 C_PUT_FUNCS[CoreTypes.MSG_SPEC] = msg_spec_putter
@@ -1129,6 +1135,7 @@ def seq_spec_putter(chan, val, nnn):
 def seq_spec_getter(dummy_reg, chan):
     # STUB
     return val
+
 
 # pylint: disable=no-member
 C_LEN_FUNCS[CoreTypes.SEQ_SPEC] = seq_spec_len
@@ -1157,6 +1164,7 @@ def proto_spec_putter(chan, val, nnn):
 def proto_spec_getter(chan):
     # STUB
     return val              # END DISPATCH TABLES
+
 
 # pylint: disable=no-member
 C_LEN_FUNCS[CoreTypes.PROTO_SPEC] = proto_spec_len

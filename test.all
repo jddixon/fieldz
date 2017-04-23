@@ -6,7 +6,6 @@ then
   
   ./test_big_test.py
   ./test_core_types.py
-  ./test_enums_old.py
   ./test_enums.py
   ./test_field_impl.py
   ./test_gen_enum.py
