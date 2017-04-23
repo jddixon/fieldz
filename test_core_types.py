@@ -177,5 +177,6 @@ class TestCoreTypes(unittest.TestCase):
             # pylint: disable=no-member
             chan, field_nbr, CoreTypes.MSG_SPEC, str_obj_model)
 
+
 if __name__ == '__main__':
     unittest.main()

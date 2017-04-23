@@ -33,6 +33,7 @@ def _ct_sym(self):
     """ Return the symbol associated with this member. """
     return _CT_SYMBOLS[self.value]
 
+
 CoreTypes.sym = _ct_sym       # add the method to the class
 
 _CT_NDX = {}
@@ -47,6 +48,7 @@ for _ in CoreTypes:
 def _from_sym(cls, symbol):
     """ Given a symbol, return the corresponding member. """
     return _CT_NDX[symbol]
+
 
 CoreTypes.from_sym = _from_sym
 
@@ -63,6 +65,7 @@ _Q_SYMBOLS = ['', '?', '*', '+', ]
 def _q_sym(self):
     """ Return the symbol associated with this smember. """
     return _Q_SYMBOLS[self.value]
+
 
 Quants.sym = _q_sym
 

@@ -314,5 +314,6 @@ class TestMsgSpec(unittest.TestCase):
         self.round_trip_msg_spec_via_str(
             str_obj_model, protocol)             # GEEP
 
+
 if __name__ == '__main__':
     unittest.main()

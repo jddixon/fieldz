@@ -1,5 +1,8 @@
 ~/dev/py/fieldz/CHANGES
 
+v0.11.7
+    2017-04-22
+        * drop dist/* from repo; plus minor edits                   SLOC 6004
 v0.11.6
     2017-02-06
         * more pylinting, more minor bug fixes                      SLOC 5689
@@ -389,6 +392,7 @@ v0.1.2
         * working varint, fixed len 32- and 64-bit, var len bytestring
             and associated tests
         * initial svn import
+
 
 
 

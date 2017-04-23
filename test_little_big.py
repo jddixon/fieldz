@@ -297,5 +297,6 @@ class TestLittleBig(unittest.TestCase):
         self.assertEqual(0, chan2.limit)
         self.assertEqual(0, chan2.position)
 
+
 if __name__ == '__main__':
     unittest.main()

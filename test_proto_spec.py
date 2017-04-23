@@ -363,5 +363,6 @@ class TestProtoSpec(unittest.TestCase):
         f1cls = make_field_class(dotted_name, field_spec)
         self.assertEqual(id(f0cls), id(f1cls))
 
+
 if __name__ == '__main__':
     unittest.main()

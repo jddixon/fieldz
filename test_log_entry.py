@@ -136,5 +136,6 @@ class TestLogEntry(unittest.TestCase):
         self.assertEqual('lstring', reader.field_type.sym)
         self.assertEqual(path, reader.value)
 
+
 if __name__ == '__main__':
     unittest.main()

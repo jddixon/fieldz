@@ -291,6 +291,7 @@ class MsgImpl(object):
         values = []                     # ???
 
         # XXX THIS IS NOT GOING TO WORK, BECAUSE WE NEED TO PEEK XXX
+        # pylint: disable=no-member
         for f_class in cls._field_classes:
 
             field_type = f_class._field_type       # a number
@@ -373,9 +374,10 @@ class MsgImpl(object):
 
                 # DEBUG
                 if field_type > 23:
+                    reg = self.msg_spec.reg     # or protocol reg?
                     # XXX is the registry for the protocol? msgSpec?
                     print("    F_TYPE %u IS MSG %s" % (field_type,
-                                                       XXX.reg_id2name(field_type)))
+                                                       reg.reg_id2name(field_type)))
                     print("    LEN: FIELD %u (%s), TYPE %u, CONTRIBUTION %d" % (
                         nnn, f_name, field_type, contrib))
                 nnn += 1
@@ -524,6 +526,7 @@ def msg_initter(cls, *args, **attrs):
     #  TypeError: object.__new__() takes no parameters
     #
     pass
+
 
 # XXX A Strange Litle Device:
 MSG_CLS_BY_Q_NAME = {}    # PROTO_NAME . MSG_NAME => class
