@@ -4,21 +4,7 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/fieldz
   
-  ./test_big_test.py
-  ./test_core_types.py
-  ./test_enums.py
-  ./test_field_impl.py
-  ./test_gen_enum.py
-  ./test_little_big.py
-  ./test_log_entry.py
-  ./test_msg_impl.py
-  ./test_msg_spec.py
-  ./test_proto_spec.py
-  ./test_reg.py
-  ./test_ring_data_proto.py
-  ./test_solo.py
-  ./test_tfwriter.py
-  ./test_zoggery_serialization.py
+  pytest
   
 else
   echo "DEV_BASE is not defined"

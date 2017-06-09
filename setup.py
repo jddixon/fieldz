@@ -7,7 +7,7 @@
 import re
 from distutils.core import setup
 __version__ = re.search(r"__version__\s*=\s*'(.*)'",
-                        open('fieldz/__init__.py').read()).group(1)
+                        open('src/fieldz/__init__.py').read()).group(1)
 
 # see http://docs.python.org/distutils/setupscript.html
 
@@ -21,11 +21,11 @@ setup(name='fieldz',
       py_modules=[],
       #
       # a package has its own directory with an __init__.py in it
-      packages=['fieldz', ],
+      packages=['src/fieldz', ],
       #
       # scripts should have a globally unique name; they might be in a
       #   scripts/ subdir; SQuote the script name
-      scripts=['fieldzSpecc'],
+      scripts=['src/fieldzSpecc'],
       description='python3 protocol for compressing/decompressing data',
       url='https://jddixon.github.io/fieldz',
       classifiers=[

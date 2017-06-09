@@ -1,5 +1,8 @@
 ~/dev/py/fieldz/CHANGES
 
+v0.11.8
+    2017-06-09
+        * restructure for pytest                                    SLOC 5367
 v0.11.7
     2017-04-22
         * drop dist/* from repo; plus minor edits                   SLOC 6004
@@ -392,6 +395,7 @@ v0.1.2
         * working varint, fixed len 32- and 64-bit, var len bytestring
             and associated tests
         * initial svn import
+
 
 
 

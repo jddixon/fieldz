@@ -7,21 +7,21 @@ Giaje1YAJPNVBt3dlOA5lhBp4GpSYBskJ9UR2Zyt3lgAGK3dEwxYETLMh9VWEV8i
 k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END PUBLIC KEY-----
-fieldz v0.11.7
-2017-04-23 00:27:00
+fieldz v0.11.8
+2017-06-09 21:19:03
 # BEGIN CONTENT #
 fieldz
  .dvcz
-  builds c5c67d07bdace16a90839077e001259b1b71cab7
+  builds 8b4d7395a277f93b6d3746ed815f6ecea564efed
   copyright 081f1eacc7bee6ce9cf06ffc957c1472faf9c994
-  lastBuildList ede27d2a3009c35a8c5b5d23a1b7255e9bd781de
+  lastBuildList e45edb1d0ebc92bf72ed5c004ce70049cb452f8a
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
   projCfg ca22f03c05408d36052b6dfc5d2c647d04f408cb
   projCfg.local 0142f4306975f49ac67004e6645282a1e08bb72b
-  version f9b8a23bf5ab487d2f3ebfd6359b20d57dfa17af
+  version 5008e019949766ce1d09f339c453030f8d65d882
  .gitignore 53f201e3ccf4867cf004da764d93d7e697c9d441
  .gitignore.local 2158f4703c1b312acf3b4432191b365240f80504
- CHANGES 64275e712a22598578df8187554c090ba4206968
+ CHANGES 9e18ff57827b3891da11c6f4f5931d86b10cb9b4
  LICENSE-MIT.md 7ff8ae89c5e4489f22b3a360a03225241877bc8d
  MANIFEST.in 74987bca31b2b4393987e3dc229bd99f305ada4a
  README dd38f01255fb5fb84d2acdb800476c2f7fbd562e
@@ -30,31 +30,11 @@ fieldz
  README.jdd 8542e96cba921fe8cede53e9548b10c63e1caa54
  README.md 00c43a0dcdc2da7072ec916b39a8f11551a663a0
  TODO 3f2fb2911832b1df9c7f4254c0b314af9977acc9
- big_test.py d0beb3b46d681152ea1261922a2cd9274fd49fef
  bkp2U bc1e6db4e5cd712f074fbc6a625af8a68f3ecd50
  checkCoverage b6d173d863e67a316caf621c84f21e4cdfa9ff0b
- countem 8a064697d05bba0bc70119643cad311f8c12ec9a
+ countem 1a3ad54ca54cf40924c01af9cf0ae5da43c1f602
  doPyLint f5b9ba56e0702a1cb88ab1ce41988670aee07893
  example.msgSpec 3bbbd43c538632af960b0f779cf505a56a411d34
- fieldz
-  __init__.py 60f20e3e9bf7b5c064a26be1d2d2c26770aa9987
-  compiler
-   __init__.py 9e9bf1e500053199b135d1447d216cd9146b7e21
-  enum.py 89610aa020b388b4d01bfcfd34003c54c275d66b
-  enum_spec.py e9a22c30275a86d56b03c66ff435686e94ef92fe
-  field_impl.py f2a6653c9212248e93f1921475e5421ab944ba92
-  msg_impl.py 58d076301158b27ec9e8be53ec920838b210af6b
-  msg_spec.py 945fa345d5efe3b249455fc2e982a407bff5f274
-  nested_enum_proto_spec.py aa3d337dad1386cecba963f69fba569e1ead2e05
-  nested_msgs_proto_spec.py e350f3c253c5822762e93c619527e6a770fcb411
-  parser.py 9b7d438f441d1f6bfb9804a4ccf449c02ae148f1
-  reg.py be75ad4b1881538e0fd4c6ea7a8ffd6400cc2be5
-  ring_data_proto.py 9783e1cb6f3956da8070c1fdac376cd4ebadee04
-  simple_protocol.py 8b190e201a024bbb4375eeb2770206999846cdfe
-  tfbuffer.py b7aabe723eb292accde6f82911a1ab989cd7a9b3
-  upax_proto_spec.py bc613467488680f5af8a8bdd83b79f88948f285e
-  zoggery_proto_spec.py b61528698c3ee766978cb39ec39cab0a988e7079
- fieldzSpecc 17f94b0d5fde7bb6c1d25841d6b89c17f1e53f0d
  ghpDoc
   api.md 56cf4bafbcfc9f739f8e011837c1164122898c9b
   css
@@ -73,21 +53,16 @@ fieldz
    xlattice-2014.jpg f185aaad06db71acd9454f31054c62c56d36f37f
   index.md 88f421634c558e8ebaa201441220736641eadc8c
  installit 76c3ef246d22a14ee8ae30d3b996cfd942f8ed88
- little_big_test.py b6a2612d1c7b588916f6f0689f30c87b90d02e52
  logs
  name-pairs-hack d54b5633d208a2bf6142ed115167df15250f1b05
  name-pairs-hack-first-try 09dfc1debc4d28c3040f0e8b50f6a5f8235e8aaf
  name-pairs-local 11f964a7f02f7426161f577eeba7e22644c79912
- nested_enum_proto_spec.py aa3d337dad1386cecba963f69fba569e1ead2e05
- nested_msgs_proto_spec.py e350f3c253c5822762e93c619527e6a770fcb411
  netDistrib.conf 66f7af2d31db66cd024e7975552c6cf3c1c27c28
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
  renameLocal b67bd94866dd4fee9922c431f5d19dd840b9e248
  renamePerAPI f610fc76e9ed8cf12425e4f64a2afe0c4300b51c
  renamePerHack 7351c574ecc04a2df897d036dacc543d23a7b8d1
- ring_data_proto.py 9783e1cb6f3956da8070c1fdac376cd4ebadee04
- setup.py 284d566de5a459040682483e10941f1572616dc7
- simple_protocol.py 8b190e201a024bbb4375eeb2770206999846cdfe
+ setup.py 2bebb219fded29259d35517bd0b3aed3f97e718f
  specs
   org
    xlattice
@@ -99,28 +74,55 @@ fieldz
       MsgSpec.xlgo dd899415926f6e0735b409dfc4f5c59e129168e5
     upax
      logEntry.xlgo 17d8342f972f087ec0f20f65664e98e18aab02d7
- styleit e5072dc995e149620b3c5911bbd22725e6b837c5
- test.all e0ca9566c872c155ca4c85ba178cacc9df264dd9
- test_big_test.py 264b643bd18590e85d7f4cc5329f412179bb2293
- test_core_types.py ab714ed8ecbf5cfefc511ae2c2130cf20f202998
- test_enums.py 01e78aea3249c0ce7c1bad381d434800ded42761
- test_field_impl.py 939308db4cf1983e3071e1e3be7df972bc90129c
- test_gen_enum.py 4dccd14c9086fda37e70f8edde7dad60689b1596
- test_little_big.py d824376b1f0a5e299fc9dfcbcc6f0ebd204a9abe
- test_log_entry.py 47f630acc65143fd1cd147122ab4aa51ce84fd0f
- test_msg_impl.py fabb8dc758cf770b8d2ac8577b5f832e7065cd2b
- test_msg_spec.py 258509da216c05776f4f2039a4c81f263b3ab5a7
- test_proto_spec.py 0ac732b611c832b71f53b858276e786339a5f5f9
- test_reg.py a4e440207a512c62d3dce2f3184be4c83ffb6f44
- test_ring_data_proto.py 28f4b3e1dccc23169fe62e20286645bfd98ea7cc
- test_solo.py a312643dc690e0af7e0d97563130960830e01df1
- test_tfwriter.py 00dddfcd5f8076b55e74b05bfbcec491ed6d9e86
+ src
+  fieldz
+   __init__.py 258fc74cad07d97824fbff133a69c3b317a9c43d
+   compiler
+    __init__.py 9e9bf1e500053199b135d1447d216cd9146b7e21
+   enum.py 89610aa020b388b4d01bfcfd34003c54c275d66b
+   enum_spec.py e9a22c30275a86d56b03c66ff435686e94ef92fe
+   field_impl.py f2a6653c9212248e93f1921475e5421ab944ba92
+   msg_impl.py 58d076301158b27ec9e8be53ec920838b210af6b
+   msg_spec.py 945fa345d5efe3b249455fc2e982a407bff5f274
+   nested_enum_proto_spec.py aa3d337dad1386cecba963f69fba569e1ead2e05
+   nested_msgs_proto_spec.py e350f3c253c5822762e93c619527e6a770fcb411
+   parser.py 9b7d438f441d1f6bfb9804a4ccf449c02ae148f1
+   reg.py be75ad4b1881538e0fd4c6ea7a8ffd6400cc2be5
+   ring_data_proto.py 9783e1cb6f3956da8070c1fdac376cd4ebadee04
+   simple_protocol.py 8b190e201a024bbb4375eeb2770206999846cdfe
+   tfbuffer.py b7aabe723eb292accde6f82911a1ab989cd7a9b3
+   upax_proto_spec.py bc613467488680f5af8a8bdd83b79f88948f285e
+   zoggery_proto_spec.py b61528698c3ee766978cb39ec39cab0a988e7079
+  fieldzSpecc 17f94b0d5fde7bb6c1d25841d6b89c17f1e53f0d
+ styleit da93538f74114a3bb228958103f415f0adaca95d
+ test.all f5991b947c382642144d8b79c65acc12d6908bf1
  test_util.xxx_IS_ONE_LEVEL_UP da39a3ee5e6b4b0d3255bfef95601890afd80709
- test_zoggery_serialization.py 7f40b12178e9310cc09cecc09929f7720a28fe11
- unittest.xlgo b32fc02997775604f2764ed874f4eda72af603e5
- unittest_import.xlgo ed4db9bf1426640784982404685736cf937cead6
- upax_proto_spec.py bc613467488680f5af8a8bdd83b79f88948f285e
- zoggery_proto_spec.py b61528698c3ee766978cb39ec39cab0a988e7079
+ tests
+  big_test.py d0beb3b46d681152ea1261922a2cd9274fd49fef
+  little_big_test.py b6a2612d1c7b588916f6f0689f30c87b90d02e52
+  nested_enum_proto_spec.py aa3d337dad1386cecba963f69fba569e1ead2e05
+  nested_msgs_proto_spec.py e350f3c253c5822762e93c619527e6a770fcb411
+  ring_data_proto.py 9783e1cb6f3956da8070c1fdac376cd4ebadee04
+  simple_protocol.py 8b190e201a024bbb4375eeb2770206999846cdfe
+  test_big_test.py 264b643bd18590e85d7f4cc5329f412179bb2293
+  test_core_types.py ab714ed8ecbf5cfefc511ae2c2130cf20f202998
+  test_enums.py 01e78aea3249c0ce7c1bad381d434800ded42761
+  test_field_impl.py 939308db4cf1983e3071e1e3be7df972bc90129c
+  test_gen_enum.py 4dccd14c9086fda37e70f8edde7dad60689b1596
+  test_little_big.py d824376b1f0a5e299fc9dfcbcc6f0ebd204a9abe
+  test_log_entry.py 47f630acc65143fd1cd147122ab4aa51ce84fd0f
+  test_msg_impl.py fabb8dc758cf770b8d2ac8577b5f832e7065cd2b
+  test_msg_spec.py 258509da216c05776f4f2039a4c81f263b3ab5a7
+  test_proto_spec.py 0ac732b611c832b71f53b858276e786339a5f5f9
+  test_reg.py a4e440207a512c62d3dce2f3184be4c83ffb6f44
+  test_ring_data_proto.py 28f4b3e1dccc23169fe62e20286645bfd98ea7cc
+  test_solo.py a312643dc690e0af7e0d97563130960830e01df1
+  test_tfwriter.py 00dddfcd5f8076b55e74b05bfbcec491ed6d9e86
+  test_zoggery_serialization.py 7f40b12178e9310cc09cecc09929f7720a28fe11
+  unittest.xlgo b32fc02997775604f2764ed874f4eda72af603e5
+  unittest_import.xlgo ed4db9bf1426640784982404685736cf937cead6
+  upax_proto_spec.py bc613467488680f5af8a8bdd83b79f88948f285e
+  zoggery_proto_spec.py b61528698c3ee766978cb39ec39cab0a988e7079
 # END CONTENT #
 
-flSTdkvsmmymeAIjh/AxEYR0pMDHsvDEkK9YmgP1O1ouTZvgQ/2rU3teqTtMPZ0idsbl4urFhWt84ZT5Bx8+pAP8/xJKEleSrE14wOUuUSZOdnw+SyFI1GK7yNDNEDsJYhGFxbgPS5MGeNYCcUlTg8h/6ybw/sm6rePQ/a/ZkRw8D4xr+WPndXp2wnTnCsmWOTbkTgvjDxWRMp+WMU34HHnYbKCemdE681mJXcwpJFhdXJwDjXzLJr2CsUvsXAPS+meKVjja2Ywe1hOY1a8D7n2bGEhcSOMaO/4T7W5zbRoc5O+YsrI7aAkHMjs0dZiCC+7P2uC4QnbRBZkH5Wii5A==
+Ycpta0iSIP7w1qz55O7IkHrOxRbVAb0BhueYoOEftttpYGeQqwHV3Z3EsR0i8pGVQVJ25tM2sLsH58Ef5sG7XfKnaKBI9L+xiKJOdQCiptFsSXMB5/k5+twg7pZkQziEIIUTd5bRsLetJeaOYqvdldVlR2iiYYoQZK2jEAabrcF3IM7uNc/QKGKY/Ca0ELVfDleMaTQhwAjy97cSOQx9Lgh9serlovUIeXIq7Cye5aI0VP2xNgfQNQPFidAcrJIfFrO2HKryQzXYj2QKpD2Eq9SMTEp9LHSYPF5T7ENp5g90mQ8Njzb676afxXK5OmW3Nu7Q++t7cPiZxXBilD/T6A==

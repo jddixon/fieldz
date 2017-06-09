@@ -4,7 +4,8 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/fieldz
   
-  autopep8 -ai -r fieldz fieldzSpecc *.py
+  autopep8 -air src/fieldz 
+  autopep8 src/fieldzSpecc *.py
   echo "not styling specs/ subdir"
   echo "not styling logs/ subdir"
   echo "not styling wireops/ subdir"
