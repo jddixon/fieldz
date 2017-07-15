@@ -1,37 +1,46 @@
 #!/usr/bin/python3
+# fieldz/setup.py
 
-# ~/dev/py/fieldz/setup.py
-
-""" Set up fieldz package. """
+""" Setuptools project configuration for fieldz. """
 
 import re
-from distutils.core import setup
-__version__ = re.search(r"__version__\s*=\s*'(.*)'",
-                        open('fieldz/__init__.py').read()).group(1)
+from glob import glob
+from os.path import basename, dirname, exists, join, splitext
+from setuptools import find_packages, setup
 
-# see http://docs.python.org/distutils/setupscript.html
+# replace with literal
+__version__ = re.search(r"__version__\s*=\s*'(.*)'",
+                        open('src/fieldz/__init__.py').read()).group(1)
+
+# see
+# setuptools.readthedocs.io/en/latest/setuptools.html#new-and-changed-setup-keywords
+
+long_desc = None
+if exists('README.md'):
+    with open('README.md', 'r') as file:
+        long_desc = file.read()
 
 setup(name='fieldz',
       version=__version__,
       author='Jim Dixon',
       author_email='jddixon@gmail.com',
-      #
-      # wherever we have a .py file that will be imported, we
-      # list it here, without the extension but SQuoted
-      py_modules=[],
-      #
-      # a package has its own directory with an __init__.py in it
-      packages=['fieldz', ],
-      #
-      # scripts should have a globally unique name; they might be in a
-      #   scripts/ subdir; SQuote the script name
-      scripts=['fieldzSpecc'],
-      description='python3 protocol for compressing/decompressing data',
-      url='https://jddixon.github.io/fieldz',
+
+      long_description=long_desc,
+      # packages=find_packages('src'),
+      packages=['fieldz'],                                   # LITERAL
+      package_dir={'': 'src'},
+      py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
+      include_package_data=False,
+      zip_safe=False,
+
+      # following could be in scripts/ subdir
+      scripts=['src/fieldzSpecc'],
+      description='python3 protocol for compressing/decompressing data',  # LITERAL
+      url='https://jddixon.github.com/fieldz',
       classifiers=[
-          'Development Status :: 3 - Alpha',
+          'Development Status :: 3 - Alpha',                    # VARIES
           'Intended Audience :: Developers',
-          'License :: OSI Approved :: MIT License',
+          'License :: OSI Approved :: MIT License',             # VARIES
           'Natural Language :: English',
           'Programming Language :: Python 3',
           'Topic :: Software Development :: Libraries :: Python Modules',
