@@ -4,11 +4,8 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/fieldz
   
-  autopep8 -air src/fieldz 
-  autopep8 src/fieldzSpecc *.py
-  echo "not styling specs/ subdir"
-  echo "not styling logs/ subdir"
-  echo "not styling wireops/ subdir"
+  autopep8 -air src tests
+  autopep8 -ai  setup.py
   
 else
   echo "DEV_BASE is not defined"

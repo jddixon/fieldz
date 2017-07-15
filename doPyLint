@@ -1,13 +1,8 @@
-pylint setup.py big_test.py little_big_test.py fieldzSpecc  \
-    fieldz/compiler/__init__.py     \
-    fieldz/enum.py                  \
-    fieldz/enum_spec.py             \
-    fieldz/field_impl.py            \
-    fieldz/msg_impl.py              \
-    fieldz/msg_spec.py              \
-    fieldz/parser.py                \
-    fieldz/reg.py                   \
-    fieldz/tfbuffer.py              \
-    fieldz/__init__.py              \
-    test*.py
+#!/usr/bin/env bash
 
+if [ ! -z "${DEV_BASE// }" ]
+then
+  pylint setup.py src/* tests/*
+else
+  echo "DEV_BASE is not defined"
+fi

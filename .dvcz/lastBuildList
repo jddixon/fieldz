@@ -7,23 +7,27 @@ Giaje1YAJPNVBt3dlOA5lhBp4GpSYBskJ9UR2Zyt3lgAGK3dEwxYETLMh9VWEV8i
 k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END PUBLIC KEY-----
-fieldz v0.11.8
-2017-06-09 21:19:03
+fieldz v0.11.9
+2017-07-15 23:39:27
 # BEGIN CONTENT #
 fieldz
+ .cache
+  v
+   cache
+    lastfailed 08f183a415ed38784e4d6c3d479c8e09ddcecd3d
  .dvcz
-  builds 8b4d7395a277f93b6d3746ed815f6ecea564efed
+  builds f6957983e5f547d282d9eca28c6e1064385c8ba3
   copyright 081f1eacc7bee6ce9cf06ffc957c1472faf9c994
-  lastBuildList e45edb1d0ebc92bf72ed5c004ce70049cb452f8a
+  lastBuildList 3702fc623303e368b9dd4ba0402960df2fdebbc2
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
-  projCfg ca22f03c05408d36052b6dfc5d2c647d04f408cb
+  projCfg f0af71465f6544335e5d877b7992a0040f87aebd
   projCfg.local 0142f4306975f49ac67004e6645282a1e08bb72b
-  version 5008e019949766ce1d09f339c453030f8d65d882
+  version 24841fa4e3ddeae34a4a534e18b37ba386faebc1
  .gitignore 53f201e3ccf4867cf004da764d93d7e697c9d441
  .gitignore.local 2158f4703c1b312acf3b4432191b365240f80504
- CHANGES 9e18ff57827b3891da11c6f4f5931d86b10cb9b4
- LICENSE-MIT.md 7ff8ae89c5e4489f22b3a360a03225241877bc8d
- MANIFEST.in 74987bca31b2b4393987e3dc229bd99f305ada4a
+ CHANGES b5d75158e9d859860eee421cc92a819678b2024a
+ LICENSE-MIT.md ce4053c54849d1033bd67b6cab7bdedc03de2b97
+ MANIFEST.in ab66c4ba9f7b7352eb828e32839a387bf990125b
  README dd38f01255fb5fb84d2acdb800476c2f7fbd562e
  README.api a3750a99f3bc17813d3d575d5a5a23bb61cee08b
  README.channels 77f56616a5544866a025895527dbb436d6ad1595
@@ -31,9 +35,9 @@ fieldz
  README.md 00c43a0dcdc2da7072ec916b39a8f11551a663a0
  TODO 3f2fb2911832b1df9c7f4254c0b314af9977acc9
  bkp2U bc1e6db4e5cd712f074fbc6a625af8a68f3ecd50
- checkCoverage b6d173d863e67a316caf621c84f21e4cdfa9ff0b
- countem 1a3ad54ca54cf40924c01af9cf0ae5da43c1f602
- doPyLint f5b9ba56e0702a1cb88ab1ce41988670aee07893
+ checkCoverage 52172927dea022d076a3697372794cea9663a8bc
+ countem 232f4af77fab77b6bf191046639e138fec229138
+ doPyLint 31321ad99eb3b9ac0928a68c29a8b5b88c9472fb
  example.msgSpec 3bbbd43c538632af960b0f779cf505a56a411d34
  ghpDoc
   api.md 56cf4bafbcfc9f739f8e011837c1164122898c9b
@@ -54,15 +58,10 @@ fieldz
   index.md 88f421634c558e8ebaa201441220736641eadc8c
  installit 76c3ef246d22a14ee8ae30d3b996cfd942f8ed88
  logs
- name-pairs-hack d54b5633d208a2bf6142ed115167df15250f1b05
- name-pairs-hack-first-try 09dfc1debc4d28c3040f0e8b50f6a5f8235e8aaf
- name-pairs-local 11f964a7f02f7426161f577eeba7e22644c79912
  netDistrib.conf 66f7af2d31db66cd024e7975552c6cf3c1c27c28
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
- renameLocal b67bd94866dd4fee9922c431f5d19dd840b9e248
- renamePerAPI f610fc76e9ed8cf12425e4f64a2afe0c4300b51c
- renamePerHack 7351c574ecc04a2df897d036dacc543d23a7b8d1
- setup.py 2bebb219fded29259d35517bd0b3aed3f97e718f
+ setup.py feb36ae83bbbd5c758af06f598c137aa93ad456d
+ setup.py.new 0a4fe36dbbd5551ca98673b35ae80e499d47db77
  specs
   org
    xlattice
@@ -76,7 +75,7 @@ fieldz
      logEntry.xlgo 17d8342f972f087ec0f20f65664e98e18aab02d7
  src
   fieldz
-   __init__.py 258fc74cad07d97824fbff133a69c3b317a9c43d
+   __init__.py d49b23ad78f2c110a58a50400ae71b4ed9cfd768
    compiler
     __init__.py 9e9bf1e500053199b135d1447d216cd9146b7e21
    enum.py 89610aa020b388b4d01bfcfd34003c54c275d66b
@@ -94,8 +93,8 @@ fieldz
    upax_proto_spec.py bc613467488680f5af8a8bdd83b79f88948f285e
    zoggery_proto_spec.py b61528698c3ee766978cb39ec39cab0a988e7079
   fieldzSpecc 17f94b0d5fde7bb6c1d25841d6b89c17f1e53f0d
- styleit da93538f74114a3bb228958103f415f0adaca95d
- test.all f5991b947c382642144d8b79c65acc12d6908bf1
+ styleit 6d22c1a3530abcb80b7bd4e46afd7189b5b2d032
+ test.all 3f8cb79237f21a26684bf1f01b89245f93e93c4d
  test_util.xxx_IS_ONE_LEVEL_UP da39a3ee5e6b4b0d3255bfef95601890afd80709
  tests
   big_test.py d0beb3b46d681152ea1261922a2cd9274fd49fef
@@ -125,4 +124,4 @@ fieldz
   zoggery_proto_spec.py b61528698c3ee766978cb39ec39cab0a988e7079
 # END CONTENT #
 
-Ycpta0iSIP7w1qz55O7IkHrOxRbVAb0BhueYoOEftttpYGeQqwHV3Z3EsR0i8pGVQVJ25tM2sLsH58Ef5sG7XfKnaKBI9L+xiKJOdQCiptFsSXMB5/k5+twg7pZkQziEIIUTd5bRsLetJeaOYqvdldVlR2iiYYoQZK2jEAabrcF3IM7uNc/QKGKY/Ca0ELVfDleMaTQhwAjy97cSOQx9Lgh9serlovUIeXIq7Cye5aI0VP2xNgfQNQPFidAcrJIfFrO2HKryQzXYj2QKpD2Eq9SMTEp9LHSYPF5T7ENp5g90mQ8Njzb676afxXK5OmW3Nu7Q++t7cPiZxXBilD/T6A==
+f0tRKfpFYUys2XKlQwlBg2uE8Zb3qc4a/yCRElVAw7rTG1BPZqpmmVMHhQV+fbrqkDTXj+HwB+0YqB7Wd8DE/CBpOs3lMWWXc14002Koi+BpXJIUzaLvZdEXH7+NoXeE6bZGpPxMxQNQZP5uQsOGAIli34y0lRFMX9gAh+bNUFPm7AZYNmO3N84ljTtzlybxkCIwTvQmeDyn140mRrJms+YRayVegGtl7bcm64QCXpaTMtr8A2y60g/NobAGpC9wEd1jedmMxaKBLZGOmpRaCvQmZYS32xzrtzmzJNGMlGUtuTuYDJHKJStIYvkaLkgqSqYYOS91rlz4VRSTb8Vg3g==

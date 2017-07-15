@@ -6,7 +6,7 @@ then
   
   rm -rf build/* 
   
-  pySloc -L py src/fieldzSpecc  -X cover -X htmlcov -X dist -X uDir -v $@
+  pySloc -L py  -X cover -X htmlcov -X dist -X uDir -v $@ fieldz src/fieldzSpecc tests/test_big_test.py tests/test_core_types.py tests/test_enums.py tests/test_field_impl.py tests/test_gen_enum.py tests/test_little_big.py tests/test_log_entry.py tests/test_msg_impl.py tests/test_msg_spec.py tests/test_proto_spec.py tests/test_reg.py tests/test_ring_data_proto.py tests/test_solo.py tests/test_tfwriter.py tests/test_zoggery_serialization.py setup.py
 else
   echo "DEV_BASE is not defined"
 fi
