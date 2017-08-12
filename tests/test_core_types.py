@@ -85,7 +85,8 @@ class TestCoreTypes(unittest.TestCase):
         # comment of unknown value/validity:  # BUT c_type.value must be >18!
 
         # XXX WRONG: need the msg spec instance, not the class
-        len_ = field_hdr_len(field_nbr, MsgSpec.field_type_from_nbr(field_nbr))
+        len_ = field_hdr_len(
+            field_nbr, M.MsgSpec.field_type_from_nbr(field_nbr))
 
         r_pos = 0  # read
         expected_pos = p_len_func(val, field_nbr)

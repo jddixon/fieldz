@@ -1,5 +1,8 @@
 ~/dev/py/fieldz/CHANGES
 
+v0.11.10
+    2017-08-12
+        * add tox.ini, *requirements.txt; edit cfg files            SLOC 5371
 v0.11.9
     2017-07-15
         * rewrite MANIFEST.in, setup.py; minor edits config files   SLOC 5341
@@ -398,6 +401,7 @@ v0.1.2
         * working varint, fixed len 32- and 64-bit, var len bytestring
             and associated tests
         * initial svn import
+
 
 
 
