@@ -2,8 +2,8 @@
 project:fieldz
 package:fieldz
 mainlang:py
-version:0.11.8
-versionDate:2017-06-09
+version:0.11.9
+versionDate:2017-07-15
 :?dirs?:
 dir:std:ghpDoc
 dir:std:dist
@@ -31,6 +31,9 @@ code:std:pylintrc
 code:std:.coveragerc
 code:std:check.summary
 code:std:MANIFEST.in
+code:std:tox.ini
+code:std:requirements.txt
+code:std:test_requirements.txt
 code:local:example.msgSpec
 code:local:netDistrib.conf
 code:local:testForOK
@@ -52,5 +55,5 @@ bash:std:styleit
 bash:std:test.all
 bash:std:doPyLint
 bash:std:checkCoverage
+py:std:setup.cfg
 py:std:setup.py
-py:local:setup.py.new

@@ -441,7 +441,8 @@ class StringProtoSpecParser(StringSpecParser):
         words = line.split()
         self.expect_token_count(words, 'protocol', 2)
         if words[0] == 'protocol':
-            print("DEBUG: protocol is '%s'" % str(self._protocol))
+            # print("DEBUG: protocol is '%s'" % str(self._protocol))
+            print("DEBUG: protocol is '%s'" % str(words[1]))
             validate_dotted_name(words[1])
             return words[1]
         else:

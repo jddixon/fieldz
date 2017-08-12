@@ -3,17 +3,8 @@
 
 """ Setuptools project configuration for fieldz. """
 
-import re
-from glob import glob
-from os.path import basename, dirname, exists, join, splitext
-from setuptools import find_packages, setup
-
-# replace with literal
-__version__ = re.search(r"__version__\s*=\s*'(.*)'",
-                        open('src/fieldz/__init__.py').read()).group(1)
-
-# see
-# setuptools.readthedocs.io/en/latest/setuptools.html#new-and-changed-setup-keywords
+from os.path import exists
+from setuptools import setup
 
 long_desc = None
 if exists('README.md'):
@@ -21,27 +12,28 @@ if exists('README.md'):
         long_desc = file.read()
 
 setup(name='fieldz',
-      version=__version__,
+      version='0.11.10',
       author='Jim Dixon',
       author_email='jddixon@gmail.com',
-
       long_description=long_desc,
-      # packages=find_packages('src'),
-      packages=['fieldz'],                                   # LITERAL
+      packages=['fieldz', 'fieldz.compiler'],
       package_dir={'': 'src'},
-      py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
+      py_modules=[],
       include_package_data=False,
       zip_safe=False,
-
-      # following could be in scripts/ subdir
       scripts=['src/fieldzSpecc'],
-      description='python3 protocol for compressing/decompressing data',  # LITERAL
-      url='https://jddixon.github.com/fieldz',
+      description='python3 protocol for compressing/decompressing data',
+      url='https://jddixon.github.io/fieldz',
       classifiers=[
-          'Development Status :: 3 - Alpha',                    # VARIES
+          'Development Status :: 3 - Alpha',
           'Intended Audience :: Developers',
-          'License :: OSI Approved :: MIT License',             # VARIES
+          'License :: OSI Approved :: MIT License',
           'Natural Language :: English',
-          'Programming Language :: Python 3',
+          'Programming Language :: Python 2.7',
+          'Programming Language :: Python 3.3',
+          'Programming Language :: Python 3.4',
+          'Programming Language :: Python 3.5',
+          'Programming Language :: Python 3.6',
+          'Programming Language :: Python 3.7',
           'Topic :: Software Development :: Libraries :: Python Modules',
       ],)
