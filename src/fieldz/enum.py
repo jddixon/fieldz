@@ -4,7 +4,7 @@
 Enumeration types.
 """
 
-from enum import Enum, IntEnum
+from enum import IntEnum
 import warnings
 
 from fieldz import FieldzError

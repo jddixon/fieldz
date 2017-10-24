@@ -313,7 +313,7 @@ class StringSpecParser(object):
             # END
 
         if field_type is None:
-            err_msg = "type_name = '%s'; can't determine field type in line: '%s'" % (
+            err_msg = "'%s'; can't determine field type in line: '%s'" % (
                 type_name, line)
             raise ParseError(err_msg)
 
@@ -358,7 +358,7 @@ class StringSpecParser(object):
                 print("DEBUG: NOT A FIELD DECL: '%s'" % line)
                 break
             print("BRANCH TO expectField(%u)" % k)
-            #fields.append( self.expectField(nextFieldNbr, line, indent, step) )
+            # fields.append(self.expectField(nextFieldNbr, line, indent, step))
             self.expect_field(msg_spec, line, indent, step)
             print("BACK FROM expectField(%u)" % k)
             k = k + 1
@@ -391,7 +391,7 @@ class StringMsgSpecParser(StringSpecParser):
         print("entering StringMsgSpecParser.parse()")
         # END
         line = self.get_line()
-        msg_reg = reg.MsgReg(self.parent_reg)
+        # msg_reg = reg.MsgReg(self.parent_reg)
         line = self.expect_msg_spec(self.parent, line)
 
         # DEBUG

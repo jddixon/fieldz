@@ -69,7 +69,7 @@ class FieldImpl(object):
     #################################################################
     # commented out: "multiple bases have instance lay-out conflict"
     # presumably caused by presence of __slots__
-    #__slots__ = ['_value', ]
+    # __slots__ = ['_value', ]
 
     # should default precede value?  if a value is assigned, isn't that
     # a default?  In fact shouldn't the parameter list end with
@@ -151,7 +151,7 @@ def make_field_class(dotted_msg_name, field_spec):
     # 18 or so field types.
 
     # _field_nbr = property(my_field_nbr)
-    _quantifier = property(my_quantitier)
+    # _quantifier = property(my_quantitier)
     _value = property(my_value_getter, my_value_setter)
 
 #   class M(metaclass=MetaField,
@@ -180,9 +180,9 @@ def make_field_class(dotted_msg_name, field_spec):
                 default=field_spec.default,
                 value=_value):
         pass
-    #----------------------------
+    # ----------------------------
     # possibly some more fiddling ...
-    #----------------------------
+    # ----------------------------
 
     FIELD_CLS_BY_Q_NAME[qual_name] = Field
     return Field

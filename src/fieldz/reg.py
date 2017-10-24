@@ -1,12 +1,5 @@
 # ~/dev/py/fieldz/reg.py
 
-__all__ = ['RegEntry',                      # abstract type
-           'FieldTypeEntry',                # msgSpec constituents
-           'CoreTypeEntry',                 # ill-conceived?
-           'NodeReg', 'ProtoEntry',
-           'ProtoReg', 'MsgReg',            # either may contain ...
-           'MsgEntry', 'EnumEntry', ]       # either of these
-
 from wireops.typed import T_GET_FUNCS, T_PUT_FUNCS
 from wireops.enum import FieldTypes
 
@@ -14,6 +7,13 @@ from fieldz import FieldzError
 from fieldz.enum import CoreTypes
 
 import fieldz.msg_spec as M
+
+__all__ = ['RegEntry',                      # abstract type
+           'FieldTypeEntry',                # msgSpec constituents
+           'CoreTypeEntry',                 # ill-conceived?
+           'NodeReg', 'ProtoEntry',
+           'ProtoReg', 'MsgReg',            # either may contain ...
+           'MsgEntry', 'EnumEntry', ]       # either of these
 
 # BEGIN NEW CLASSES =================================================
 
@@ -126,7 +126,7 @@ class NodeReg(UniqueNameRegistry):
             raise FieldzError('protoSpec cannot be None')
 
         # reduce the spec to canonical form
-        canonical = None                # XXX STUB
+        # canonical = None               # XXX STUB, so never used
 
         # ....
 
@@ -394,7 +394,7 @@ class ProtoReg(UniqueNameRegistry):
         name = enum_obj.name
         print("DEBUG ADDING enum %s to ProtoReg" % name)
         self._check_name(name)
-        reg_id = self.get_reg_id()   # reserve the next free regID and increment
+        reg_id = self.get_reg_id()   # reserve next free regID and increment
         entry = EnumEntry(name, reg_id)
 
         # register
@@ -405,10 +405,11 @@ class ProtoReg(UniqueNameRegistry):
     def add_msg(self, msg_spec):
         name = msg_spec.name
         self._check_name(name)
-        reg_id = self.get_reg_id()   # reserve the next free regID and increment
+        reg_id = self.get_reg_id()   # reserve next free regID and increment
         # DEBUG
         print(
-            "    fielzd.reg.__init__.ProtoReg.add_msg: adding %d, '%s', to ProtoReg" % (
+            "    fielzd.reg.__init__.ProtoReg.add_msg: " +
+            "adding %d, '%s', to ProtoReg" % (
                 reg_id, name))
         # END
         entry = MsgEntry(name, reg_id, self, msg_spec)
@@ -460,7 +461,7 @@ class MsgReg(object):
     def __init__(self, parent_reg):
         if parent_reg is None:
             raise FieldzError('parentReg must not be None')
-        self._parent_reg = parent_reg  # where to look if we can't resolve a name
+        self._parent_reg = parent_reg  # where to look if can't resolve a name
 
         # The registry exists to allow us to distinguish these types
         # by name and to map regIDs back to types.
@@ -527,7 +528,7 @@ class MsgReg(object):
         name = enum_obj.name
         print("DEBUG ADDING enum %s to ProtoReg" % name)
         self._check_name(name)
-        reg_id = self.get_reg_id()   # reserve the next free regID and increment
+        reg_id = self.get_reg_id()   # reserve next free regID and increment
         entry = EnumEntry(name, reg_id)
 
         # register
@@ -541,10 +542,11 @@ class MsgReg(object):
     def add_msg(self, msg_spec):
         name = msg_spec.name
         self._check_name(name)
-        reg_id = self.get_reg_id()   # reserve the next free regID and increment
+        reg_id = self.get_reg_id()   # reserve next free regID and increment
         # DEBUG
         print(
-            "    fieldz.reg.__init__.MsgReg.add_msg: adding %d, '%s', to ProtoReg" % (
+            "    fieldz.reg.__init__.MsgReg.add_msg: " +
+            "adding %d, '%s', to ProtoReg" % (
                 reg_id, name))
         # END
         entry = MsgEntry(name, reg_id, self, msg_spec)   # third arg is reg

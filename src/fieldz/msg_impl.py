@@ -13,7 +13,7 @@ from wireops.typed import T_GET_FUNCS, T_LEN_FUNCS, T_PUT_FUNCS
 
 from fieldz import FieldzError
 from fieldz.enum import Quants
-from fieldz.field_impl import FieldImpl, MetaField, make_field_class
+from fieldz.field_impl import make_field_class
 
 __all__ = ['make_msg_class', 'make_field_class', 'write', 'impl_len', ]
 
@@ -57,7 +57,7 @@ def my_wire_len(self):
     raise NotImplementedError
 
 
-def my_p_wire_len(self, nnn):    # n is field number for nested msg, regID otherwise
+def my_p_wire_len(self, nnn):    # field number for nested msg, regID otherwise
     raise NotImplementedError
 
 # specific to messages ----------------------------------------------
@@ -78,22 +78,22 @@ def my_field_classes(self):
 # FOR A GIVEN FIELD, THESE ARE CONSTANTS ASSIGNED BY make_field_class
 #
 #
-#def myFType(cls): return cls._fType
+# def myFType(cls): return cls._fType
 #
 #
-#def myQuantifier(cls): return cls._quantifier
+# def myQuantifier(cls): return cls._quantifier
 #
 #
-#def myFieldNbr(cls): return cls._fieldNbr
+# def myFieldNbr(cls): return cls._fieldNbr
 #
 #
-#def myDefault(cls): return cls._default
+# def myDefault(cls): return cls._default
 #
 # these get and set the value attribute of the field instance; they
 # have nothing to do with de/serialization to and from the channel
 #
 #
-#def myValueGetter(self): return self._value
+# def myValueGetter(self): return self._value
 # XXX TYPE-SPECIFIC VALIDATION, COERCION:
 #
 #
@@ -115,7 +115,7 @@ class MsgImpl(object):
 
     # DISABLE __slots__ until better understood
 #   __slots__ = ['_field_classes', # list of field instances
-#                #                 '_fields_by_name',  # that list indexed by Name
+#                #                 '_fields_by_name',
 #                '_enums',         # nested enums
 #                '_msgs',          # nested messages
 #                ]
@@ -209,12 +209,13 @@ class MsgImpl(object):
         write_raw_varint(chan, msg_len)
 
         # XXX DEBUG
-        print("ENTERING MsgImpl.write FIELD NBR %u, MSG LEN IS %u; AFTER WRITING HDR OFFSET  %u" % (
-            nnn, msg_len, chan.position))
+        print("ENTERING MsgImpl.write FIELD NBR " +
+              "%u, MSG LEN IS %u; AFTER WRITING HDR OFFSET  %u" % (
+                  nnn, msg_len, chan.position))
 
         # XXX This only makes sense for simple messages all of whose
         # fields are required and so have only a single instance
-        for field in self._field_classes:      # these are instances with a value attr
+        for field in self._field_classes:      # instances with a value attr
 
             # CLASS-LEVEL SLOTS are '_name', '_fType', '_quantifier',
             #                       '_fieldNbr', '_default',]
@@ -225,7 +226,7 @@ class MsgImpl(object):
             f_quant = field.quantifier          # NEXT HURDLE
             field_type = field.field_type
             value = field.value
-            default = field.default
+            # default = field.default
 
             # pylint: disable=no-member
             if f_quant == Quants.REQUIRED or f_quant == Quants.OPTIONAL:
@@ -321,9 +322,9 @@ class MsgImpl(object):
                     entry = reg.reg_id2entry(field_type)
                     print("READING: FIELD TYPE bis IS %s" % entry.name)
                     # END JUNK --------------------------------------
-                    child_spec = entry.msg_spec
+                    # child_spec = entry.msg_spec
 
-                    child_class = _make_msg_class(msg_spec, child_spec)
+                    # child_class = _make_msg_class(msg_spec, child_spec)
 
                     # RECURSE: read(childCls, chan, msgSpec)
                     # msgSpec is parentSpec here
@@ -334,9 +335,10 @@ class MsgImpl(object):
                 values.append(value)
 
             elif f_quant == Quants.PLUS or f_quant == Quants.STAR:
-                v_list = []              # we are reading a list of values
+                # v_list = []              # we are reading a list of values
 
                 # WORKING HERE
+                pass
 
             else:
                 raise RuntimeError("unknown quantifier, index '%u'" % f_quant)
@@ -376,10 +378,10 @@ class MsgImpl(object):
                 if field_type > 23:
                     reg = self.msg_spec.reg     # or protocol reg?
                     # XXX is the registry for the protocol? msgSpec?
-                    print("    F_TYPE %u IS MSG %s" % (field_type,
-                                                       reg.reg_id2name(field_type)))
-                    print("    LEN: FIELD %u (%s), TYPE %u, CONTRIBUTION %d" % (
-                        nnn, f_name, field_type, contrib))
+                    print("    F_TYPE %u IS MSG %s" %
+                          (field_type, reg.reg_id2name(field_type)))
+                    print("    LEN: FIELD %u (%s), TYPE %u, CONTRIBUTION %d" %
+                          (nnn, f_name, field_type, contrib))
                 nnn += 1
                 # END
                 msg_len += contrib
@@ -408,8 +410,10 @@ class MsgImpl(object):
                         # -----------------------------------------------
                         # XXX FAILS with list index error, fType == 24 XXX
                         # -----------------------------------------------
-                        print("DEBUG FIELD '%s' Quants.PLUS MEMBER TYPE IS %s" % (
+                        # DEBUG
+                        print("FIELD '%s' Quants.PLUS MEMBER TYPE IS %s" % (
                             f_name, field_type))
+                        # END
                         contrib = T_LEN_FUNCS[field_type](varint_, f_nbr)
 
                         # DEBUG
@@ -470,9 +474,10 @@ class MetaMsg(type):
 #           setattr(cls, this_field.name, val)
 
 #           # DEBUG
-#           print "META_MSG.__call__: idx   = %u" % idx
-#           print "                   name  = %s" % cls._field_classes[idx].name
-#           print "                   value = %s" % cls._field_classes[idx].value
+#           print("META_MSG.__call__:")
+#           print("   idx   = %u" % idx)
+#           print("   name  = %s" % cls._field_classes[idx].name)
+#           print("   value = %s" % cls._field_classes[idx].value)
 #           # END
 
 #       print "  THERE ARE %u FIELDS SET" % len(cls._field_classes)    # DEBUG
@@ -578,8 +583,8 @@ def _make_msg_class(parent, msg_spec):
 
     # class is not in cache, so construct ---------------------------
 
-    _enums = []
-    _msgs = []
+    # _enums = []
+    # _msgs = []
 
     # DEBUG
     print("    _MAKE_MSG_CLASS: _name is %s" % msg_spec.name)
@@ -611,9 +616,9 @@ def _make_msg_class(parent, msg_spec):
     print("\n_make_msg_class returning something of type %s\n" % type(Msg))
     # END
 
-    #----------------------------
+    # ----------------------------
     # possibly some more fiddling ...
-    #----------------------------
+    # ---------------------------
 
     # XXX DISABLING CACHINE
     # MSG_CLS_BY_Q_NAME[qual_name] = Msg

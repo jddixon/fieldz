@@ -6,7 +6,7 @@ import unittest
 from io import StringIO
 
 from rnglib import SimpleRNG
-from fieldz import reg
+# from fieldz import reg
 from fieldz.parser import StringProtoSpecParser
 
 from big_test import BIG_TEST
@@ -44,9 +44,9 @@ class TestBigTest(unittest.TestCase):
         self.assertTrue(cloned_spec == match)
 
     def test_compiler(self):
-        node_reg = reg.NodeReg()
-        protocol = 'org.xlattice.fieldz.test.bigProto'
-        proto_reg = reg.ProtoReg(protocol, node_reg)
+        # node_reg = reg.NodeReg()                          # NEVER USED
+        # protocol = 'org.xlattice.fieldz.test.bigProto'    # NEVER USED
+        # proto_reg = reg.ProtoReg(protocol, node_reg)      # never used
 
         data = StringIO(BIG_TEST)
         self.assertIsNotNone(data)
