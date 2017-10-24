@@ -77,23 +77,23 @@ class TestCoreTypes(unittest.TestCase):
         # END    ********************** <--- !!!
         chan.clear()                            # I guess :-)
 
-        buf = chan.buffer
+        # buf = chan.buffer                         # NEVER USED
         putter = M.C_PUT_FUNCS[c_type.value]
         getter = M.C_GET_FUNCS[c_type.value]
-        len_func = M.C_LEN_FUNCS[c_type.value]
-        p_len_func = M.C_P_LEN_FUNCS[c_type.value]
+        # len_func = M.C_LEN_FUNCS[c_type.value]    # NEVER USED
+        # p_len_func = M.C_P_LEN_FUNCS[c_type.value]        # NEVER USED
         # comment of unknown value/validity:  # BUT c_type.value must be >18!
 
         # XXX WRONG: need the msg spec instance, not the class
         len_ = field_hdr_len(
             field_nbr, M.MsgSpec.field_type_from_nbr(field_nbr))
 
-        r_pos = 0  # read
-        expected_pos = p_len_func(val, field_nbr)
+        # r_pos = 0  # read                         # NEVER USED
+        # expected_pos = p_len_func(val, field_nbr) # NEVER USED
 
         putter(chan, val, 0)  # writing field 0
         chan.flip()
-        w_pos = chan.limit
+        # w_pos = chan.limit    # NEVER USED
 
         (p_type, field_nbr) = read_field_hdr(chan)
         actual_hdr_len = chan.position
@@ -104,15 +104,15 @@ class TestCoreTypes(unittest.TestCase):
         # FAILS:
         #   if chan is present
         #     enumPairSpecGetter() takes 1 positional argument but 2 were given
-        #ret_val = getter(msgReg, chan)
+        # ret_val = getter(msgReg, chan)
         #   else # chan is absent
-        #     field_spec_getter() missing 1 required positional argument: 'chan'
+        #     field_spec_getter() missing 1 req positional argument: 'chan'
         # 2016-10-30 GOT FIRST FAILURE MODE
         ret_val = getter(msg_reg, chan)
 
         # gets the same error:ret_val = M.cGetFuncs[c_type.value](chan)
 
-        r_pos = chan.position
+        # r_pos = chan.position     # NEVER USED
         # DEBUG
         print("  ROUND TRIP: val     = %s" % val)
         print("              ret_val = %s" % ret_val)

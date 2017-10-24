@@ -8,7 +8,7 @@ from wireops.enum import FieldTypes, PrimTypes
 
 from wireops.raw import(
     read_field_hdr,
-    read_raw_varint, write_raw_varint,
+    # read_raw_varint, write_raw_varint,
     read_raw_b32,           # write_b32_field,
     read_raw_b64,           # write_b64_field,
     read_raw_len_plus,      # write_len_plus_field,
@@ -53,7 +53,7 @@ class TFReader(TFBuffer):
     # __slots__ = ['_field_nbr', '_field_type', '_p_type', '_value', ]
 
     def __init__(self, msg_spec, nnn, buffer):
-        #super(TFReader, self).__init__(msgSpec, len(buffer), buffer)
+        # super(TFReader, self).__init__(msgSpec, len(buffer), buffer)
         super(TFReader, self).__init__(msg_spec, nnn, buffer)
         # this is a decision: we could read the first field
         self._field_nbr = -1
@@ -168,7 +168,8 @@ class TFReader(TFBuffer):
 
         else:
             raise NotImplementedError(
-                "decode for type %d has not been implemented" % self._field_type)
+                "decode for type %d has not been implemented" %
+                self._field_type)
 
         # END GET
 
@@ -234,9 +235,14 @@ class TFWriter(TFBuffer):
         # DEBUG ### IMPROPER USE OF KNOWLEDGE OF ORDER OF FIELD NUMBERS
         # pylint: disable=no-member
         if field_type.value < FieldTypes.L_STRING.value:
-            print("putNext through dispatch table:\n         field   %u\n         fType   %u,  %s\n         value   %d (0x%x)\n         offset  %u" % (
-                field_nbr, field_type.sym, field_type.value,
-                value, value,
-                self._position))
+            msg = "putNext through dispatch table:\n" +\
+                  "field   %u\n" % field_nbr +\
+                  "fType   %u,  %s\n" % (field_type.sym, field_type.value) +\
+                  "value   %d (0x%x)\n" % (value, value) +\
+                  "offset  %u" % self._position
+#               field_nbr, field_type.sym, field_type.value,
+#               value, value,
+#               self._position)
+            print(msg)
         # END
         return

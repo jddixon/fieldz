@@ -12,7 +12,7 @@ if exists('README.md'):
         long_desc = file.read()
 
 setup(name='fieldz',
-      version='0.11.10',
+      version='0.11.11',
       author='Jim Dixon',
       author_email='jddixon@gmail.com',
       long_description=long_desc,
@@ -22,6 +22,7 @@ setup(name='fieldz',
       include_package_data=False,
       zip_safe=False,
       scripts=['src/fieldzSpecc'],
+      ext_modules=[],
       description='python3 protocol for compressing/decompressing data',
       url='https://jddixon.github.io/fieldz',
       classifiers=[
