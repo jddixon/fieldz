@@ -165,7 +165,7 @@ class TestRingDataProto(unittest.TestCase):
         # OUTER MESSAGE SPEC ----------------------------------------
         msg_spec = str_obj_model.msgs[0]
         field = msg_spec[0]
-        self.assertEqual(field._name, 'hosts')
+        self.assertEqual(field.name, 'hosts')
         self.assertEqual(field.field_type_name, 'hostInfo')
         # pylint: disable=no-member
         self.assertEqual(field.quantifier, Quants.PLUS)

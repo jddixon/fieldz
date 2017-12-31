@@ -456,7 +456,7 @@ class SuperSpec(object):
         #     not further up the tree
         if name in self._msgs_by_name or \
                 (self.parent is not None and
-                    name in self.parent._msgs_by_name):
+                 name in self.parent.msgs_by_name):
             raise RuntimeError("name '%s' is already in use" % name)
         print("ADDING MSG %d '%s' TO PROTO SPEC LIST" %
               (self._next_msg, name))         # DEBUG
@@ -680,6 +680,11 @@ class MsgSpec(SuperSpec):
 
     def field_type_from_nbr(self, nbr):
         # XXX WAS field_type_ndx
+
+        # DEBUG
+        print("MsgSpec.field_type_from_nbr: nbr = %d" % nbr)
+        # END
+
         # field numbers are zero-based
         if self.__len__() == 0:
             raise FieldzError("INTERNAL ERROR: message has no fields")

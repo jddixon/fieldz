@@ -132,7 +132,6 @@ class TestTFWriter(unittest.TestCase):
         self.assertEqual(BUFSIZE, tf_buf.capacity)
 
     def test_buffer_creator(self):
-        BUFSIZE = 1024
         tf_buf = TFBuffer.create(TEST_MSG_SPEC, BUFSIZE)
         self.assertTrue(isinstance(tf_buf, TFBuffer))
         self.assertEqual(0, tf_buf.position)
@@ -140,7 +139,6 @@ class TestTFWriter(unittest.TestCase):
 
     # and these two methods are all that's left of testTFReader.py
     def test_reader_ctor(self):
-        BUFSIZE = 1024
         buffer = bytearray(BUFSIZE)
         tf_reader = TFReader(TEST_MSG_SPEC, BUFSIZE, buffer)
         self.assertEqual(0, tf_reader.position)
@@ -148,7 +146,6 @@ class TestTFWriter(unittest.TestCase):
         self.assertEqual(BUFSIZE, len(tf_reader.buffer))
 
     def test_reader_creator(self):
-        BUFSIZE = 1024
         tf_reader = TFReader.create(TEST_MSG_SPEC, BUFSIZE)
         self.assertTrue(isinstance(tf_reader, TFReader))
         self.assertEqual(0, tf_reader.position)
@@ -156,14 +153,12 @@ class TestTFWriter(unittest.TestCase):
 
     # next two are specific to TFWriter
     def test_writer_ctor(self):
-        BUFSIZE = 1024
         buffer = bytearray(BUFSIZE)
         tf_writer = TFWriter(TEST_MSG_SPEC, BUFSIZE, buffer)
         self.assertEqual(0, tf_writer.position)
         self.assertEqual(BUFSIZE, tf_writer.capacity)
 
     def test_writer_creator(self):
-        BUFSIZE = 1024
         tf_writer = TFWriter.create(TEST_MSG_SPEC, BUFSIZE)
         self.assertTrue(isinstance(tf_writer, TFWriter))
         self.assertEqual(0, tf_writer.position)

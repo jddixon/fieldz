@@ -64,14 +64,17 @@ def my_p_wire_len(self, nnn):    # field number for nested msg, regID otherwise
 
 
 def my_enums(self):
+    #pylint: disable=protected-access
     return self._enums
 
 
 def my_msgs(self):
+    #pylint: disable=protected-access
     return self._msgs
 
 
 def my_field_classes(self):
+    #pylint: disable=protected-access
     return self._field_classes
 
 # specific to fields ------------------------------------------------
@@ -221,6 +224,7 @@ class MsgImpl(object):
             #                       '_fieldNbr', '_default',]
             # INSTANCE-LEVEL SLOT is '_value'
 
+            #pylint: disable=protected-access
             f_name = field._name
             f_nbr = field.field_nbr
             f_quant = field.quantifier          # NEXT HURDLE
@@ -295,7 +299,10 @@ class MsgImpl(object):
         # pylint: disable=no-member
         for f_class in cls._field_classes:
 
+            #pylint: disable=protected-access
+            f_quant = f_class._quantifier
             field_type = f_class._field_type       # a number
+            #pylint: disable=protected-access
             f_quant = f_class._quantifier
             field_nbr = f_class._field_nbr
 
@@ -530,7 +537,6 @@ def msg_initter(cls, *args, **attrs):
     #  return type.__call__(cls, *args, **kwargs)
     #  TypeError: object.__new__() takes no parameters
     #
-    pass
 
 
 # XXX A Strange Litle Device:

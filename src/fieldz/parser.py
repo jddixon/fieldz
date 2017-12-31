@@ -81,6 +81,9 @@ class StringSpecParser(object):
     def expect_msg_spec_name(self, line, indent='', step=' '):
         """ on a line beginning 'message ' """
         starter = indent + 'message '
+
+        _ = step                # suppress warning
+
         if not line or not line.startswith(starter):
             raise ParseError("badly formatted message name line '%s'" % line)
 
@@ -126,7 +129,9 @@ class StringSpecParser(object):
         print("BACK FROM expect_msg_spec: line is '%s'" % line)
 
         # collect any other MsgSpec declarations present
-        if line is not None and len(line.strip()) > 0:
+        if line:
+            line = line.strip()
+        if not line:
             line = self.acept_msg_specs(parent, line, indent, step)
         return line
 
@@ -142,7 +147,9 @@ class StringSpecParser(object):
         msg_starter = indent + 'message'
         while line.startswith(msg_starter):
             line = self.expect_msg_spec(parent, line, indent, step)
-            if line is None or len(line.strip()) == 0:
+            if line:
+                line = line.strip()
+            if not line:
                 break
         print("LEAVING accept_msg_specs: line is '%s'" % line)
         return line
@@ -160,10 +167,13 @@ class StringSpecParser(object):
         line = line.strip()
         # syntax is simply A = N
         parts = line.partition('=')
-        if (parts[1] is None):
+        if not parts[1]:
             raise ParseError("expected = in enum pair: '%s'" % line)
         sym = parts[0].strip()
         val = parts[2].strip()
+
+        _ = step    # suppress warning
+
         return EnumPairSpec(sym, val)
 
     def expect_enum(self, parent, line, indent, step):
@@ -232,6 +242,8 @@ class StringSpecParser(object):
         # END
 
         line = line[len(indent):]
+
+        _ = step    # suppress warning
 
         # from here we are very sloppy about the indent
 
@@ -395,7 +407,7 @@ class StringMsgSpecParser(StringSpecParser):
         line = self.expect_msg_spec(self.parent, line)
 
         # DEBUG
-        for reg_id in self.parent_reg._entries:  # .keys():
+        for reg_id in self.parent_reg.entries:  # .keys():
             print("ENTRY: regID %u, name %s" % (
                 reg_id, self.parent_reg.entries[reg_id]))
         # END
@@ -413,7 +425,7 @@ class StringMsgSpecParser(StringSpecParser):
             print("    parent has %d msgs" % len(ppp.msgs))
         # END
 
-        return ppp._msgs[0]
+        return ppp.msgs[0]
 
 
 class StringProtoSpecParser(StringSpecParser):
@@ -437,6 +449,8 @@ class StringProtoSpecParser(StringSpecParser):
         if indent != '' and not line.startswith(indent):
             raise ParseError("missing indent on protocol line '%s'" % line)
 
+        _ = step    # suppress warning
+
         # from here we ignore any indentation
         words = line.split()
         self.expect_token_count(words, 'protocol', 2)
@@ -445,8 +459,7 @@ class StringProtoSpecParser(StringSpecParser):
             print("DEBUG: protocol is '%s'" % str(words[1]))
             validate_dotted_name(words[1])
             return words[1]
-        else:
-            raise ParseError("expected protocol line, found '%s'" % line)
+        raise ParseError("expected protocol line, found '%s'" % line)
 
     # -- seqSpecs ---------------------------------------------------
     def accept_seq_specs(self, proto_spec, line, indent='', step=' '):

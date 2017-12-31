@@ -3,7 +3,7 @@
 # ~/dev/py/fieldz/fieldzSpecc
 
 import os
-import re
+# import re
 import sys
 import time
 from argparse import ArgumentParser
@@ -13,17 +13,17 @@ from xlattice import u
 from upax.server import BlockingServer
 from fieldz import __version__, __version_date__
 
-import fieldz.compiler
+# import fieldz.compiler
 
 # PATs AND REs ######################################################
 
 
 def do_whatevr(args):
-    no_changes = args.no_changes
     u_dir = args.u_dir
     verbose = args.verbose
 
     log_dir = args.log_dir       # XXX A DIFFERENT LOG
+    _ = log_dir                 # suppress warnings
 
     string = BlockingServer(u_dir)
     upax_log = string.log
@@ -32,6 +32,7 @@ def do_whatevr(args):
             len(upax_log), u_dir))
 
     src = args.pgm_name_and_version
+    _ = src                                         # UNUSED
 
     def parse_spec_file(path_to_file):
         lines = []
@@ -45,9 +46,9 @@ def do_whatevr(args):
 
         pass
 
-    def walk_specs_tree(dir):
+    def walk_specs_tree(dir_):
         """ walk the specs tree, parsing whatever we find """
-        files = sorted(os.listdir(dir))
+        files = sorted(os.listdir(dir_))
         for file in files:
             if file.startswith('.'):            # eg .svn
                 print("skipping '%s'" % file)

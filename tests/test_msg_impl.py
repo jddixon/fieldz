@@ -129,7 +129,7 @@ class TestMsgImpl(unittest.TestCase):
 
         # instance attributes -----------------------------
         # pylint:disable=no-member
-        self.assertEqual(field_spec.name, fld._name)      # LINE 126
+        self.assertEqual(field_spec.name, fld.name)
         # pylint:disable=no-member
         self.assertEqual(field_spec.field_type, fld.field_type)
         # pylint:disable=no-member
@@ -249,22 +249,22 @@ class TestMsgImpl(unittest.TestCase):
                 # END
                 # pass
 
-        # le_ms._name is a property
-        self.assertIsNotNone(le_msg._name)
+        # le_ms.name is a property
+        self.assertIsNotNone(le_msg.name)
 
         # DEBUG
-        print("LE_MSG._NAME IS ", le_msg._name)
+        print("LE_MSG._NAME IS ", le_msg.name)
         # END
 
         # TEST TEMPORARILY DISABLED
         if False:
             try:
-                le_ms._name = 'boo'
+                le_msg.name = 'boo'
                 self.fail("ERROR: attempt to change message name succeeded")
             except AttributeError:
                 pass
 
-        self.assertEqual(msg_spec.name, le_msg._name)           # LINE 267
+        self.assertEqual(msg_spec.name, le_msg.name)           # LINE 267
         # we don't have any nested enums or messages
         self.assertEqual(0, len(le_msg.enums))
         self.assertEqual(0, len(le_msg.msgs))
@@ -281,7 +281,7 @@ class TestMsgImpl(unittest.TestCase):
 
         # verify fields are accessible in the object ----------------
         # DEBUG
-        for field in le_msg._fieldClasses:
+        for field in le_msg.fieldClasses:
             print("FIELD: %s = %s " % (field.name, field.value))
         # END
         (timestamp, node_id, key, length, by_, path) = tuple(values)
@@ -295,7 +295,7 @@ class TestMsgImpl(unittest.TestCase):
 
         # serialize the object to the channel -----------------------
         # XXX not a public method
-        expected_msg_len = le_msg._wire_len()
+        expected_msg_len = le_msg.wire_len()
         print("EXPECTED LENGTH OF SERIALIZED OBJECT: %u" % expected_msg_len)
         buf = chan.buffer
 

@@ -70,7 +70,7 @@ class TestCoreTypes(unittest.TestCase):
             'org.xlattice.fieldz.test.roundTrip')
 
         # DEBUG
-        print("roundTripWireFormat: n = %d, c_type = %d (%s)" % (
+        print("roundTripWireFormat: field_nbr = %d, c_type = %d (%s)" % (
             field_nbr, c_type.value, c_type.sym))
         print("  val is a ", type(val))
         print("     symbol '%s' value '%s'" % (val.symbol, val.value))
@@ -85,8 +85,10 @@ class TestCoreTypes(unittest.TestCase):
         # comment of unknown value/validity:  # BUT c_type.value must be >18!
 
         # XXX WRONG: need the msg spec instance, not the class
+        # BLOWS UP XXX ##############################################
         len_ = field_hdr_len(
             field_nbr, M.MsgSpec.field_type_from_nbr(field_nbr))
+        # END BLOWS UP XXX ##########################################
 
         # r_pos = 0  # read                         # NEVER USED
         # expected_pos = p_len_func(val, field_nbr) # NEVER USED
