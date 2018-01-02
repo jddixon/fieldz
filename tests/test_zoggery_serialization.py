@@ -105,8 +105,8 @@ class TestZoggerySerialization(unittest.TestCase):
 
         # F A I L S:
         #   msg_spec.name is 'logEntry'
-        #   le_msg._name is  '[148639516, [227, 217, ...[230 chars].gz']
-        self.assertEqual(msg_spec.name, le_msg._name)
+        #   le_msg_name is  '[148639516, [227, 217, ...[230 chars].gz']
+        self.assertEqual(msg_spec.name, le_msg.name)
         # we don't have any nested enums or messages
 
         # XXX FAIL: properties have no len()

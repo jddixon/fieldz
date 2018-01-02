@@ -143,7 +143,7 @@ class TestFieldImpl(unittest.TestCase):
         # we verify that the properties work correctly
 
         # pylint: disable=no-member
-        self.assertEqual(field_spec.name, fld._name)
+        self.assertEqual(field_spec.name, fld.name)
         self.assertEqual(field_spec.field_type, fld.field_type)
         self.assertEqual(field_spec.quantifier, fld.quantifier)
         self.assertEqual(field_spec.field_nbr, fld.field_nbr)

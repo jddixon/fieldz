@@ -20,18 +20,22 @@ FIELD_CLS_BY_Q_NAME = {}        # PROTO_NAME . MSG_NAME . FIELD_NAME => class
 
 
 def my_name(self):
+    # pylint: disable=protected-access
     return self._name
 
 
 def my_quantitier(cls):
+    # pylint: disable=protected-access
     return cls._quantifier
 
 
 def my_field_nbr(cls):
+    # pylint: disable=protected-access
     return cls._field_nbr
 
 
 def my_default(cls):
+    # pylint: disable=protected-access
     return cls._default
 
 # these get and set the value attribute of the field instance; they
@@ -39,6 +43,7 @@ def my_default(cls):
 
 
 def my_value_getter(self):
+    # pylint: disable=protected-access
     # DEBUG
     print("myValueGetter returning %s" % self._value)
     # END
@@ -49,6 +54,7 @@ def my_value_setter(self, value):
     # DEBUG
     print("myValueSetter: value becomes %s" % value)
     # END
+    # pylint: disable=protected-access
     self._value = value
 
 # -------------------------------------------------------------------

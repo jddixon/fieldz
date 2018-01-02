@@ -72,7 +72,7 @@ class UniqueNameRegistry(object):
             reg_id = None
         return reg_id
 
-    def register(self, whatever):
+    def register(self, proto_spec):
         """ subclasses must override """
         raise NotImplementedError()
 
@@ -473,7 +473,8 @@ class MsgReg(object):
         self._field_entries = []    # this message's fields
 
     @property
-    def parent(self): return self._parent_reg
+    def parent(self):
+        return self._parent_reg
 
     def reg_id2name(self, reg_id):
         if reg_id in self._enum_entries:
@@ -492,8 +493,7 @@ class MsgReg(object):
     def name2reg_id(self, name):
         if name in self._name2reg_id:
             return self._name2reg_id[name]
-        else:
-            return self._parent_reg.name2reg_id(name)
+        return self._parent_reg.name2reg_id(name)
 
 #   # XXX WRONG: what's added can be either a MsgSpec or an EnumSpec
 #   def append(self, enum):

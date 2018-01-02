@@ -232,17 +232,18 @@ class TFWriter(TFBuffer):
 
         return
 
-        # DEBUG ### IMPROPER USE OF KNOWLEDGE OF ORDER OF FIELD NUMBERS
-        # pylint: disable=no-member
-        if field_type.value < FieldTypes.L_STRING.value:
-            msg = "putNext through dispatch table:\n" +\
-                  "field   %u\n" % field_nbr +\
-                  "fType   %u,  %s\n" % (field_type.sym, field_type.value) +\
-                  "value   %d (0x%x)\n" % (value, value) +\
-                  "offset  %u" % self._position
-#               field_nbr, field_type.sym, field_type.value,
-#               value, value,
-#               self._position)
-            print(msg)
-        # END
-        return
+        # THIS CODE IS UNREACHABLE, so commented it out
+#         # DEBUG ### IMPROPER USE OF KNOWLEDGE OF ORDER OF FIELD NUMBERS
+#         # pylint: disable=no-member
+#         if field_type.value < FieldTypes.L_STRING.value:
+#             msg = "putNext through dispatch table:\n" +\
+#                   "field   %u\n" % field_nbr +\
+#                   "fType   %u,  %s\n" % (field_type.sym, field_type.value) +\
+#                   "value   %d (0x%x)\n" % (value, value) +\
+#                   "offset  %u" % self._position
+# #               field_nbr, field_type.sym, field_type.value,
+# #               value, value,
+# #               self._position)
+#             print(msg)
+#         # END
+#         return
