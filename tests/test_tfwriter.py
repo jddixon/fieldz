@@ -164,7 +164,7 @@ class TestTFWriter(unittest.TestCase):
         self.assertEqual(0, tf_writer.position)
         self.assertEqual(BUFSIZE, tf_writer.capacity)
 
-    def do_round_trip_field(self, writer, reader, fnbr, field_type, value):
+    def do_roundtrip_field(self, writer, reader, fnbr, field_type, value):
 
         #############################################################
         # THIS IS WRONG: header is determined by fnbr and field_type, then
@@ -204,44 +204,44 @@ class TestTFWriter(unittest.TestCase):
 
         # pylint: disable=no-member
         # field 0: _V_UINT32
-        fnbr = self.do_round_trip_field(
+        fnbr = self.do_roundtrip_field(
             tf_writer, tf_reader, fnbr,
             FieldTypes.V_UINT32, 0x1f)                      # LINE 212
         self.assertEqual(1, fnbr)                           # DEBUG XXX
 
         # field 1: _V_UINT32
-        fnbr = self.do_round_trip_field(
+        fnbr = self.do_roundtrip_field(
             tf_writer, tf_reader, fnbr,
             FieldTypes.V_UINT32, 0x172f3e4d)
 
         # field 2:  _V_UINT64
-        fnbr = self.do_round_trip_field(
+        fnbr = self.do_roundtrip_field(
             tf_writer, tf_reader, fnbr,
             FieldTypes.V_UINT64, 0x12345678abcdef3e)
 
         # field 3: vsInt32
-        fnbr = self.do_round_trip_field(
+        fnbr = self.do_roundtrip_field(
             tf_writer, tf_reader, fnbr,
             FieldTypes.V_SINT32, 192)
 
         # field 4: vsInt32
         # _V_SINT32 (zig-zag encoded, optimal for small values near zero)
-        fnbr = self.do_round_trip_field(
+        fnbr = self.do_roundtrip_field(
             tf_writer, tf_reader, fnbr,
             FieldTypes.V_SINT32, -192)
 
         # field 5: _V_SINT64
-        fnbr = self.do_round_trip_field(
+        fnbr = self.do_roundtrip_field(
             tf_writer, tf_reader, fnbr,
             FieldTypes.V_SINT64, -193)  # GEEP
 
         # field 6: _V_UINT32
-        fnbr = self.do_round_trip_field(
+        fnbr = self.do_roundtrip_field(
             tf_writer, tf_reader, fnbr,
             FieldTypes.V_UINT32, 0x172f3e4d)
 
         # field 7: _V_UINT64
-        fnbr = self.do_round_trip_field(
+        fnbr = self.do_roundtrip_field(
             tf_writer, tf_reader, fnbr,
             FieldTypes.V_UINT64, 0xffffffff172f3e4d)
 
@@ -253,7 +253,7 @@ class TestTFWriter(unittest.TestCase):
 
         # encoded as fixed length 32 bit fields =====================
         # field 8: _F_INT32
-        # fnbr = self.do_round_trip_field(
+        # fnbr = self.do_roundtrip_field(
         #    tf_writer, tf_reader, fnbr,
         #    FieldTypes.F_INT32, 0x172f3e4d)
 
@@ -262,7 +262,7 @@ class TestTFWriter(unittest.TestCase):
 
         # encoded as fixed length 64 bit fields =====================
         # field 9: _F_INT64
-        # fnbr = self.do_round_trip_field(
+        # fnbr = self.do_roundtrip_field(
         #    tf_writer, tf_reader, fnbr,
         #    FieldTypes.F_INT64, 0xffffffff172f3e4d)
 
@@ -276,14 +276,14 @@ class TestTFWriter(unittest.TestCase):
         # encoded as varint len followed by byte[len] ===============
         # field 10: _L_STRING
         string = self.rng.next_file_name(16)
-        fnbr = self.do_round_trip_field(
+        fnbr = self.do_roundtrip_field(
             tf_writer, tf_reader, fnbr,
             FieldTypes.L_STRING, string)
 
         # field 11: _L_BYTES
         b_val = bytearray(8 + self.rng.next_int16(16))
         self.rng.next_bytes(b_val)
-        fnbr = self.do_round_trip_field(
+        fnbr = self.do_roundtrip_field(
             tf_writer, tf_reader, fnbr,
             FieldTypes.L_BYTES, b_val)
 
@@ -293,20 +293,20 @@ class TestTFWriter(unittest.TestCase):
         # fixed length byte sequences, byte[N} ======================
         # field 12: _F_BYTES16
         self.rng.next_bytes(B128)
-        fnbr = self.do_round_trip_field(
+        fnbr = self.do_roundtrip_field(
             tf_writer, tf_reader, fnbr,
             FieldTypes.F_BYTES16, B128)
 
         # field 13: _F_BYTES20
         self.rng.next_bytes(B160)
-        fnbr = self.do_round_trip_field(
+        fnbr = self.do_roundtrip_field(
             tf_writer, tf_reader, fnbr,
             FieldTypes.F_BYTES20, B160)
 
         # may want to introduce eg fNodeID20 and fSha1Key types
         # field 14: _F_BYTES32
         self.rng.next_bytes(B256)
-        fnbr = self.do_round_trip_field(
+        fnbr = self.do_roundtrip_field(
             tf_writer, tf_reader, fnbr,
             FieldTypes.F_BYTES32, B256)
 

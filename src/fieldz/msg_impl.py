@@ -123,8 +123,8 @@ class MsgImpl(object):
 #                '_msgs',          # nested messages
 #                ]
 
-    def __init__(self, name, field_classes=None, enums=None, msgs=None):
-        self._name = name
+    def __init__(self, mname, field_classes=None, enums=None, msgs=None):
+        self._mname = mname
         self._field_classes = field_classes
         self._enums = enums
         self._msgs = msgs
@@ -135,7 +135,7 @@ class MsgImpl(object):
             return False
         if self is other:
             return True
-        if self._name != other.name:
+        if self._mname != other.mname:
             return False
 
 #       print "MESSAGE NAMES THE SAME"              # DEBUG
@@ -191,10 +191,10 @@ class MsgImpl(object):
         Write the message stand-alone, as the topmost message on the
         channel.  Returns the message index as a convenience in testing.
         """
-        name = self._name
-        ndx = self._parent_spec.msg_name_index(name)
+        mname = self._mname
+        ndx = self._parent_spec.msg_name_index(mname)
         # DEBUG
-        print("WRITE_STAND_ALONE: MSG %s INDEX IS %d" % (name, ndx))
+        print("WRITE_STAND_ALONE: MSG %s INDEX IS %d" % (mname, ndx))
         # END
 
         self.write(chan, ndx)
@@ -584,7 +584,7 @@ def _make_msg_class(parent, msg_spec):
         # XXX NO ALLOWANCE FOR NESTED MSG_SPEC
         cls = make_field_class(qual_name, field_spec)
         field_classes.append(cls)
-        field_classes_by_name['%s.%s' % (qual_name, field_spec.name)] = cls
+        field_classes_by_name['%s.%s' % (qual_name, field_spec.fname)] = cls
         field_classes_by_nbr[field_spec.field_nbr] = cls
 
     # class is not in cache, so construct ---------------------------
@@ -600,7 +600,7 @@ def _make_msg_class(parent, msg_spec):
               # uncommented the next line 2017-02-03
               __init__=msg_initter,
               # 'name' already in use?
-              _name=msg_spec.name,
+              mname=msg_spec.mname,
               enums=property(my_enums),
               msgs=property(my_msgs),
               field_classes=property(my_field_classes),

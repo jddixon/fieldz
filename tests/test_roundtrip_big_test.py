@@ -51,15 +51,27 @@ class TestBigTest(unittest.TestCase):
         data = StringIO(BIG_TEST)
         self.assertIsNotNone(data)
         ppp = StringProtoSpecParser(data)
+        # DEBUG
+        print("INVOKING PARSER")
+        # END
         big_proto_spec = ppp.parse()
+        # DEBUG
+        print("BACK FROM PARSER")
+        # END
 
         # confirm that field numbers are unique and increasing
         match = big_proto_spec.msgs[0]
+        # DEBUG
+        print("COUNT OF MATCHING FIELDS: %d" % len(match))
+        # END
         last_field_nbr = -1
         for field in match:
             self.assertTrue(field.field_nbr > last_field_nbr)
             last_field_nbr = field.field_nbr
 
+        # DEBUG
+        print("ROUND-TRIPPING BIG PROTO SPEC")
+        # END
         self.round_trip_poto_spec_via_string(big_proto_spec)
 
     # ---------------------------------------------------------------

@@ -143,7 +143,7 @@ class TestFieldImpl(unittest.TestCase):
         # we verify that the properties work correctly
 
         # pylint: disable=no-member
-        self.assertEqual(field_spec.name, fld.name)
+        self.assertEqual(field_spec.fname, fld.fname)
         self.assertEqual(field_spec.field_type, fld.field_type)
         self.assertEqual(field_spec.quantifier, fld.quantifier)
         self.assertEqual(field_spec.field_nbr, fld.field_nbr)
@@ -197,7 +197,7 @@ class TestFieldImpl(unittest.TestCase):
     # TEST FIELD SPEC -----------------------------------------------
 
     # pylint: disable=no-member
-    def do_field_spec_test(self, name, field_type, quantifier=Quants.REQUIRED,
+    def do_field_spec_test(self, fname, field_type, quantifier=Quants.REQUIRED,
                            field_nbr=0, default=None):
 
         node_reg, proto_reg, msg_reg = self.make_registries(
@@ -206,13 +206,13 @@ class TestFieldImpl(unittest.TestCase):
         # XXX Defaults are ignored for now.
         fld = M.FieldSpec(
             msg_reg,
-            name,
+            fname,
             field_type,
             quantifier,
             field_nbr,
             default)
 
-        self.assertEqual(name, fld.name)
+        self.assertEqual(fname, fld.fname)
         self.assertEqual(field_type, fld.field_type)
         self.assertEqual(quantifier, fld.quantifier)
         self.assertEqual(field_nbr, fld.field_nbr)
@@ -220,7 +220,7 @@ class TestFieldImpl(unittest.TestCase):
             self.assertEqual(default, fld.default)
 
         expected_repr = "%s %s%s @%d \n" % (
-            name, fld.field_type_name, quantifier.sym, field_nbr)
+            fname, fld.field_type_name, quantifier.sym, field_nbr)
         # DEFAULTS NOT SUPPORTED
         self.assertEqual(expected_repr, fld.__repr__())
 
