@@ -103,7 +103,7 @@ class TestLittleBig(unittest.TestCase):
 
         # class attributes --------------------------------
         # pylint:disable=no-member
-        self.assertEqual(field_spec.name, datum.name)                # L 106
+        self.assertEqual(field_spec.fname, datum.fname)         # L 106
         # pylint:disable=no-member
         self.assertEqual(field_spec.field_type, datum.field_type)
         # pylint:disable=no-member
@@ -143,18 +143,18 @@ class TestLittleBig(unittest.TestCase):
         self.assertTrue(isinstance(self.str_obj_model, M.ProtoSpec))
         # XXX A HACK WHILE WE CHANGE INTERFACE ------------
         msg_spec = self.str_obj_model.msgs[0]
-        name = msg_spec.name
+        mname = msg_spec.mname
 
-        cls0 = make_msg_class(self.str_obj_model, name)
+        cls0 = make_msg_class(self.str_obj_model, mname)
         # DEBUG
         # pylint:disable=no-member
-        print("Constructed Clz0 name is '%s'" % cls0.name)
+        print("Constructed Clz0 mname is '%s'" % cls0.mname)
         # END
         # pylint:disable=no-member
-        self.assertEqual(name, cls0.name)
-        cls1 = make_msg_class(self.str_obj_model, name)
+        self.assertEqual(mname, cls0.mname)
+        cls1 = make_msg_class(self.str_obj_model, mname)
         # pylint:disable=no-member
-        self.assertEqual(name, cls1.name)
+        self.assertEqual(mname, cls1.mname)
 
         # END HACK ----------------------------------------
         # we cache classe, so the two should be the same
@@ -168,7 +168,7 @@ class TestLittleBig(unittest.TestCase):
         self.assertNotEqual(id(lil_big_msg0), id(lil_big_msg1))
 
         field_spec = msg_spec[0]
-        dotted_name = "%s.%s" % (self.proto_name, msg_spec.name)
+        dotted_name = "%s.%s" % (self.proto_name, msg_spec.mname)
         f0cls = make_field_class(dotted_name, field_spec)
         f1cls = make_field_class(dotted_name, field_spec)
         self.assertEqual(id(f0cls), id(f1cls))
@@ -193,7 +193,7 @@ class TestLittleBig(unittest.TestCase):
         self.assertEqual(BUFSIZE, len(buf))
 
         # create the LittleBigMsg class ------------------------------
-        little_big_msg_cls = make_msg_class(self.str_obj_model, msg_spec.name)
+        little_big_msg_cls = make_msg_class(self.str_obj_model, msg_spec.mname)
 
         # -------------------------------------------------------------
         # XXX the following fails because field 2 is seen as a property
@@ -241,7 +241,7 @@ class TestLittleBig(unittest.TestCase):
         # END
         if False:
             try:
-                lil_big_msg.name = 'boo'
+                lil_big_msg.mname = 'boo'
                 self.fail("ERROR: attempt to change message name succeeded")
             except AttributeError:
                 pass

@@ -8,22 +8,22 @@ k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END PUBLIC KEY-----
 fieldz
-2017-12-31 02:15:44
+2018-01-04 21:43:07
 # BEGIN CONTENT #
 fieldz
  .cache
   v
    cache
-    lastfailed 9f4f31abc5b94da30d771dcdaaedfd44c41f0b0f
+    lastfailed e8c76c9a9c89de1fe60d2ca1ffe4dab10705f4d6
  .dvcz
-  builds e5af86912c8665a0db13fe06336972138cd134df
-  lastBuildList 15112af7fa7e7591d40671ee7ee2712364d43f49
+  builds 99db47d9514662de1e2f64fbdd0ffabd83f5e208
+  lastBuildList c5bdca4bf67b25c8f5610a5fdfac7f93a6b46549
   projCfg d803ac312f6aa089234718f498919d9b7fd0eea1
   projCfg.local 0142f4306975f49ac67004e6645282a1e08bb72b
-  projConfig.toml 9354bd2680427a64d3f96337d1480f5ce9c4427e
+  projConfig.toml b41b376085d18730141c0f6ceefbd16d952357b9
  .gitignore ec4ee0a2ed30183ce239db24b6430e7c40805417
  .gitignore.local 2158f4703c1b312acf3b4432191b365240f80504
- CHANGES e4027698eae731a2b01e214666bd8c215b629302
+ CHANGES 34dc19187e2db51a5c8f8f6856e5d87032e53217
  LICENSE-MIT.md ce4053c54849d1033bd67b6cab7bdedc03de2b97
  MANIFEST.in 7ecdc5eedf233385e0f99ba4c6e4a42212adb46f
  README dd38f01255fb5fb84d2acdb800476c2f7fbd562e
@@ -59,7 +59,7 @@ fieldz
  netDistrib.conf 66f7af2d31db66cd024e7975552c6cf3c1c27c28
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
  requirements.txt 1251606ca98c3859641635029592c6c27788965e
- setup.py c64c72a7b2ea112d7fbb60d8f29d6e512a98477b
+ setup.py 4dbb07f297a4e00cc2501d5de408e692efaa9286
  specs
   org
    xlattice
@@ -73,17 +73,17 @@ fieldz
      logEntry.xlgo 17d8342f972f087ec0f20f65664e98e18aab02d7
  src
   fieldz
-   __init__.py 05a60c4a7b1b29419b138bc13bd5f7295bb8de66
+   __init__.py 6667472779a80560ece63914aff39f814eb38c2b
    compiler
     __init__.py 9e9bf1e500053199b135d1447d216cd9146b7e21
-   enum.py 854ef8f14a9c821256db6b58f58a595baca8c225
+   enum.py c7538c95a46aa767782d36f567508b3c2f9d9a4b
    enum_spec.py e9a22c30275a86d56b03c66ff435686e94ef92fe
-   field_impl.py cb3d8610ecf969393f11ecfe8578aa3f223961e2
-   msg_impl.py 9196e2c303c377d3abe1ce84c959deaae5e27ffb
-   msg_spec.py b8b09b0c4540458eb1b1a38032d7142ef1c9d2cb
+   field_impl.py 881ebde1373f5f6c0e0c0412e6405f50b30060f1
+   msg_impl.py 4eaccf00dd43e14cc2dae4908ab8e5f864e39027
+   msg_spec.py 5935aef5b19dc2b46af6efc7dc750649175248dc
    nested_enum_proto_spec.py aa3d337dad1386cecba963f69fba569e1ead2e05
    nested_msgs_proto_spec.py e350f3c253c5822762e93c619527e6a770fcb411
-   parser.py 5e42a9f4359b00f7d04126bf353f060a46af90d0
+   parser.py 7bb316037a982a9bb2d85bf7260f345279650355
    reg.py 9cd8e46549197ec3fc86055dabd7713854bdfe5d
    ring_data_proto.py 9783e1cb6f3956da8070c1fdac376cd4ebadee04
    simple_protocol.py 8b190e201a024bbb4375eeb2770206999846cdfe
@@ -96,26 +96,26 @@ fieldz
  test_requirements.txt 26ca76cbb91ddc8b8632946e0bb82c0d1c7517db
  test_util.xxx_IS_ONE_LEVEL_UP da39a3ee5e6b4b0d3255bfef95601890afd80709
  tests
-  big_test.py d0beb3b46d681152ea1261922a2cd9274fd49fef
+  big_test.py 3b706a76f60bdcb511161bf6da3d9276a95c9fd6
   little_big_test.py b6a2612d1c7b588916f6f0689f30c87b90d02e52
   nested_enum_proto_spec.py aa3d337dad1386cecba963f69fba569e1ead2e05
   nested_msgs_proto_spec.py e350f3c253c5822762e93c619527e6a770fcb411
   ring_data_proto.py 9783e1cb6f3956da8070c1fdac376cd4ebadee04
   simple_protocol.py 8b190e201a024bbb4375eeb2770206999846cdfe
-  test_big_test.py 85dac7af6ab0349dc59e7deae2d5293243c4e102
-  test_core_types.py e7e167562049c4cffe9f1df41332ac38bb96c135
   test_enums.py 01e78aea3249c0ce7c1bad381d434800ded42761
-  test_field_impl.py 19bb918f6ced7cc61ea4a89848172e2dd93f0701
+  test_field_impl.py 648c5bf6b593aee695a62ac49be182f8f3c290f3
   test_gen_enum.py 4dccd14c9086fda37e70f8edde7dad60689b1596
-  test_little_big.py d824376b1f0a5e299fc9dfcbcc6f0ebd204a9abe
+  test_little_big.py 229fe80810aba11592e42933c644157469de1f3d
   test_log_entry.py 47f630acc65143fd1cd147122ab4aa51ce84fd0f
   test_msg_impl.py a9dcd7f97f38411a38a2ddad0d1abef69aa302f2
   test_msg_spec.py 31cdcbebbe17908fd5364839d3814f5179bef985
   test_proto_spec.py 0ac732b611c832b71f53b858276e786339a5f5f9
   test_reg.py a4e440207a512c62d3dce2f3184be4c83ffb6f44
   test_ring_data_proto.py d9833d7809cdf365f924ec468e500da04092aa89
+  test_roundtrip_big_test.py 803a9fab64755a27a9d6efddaabb7c2eec560b43
+  test_roundtrip_core_types.py b667f4f5a40e3b0cc047b0b08404f04912ffb393
   test_solo.py a312643dc690e0af7e0d97563130960830e01df1
-  test_tfwriter.py bed155a536733fbe43e6113d34fd6c4ef1eadfd3
+  test_tfwriter.py 31786f01758c558af0fb4df4be3d1a4acc217511
   test_zoggery_serialization.py e81d1514d222a8104f41474030f07ebb5343811c
   unittest.xlgo b32fc02997775604f2764ed874f4eda72af603e5
   unittest_import.xlgo ed4db9bf1426640784982404685736cf937cead6
@@ -124,4 +124,4 @@ fieldz
  tox.ini 3e34c29cc6b3184abb2ed51f8b86784942fcd372
 # END CONTENT #
 
-f53J7sEx3uModnSPuE37cipDEA3Jb1F+3CWzPcaysWAudHSfc+17Eel/VqRIS5OtSQFtSnGWG7FQ2CKACPkrVV7YS8gYmxFnbQ/lXPqPy7HmjeT3x5EX0kwg+aqwnfdMk1gD36YPAT6FObcYtjyH/AVAr/dbJpZ7z/M5Wfw0yMvGO4W5M08RGVj1X3GG4GxdnEHPrA1yS4MMny9CTe16EpwbLz1IH297SwAqFujxe/Z5y0mB6PdKcH8K8cnE03EdxOv7E+jW5jpqJqMwbdMOPPGhN/Zf+Q/865V4BimQL43yMOIpHFlaITpO5XB5h47jMzwnpeP2AxyRQRiM7oO5ig==
+d9EcW47n8fiinuZS9U8Ek6M7WAvijR/oTAUz3tP/gOysMo5LbNkNIYKBX+VCUPt2699CrvDRXvxhB3WWZwP83i6ZyrtsnBvWpNuxr3VBHxlv9fRFwsngJoi9vjAUn9O1tTgEIpY0tGulR3V38fgy+pRbE/ICMVnm4G6EN8UKZMnq08OLZM8cWG99SGja0LuaFdaXORFg/GM4ruUb1rIFriwFCXByh22h0J2IQEwzkgyN4HLAA6BVMAQwqOgNa7HxqxQ7Q2/zzhPukrAlluWxDjHmp3zV6/kpq4RShFi2jibE/SOKu53Ni6pku/X/wPLkZnb+3SYIHLotZ+dpO3bB5Q==

@@ -39,7 +39,7 @@ CoreTypes.sym = _ct_sym       # add the method to the class
 _CT_NDX = {}
 # pylint: disable=not-an-iterable
 for _ in CoreTypes:
-    """ Map the field type's symbol back to the member """
+    # Map the field type's symbol back to the member
     _CT_NDX[_.sym] = _
 
 

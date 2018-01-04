@@ -34,7 +34,7 @@ message bigTestMsg:
  fBytes32ReqField   fbytes32
 
  # optional fields, numbered
- # XXX FAILS (can't handle space(s) before quantifier)
+ # FAILS (can't handle space(s) before quantifier)
  #vBoolOptField       vbool ?   @ 100
  vBoolOptField      vbool?    @100
  vEnumOptField      venum?    @101

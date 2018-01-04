@@ -1,5 +1,8 @@
 ~/dev/py/fieldz/CHANGES
 
+v0.11.14
+    2018-01-04
+        * 20 failed, 26 passed                                      SLOC 5405
 v0.11.13
     2017-12-30
         * pylinting and debugging                                   SLOC 5395
@@ -410,6 +413,7 @@ v0.1.2
         * working varint, fixed len 32- and 64-bit, var len bytestring
             and associated tests
         * initial svn import
+
 
 
 

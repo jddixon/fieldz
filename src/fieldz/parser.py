@@ -133,6 +133,9 @@ class StringSpecParser(object):
             line = line.strip()
         if not line:
             line = self.acept_msg_specs(parent, line, indent, step)
+        # DEBUG
+        print("EXITING expect_msg_specs, returning line = '%s'" % line)
+        # END
         return line
 
     def acept_msg_specs(self, parent, line, indent='', step=' '):
@@ -144,13 +147,15 @@ class StringSpecParser(object):
         msgSpec
         """
         print("ENTERING accept_msg_specs: line is '%s'" % line)
-        msg_starter = indent + 'message'
-        while line.startswith(msg_starter):
-            line = self.expect_msg_spec(parent, line, indent, step)
-            if line:
-                line = line.strip()
-            if not line:
-                break
+
+        if line:
+            msg_starter = indent + 'message'
+            while line.startswith(msg_starter):
+                line = self.expect_msg_spec(parent, line, indent, step)
+                if line:
+                    line = line.strip()
+                if not line:
+                    break
         print("LEAVING accept_msg_specs: line is '%s'" % line)
         return line
 
@@ -496,8 +501,12 @@ class StringProtoSpecParser(StringSpecParser):
         # possibly limited to a maximum indentation of MAX_INDENT
 
         # WORKING HERE NEXT
-        line = self.expect_msg_specs(
-            proto_spec, line)  # default indent and step
+        if line:
+            # DEBUG
+            print("BRANCH to expect_msg_spec: line = '%s'" % line)
+            # END
+            line = self.expect_msg_specs(
+                proto_spec, line)  # default indent and step
 
         # expect zero or more SeqSpecs
         # XXX NO SUCH METHOD and seqs is not defined

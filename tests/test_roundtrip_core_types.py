@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-# testCoreTypes.py
+
+# test_roundtrip_core_types.py
 
 import unittest
 from io import StringIO
@@ -87,7 +88,7 @@ class TestCoreTypes(unittest.TestCase):
         # XXX WRONG: need the msg spec instance, not the class
         # BLOWS UP XXX ##############################################
         len_ = field_hdr_len(
-            field_nbr, M.MsgSpec.field_type_from_nbr(field_nbr))
+            field_nbr, M.MsgSpec.field_type_from_nbr(field_nbr))    # FAILS HERE
         # END BLOWS UP XXX ##########################################
 
         # r_pos = 0  # read                         # NEVER USED
@@ -130,7 +131,7 @@ class TestCoreTypes(unittest.TestCase):
         ser = M.EnumPairSpec('funnyFarm', 497)
         self.round_trip_to_wire_format(
             # pylint: disable=no-member
-            chan, field_nbr, CoreTypes.ENUM_PAIR_SPEC, ser)
+            chan, field_nbr, CoreTypes.ENUM_PAIR_SPEC, ser)     # FAILS ???
 
         # -----------------------------------------------------------
         protocol = 'org.xlattice.upax'

@@ -21,7 +21,7 @@ FIELD_CLS_BY_Q_NAME = {}        # PROTO_NAME . MSG_NAME . FIELD_NAME => class
 
 def my_name(self):
     # pylint: disable=protected-access
-    return self._name
+    return self._fname
 
 
 def my_quantitier(cls):
@@ -95,7 +95,7 @@ class FieldImpl(object):
             return True
         # pylint doesn't handle metaclasses well
         # pylint:disable=no-member
-        if self._name != other.name:
+        if self._fname != other.fname:
             return False
         # pylint:disable=no-member
         if self._field_type != other.field_type:
@@ -145,7 +145,7 @@ def make_field_class(dotted_msg_name, field_spec):
         raise FieldzError('null message name')
     if field_spec is None:
         raise FieldzError('null field spec')
-    qual_name = '%s.%s' % (dotted_msg_name, field_spec.name)
+    qual_name = '%s.%s' % (dotted_msg_name, field_spec.fname)
     # DEBUG
     print('MAKE_FIELD_CLASS for %s' % qual_name)
     # END
@@ -161,7 +161,7 @@ def make_field_class(dotted_msg_name, field_spec):
     _value = property(my_value_getter, my_value_setter)
 
 #   class M(metaclass=MetaField,
-#       _name=field_spec.name,
+#       _name=field_spec.fname,
 #       # PROBLEM: THIS IS A SECOND USE OF THE ATTRIBUTE 'name'
 #       # name=property(myName),
 #       dummy2=0,
@@ -179,7 +179,7 @@ def make_field_class(dotted_msg_name, field_spec):
 
     class Field(FieldImpl, metaclass=MetaField,
                 # 'name' is already in use
-                _name=field_spec.name,
+                fname=field_spec.fname,
                 field_type=field_spec.field_type,   # an enum member
                 quantifier=field_spec.quantifier,
                 field_nbr=field_spec.field_nbr,

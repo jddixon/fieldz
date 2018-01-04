@@ -211,7 +211,7 @@ class EnumSpec(object):
 
 
 class FieldSpec(object):
-    __slots__ = ['_reg', '_name', '_field_type', '_quantifier', '_field_nbr',
+    __slots__ = ['_reg', '_fname', '_field_type', '_quantifier', '_field_nbr',
                  '_default', ]
 
     def __eq__(self, other):
@@ -220,7 +220,7 @@ class FieldSpec(object):
         # using == in the next line causes infinite recursion
         if other is self:
             return True
-        if other.name != self._name:
+        if other.fname != self._fname:
             print("FIELD_SPEC NAMES DIFFER")
             return False
         # ignore this for now; cloned fields have different reges
@@ -245,7 +245,7 @@ class FieldSpec(object):
 
         return True
 
-    def __init__(self, reg, name, field_type,
+    def __init__(self, reg, fname, field_type,
                  # pylint: disable=no-member
                  quantifier=Quants.REQUIRED,
                  field_nbr=-1, default=None):
@@ -253,16 +253,16 @@ class FieldSpec(object):
             raise FieldzError('reg must be specified')
         self._reg = reg
 
-        # -- name ---------------------------------------------------
-        if name is None or len(name) == 0:
-            raise FieldzError('no field name specified')
+        # -- fname ---------------------------------------------------
+        if not fname:
+            raise FieldzError('no field fname specified')
 
         # DEBUG
-        # print("FieldSpec.__init__: name '%s' is of type %s" % (
-        #    name, type(name)))
+        # print("FieldSpec.__init__: fname '%s' is of type %s" % (
+        #    fname, type(fname)))
         # END
-        validate_dotted_name(name)
-        self._name = name
+        validate_dotted_name(fname)
+        self._fname = fname
 
         # -- fType --------------------------------------------------
         # XXX DROPPED RANGE CHECK HERE
@@ -289,8 +289,8 @@ class FieldSpec(object):
         self._default = default
 
     @property
-    def name(self):
-        return self._name
+    def fname(self):
+        return self._fname
 
     @property
     def field_type(self):
@@ -342,7 +342,7 @@ class FieldSpec(object):
 
     def indented_str(self, indent, step):
         string = []
-        string.append('%s%s ' % (indent, self._name))
+        string.append('%s%s ' % (indent, self._fname))
 
         t_name = self.field_type_name
         # pylint: disable=no-member
@@ -608,18 +608,22 @@ class MsgSpec(SuperSpec):
     followed by a fieldType.
 
     """
-    __slots__ = ['_fields',
+    __slots__ = ['_mname',
+                 '_fields',
                  '_last_field_nbr',           # must increase monotonically
                  'field_name_to_ndx',
                  '_field_ndx', ]              # zero-based field index
 
     # XXX 2016-06-24 inverted order of last two paramaters
-    def __init__(self, name, reg, parent):
+    def __init__(self, mname, reg, parent):
         # if parent is None:
         #    raise FieldzError('parent must be specified')
-        name = str(name)
-        validate_simple_name(name)
-        super(MsgSpec, self).__init__(name, reg, parent)
+        mname = str(mname)
+        validate_simple_name(mname)
+        super(MsgSpec, self).__init__(mname, reg, parent)
+
+        # XXXX QUESTIONABLE
+        self._mname = mname
 
         # XXX QUESTIONABLE
         if parent:
@@ -631,11 +635,15 @@ class MsgSpec(SuperSpec):
         self._field_ndx = 0     # zero-based index of field in MsgSpec
 
     @property
+    def mname(self):
+        return self._mname
+
+    @property
     def fields(self):
         return self._fields
 
     def add_field(self, fld):
-        f_name = fld.name
+        f_name = fld.fname
         if not isinstance(fld, FieldSpec):
             raise FieldzError("'%s' is not a FieldSpec!" % f_name)
         if f_name in self.field_name_to_ndx:
@@ -716,7 +724,7 @@ class MsgSpec(SuperSpec):
         # using == in the next line causes infinite recursion
         if other is self:
             return True
-        if other.name != self._name:
+        if other.fname != self._fname:
             return False
         if self.__len__() == 0 or other.__len__() == 0:
             return False
