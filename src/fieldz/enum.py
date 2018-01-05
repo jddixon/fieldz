@@ -43,9 +43,9 @@ for _ in CoreTypes:
     _CT_NDX[_.sym] = _
 
 
-@classmethod
+@staticmethod
 # pylint: disable=unused-argument
-def _from_sym(cls, symbol):
+def _from_sym(symbol):
     """ Given a symbol, return the corresponding member. """
     return _CT_NDX[symbol]
 

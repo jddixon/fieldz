@@ -8,22 +8,22 @@ k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END PUBLIC KEY-----
 fieldz
-2018-01-04 21:43:07
+2018-01-05 23:53:47
 # BEGIN CONTENT #
 fieldz
  .cache
   v
    cache
-    lastfailed e8c76c9a9c89de1fe60d2ca1ffe4dab10705f4d6
+    lastfailed c0ae664aefe7cff1f7d48c5a9809950b34a4ede9
  .dvcz
-  builds 99db47d9514662de1e2f64fbdd0ffabd83f5e208
-  lastBuildList c5bdca4bf67b25c8f5610a5fdfac7f93a6b46549
+  builds 7612fd6b9049e58991507ff41b40812131c67b1c
+  lastBuildList 2434df567c70f87a41a92b4418a7b1e51e1a58e8
   projCfg d803ac312f6aa089234718f498919d9b7fd0eea1
   projCfg.local 0142f4306975f49ac67004e6645282a1e08bb72b
-  projConfig.toml b41b376085d18730141c0f6ceefbd16d952357b9
+  projConfig.toml 4c7cb7dc0b74515396ae10ed3fa5dd1e5607cc19
  .gitignore ec4ee0a2ed30183ce239db24b6430e7c40805417
  .gitignore.local 2158f4703c1b312acf3b4432191b365240f80504
- CHANGES 34dc19187e2db51a5c8f8f6856e5d87032e53217
+ CHANGES a83ab5d45397d27209867f004fc8d3c3e2146bf9
  LICENSE-MIT.md ce4053c54849d1033bd67b6cab7bdedc03de2b97
  MANIFEST.in 7ecdc5eedf233385e0f99ba4c6e4a42212adb46f
  README dd38f01255fb5fb84d2acdb800476c2f7fbd562e
@@ -59,7 +59,7 @@ fieldz
  netDistrib.conf 66f7af2d31db66cd024e7975552c6cf3c1c27c28
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
  requirements.txt 1251606ca98c3859641635029592c6c27788965e
- setup.py 4dbb07f297a4e00cc2501d5de408e692efaa9286
+ setup.py 4b530902d4280219ef1872d0c42e60015ba15b36
  specs
   org
    xlattice
@@ -73,14 +73,14 @@ fieldz
      logEntry.xlgo 17d8342f972f087ec0f20f65664e98e18aab02d7
  src
   fieldz
-   __init__.py 6667472779a80560ece63914aff39f814eb38c2b
+   __init__.py bd7c4634ad8d3ef95fcb28fd4fb3411cf259f860
    compiler
     __init__.py 9e9bf1e500053199b135d1447d216cd9146b7e21
-   enum.py c7538c95a46aa767782d36f567508b3c2f9d9a4b
+   enum.py 1979cb59551e2f4be6a423d4e28184923453a194
    enum_spec.py e9a22c30275a86d56b03c66ff435686e94ef92fe
    field_impl.py 881ebde1373f5f6c0e0c0412e6405f50b30060f1
-   msg_impl.py 4eaccf00dd43e14cc2dae4908ab8e5f864e39027
-   msg_spec.py 5935aef5b19dc2b46af6efc7dc750649175248dc
+   msg_impl.py 1b951b4798d31f13b2c9b9c8a7395a7e1617c32a
+   msg_spec.py a5ddf9cea636a53c4dd79e2d6c1125bcb28dc1b6
    nested_enum_proto_spec.py aa3d337dad1386cecba963f69fba569e1ead2e05
    nested_msgs_proto_spec.py e350f3c253c5822762e93c619527e6a770fcb411
    parser.py 7bb316037a982a9bb2d85bf7260f345279650355
@@ -102,13 +102,13 @@ fieldz
   nested_msgs_proto_spec.py e350f3c253c5822762e93c619527e6a770fcb411
   ring_data_proto.py 9783e1cb6f3956da8070c1fdac376cd4ebadee04
   simple_protocol.py 8b190e201a024bbb4375eeb2770206999846cdfe
-  test_enums.py 01e78aea3249c0ce7c1bad381d434800ded42761
+  test_enums.py 60f17cddeaf852dc756bc7b9037ef705ef1743d5
   test_field_impl.py 648c5bf6b593aee695a62ac49be182f8f3c290f3
   test_gen_enum.py 4dccd14c9086fda37e70f8edde7dad60689b1596
-  test_little_big.py 229fe80810aba11592e42933c644157469de1f3d
+  test_little_big.py 3c96e85755bc503bc64eb0420dfab9e9a040f28c
   test_log_entry.py 47f630acc65143fd1cd147122ab4aa51ce84fd0f
-  test_msg_impl.py a9dcd7f97f38411a38a2ddad0d1abef69aa302f2
-  test_msg_spec.py 31cdcbebbe17908fd5364839d3814f5179bef985
+  test_msg_impl.py f96e5974781f91e52b49c74cdb1107fab0622262
+  test_msg_spec.py 36d79bd5eb07f87e2fb77e1a9d08cd3137f4bd61
   test_proto_spec.py 0ac732b611c832b71f53b858276e786339a5f5f9
   test_reg.py a4e440207a512c62d3dce2f3184be4c83ffb6f44
   test_ring_data_proto.py d9833d7809cdf365f924ec468e500da04092aa89
@@ -124,4 +124,4 @@ fieldz
  tox.ini 3e34c29cc6b3184abb2ed51f8b86784942fcd372
 # END CONTENT #
 
-d9EcW47n8fiinuZS9U8Ek6M7WAvijR/oTAUz3tP/gOysMo5LbNkNIYKBX+VCUPt2699CrvDRXvxhB3WWZwP83i6ZyrtsnBvWpNuxr3VBHxlv9fRFwsngJoi9vjAUn9O1tTgEIpY0tGulR3V38fgy+pRbE/ICMVnm4G6EN8UKZMnq08OLZM8cWG99SGja0LuaFdaXORFg/GM4ruUb1rIFriwFCXByh22h0J2IQEwzkgyN4HLAA6BVMAQwqOgNa7HxqxQ7Q2/zzhPukrAlluWxDjHmp3zV6/kpq4RShFi2jibE/SOKu53Ni6pku/X/wPLkZnb+3SYIHLotZ+dpO3bB5Q==
+WO/pmnqpa7FH1s9gi36135bGqYrqNf9PmUBnveeffQh57OG6HxKnSf4uHTF5aeDPQn6taneiwIwNbInH6Gah9vYRymTB6qceNxZe3G4yZ7B50jf63UFTuTaS+xmdK3YZDOwgF0Ujd/PZYKgQK0yAaYRBJCLhHNTVm3/A5qum2hNRPcNddowpAYyc18ppoHzoV9V471sQt2RkvDyI6XnfgeTp5ViD0+fMNAkbSI/27F35ssB5+mkU72rTNxKF9zdOtF7Gb481quLTcyabRL4re5blyrzyPdfZ5oiIG2yzVrSCHcZTEuH3kgha3LkHjKTVB9O6q/CXk7tHeMnSMETJPw==

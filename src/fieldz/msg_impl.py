@@ -130,6 +130,12 @@ class MsgImpl(object):
         self._msgs = msgs
         self._parent_spec = None
 
+    # EXPERIMENT 2018-01-05
+    @property
+    def mname(self):
+        return self._mname
+    # END EXPERIMENT
+
     def __eq__(self, other):
         if other is None:
             return False
@@ -452,11 +458,11 @@ class MsgImpl(object):
 
 class MetaMsg(type):
 
-    def __new__(cls, name, bases, namespace, **kwargs):
+    def __new__(mcs, name, bases, namespace, **kwargs):
         # DEBUG
         print("MetaMsgNEW gets called once")
         # END
-        return super().__new__(cls, name, bases, namespace)
+        return super().__new__(mcs, name, bases, namespace)
 
     def __init__(cls, name, bases, namespace, **kwargs):
 

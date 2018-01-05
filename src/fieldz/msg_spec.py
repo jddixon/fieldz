@@ -673,7 +673,7 @@ class MsgSpec(SuperSpec):
             raise FieldzError("INTERNAL ERROR: message has no fields")
         if i < 0 or i >= self.__len__():
             raise FieldzError('field number %d out of range' % i)
-        return self._fields[i].name
+        return self._fields[i].fname
 
     def field_type_name(self, i):
         # field numbers are zero-based

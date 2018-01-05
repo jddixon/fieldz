@@ -78,15 +78,15 @@ class TestMsgSpec(unittest.TestCase):
         """
 
         # XXX should test null or empty lists, ill-formed names
-        name = 'george'
+        fname = 'george'
         pairs = [('abc', 3), ('def', 5), ('ghi', 7)]
-        enum = M.EnumSpec.create(name, pairs)
+        enum = M.EnumSpec.create(fname, pairs)
         # self.assertEqual( ','.join(pairs), enum.__repr__())
         self.assertEqual(3, enum.value('abc'))
         self.assertEqual(5, enum.value('def'))
         self.assertEqual(7, enum.value('ghi'))
 
-    def do_field_test(self, name, field_type,
+    def do_field_test(self, fname, field_type,
                       # pylint: disable=no-member
                       quantifier=Quants.REQUIRED,
                       field_nbr=0, default=None):
@@ -96,13 +96,13 @@ class TestMsgSpec(unittest.TestCase):
         # XXX Defaults are ignore for now.
         fld = M.FieldSpec(
             msg_reg,
-            name,
+            fname,
             field_type,
             quantifier,
             field_nbr,
             default)
 
-        self.assertEqual(name, fld.name)
+        self.assertEqual(fname, fld.fname)
         self.assertEqual(field_type, fld.field_type)
         self.assertEqual(quantifier, fld.quantifier)
         self.assertEqual(field_nbr, fld.field_nbr)
@@ -110,7 +110,7 @@ class TestMsgSpec(unittest.TestCase):
             self.assertEqual(default, fld.default)
 
         expected_repr = "%s %s%s @%d \n" % (
-            name, fld.field_type_name, M.q_name(quantifier), field_nbr)
+            fname, fld.field_type_name, M.q_name(quantifier), field_nbr)
         # DEFAULTS NOT SUPPORTED
         self.assertEqual(expected_repr, fld.__repr__())
 

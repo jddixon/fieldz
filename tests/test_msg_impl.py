@@ -129,7 +129,7 @@ class TestMsgImpl(unittest.TestCase):
 
         # instance attributes -----------------------------
         # pylint:disable=no-member
-        self.assertEqual(field_spec.name, fld.name)
+        self.assertEqual(field_spec.fname, fld.fname)
         # pylint:disable=no-member
         self.assertEqual(field_spec.field_type, fld.field_type)
         # pylint:disable=no-member
@@ -249,11 +249,11 @@ class TestMsgImpl(unittest.TestCase):
                 # END
                 # pass
 
-        # le_ms.name is a property
-        self.assertIsNotNone(le_msg.name)
+        # le_ms.mname is a property
+        self.assertIsNotNone(le_msg.mname)
 
         # DEBUG
-        print("LE_MSG._NAME IS ", le_msg.name)
+        print("LE_MSG._NAME IS ", le_msg.mname)
         # END
 
         # TEST TEMPORARILY DISABLED
@@ -264,7 +264,7 @@ class TestMsgImpl(unittest.TestCase):
             except AttributeError:
                 pass
 
-        self.assertEqual(msg_spec.name, le_msg.name)           # LINE 267
+        self.assertEqual(msg_spec.mname, le_msg.mname)           # LINE 267
         # we don't have any nested enums or messages
         self.assertEqual(0, len(le_msg.enums))
         self.assertEqual(0, len(le_msg.msgs))
@@ -282,7 +282,7 @@ class TestMsgImpl(unittest.TestCase):
         # verify fields are accessible in the object ----------------
         # DEBUG
         for field in le_msg.fieldClasses:
-            print("FIELD: %s = %s " % (field.name, field.value))
+            print("FIELD: %s = %s " % (field.fname, field.value))
         # END
         (timestamp, node_id, key, length, by_, path) = tuple(values)
         self.assertEqual(timestamp, le_msg.timestamp)
