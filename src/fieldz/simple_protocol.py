@@ -1,11 +1,15 @@
+
+"""
+We require (at least for the moment) that enums come first or
+not at all, except that nested enumSpecs and msgSpecs will need
+to be supported.
+
+yes, I'm playing around
+"""
+
 SIMPLE_PROTOCOL = """
 protocol org.xlattice.fieldz.test.A
 
-# We require (at least for the moment) that enums come first or
-# not at all, except that nested enumSpecs and msgSpecs will need
-# to be supported.
-
-# yes, I'm playing around
 enum OK
  ok          1
 
@@ -65,4 +69,3 @@ seq
  keepAlive:  ok
 
 """
-# END TEST DATA

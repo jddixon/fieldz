@@ -20,21 +20,33 @@ FIELD_CLS_BY_Q_NAME = {}        # PROTO_NAME . MSG_NAME . FIELD_NAME => class
 
 
 def my_name(self):
+    """
+    Code chunk used in creating field classes: returns field name.
+    """
     # pylint: disable=protected-access
     return self._fname
 
 
 def my_quantitier(cls):
+    """
+    Code chunk used in creating field classes: returns quantifier.
+    """
     # pylint: disable=protected-access
     return cls._quantifier
 
 
 def my_field_nbr(cls):
+    """
+    Code chunk used in creating field classes: returns field number.
+    """
     # pylint: disable=protected-access
     return cls._field_nbr
 
 
 def my_default(cls):
+    """
+    Code chunk used in creating classes: returns default.
+    """
     # pylint: disable=protected-access
     return cls._default
 
@@ -43,6 +55,8 @@ def my_default(cls):
 
 
 def my_value_getter(self):
+    """ Value getter used in constructing field class. """
+
     # pylint: disable=protected-access
     # DEBUG
     print("myValueGetter returning %s" % self._value)
@@ -51,6 +65,8 @@ def my_value_getter(self):
 
 
 def my_value_setter(self, value):
+    """ Value setter used in constructing field class. """
+
     # DEBUG
     print("myValueSetter: value becomes %s" % value)
     # END
@@ -68,6 +84,8 @@ class FieldImpl(object):
     generated classes whose purpose will be to ease user handling
     of data being sent or received across the wire.
     """
+
+    # pylint: disable=too-few-public-methods
 
     #################################################################
     # NOTE: if we inherit from type, we get a TypeError: nonempty
@@ -95,23 +113,19 @@ class FieldImpl(object):
             return True
         # pylint doesn't handle metaclasses well
         # pylint:disable=no-member
-        if self._fname != other.fname:
-            return False
-        # pylint:disable=no-member
-        if self._field_type != other.field_type:
-            return False
-        # pylint:disable=no-member
-        if self._quantifier != other.quantifier:
-            return False
-        # pylint:disable=no-member
-        if self._field_nbr != other.field_nbr:
+        if self._fname != other.fname or \
+                self._field_type != other.field_type or \
+                self._quantifier != other.quantifier or \
+                self._field_nbr != other.field_nbr:
             return False
         # ignore defaults for now
         return True
 
 
 class MetaField(type):
+    """ Class used to construct Field classes. """
 
+    # pylint: disable=unused-argument
     @classmethod
     def __prepare__(mcs, name, bases, **kwargs):
         """
@@ -119,6 +133,8 @@ class MetaField(type):
         """
         return dict(kwargs)
 
+    # FOR kwargs:
+    # pylint: disable=unused-argument
     def __new__(mcs, name, bases, namespace, **kwargs):
         # DEBUG
         # removed namespace from print
@@ -128,6 +144,8 @@ class MetaField(type):
         # END
         return super().__new__(mcs, name, bases, namespace)
 
+    # FOR kwargs:
+    # pylint: disable=unused-argument
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace)
 
@@ -141,6 +159,8 @@ class MetaField(type):
 
 
 def make_field_class(dotted_msg_name, field_spec):
+    """ Factory for field classes. """
+
     if dotted_msg_name is None:
         raise FieldzError('null message name')
     if field_spec is None:
@@ -177,14 +197,15 @@ def make_field_class(dotted_msg_name, field_spec):
 #       dummy=0):
 #       pass
 
+    # pylint: disable=too-few-public-methods
     class Field(FieldImpl, metaclass=MetaField,
-                # 'name' is already in use
                 fname=field_spec.fname,
                 field_type=field_spec.field_type,   # an enum member
                 quantifier=field_spec.quantifier,
                 field_nbr=field_spec.field_nbr,
                 default=field_spec.default,
                 value=_value):
+        """ Class used to construct field classes. """
         pass
     # ----------------------------
     # possibly some more fiddling ...

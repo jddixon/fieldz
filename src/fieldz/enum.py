@@ -94,6 +94,7 @@ These were specified for Python 2.7, and ARE NOT SUITABLE for Python 3.
 #    return getinstance
 
 
+# pylint: disable=too-few-public-methods
 class SimpleEnum(object):
     """
     Define a list of symbols as resolving to their index value, so
@@ -104,7 +105,7 @@ class SimpleEnum(object):
     def __init__(self, symbols):
         warnings.warn("SimpleEnum", DeprecationWarning)
         for ndx, symbol in enumerate(symbols):
-            # XXX we could enforce capitalization here
+            # We could enforce capitalization here
             self.__dict__[symbol] = ndx
         self._max_ndx_ = len(symbols)
 

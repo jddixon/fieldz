@@ -237,6 +237,22 @@ class StringSpecParser(object):
     # -- FieldSpec --------------------------------------------------
     # def expectField(self, nextFieldNbr, line, indent, step):
     def expect_field(self, msg_spec, line, indent, step):
+
+        # DEBUG #######################
+        def leading_spaces(line):
+            count = 0
+            for char in line:
+                if char != ' ':
+                    break
+                count += 1
+            return count
+
+        l_count = leading_spaces(line)
+        if l_count != len(indent):
+            print("expect_field: expected %d leading spaces, got %d" % (
+                  len(indent), l_count))
+        # END #########################
+
         if not line.startswith(indent):
             raise ParseError(
                 "wrong indent for field declaration: '%s'" %

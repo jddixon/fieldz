@@ -1,5 +1,7 @@
 # ~/dev/py/fieldz/reg.py
 
+""" Registries for fieldz wire protocols. """
+
 from wireops.typed import T_GET_FUNCS, T_PUT_FUNCS
 from wireops.enum import FieldTypes
 
