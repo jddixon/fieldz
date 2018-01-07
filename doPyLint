@@ -2,7 +2,9 @@
 
 if [ ! -z "${DEV_BASE// }" ]
 then
-  pylint setup.py src/* tests/*
+  pylint \
+      --ignore-patterns=.*\.xlgo,junk.*,.*ZZZ \
+      setup.py src/* tests/*
 else
   echo "DEV_BASE is not defined"
 fi

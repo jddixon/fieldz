@@ -1,5 +1,8 @@
 # fieldz/upax.protoSpec.py
 
+"""
+Upax message spec, with a number of message types.
+"""
 
 UPAX_PROTOSPEC = """
 # MESSAGE SECTION ###################################################

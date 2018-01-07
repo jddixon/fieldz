@@ -20,8 +20,8 @@ message nestedMsgs
  message A
   message B
    message C
-     cField1 vuint32
-     cField2 vuint32
+    cField1 vuint32
+    cField2 vuint32
    bField1   Baz
    bField2   Foo
    bField3   C

@@ -119,9 +119,7 @@ class EnumSpec(object):
         """pairs are EnumPairSpecs """
         validate_dotted_name(name)
         self._name = name
-        if pairs is None:
-            raise FieldzError('null list of enum pairs')
-        if len(pairs) == 0:
+        if not pairs:
             raise FieldzError('empty list of enum pairs')
         self._pairs = []
         self._sym2pair = {}
@@ -141,9 +139,7 @@ class EnumSpec(object):
     def create(cls, name, pairs):
         """pairs are 2-tuples, (symbol, value), where value is uInt16 """
         validate_dotted_name(name)
-        if pairs is None:
-            raise FieldzError('null list of enum pairs')
-        if len(pairs) == 0:
+        if not pairs:
             raise FieldzError('empty list of enum pairs')
 
         _pairs = []
@@ -673,7 +669,7 @@ class MsgSpec(SuperSpec):
             raise FieldzError("INTERNAL ERROR: message has no fields")
         if i < 0 or i >= self.__len__():
             raise FieldzError('field number %d out of range' % i)
-        return self._fields[i].name
+        return self._fields[i].fname
 
     def field_type_name(self, i):
         # field numbers are zero-based
@@ -724,7 +720,7 @@ class MsgSpec(SuperSpec):
         # using == in the next line causes infinite recursion
         if other is self:
             return True
-        if other.fname != self._fname:
+        if other.mname != self._mname:
             return False
         if self.__len__() == 0 or other.__len__() == 0:
             return False

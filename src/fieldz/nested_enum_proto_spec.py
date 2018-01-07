@@ -1,5 +1,7 @@
 # ~/dev/py/fieldz/nestedEnumProtoSpec.py
 
+""" Nested enum protocol spec, to be used in testing. """
+
 NESTED_ENUM_PROTO_SPEC = """
 protocol org.xlattice.zoggery.ne
 

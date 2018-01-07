@@ -288,7 +288,7 @@ class TestProtoSpec(unittest.TestCase):
         """ XXX so far this is just testNestedEnum XXX """
         data = StringIO(NESTED_MSGS_PROTO_SPEC)
         ppp = StringProtoSpecParser(data)   # data should be file-like
-        str_obj_model = ppp.parse()             # object model from string serialization
+        str_obj_model = ppp.parse()         # object model from string serialization
         self.assertIsNotNone(str_obj_model)
         self.assertTrue(isinstance(str_obj_model, M.ProtoSpec))
 

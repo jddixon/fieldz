@@ -1,5 +1,9 @@
 # ~/dev/py/fieldz/zoggeryProtoSpec.py
 
+"""
+Message spec for a simplifid log entry.
+"""
+
 ZOGGERY_PROTO_SPEC = """
 protocol org.xlattice.zoggery
 
