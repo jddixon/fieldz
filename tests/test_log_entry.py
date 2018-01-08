@@ -6,7 +6,7 @@ import unittest
 
 from rnglib import SimpleRNG
 from wireops.enum import FieldTypes
-import wireops.typed as T
+# import wireops.typed as T
 
 from fieldz.enum import Quants
 import fieldz.msg_spec as M

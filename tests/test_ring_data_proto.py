@@ -16,7 +16,7 @@ import fieldz.msg_spec as M
 from xlattice.pyca_node import Node
 from fieldz.msg_impl import make_msg_class, make_field_class
 
-import wireops.typed as T
+# import wireops.typed as T
 from wireops.chan import Channel
 
 RNG = SimpleRNG(int(time.time()))
@@ -171,19 +171,30 @@ class TestRingDataProto(unittest.TestCase):
         self.assertEqual(field.quantifier, Quants.PLUS)
 
         # INNER MESSAGE SPEC ----------------------------------------
-        msg_spec = str_obj_model.msgs[0].msgs[0]
-        self.assertEqual(msg_spec.f_name(0), 'hostName')
+        msg_spec = str_obj_model.msgs[0].fields[0]
+        # DEBUG
+        print("TYPE MSG_SPEC: ", type(msg_spec))
+        # END
+
+        # TRIAL RESTRUCTURING: XXX FAILS: FieldSpec does not support indexing
+        self.assertEqual(msg_spec[0].fname, 'hostName')
+        # TRIAL RESTRUCTURING: XXX FAILS: NO ATTR fields
+        self.assertEqual(msg_spec.fields[0].field_type_name, 'lstring')
+
+        # ILL-CONCEIVED: XXXXX
+
+        self.assertEqual(msg_spec.fname(0), 'hostName')
         self.assertEqual(msg_spec.field_type_name(0), 'lstring')
-        self.assertEqual(msg_spec.f_name(1), 'ip_addr')
+        self.assertEqual(msg_spec.fname(1), 'ip_addr')
         self.assertEqual(msg_spec.field_type_name(1), 'lstring')
-        self.assertEqual(msg_spec.f_name(2), 'node_id')
+        self.assertEqual(msg_spec.fname(2), 'node_id')
         self.assertEqual(msg_spec.field_type_name(2), 'fbytes32')
-        self.assertEqual(msg_spec.f_name(3), 'pub_key')
+        self.assertEqual(msg_spec.fname(3), 'pub_key')
         self.assertEqual(msg_spec.field_type_name(3), 'lstring')
-        self.assertEqual(msg_spec.f_name(4), 'priv_key')
+        self.assertEqual(msg_spec.fname(4), 'priv_key')
         self.assertEqual(msg_spec.field_type_name(4), 'lstring')
         try:
-            msg_spec.f_name(5)
+            msg_spec.fname(5)
             self.fail('did not catch reference to non-existent field')
         except IndexError as i_exc:
             pass                                                    # GEEP
@@ -203,8 +214,11 @@ class TestRingDataProto(unittest.TestCase):
         self.assertIsNotNone(str_obj_model.msgs[0].fields[0])
         # END
         inner_msg_spec = str_obj_model.msgs[0].fields[0]
-        # FAILS:
         outer_msg_cls = make_msg_class(str_obj_model, outer_msg_spec.name)
+        # DEBUG
+        print("INNER MSG SPEC NAME: %s" % inner_msg_spec.fname)
+        # END
+        # FAILS: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< FAILS:
         # NOTE change in parent
         inner_msg_cls = make_msg_class(outer_msg_spec, inner_msg_spec.fname)
 
@@ -260,7 +274,7 @@ class TestRingDataProto(unittest.TestCase):
         inner_msg_spec = str_obj_model.msgs[0].fields[0]
         outer_msg_cls = make_msg_class(str_obj_model, outer_msg_spec.name)
         # NOTE change in parent
-        inner_msg_cls = make_msg_class(outer_msg_spec, inner_msg_spec.name)
+        inner_msg_cls = make_msg_class(outer_msg_spec, inner_msg_spec.fname)
 
         # Create a channel ------------------------------------------
         # its buffer will be used for both serializing # the instance

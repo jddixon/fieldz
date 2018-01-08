@@ -12,7 +12,7 @@ from io import StringIO
 
 from rnglib import SimpleRNG
 
-import wireops.typed as T
+# import wireops.typed as T
 from wireops.enum import FieldTypes
 
 from fieldz import reg
@@ -23,7 +23,7 @@ import fieldz.msg_spec as M
 from fieldz.msg_impl import make_msg_class
 
 # PROTOCOLS ---------------------------------------------------------
-from fieldz.simple_protocol import SIMPLE_PROTOCOL
+# from fieldz.simple_protocol import SIMPLE_PROTOCOL
 from fieldz.zoggery_proto_spec import ZOGGERY_PROTO_SPEC
 from fieldz.nested_enum_proto_spec import NESTED_ENUM_PROTO_SPEC
 from fieldz.nested_msgs_proto_spec import NESTED_MSGS_PROTO_SPEC
@@ -175,7 +175,7 @@ class TestProtoSpec(unittest.TestCase):
         for file in fields:
             msg_spec.add_field(file)
 
-        proto_spec.add_msg(msg_spec)  # this was incorrectly commented out
+        # proto_spec.add_msg(msg_spec)  # correctly commented out
         self.round_trip_poto_spec_via_string(proto_spec)             # GEEP
 
     def round_trip_poto_spec_via_string(self, match):
@@ -347,7 +347,7 @@ class TestProtoSpec(unittest.TestCase):
         name = msg_spec.name
         cls0 = make_msg_class(self.str_obj_model, name)
         cls1 = make_msg_class(self.str_obj_model, name)
-        # we cache classe, so the two should be the same
+        # we cache classe, so the two should be the same  *** FAILS: ***
         self.assertEqual(id(cls0), id(cls1))
 
         # chan = Channel(BUFSIZE)

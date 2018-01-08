@@ -463,7 +463,9 @@ class SuperSpec(object):
 
     def get_msg_spec(self, name):
         """ given a name, returns the corresponding msgSpec """
-        return self._msgs_by_name[name]
+        if name in self._msgs_by_name:
+            return self._msgs_by_name[name]
+        return None
 
     def msg_name_index(self, name):
         """ given a name, returns its index """

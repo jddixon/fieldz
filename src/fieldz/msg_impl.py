@@ -565,7 +565,7 @@ def _make_msg_class(parent, msg_spec):
     proto_name = parent.name
 
     if msg_spec is None:
-        raise FieldzError('msgSpec be specified')
+        raise FieldzError('msgSpec must be specified')
 
     # XXX single-dot name and so NO NESTED MSG_CLASSes
     qual_name = '%s.%s' % (proto_name, msg_spec.mname)

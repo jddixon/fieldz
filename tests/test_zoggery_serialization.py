@@ -9,9 +9,9 @@ from rnglib import SimpleRNG
 
 from fieldz.parser import StringProtoSpecParser
 import fieldz.msg_spec as M
-from fieldz.msg_impl import make_msg_class, make_field_class, MsgImpl
+from fieldz.msg_impl import make_msg_class, MsgImpl
 
-import wireops.typed as T
+# import wireops.typed as T
 from wireops.chan import Channel
 
 # PROTOCOLS ---------------------------------------------------------

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 # test_reg.py
-import time
+# import time
 import unittest
 
-from rnglib import SimpleRNG
+# from rnglib import SimpleRNG
 from wireops.enum import FieldTypes
 from fieldz.reg import NodeReg
 from fieldz.enum import CoreTypes
