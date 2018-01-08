@@ -13,7 +13,7 @@ from fieldz.ring_data_proto import RING_DATA_PROTO_SPEC
 
 from fieldz.parser import StringProtoSpecParser
 import fieldz.msg_spec as M
-from xlattice.node import Node
+from xlattice.pyca_node import Node
 from fieldz.msg_impl import make_msg_class, make_field_class
 
 import wireops.typed as T
@@ -165,7 +165,7 @@ class TestRingDataProto(unittest.TestCase):
         # OUTER MESSAGE SPEC ----------------------------------------
         msg_spec = str_obj_model.msgs[0]
         field = msg_spec[0]
-        self.assertEqual(field.name, 'hosts')
+        self.assertEqual(field.fname, 'hosts')
         self.assertEqual(field.field_type_name, 'hostInfo')
         # pylint: disable=no-member
         self.assertEqual(field.quantifier, Quants.PLUS)
@@ -196,10 +196,17 @@ class TestRingDataProto(unittest.TestCase):
         self.assertTrue(isinstance(str_obj_model, M.ProtoSpec))
 
         outer_msg_spec = str_obj_model.msgs[0]
-        inner_msg_spec = str_obj_model.msgs[0].msgs[0]
+        # DEBUG
+        self.assertIsNotNone(str_obj_model)
+        self.assertIsNotNone(str_obj_model.msgs[0])
+        self.assertEqual(len(str_obj_model.msgs[0]), 1)
+        self.assertIsNotNone(str_obj_model.msgs[0].fields[0])
+        # END
+        inner_msg_spec = str_obj_model.msgs[0].fields[0]
+        # FAILS:
         outer_msg_cls = make_msg_class(str_obj_model, outer_msg_spec.name)
         # NOTE change in parent
-        inner_msg_cls = make_msg_class(outer_msg_spec, inner_msg_spec.name)
+        inner_msg_cls = make_msg_class(outer_msg_spec, inner_msg_spec.fname)
 
         # TEST INNER MESSAGE ########################################
         cls0 = make_msg_class(outer_msg_spec, inner_msg_spec.name)
@@ -250,7 +257,7 @@ class TestRingDataProto(unittest.TestCase):
         str_obj_model = self.make_str_obj_model()
         proto_name = str_obj_model.name
         outer_msg_spec = str_obj_model.msgs[0]
-        inner_msg_spec = str_obj_model.msgs[0].msgs[0]
+        inner_msg_spec = str_obj_model.msgs[0].fields[0]
         outer_msg_cls = make_msg_class(str_obj_model, outer_msg_spec.name)
         # NOTE change in parent
         inner_msg_cls = make_msg_class(outer_msg_spec, inner_msg_spec.name)

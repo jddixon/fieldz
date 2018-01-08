@@ -373,7 +373,7 @@ class MsgImpl(object):
         msg_len = 0
         nnn = 0  # DEBUG
         for field in self._field_classes:
-            f_name = field.name
+            f_name = field.fname
             f_nbr = field.field_nbr
             f_quant = field.quantifier          # NEXT HURDLE
             field_type = field.field_type
@@ -483,13 +483,13 @@ class MetaMsg(type):
 #       for idx, val in enumerate(values):
 #           this_field = cls._field_classes[idx](val)
 #           cls._field_classes.append(this_field)
-#           cls._field_classes_by_name[thisField.name] = thisField
-#           setattr(cls, this_field.name, val)
+#           cls._field_classes_by_name[thisField.fname] = thisField
+#           setattr(cls, this_field.fname, val)
 
 #           # DEBUG
 #           print("META_MSG.__call__:")
 #           print("   idx   = %u" % idx)
-#           print("   name  = %s" % cls._field_classes[idx].name)
+#           print("   name  = %s" % cls._field_classes[idx].fname)
 #           print("   value = %s" % cls._field_classes[idx].value)
 #           # END
 
@@ -568,7 +568,7 @@ def _make_msg_class(parent, msg_spec):
         raise FieldzError('msgSpec be specified')
 
     # XXX single-dot name and so NO NESTED MSG_CLASSes
-    qual_name = '%s.%s' % (proto_name, msg_spec.name)
+    qual_name = '%s.%s' % (proto_name, msg_spec.mname)
 
     # DEBUG
     print('_MAKE_MSG_CLASS for %s' % qual_name)
@@ -599,7 +599,7 @@ def _make_msg_class(parent, msg_spec):
     # _msgs = []
 
     # DEBUG
-    print("    _MAKE_MSG_CLASS: _name is %s" % msg_spec.name)
+    print("    _MAKE_MSG_CLASS: _name is %s" % msg_spec.mname)
     # END DEBUG
 
     class Msg(MsgImpl, metaclass=MetaMsg,

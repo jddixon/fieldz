@@ -73,7 +73,7 @@ class TestZoggerySerialization(unittest.TestCase):
         self.assertEqual(len(self.str_obj_model.seqs), 0)
 
         msg_spec = self.str_obj_model.msgs[0]
-        msg_name = msg_spec.name
+        msg_name = msg_spec.mname
         self.assertEqual('logEntry', msg_name)
 
         # Create a channel ------------------------------------------
@@ -104,9 +104,9 @@ class TestZoggerySerialization(unittest.TestCase):
         (timestamp, key, length, node_id, by_, path) = tuple(values)
 
         # F A I L S:
-        #   msg_spec.name is 'logEntry'
+        #   msg_spec.mname is 'logEntry'
         #   le_msg_name is  '[148639516, [227, 217, ...[230 chars].gz']
-        self.assertEqual(msg_spec.name, le_msg.name)
+        self.assertEqual(msg_spec.mname, le_msg.mname)
         # we don't have any nested enums or messages
 
         # XXX FAIL: properties have no len()

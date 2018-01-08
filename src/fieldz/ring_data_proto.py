@@ -10,10 +10,10 @@ protocol org.xlattice.pzog.ringData
 
 message ringData:
  message hostInfo:
-  hostName       lstring     # @0: alphanumeric only
-  ipAddr         lstring     # @1: dotted quad; could be fuint32
-  nodeID         fbytes32    # @2: so binary
-  pubKey         lstring     # @3: or could be lbytes
-  privateKey     lstring     # @4: ditto
+  hostName      lstring     # @0: alphanumeric only
+  ipAddr        lstring     # @1: dotted quad; could be fuint32
+  nodeID        fbytes32    # @2: so binary
+  pubKey        lstring     # @3: or could be lbytes
+  privateKey    lstring     # @4: ditto
  hosts          hostInfo+
 """

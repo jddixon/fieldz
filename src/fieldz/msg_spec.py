@@ -302,8 +302,8 @@ class FieldSpec(object):
     def field_type_name(self):
         """ return a string value. """
         try:
-            reg_id = self._field_type.sym
-        except KeyError:
+            reg_id = FieldTypes(self._field_type).sym
+        except ValueError:
             # XX THIS MAKES NO SENSE
             reg_id = self._reg.reg_id2name(self._field_type)
         if reg_id is None:
