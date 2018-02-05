@@ -9,7 +9,7 @@ from io import StringIO
 from rnglib import SimpleRNG
 
 from wireops.enum import FieldTypes
-import wireops.typed as T
+# import wireops.typed as T
 
 from fieldz.enum import Quants
 from fieldz.parser import StringMsgSpecParser

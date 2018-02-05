@@ -13,10 +13,10 @@ from fieldz.ring_data_proto import RING_DATA_PROTO_SPEC
 
 from fieldz.parser import StringProtoSpecParser
 import fieldz.msg_spec as M
-from xlattice.node import Node
+from xlattice.pyca_node import Node
 from fieldz.msg_impl import make_msg_class, make_field_class
 
-import wireops.typed as T
+# import wireops.typed as T
 from wireops.chan import Channel
 
 RNG = SimpleRNG(int(time.time()))
@@ -165,25 +165,36 @@ class TestRingDataProto(unittest.TestCase):
         # OUTER MESSAGE SPEC ----------------------------------------
         msg_spec = str_obj_model.msgs[0]
         field = msg_spec[0]
-        self.assertEqual(field.name, 'hosts')
+        self.assertEqual(field.fname, 'hosts')
         self.assertEqual(field.field_type_name, 'hostInfo')
         # pylint: disable=no-member
         self.assertEqual(field.quantifier, Quants.PLUS)
 
         # INNER MESSAGE SPEC ----------------------------------------
-        msg_spec = str_obj_model.msgs[0].msgs[0]
-        self.assertEqual(msg_spec.f_name(0), 'hostName')
+        msg_spec = str_obj_model.msgs[0].fields[0]
+        # DEBUG
+        print("TYPE MSG_SPEC: ", type(msg_spec))
+        # END
+
+        # TRIAL RESTRUCTURING: XXX FAILS: FieldSpec does not support indexing
+        self.assertEqual(msg_spec[0].fname, 'hostName')
+        # TRIAL RESTRUCTURING: XXX FAILS: NO ATTR fields
+        self.assertEqual(msg_spec.fields[0].field_type_name, 'lstring')
+
+        # ILL-CONCEIVED: XXXXX
+
+        self.assertEqual(msg_spec.fname(0), 'hostName')
         self.assertEqual(msg_spec.field_type_name(0), 'lstring')
-        self.assertEqual(msg_spec.f_name(1), 'ip_addr')
+        self.assertEqual(msg_spec.fname(1), 'ip_addr')
         self.assertEqual(msg_spec.field_type_name(1), 'lstring')
-        self.assertEqual(msg_spec.f_name(2), 'node_id')
+        self.assertEqual(msg_spec.fname(2), 'node_id')
         self.assertEqual(msg_spec.field_type_name(2), 'fbytes32')
-        self.assertEqual(msg_spec.f_name(3), 'pub_key')
+        self.assertEqual(msg_spec.fname(3), 'pub_key')
         self.assertEqual(msg_spec.field_type_name(3), 'lstring')
-        self.assertEqual(msg_spec.f_name(4), 'priv_key')
+        self.assertEqual(msg_spec.fname(4), 'priv_key')
         self.assertEqual(msg_spec.field_type_name(4), 'lstring')
         try:
-            msg_spec.f_name(5)
+            msg_spec.fname(5)
             self.fail('did not catch reference to non-existent field')
         except IndexError as i_exc:
             pass                                                    # GEEP
@@ -196,10 +207,20 @@ class TestRingDataProto(unittest.TestCase):
         self.assertTrue(isinstance(str_obj_model, M.ProtoSpec))
 
         outer_msg_spec = str_obj_model.msgs[0]
-        inner_msg_spec = str_obj_model.msgs[0].msgs[0]
+        # DEBUG
+        self.assertIsNotNone(str_obj_model)
+        self.assertIsNotNone(str_obj_model.msgs[0])
+        self.assertEqual(len(str_obj_model.msgs[0]), 1)
+        self.assertIsNotNone(str_obj_model.msgs[0].fields[0])
+        # END
+        inner_msg_spec = str_obj_model.msgs[0].fields[0]
         outer_msg_cls = make_msg_class(str_obj_model, outer_msg_spec.name)
+        # DEBUG
+        print("INNER MSG SPEC NAME: %s" % inner_msg_spec.fname)
+        # END
+        # FAILS: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< FAILS:
         # NOTE change in parent
-        inner_msg_cls = make_msg_class(outer_msg_spec, inner_msg_spec.name)
+        inner_msg_cls = make_msg_class(outer_msg_spec, inner_msg_spec.fname)
 
         # TEST INNER MESSAGE ########################################
         cls0 = make_msg_class(outer_msg_spec, inner_msg_spec.name)
@@ -250,10 +271,10 @@ class TestRingDataProto(unittest.TestCase):
         str_obj_model = self.make_str_obj_model()
         proto_name = str_obj_model.name
         outer_msg_spec = str_obj_model.msgs[0]
-        inner_msg_spec = str_obj_model.msgs[0].msgs[0]
+        inner_msg_spec = str_obj_model.msgs[0].fields[0]
         outer_msg_cls = make_msg_class(str_obj_model, outer_msg_spec.name)
         # NOTE change in parent
-        inner_msg_cls = make_msg_class(outer_msg_spec, inner_msg_spec.name)
+        inner_msg_cls = make_msg_class(outer_msg_spec, inner_msg_spec.fname)
 
         # Create a channel ------------------------------------------
         # its buffer will be used for both serializing # the instance

@@ -153,7 +153,7 @@ class StringSpecParser(object):
             while line.startswith(msg_starter):
                 line = self.expect_msg_spec(parent, line, indent, step)
                 if line:
-                    line = line.strip()
+                    line = line.rstrip()
                 if not line:
                     break
         print("LEAVING accept_msg_specs: line is '%s'" % line)
@@ -249,6 +249,7 @@ class StringSpecParser(object):
 
         l_count = leading_spaces(line)
         if l_count != len(indent):
+            print("expect_field: LINE: '%s'" % line)
             print("expect_field: expected %d leading spaces, got %d" % (
                   len(indent), l_count))
         # END #########################

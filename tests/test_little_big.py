@@ -13,8 +13,8 @@ from fieldz.msg_impl import make_msg_class,\
 
 from fieldz.parser import StringProtoSpecParser
 import fieldz.msg_spec as M
-#import wireops.field_types as F
-import wireops.typed as T
+# import wireops.field_types as F
+# import wireops.typed as T
 from wireops.chan import Channel
 
 #################################################################

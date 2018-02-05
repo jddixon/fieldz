@@ -21,12 +21,12 @@ from wireops.chan import Channel
 #################################################################
 
 # PROTOCOLS ---------------------------------------------------------
-from little_big_test import LITTLE_BIG_PROTO_SPEC
+# from little_big_test import LITTLE_BIG_PROTO_SPEC
 
-from fieldz.simple_protocol import SIMPLE_PROTOCOL
+# from fieldz.simple_protocol import SIMPLE_PROTOCOL
 from fieldz.zoggery_proto_spec import ZOGGERY_PROTO_SPEC
-from fieldz.nested_enum_proto_spec import NESTED_ENUM_PROTO_SPEC
-from fieldz.nested_msgs_proto_spec import NESTED_MSGS_PROTO_SPEC
+# from fieldz.nested_enum_proto_spec import NESTED_ENUM_PROTO_SPEC
+# from fieldz.nested_msgs_proto_spec import NESTED_MSGS_PROTO_SPEC
 
 BUFSIZE = 16 * 1024
 RNG = SimpleRNG(time.time())

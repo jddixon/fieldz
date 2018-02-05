@@ -4,13 +4,13 @@
 
 import time
 import unittest
-from io import StringIO
+# from io import StringIO
 
 from fieldz.enum import Quants
 from rnglib import SimpleRNG
 
 from fieldz import reg
-#from fieldz.parser import StringProtoSpecParser
+# from fieldz.parser import StringProtoSpecParser
 import fieldz.msg_spec as M
 
 from fieldz.field_impl import make_field_class
@@ -19,8 +19,8 @@ from fieldz.field_impl import make_field_class
 #from wireops.chan import Channel
 #import wireops.typed as T
 
-from wireops.enum import PrimTypes, FieldTypes
-from wireops.raw import write_field_hdr, write_raw_varint
+from wireops.enum import FieldTypes
+# from wireops.raw import write_field_hdr, write_raw_varint
 
 PROTOCOL_UNDER_TEST = 'org.xlattice.fieldz.test.field_spec'
 MSG_UNDER_TEST = 'myTestMsg'
