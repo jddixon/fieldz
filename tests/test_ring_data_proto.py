@@ -13,7 +13,7 @@ from fieldz.ring_data_proto import RING_DATA_PROTO_SPEC
 
 from fieldz.parser import StringProtoSpecParser
 import fieldz.msg_spec as M
-from xlattice.pyca_node import Node
+from xlnode import Node
 from fieldz.msg_impl import make_msg_class, make_field_class
 
 # import wireops.typed as T

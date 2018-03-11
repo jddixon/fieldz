@@ -1,5 +1,8 @@
 ~/dev/py/fieldz/CHANGES
 
+v0.11.19
+    2018-03-11
+        * edit setup.py and tox config files                        SLOC 5645
 v0.11.18
     2018-01-08
         * 12 failed, 35 passed                                      SLOC 5646
@@ -425,6 +428,8 @@ v0.1.2
         * working varint, fixed len 32- and 64-bit, var len bytestring
             and associated tests
         * initial svn import
+
+
 
 
 
